@@ -6,6 +6,8 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
+import { Rating } from '../rating';
+
 import { Compare } from './compare';
 
 export interface Product {
@@ -17,9 +19,13 @@ export interface Product {
   subtitle?: string;
   badge?: string;
   rating?: number;
+  numberOfReviews?: number;
+  averageRating?: number;
 }
 
 export interface ProductCardProps {
+  averageRating?: number;
+  numberOfReviews?: number;
   className?: string;
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
@@ -29,6 +35,7 @@ export interface ProductCardProps {
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
+  reviewsEnabled?: boolean;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -52,7 +59,8 @@ export interface ProductCardProps {
  * ```
  */
 export function ProductCard({
-  product: { id, title, subtitle, badge, price, image, href },
+  product: { id, title, subtitle, badge, price, image, href, averageRating, numberOfReviews },
+  reviewsEnabled = false,
   colorScheme = 'light',
   className,
   showCompare = false,
@@ -119,7 +127,7 @@ export function ProductCard({
           )}
         </div>
 
-        <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
+        <div className="mt-2 flex flex-col items-start gap-5 px-1 @xs:mt-3 @2xl:flex-row">
           <div className="flex-1 text-sm @[16rem]:text-base">
             <span
               className={clsx(
@@ -136,7 +144,7 @@ export function ProductCard({
             {subtitle != null && subtitle !== '' && (
               <span
                 className={clsx(
-                  'mb-2 block text-sm font-normal',
+                  'block text-sm font-normal',
                   {
                     light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
                     dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
@@ -147,6 +155,9 @@ export function ProductCard({
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            {reviewsEnabled && typeof averageRating === 'number' && averageRating > 0 ? (
+              <Rating numberOfReviews={numberOfReviews} rating={averageRating} />
+            ) : null}
           </div>
         </div>
         {href !== '#' && (

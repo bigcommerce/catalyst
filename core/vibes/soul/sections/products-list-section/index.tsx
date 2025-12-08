@@ -27,6 +27,7 @@ interface Props {
   compareHref?: string;
   compareLabel?: Streamable<string>;
   showCompare?: Streamable<boolean>;
+  reviewsEnabled?: boolean;
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
@@ -56,6 +57,7 @@ export function ProductsListSection({
   compareHref,
   compareLabel,
   showCompare,
+  reviewsEnabled,
   paginationInfo,
   filterLabel = 'Filters',
   filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
@@ -171,6 +173,7 @@ export function ProductsListSection({
               placeholderCount={placeholderCount}
               products={products}
               removeLabel={removeLabel}
+              reviewsEnabled={reviewsEnabled}
               showCompare={showCompare}
             />
 

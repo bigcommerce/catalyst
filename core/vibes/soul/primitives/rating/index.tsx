@@ -3,6 +3,8 @@ import { clsx } from 'clsx';
 export interface Props {
   showRating?: boolean;
   rating: number;
+  numberOfReviews?: number;
+  showNumberOfReviews?: boolean;
   className?: string;
 }
 
@@ -59,7 +61,13 @@ export const Star = ({ type }: StarType) => {
   );
 };
 
-export const Rating = function Rating({ showRating = true, rating, className }: Readonly<Props>) {
+export const Rating = function Rating({
+  showRating = true,
+  rating,
+  numberOfReviews,
+  showNumberOfReviews = true,
+  className,
+}: Readonly<Props>) {
   const adjustedRating = Math.min(rating, 5);
 
   const stars: Array<StarType['type']> = Array.from({ length: 5 }, (_, index) => {
@@ -76,9 +84,19 @@ export const Rating = function Rating({ showRating = true, rating, className }: 
       ))}
 
       {showRating && (
-        <span className="ml-1.5 flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-contrast-100 px-1 text-xs font-medium text-contrast-400">
-          {adjustedRating % 1 !== 0 ? adjustedRating.toFixed(1) : adjustedRating}
-        </span>
+        <div className="flex items-center gap-1">
+          <span className="ml-2 flex h-6 shrink-0 items-center justify-center text-xs font-semibold text-foreground">
+            {adjustedRating % 1 !== 0 ? adjustedRating.toFixed(1) : adjustedRating}
+          </span>
+          {showNumberOfReviews && numberOfReviews != null && (
+            <div className="flex items-center gap-1">
+              <span className="mx-1 h-4 w-px bg-contrast-200" />
+              <span className="text-xs text-contrast-500">
+                {numberOfReviews} {numberOfReviews === 1 ? 'review' : 'reviews'}
+              </span>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

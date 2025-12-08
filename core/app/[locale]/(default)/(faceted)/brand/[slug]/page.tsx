@@ -103,6 +103,8 @@ export default async function Brand(props: Props) {
     return notFound();
   }
 
+  const reviewsEnabled = settings?.reviews.enabled ?? false;
+
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
@@ -141,6 +143,8 @@ export default async function Brand(props: Props) {
         : undefined,
       price: pricesTransformer(product.prices, format),
       subtitle: product.brand?.name ?? undefined,
+      averageRating: product.reviewSummary.averageRating,
+      numberOfReviews: product.reviewSummary.numberOfReviews,
     }));
   });
 
@@ -220,6 +224,7 @@ export default async function Brand(props: Props) {
       rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
       removeLabel={t('Compare.remove')}
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
+      reviewsEnabled={reviewsEnabled}
       showCompare={productComparisonsEnabled}
       sortDefaultValue="featured"
       sortLabel={t('Search.title')}

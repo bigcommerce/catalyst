@@ -19,7 +19,9 @@ interface ProductDetailProduct {
   price?: Streamable<Price | null>;
   subtitle?: string;
   badge?: string;
+  reviewsEnabled?: boolean;
   rating?: Streamable<number | null>;
+  numberOfReviews?: Streamable<number | null>;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
   accordions?: Streamable<
@@ -108,11 +110,18 @@ export function ProductDetail<F extends Field>({
                   <h1 className="mb-3 mt-2 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
-                  <div className="group/product-rating">
-                    <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                      {(rating) => <Rating rating={rating ?? 0} />}
-                    </Stream>
-                  </div>
+                  {product.reviewsEnabled && (
+                    <div className="group/product-rating">
+                      <Stream
+                        fallback={<RatingSkeleton />}
+                        value={Streamable.all([product.rating, product.numberOfReviews])}
+                      >
+                        {([rating, numberOfReviews]) => (
+                          <Rating numberOfReviews={numberOfReviews ?? 0} rating={rating ?? 0} />
+                        )}
+                      </Stream>
+                    </div>
+                  )}
                   <div className="group/product-price">
                     <Stream fallback={<PriceLabelSkeleton />} value={product.price}>
                       {(price) => (
