@@ -6,13 +6,6 @@
 
 'use client';
 
-declare global {
-  interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
-    gtag?: (...args: unknown[]) => void;
-  }
-}
-
 /**
  * Get visitor ID from cookie (user_pseudo_id for GA4)
  */

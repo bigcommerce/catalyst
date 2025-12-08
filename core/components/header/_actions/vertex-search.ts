@@ -100,7 +100,8 @@ export async function vertexSearch(
     const catalogPath = getCatalogPath();
     const branch = `${catalogPath}/branches/1`;
 
-    const searchRequest = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const searchRequest: any = {
       placement,
       branch,
       query: submission.value.term,
@@ -118,27 +119,29 @@ export async function vertexSearch(
     // Call Vertex Retail Search API
     const vertexStartTime = Date.now();
     // The response is a tuple: [results[], request, response]
-    const [searchResults, , fullResponse] = await searchClient.search(searchRequest, {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/consistent-type-assertions
+    const [searchResults, , fullResponse] = (await searchClient.search(searchRequest, {
       autoPaginate: false,
-    });
+    })) as any;
     const vertexDuration = Date.now() - vertexStartTime;
 
     // eslint-disable-next-line no-console
     console.log(`[Vertex Search] ✓ Search API responded in ${vertexDuration}ms`);
     // eslint-disable-next-line no-console
     console.log('[Vertex Search] Search results count:', searchResults.length);
-    // eslint-disable-next-line no-console
+    // eslint-disable-next-line no-console, @typescript-eslint/no-explicit-any
     console.log(
       '[Vertex Search] Result IDs:',
-      searchResults.map((r) => r.id),
+      searchResults.map((r: any) => r.id),
     );
     // eslint-disable-next-line no-console
     console.log('[Vertex Search] Attribution token:', fullResponse.attributionToken || 'none');
 
     // Extract product IDs from search results
     const vertexResults = searchResults;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const productIds = vertexResults
-      .map((result) => {
+      .map((result: any) => {
         // The product ID can be in two places:
         // 1. result.id (the search result ID, e.g., "product-152")
         // 2. result.product.id (often empty in search results)
@@ -156,7 +159,8 @@ export async function vertexSearch(
 
         return extractedId;
       })
-      .filter((id): id is number => id !== null);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .filter((id: any): id is number => id !== null);
 
     // eslint-disable-next-line no-console
     console.log('[Vertex Search] Extracted product IDs:', productIds);

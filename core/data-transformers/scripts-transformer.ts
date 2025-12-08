@@ -134,5 +134,5 @@ export function scriptsTransformer(scripts: BigCommerceScripts): C15tScripts {
       // These will be filtered out below
       return null;
     })
-    .filter((script): script is C15tScript => script !== null);
+    .filter((script) => script !== null) as C15tScript[];
 }

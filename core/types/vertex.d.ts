@@ -42,4 +42,6 @@ interface Window {
   _gre?: Array<[string, unknown]> & {
     push: (command: [string, unknown]) => void;
   };
+  dataLayer?: Array<Record<string, unknown>>;
+  gtag?: (...args: unknown[]) => void;
 }

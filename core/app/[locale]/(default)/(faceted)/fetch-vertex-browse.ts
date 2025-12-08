@@ -262,6 +262,7 @@ export const fetchVertexBrowseByCategory = cache(
           ...(pageCategory && { pageCategories: [pageCategory] }),
           // Request facets with dynamic positioning enabled
           // Note: Dynamic faceting must be enabled in the serving config
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           facetSpecs: [
             {
               facetKey: { key: 'brands' },
@@ -282,7 +283,8 @@ export const fetchVertexBrowseByCategory = cache(
               facetKey: { key: 'priceInfo.price' },
               limit: 10,
               enableDynamicPosition: true,
-              // intervals is supported by the API
+              // intervals is supported by the API but not in TypeScript types
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               intervals: [
                 { minimum: 0, maximum: 50 },
                 { minimum: 50, maximum: 100 },
@@ -290,7 +292,7 @@ export const fetchVertexBrowseByCategory = cache(
                 { minimum: 200, maximum: 500 },
                 { minimum: 500 },
               ],
-            },
+            } as any,
             // Request additional dynamic facets based on catalog attributes
             {
               facetKey: { key: 'sizes' },
@@ -307,7 +309,7 @@ export const fetchVertexBrowseByCategory = cache(
               limit: 15,
               enableDynamicPosition: true,
             },
-          ],
+          ] as any,
         },
         { autoPaginate: false },
       );
@@ -509,6 +511,7 @@ export const fetchVertexBrowseByBrand = cache(
           },
           // Request facets with dynamic positioning (excluding brands since we're filtering by brand)
           // Note: Dynamic faceting must be enabled in the serving config
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           facetSpecs: [
             {
               facetKey: { key: 'categories' },
@@ -524,7 +527,8 @@ export const fetchVertexBrowseByBrand = cache(
               facetKey: { key: 'priceInfo.price' },
               limit: 10,
               enableDynamicPosition: true,
-              // intervals is supported by the API
+              // intervals is supported by the API but not in TypeScript types
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               intervals: [
                 { minimum: 0, maximum: 50 },
                 { minimum: 50, maximum: 100 },
@@ -532,7 +536,7 @@ export const fetchVertexBrowseByBrand = cache(
                 { minimum: 200, maximum: 500 },
                 { minimum: 500 },
               ],
-            },
+            } as any,
             // Request additional dynamic facets
             {
               facetKey: { key: 'sizes' },
@@ -549,7 +553,7 @@ export const fetchVertexBrowseByBrand = cache(
               limit: 15,
               enableDynamicPosition: true,
             },
-          ],
+          ] as any,
         },
         { autoPaginate: false },
       );

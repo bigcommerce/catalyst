@@ -213,6 +213,7 @@ export const fetchVertexSearch = cache(
             pinUnexpandedResults: false,
           },
           // Request specific facets that might be available in the catalog
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           facetSpecs: [
             {
               facetKey: { key: 'brands' },
@@ -229,7 +230,8 @@ export const fetchVertexSearch = cache(
             {
               facetKey: { key: 'priceInfo.price' },
               limit: 10,
-              // intervals is supported by the API
+              // intervals is supported by the API but not in TypeScript types
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               intervals: [
                 { minimum: 0, maximum: 50 },
                 { minimum: 50, maximum: 100 },
@@ -237,8 +239,8 @@ export const fetchVertexSearch = cache(
                 { minimum: 200, maximum: 500 },
                 { minimum: 500 },
               ],
-            },
-          ],
+            } as any,
+          ] as any,
         },
         { autoPaginate: false },
       );
