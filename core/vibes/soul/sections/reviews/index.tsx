@@ -1,4 +1,5 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
@@ -67,7 +68,6 @@ export function Reviews({
           return (
             <ReviewsEmptyState
               action={action}
-              formButtonLabel={formButtonLabel}
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
@@ -124,7 +124,6 @@ export function Reviews({
                 </Stream>
                 <ReviewForm
                   action={action}
-                  formButtonLabel={formButtonLabel}
                   formEmailLabel={formEmailLabel}
                   formModalTitle={formModalTitle}
                   formNameLabel={formNameLabel}
@@ -136,6 +135,11 @@ export function Reviews({
                   streamableImages={streamableImages}
                   streamableProduct={streamableProduct}
                   streamableUser={streamableUser}
+                  trigger={
+                    <Button className="mx-auto mt-8" size="small" variant="tertiary">
+                      {formButtonLabel}
+                    </Button>
+                  }
                 />
               </>
             }
@@ -225,7 +229,6 @@ export function ReviewsEmptyState({
         <p className="text-center">{message}</p>
         <ReviewForm
           action={action}
-          formButtonLabel={formButtonLabel}
           formEmailLabel={formEmailLabel}
           formModalTitle={formModalTitle}
           formNameLabel={formNameLabel}
@@ -237,6 +240,11 @@ export function ReviewsEmptyState({
           streamableImages={streamableImages}
           streamableProduct={streamableProduct}
           streamableUser={streamableUser}
+          trigger={
+            <Button className="mx-auto mt-8" size="small" variant="tertiary">
+              {formButtonLabel}
+            </Button>
+          }
         />
       </div>
     </StickySidebarLayout>
