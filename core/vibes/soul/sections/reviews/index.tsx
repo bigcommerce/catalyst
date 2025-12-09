@@ -49,7 +49,7 @@ export function Reviews({
   emptyStateMessage,
   reviewsLabel = 'Reviews',
   action,
-  formButtonLabel,
+  formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
   formRatingLabel,
@@ -68,6 +68,7 @@ export function Reviews({
           return (
             <ReviewsEmptyState
               action={action}
+              formButtonLabel={formButtonLabel}
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
@@ -182,7 +183,7 @@ export function ReviewsEmptyState({
   reviewsLabel = 'Reviews',
   productId,
   action,
-  formButtonLabel,
+  formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
   formRatingLabel,
