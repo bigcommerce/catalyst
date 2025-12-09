@@ -61,6 +61,7 @@ export const singleProductCardTransformer = (
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name ?? undefined,
     rating: product.reviewSummary.averageRating,
+    numberOfReviews: product.reviewSummary.numberOfReviews,
     inventoryMessage: getInventoryMessage(product, outOfStockMessage, showBackorderMessage),
   };
 };

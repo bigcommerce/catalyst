@@ -20,6 +20,7 @@ export interface Product {
   badge?: string;
   rating?: number;
   inventoryMessage?: string;
+  numberOfReviews?: number;
 }
 
 export interface ProductCardProps {
@@ -58,7 +59,18 @@ export interface ProductCardProps {
  * ```
  */
 export function ProductCard({
-  product: { id, title, subtitle, badge, price, image, href, inventoryMessage, rating },
+  product: {
+    id,
+    title,
+    subtitle,
+    badge,
+    price,
+    image,
+    href,
+    inventoryMessage,
+    rating,
+    numberOfReviews,
+  },
   showRating = false,
   colorScheme = 'light',
   className,
@@ -153,7 +165,9 @@ export function ProductCard({
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
-            {showRating && typeof rating === 'number' && rating > 0 && <Rating rating={rating} />}
+            {showRating && typeof rating === 'number' && rating > 0 && (
+              <Rating className="mb-2 mt-1" numberOfReviews={numberOfReviews} rating={rating} />
+            )}
             <span
               className={clsx(
                 'block text-sm font-normal',
@@ -185,7 +199,7 @@ export function ProductCard({
         )}
       </div>
       {showCompare && (
-        <div className="mt-auto shrink-0">
+        <div className="ml-1 mt-auto shrink-0">
           <Compare
             colorScheme={colorScheme}
             label={compareLabel}

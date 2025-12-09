@@ -4,7 +4,6 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
-import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
@@ -16,6 +15,7 @@ import {
   ProductDetailFormAction,
   StockDisplayData,
 } from './product-detail-form';
+import { RatingLink } from './rating-link';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -29,6 +29,7 @@ interface ProductDetailProduct {
   rating?: Streamable<number | null>;
   reviewsEnabled?: boolean;
   showRating?: boolean;
+  numberOfReviews?: number;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
   accordions?: Streamable<
@@ -161,8 +162,17 @@ export function ProductDetail<F extends Field>({
                   )}
                   {product.showRating && (
                     <div className="group/product-rating">
-                      <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                        {(rating) => <Rating rating={rating ?? 0} />}
+                      <Stream
+                        fallback={<RatingSkeleton />}
+                        value={Streamable.all([product.rating, product.numberOfReviews])}
+                      >
+                        {([rating, numberOfReviews]) => (
+                          <RatingLink
+                            numberOfReviews={numberOfReviews ?? 0}
+                            rating={rating ?? 0}
+                            scrollTargetId="reviews"
+                          />
+                        )}
                       </Stream>
                     </div>
                   )}
