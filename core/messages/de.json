@@ -54,6 +54,7 @@
             "password": "Passwort",
             "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+            "passwordResetRequired": "Passwortzurücksetzung erforderlich. Bitte überprüfen Sie Ihre E-Mails für die Anleitung zum Zurücksetzen Ihres Passworts.",
             "CreateAccount": {
                 "title": "Neuer Kunde?",
                 "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
@@ -307,7 +308,7 @@
                 "couponCode": "Gutschein-Code",
                 "removeCouponCode": "Gutschein-Code entfernen",
                 "invalidCouponCode": "Bitte geben Sie einen gültigen Coupon-Code ein",
-                "cartNotFound": "Kein cartId-Cookie gefunden."
+                "cartNotFound": "Beim Abrufen des Warenkorbs ist ein Fehler aufgetreten"
             },
             "Shipping": {
                 "shipping": "Versand",
@@ -324,7 +325,7 @@
                 "shippingOptions": "Versandoptionen",
                 "updateShipping": "Versand aktualisieren",
                 "addShipping": "Versand hinzufügen",
-                "cartNotFound": "Kein cartId-Cookie gefunden.",
+                "cartNotFound": "Beim Abrufen des Warenkorbs ist ein Fehler aufgetreten",
                 "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
             }
         },
@@ -336,7 +337,7 @@
             "to": "Nach",
             "message": "Nachricht",
             "invalidGiftCertificate": "Bitte geben Sie einen gültigen Geschenkgutscheincode ein.",
-            "cartNotFound": "Kein cartId-Cookie gefunden."
+            "cartNotFound": "Beim Abrufen des Warenkorbs ist ein Fehler aufgetreten"
         },
         "Empty": {
             "title": "Ihr Warenkorb ist leer.",
@@ -344,7 +345,7 @@
             "cta": "Weiter einkaufen"
         },
         "Errors": {
-            "cartNotFound": "Kein cartId-Cookie gefunden.",
+            "cartNotFound": "Beim Abrufen des Warenkorbs ist ein Fehler aufgetreten",
             "lineItemNotFound": "Einzelposten nicht gefunden.",
             "failedToUpdateQuantity": "Menge konnte nicht aktualisiert werden.",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
@@ -411,7 +412,19 @@
             "title": "Bewertungen",
             "empty": "Für dieses Produkt wurden keine Bewertungen hinzugefügt.",
             "previous": "Vorherige Bewertungen",
-            "next": "Nächste Bewertungen"
+            "next": "Nächste Bewertungen",
+            "Form": {
+                "button": "Eine Bewertung schreiben",
+                "title": "Eine Bewertung schreiben",
+                "submit": "Einreichen",
+                "ratingLabel": "Bewertung",
+                "titleLabel": "Titel",
+                "reviewLabel": "Bewertung",
+                "nameLabel": "Name",
+                "emailLabel": "E-Mail",
+                "successMessage": "Ihre Bewertung wurde erfolgreich übermittelt!",
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +471,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Warenkorb",
-                "search": "Popup-Fenster zur Suche öffnen"
+                "search": "Popup-Fenster zur Suche öffnen",
+                "giftCertificates": "Geschenkgutscheine"
             },
             "SwitchCurrency": {
                 "label": "Währung ändern",
@@ -482,7 +496,8 @@
             "socialMediaLinks": "Social-Media-Links",
             "categories": "Kategorien",
             "brands": "Marken",
-            "navigate": "Navigieren"
+            "navigate": "Navigieren",
+            "giftCertificates": "Geschenkgutscheine"
         },
         "Subscribe": {
             "title": "Melden Sie sich für unseren Newsletter an",

@@ -54,6 +54,7 @@
             "password": "Senha",
             "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
+            "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
             "CreateAccount": {
                 "title": "Cliente novo?",
                 "accountBenefits": "Crie uma conta conosco para poder:",
@@ -307,7 +308,7 @@
                 "couponCode": "Código de cupom",
                 "removeCouponCode": "Remover código de cupom",
                 "invalidCouponCode": "Digite um código de cupom válido",
-                "cartNotFound": "Nenhum cookie cartId foi encontrado."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Envio",
@@ -324,7 +325,7 @@
                 "shippingOptions": "Opções de envio",
                 "updateShipping": "Atualizar envio",
                 "addShipping": "Adicionar envio",
-                "cartNotFound": "Nenhum cookie cartId foi encontrado.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Não há opções de envio disponíveis para o seu endereço"
             }
         },
@@ -336,7 +337,7 @@
             "to": "para",
             "message": "Mensagem",
             "invalidGiftCertificate": "Please enter a valid gift certificate code",
-            "cartNotFound": "Nenhum cookie cartId foi encontrado."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Seu carrinho está vazio.",
@@ -344,7 +345,7 @@
             "cta": "Continuar comprando"
         },
         "Errors": {
-            "cartNotFound": "Nenhum cookie cartId foi encontrado.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Item de linha não encontrado.",
             "failedToUpdateQuantity": "Não foi possível atualizar a quantidade.",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
@@ -411,7 +412,19 @@
             "title": "Avaliações",
             "empty": "Nenhuma avaliação foi adicionada para este produto.",
             "previous": "Avaliações anteriores",
-            "next": "Próximas avaliações"
+            "next": "Próximas avaliações",
+            "Form": {
+                "button": "Write a review",
+                "title": "Write a review",
+                "submit": "Enviar",
+                "ratingLabel": "Taxa",
+                "titleLabel": "Título",
+                "reviewLabel": "Avaliação",
+                "nameLabel": "Nome",
+                "emailLabel": "Email",
+                "successMessage": "Your review has been submitted successfully!",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +471,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrinho",
-                "search": "Abrir pop-up de pesquisa"
+                "search": "Abrir pop-up de pesquisa",
+                "giftCertificates": "Vales-presente"
             },
             "SwitchCurrency": {
                 "label": "Switch currency",
@@ -482,7 +496,8 @@
             "socialMediaLinks": "Links de redes sociais",
             "categories": "Categorias",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Vales-presente"
         },
         "Subscribe": {
             "title": "Assine nosso boletim informativo",
