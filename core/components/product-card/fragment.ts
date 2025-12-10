@@ -15,9 +15,36 @@ export const ProductCardFragment = graphql(
         name
         path
       }
+      inventory {
+        hasVariantInventory
+        isInStock
+        aggregated {
+          availableForBackorder
+          unlimitedBackorder
+          availableOnHand
+        }
+      }
       reviewSummary {
         numberOfReviews
         averageRating
+      }
+      variants(first: 1) {
+        edges {
+          node {
+            entityId
+            sku
+            inventory {
+              byLocation {
+                edges {
+                  node {
+                    locationEntityId
+                    backorderMessage
+                  }
+                }
+              }
+            }
+          }
+        }
       }
       ...PricingFragment
     }

@@ -36,7 +36,15 @@ export default async function Home({ params }: Props) {
 
     const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
 
-    return productCardTransformer(featuredProducts, format);
+    const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
+      data.site.settings?.inventory ?? {};
+
+    return productCardTransformer(
+      featuredProducts,
+      format,
+      showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
+      showBackorderMessage,
+    );
   });
 
   const streamableNewestProducts = Streamable.from(async () => {
@@ -44,7 +52,15 @@ export default async function Home({ params }: Props) {
 
     const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
 
-    return productCardTransformer(newestProducts, format);
+    const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
+      data.site.settings?.inventory ?? {};
+
+    return productCardTransformer(
+      newestProducts,
+      format,
+      showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
+      showBackorderMessage,
+    );
   });
 
   return (

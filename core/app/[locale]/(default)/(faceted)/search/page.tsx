@@ -10,7 +10,7 @@ import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/fi
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
-import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { MAX_COMPARE_LIMIT } from '../../compare/page-data';
@@ -117,16 +117,15 @@ export default async function Search(props: Props) {
     const search = await streamableFacetedSearch;
     const products = search.products.items;
 
-    return products.map((product) => ({
-      id: product.entityId.toString(),
-      title: product.name,
-      href: product.path,
-      image: product.defaultImage
-        ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-        : undefined,
-      price: pricesTransformer(product.prices, format),
-      subtitle: product.brand?.name ?? undefined,
-    }));
+    const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
+      settings?.inventory ?? {};
+
+    return productCardTransformer(
+      products,
+      format,
+      showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
+      showBackorderMessage,
+    );
   });
 
   const streamableTitle = Streamable.from(async () => {
