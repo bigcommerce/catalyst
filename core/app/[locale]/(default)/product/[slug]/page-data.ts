@@ -5,6 +5,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { ProductVariantsInventoryFragment } from '~/components/product-variants-inventory/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -201,6 +202,57 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site.product;
 });
 
+const StreamableProductVariantBySkuQuery = graphql(`
+  query ProductVariantBySkuQuery($productId: Int!, $sku: String!) {
+    site {
+      product(entityId: $productId) {
+        variants(skus: [$sku]) {
+          edges {
+            node {
+              id
+              entityId
+              sku
+              inventory {
+                aggregated {
+                  availableToSell
+                  warningLevel
+                  availableOnHand
+                  availableForBackorder
+                  unlimitedBackorder
+                }
+                byLocation {
+                  edges {
+                    node {
+                      locationEntityId
+                      backorderMessage
+                    }
+                  }
+                }
+                isInStock
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+type VariantVariables = VariablesOf<typeof StreamableProductVariantBySkuQuery>;
+
+export const getStreamableProductVariant = cache(
+  async (variables: VariantVariables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: StreamableProductVariantBySkuQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product?.variants;
+  },
+);
+
 const StreamableProductQuery = graphql(
   `
     query StreamableProductQuery(
@@ -246,22 +298,27 @@ const StreamableProductQuery = graphql(
           maxPurchaseQuantity
           warranty
           inventory {
+            hasVariantInventory
             isInStock
             aggregated {
               availableToSell
               warningLevel
+              availableOnHand
+              availableForBackorder
+              unlimitedBackorder
             }
           }
           availabilityV2 {
             status
           }
           ...ProductViewedFragment
+          ...ProductVariantsInventoryFragment
           ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment],
+  [ProductViewedFragment, ProductSchemaFragment, ProductVariantsInventoryFragment],
 );
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
@@ -331,13 +388,17 @@ const InventorySettingsQuery = graphql(`
           defaultOutOfStockMessage
           showOutOfStockMessage
           stockLevelDisplay
+          showBackorderAvailabilityPrompt
+          backorderAvailabilityPrompt
+          showQuantityOnBackorder
+          showBackorderMessage
         }
       }
     }
   }
 `);
 
-export const getInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
+export const getStreamableInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: InventorySettingsQuery,
     customerAccessToken,
