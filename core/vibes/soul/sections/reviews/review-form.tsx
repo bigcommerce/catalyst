@@ -27,7 +27,7 @@ export type SubmitReviewAction = Action<
 interface Props {
   productId: number;
   action: SubmitReviewAction;
-  formButtonLabel?: string;
+  trigger: React.ReactNode;
   formModalTitle?: string;
   formSubmitLabel?: string;
   formRatingLabel?: string;
@@ -43,7 +43,7 @@ interface Props {
 export const ReviewForm = ({
   productId,
   action,
-  formButtonLabel = 'Write a review',
+  trigger,
   formModalTitle = 'Write a review',
   formSubmitLabel = 'Submit',
   formRatingLabel = 'Rating',
@@ -107,11 +107,7 @@ export const ReviewForm = ({
       isOpen={isOpen}
       setOpen={setIsOpen}
       title={formModalTitle}
-      trigger={
-        <Button className="mx-auto mt-8" size="small" variant="tertiary">
-          {formButtonLabel}
-        </Button>
-      }
+      trigger={trigger}
     >
       <div className="flex flex-col gap-6 md:flex-row md:gap-8">
         <div className="shrink-0 md:w-48">
