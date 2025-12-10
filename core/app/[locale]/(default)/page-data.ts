@@ -61,6 +61,13 @@ const HomePageQuery = graphql(
             }
           }
         }
+        settings {
+          inventory {
+            defaultOutOfStockMessage
+            showOutOfStockMessage
+            showBackorderMessage
+          }
+        }
       }
     }
   `,

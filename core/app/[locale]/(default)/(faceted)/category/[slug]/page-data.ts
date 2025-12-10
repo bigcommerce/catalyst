@@ -35,6 +35,11 @@ const CategoryPageQuery = graphql(
           }
         }
         settings {
+          inventory {
+            defaultOutOfStockMessage
+            showOutOfStockMessage
+            showBackorderMessage
+          }
           storefront {
             catalog {
               productComparisonsEnabled
