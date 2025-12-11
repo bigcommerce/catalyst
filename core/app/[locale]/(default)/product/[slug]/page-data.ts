@@ -175,6 +175,9 @@ const ProductQuery = graphql(
           reviews {
             enabled
           }
+          display {
+            showProductRating
+          }
         }
         product(entityId: $entityId) {
           entityId

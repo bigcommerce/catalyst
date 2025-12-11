@@ -26,6 +26,9 @@ const BrandPageQuery = graphql(`
             productComparisonsEnabled
           }
         }
+        display {
+          showProductRating
+        }
         reviews {
           enabled
         }

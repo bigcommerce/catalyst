@@ -18,6 +18,9 @@ const SearchPageQuery = graphql(`
             productComparisonsEnabled
           }
         }
+        display {
+          showProductRating
+        }
         reviews {
           enabled
         }

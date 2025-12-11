@@ -45,6 +45,9 @@ const CategoryPageQuery = graphql(
               productComparisonsEnabled
             }
           }
+          display {
+            showProductRating
+          }
           reviews {
             enabled
           }

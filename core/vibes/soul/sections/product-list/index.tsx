@@ -11,7 +11,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 interface ProductListProps {
   products: Streamable<Product[]>;
-  reviewsEnabled?: boolean;
+  showRating?: boolean;
   compareProducts?: Streamable<Product[]>;
   className?: string;
   colorScheme?: 'light' | 'dark';
@@ -46,7 +46,7 @@ interface ProductListProps {
  */
 export function ProductList({
   products: streamableProducts,
-  reviewsEnabled,
+  showRating,
   className,
   colorScheme = 'light',
   aspectRatio = '5:6',
@@ -109,8 +109,8 @@ export function ProductList({
                     imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
                     key={product.id}
                     product={product}
-                    reviewsEnabled={reviewsEnabled}
                     showCompare={showCompare}
+                    showRating={showRating}
                   />
                 ))}
               </div>

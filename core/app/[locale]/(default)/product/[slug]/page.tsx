@@ -7,13 +7,14 @@ import { SearchParams } from 'nuqs/server';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
-import { getSessionCustomerAccessToken } from '~/auth';
+import { auth, getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { submitReview } from './_actions/submit-review';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
@@ -80,7 +81,8 @@ export default async function Product({ params, searchParams }: Props) {
 
   const { product: baseProduct, settings } = await getProduct(productId, customerAccessToken);
 
-  const reviewsEnabled = settings?.reviews.enabled ?? false;
+  const reviewsEnabled = Boolean(settings?.reviews.enabled && !settings.display.showProductRating);
+  const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
 
   if (!baseProduct) {
     return notFound();
@@ -510,6 +512,21 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  const streamableUser = Streamable.from(async () => {
+    const session = await auth();
+    const firstName = session?.user?.firstName ?? '';
+    const lastName = session?.user?.lastName ?? '';
+
+    if (!firstName || !lastName) {
+      return { email: session?.user?.email ?? '', name: '' };
+    }
+
+    const lastInitial = lastName.charAt(0).toUpperCase();
+    const obfuscatedName = `${firstName} ${lastInitial}.`;
+
+    return { email: session?.user?.email ?? '', name: obfuscatedName };
+  });
+
   return (
     <>
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
@@ -538,6 +555,7 @@ export default async function Product({ params, searchParams }: Props) {
             images: streamableImages,
             price: streamablePrices,
             reviewsEnabled,
+            showRating,
             subtitle: baseProduct.brand?.name,
             rating: baseProduct.reviewSummary.averageRating,
             accordions: streameableAccordions,
@@ -547,7 +565,9 @@ export default async function Product({ params, searchParams }: Props) {
             backorderDisplayData: streamableBackorderDisplayData,
           }}
           quantityLabel={t('ProductDetails.quantity')}
+          reviewFormAction={submitReview}
           thumbnailLabel={t('ProductDetails.thumbnail')}
+          user={streamableUser}
         />
       </ProductAnalyticsProvider>
 
@@ -562,7 +582,7 @@ export default async function Product({ params, searchParams }: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      {reviewsEnabled && (
+      {showRating && (
         <Reviews
           productId={productId}
           searchParams={searchParams}
