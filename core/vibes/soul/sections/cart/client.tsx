@@ -33,6 +33,14 @@ import { CartEmptyState } from '.';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
+interface CartLineIteminventoryMessages {
+  outOfStockMessage?: string;
+  quantityReadyToShipMessage?: string;
+  quantityBackorderedMessage?: string;
+  quantityOutOfStockMessage?: string;
+  backorderMessage?: string;
+}
+
 export interface CartLineItem {
   typename: string;
   id: string;
@@ -42,6 +50,7 @@ export interface CartLineItem {
   quantity: number;
   price: string;
   href?: string;
+  inventoryMessages?: CartLineIteminventoryMessages;
 }
 
 export interface CartGiftCertificateLineItem extends CartLineItem {
@@ -558,56 +567,86 @@ function CounterForm({
     <form {...getFormProps(form)} action={action}>
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+        <div className="flex flex-col gap-y-0">
+          <div className="mb-1 mt-1 flex items-center gap-x-5">
+            <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
 
-        {/* Counter */}
-        <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
-          <button
-            aria-label={decrementLabel}
-            className={clsx(
-              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-              lineItem.quantity === 1
-                ? 'opacity-50'
-                : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
-            )}
-            disabled={lineItem.quantity === 1}
-            name="intent"
-            type="submit"
-            value="decrement"
-          >
-            <Minus
-              className={clsx(
-                'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
-                lineItem.quantity !== 1 &&
-                  'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
-              )}
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
-            {lineItem.quantity}
-          </span>
-          <button
-            aria-label={incrementLabel}
-            className={clsx(
-              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-            )}
-            name="intent"
-            type="submit"
-            value="increment"
-          >
-            <Plus
-              className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
+            {/* Counter */}
+            <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
+              <button
+                aria-label={decrementLabel}
+                className={clsx(
+                  'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+                  lineItem.quantity === 1
+                    ? 'opacity-50'
+                    : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
+                )}
+                disabled={lineItem.quantity === 1}
+                name="intent"
+                type="submit"
+                value="decrement"
+              >
+                <Minus
+                  className={clsx(
+                    'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
+                    lineItem.quantity !== 1 &&
+                      'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
+                  )}
+                  size={18}
+                  strokeWidth={1.5}
+                />
+              </button>
+              <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
+                {lineItem.quantity}
+              </span>
+              <button
+                aria-label={incrementLabel}
+                className={clsx(
+                  'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+                )}
+                name="intent"
+                type="submit"
+                value="increment"
+              >
+                <Plus
+                  className={clsx(
+                    'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
+                  )}
+                  size={18}
+                  strokeWidth={1.5}
+                />
+              </button>
+            </div>
+          </div>
+          {!!lineItem.inventoryMessages?.outOfStockMessage && (
+            <span className="text-xs/4 font-light text-red-500 @xl:ml-auto">
+              {lineItem.inventoryMessages.outOfStockMessage}
+            </span>
+          )}
+          {!!lineItem.inventoryMessages?.quantityReadyToShipMessage && (
+            <span className="text-xs/4 font-light @xl:ml-auto">
+              {lineItem.inventoryMessages.quantityReadyToShipMessage}
+            </span>
+          )}
+          {!!lineItem.inventoryMessages?.quantityBackorderedMessage && (
+            <span className="text-xs/4 font-light @xl:ml-auto">
+              {lineItem.inventoryMessages.quantityBackorderedMessage}
+            </span>
+          )}
+          {!!lineItem.inventoryMessages?.backorderMessage && (
+            <span className="text-xs/4 font-light @xl:ml-auto">
+              {lineItem.inventoryMessages.backorderMessage}
+            </span>
+          )}
+          {!!lineItem.inventoryMessages?.quantityOutOfStockMessage && (
+            <span className="text-xs/4 font-light text-red-500 @xl:ml-auto">
+              {lineItem.inventoryMessages.quantityOutOfStockMessage}
+            </span>
+          )}
         </div>
-
         <button
           aria-label={deleteLabel}
-          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
+          className="group -ml-1 mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
           name="intent"
           type="submit"
           value="delete"
