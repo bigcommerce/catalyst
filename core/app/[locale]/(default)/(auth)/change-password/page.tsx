@@ -39,5 +39,3 @@ export default async function ChangePassword({ searchParams }: Props) {
 
   return null;
 }
-
-export const runtime = 'edge';

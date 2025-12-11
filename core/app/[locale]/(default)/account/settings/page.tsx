@@ -30,5 +30,3 @@ export default async function Settings() {
     </div>
   );
 }
-
-export const runtime = 'edge';

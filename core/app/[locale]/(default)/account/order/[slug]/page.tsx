@@ -67,5 +67,3 @@ export default async function Order(props: Props) {
 
   return <OrderDetails data={data} />;
 }
-
-export const runtime = 'edge';

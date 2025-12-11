@@ -17,5 +17,3 @@ export const GET = () => {
     locale: defaultLocale,
   });
 };
-
-export const runtime = 'edge';

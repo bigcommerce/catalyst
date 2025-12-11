@@ -41,5 +41,3 @@ export default async function Tag(props: Props) {
     </div>
   );
 }
-
-export const runtime = 'edge';
