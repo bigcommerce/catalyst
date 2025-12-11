@@ -39,5 +39,4 @@ export async function GET(request: Request, { params }: TokenParams) {
   }
 }
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';

@@ -89,5 +89,3 @@ export default async function Maintenance({ params }: Props) {
     </Container>
   );
 }
-
-export const runtime = 'edge';
