@@ -78,7 +78,9 @@ export default async function Product({ params, searchParams }: Props) {
 
   const productId = Number(slug);
 
-  const baseProduct = await getProduct(productId, customerAccessToken);
+  const { product: baseProduct, settings } = await getProduct(productId, customerAccessToken);
+
+  const reviewsEnabled = settings?.reviews.enabled ?? false;
 
   if (!baseProduct) {
     return notFound();
@@ -535,6 +537,7 @@ export default async function Product({ params, searchParams }: Props) {
             href: baseProduct.path,
             images: streamableImages,
             price: streamablePrices,
+            reviewsEnabled,
             subtitle: baseProduct.brand?.name,
             rating: baseProduct.reviewSummary.averageRating,
             accordions: streameableAccordions,
@@ -559,12 +562,14 @@ export default async function Product({ params, searchParams }: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews
-        productId={productId}
-        searchParams={searchParams}
-        streamableImages={streamableImages}
-        streamableProduct={streamableProduct}
-      />
+      {reviewsEnabled && (
+        <Reviews
+          productId={productId}
+          searchParams={searchParams}
+          streamableImages={streamableImages}
+          streamableProduct={streamableProduct}
+        />
+      )}
 
       <Stream
         fallback={null}

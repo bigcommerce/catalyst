@@ -171,6 +171,11 @@ const ProductQuery = graphql(
   `
     query ProductQuery($entityId: Int!) {
       site {
+        settings {
+          reviews {
+            enabled
+          }
+        }
         product(entityId: $entityId) {
           entityId
           name
@@ -199,7 +204,7 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return data.site.product;
+  return data.site;
 });
 
 const StreamableProductVariantBySkuQuery = graphql(`

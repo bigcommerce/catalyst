@@ -6,6 +6,8 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
+import { Rating } from '../rating';
+
 import { Compare } from './compare';
 
 export interface Product {
@@ -30,6 +32,7 @@ export interface ProductCardProps {
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
+  reviewsEnabled?: boolean;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -55,7 +58,8 @@ export interface ProductCardProps {
  * ```
  */
 export function ProductCard({
-  product: { id, title, subtitle, badge, price, image, href, inventoryMessage },
+  product: { id, title, subtitle, badge, price, image, href, inventoryMessage, rating },
+  reviewsEnabled = false,
   colorScheme = 'light',
   className,
   showCompare = false,
@@ -149,6 +153,9 @@ export function ProductCard({
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            {reviewsEnabled && typeof rating === 'number' && rating > 0 && (
+              <Rating rating={rating} />
+            )}
             <span
               className={clsx(
                 'block text-sm font-normal',
