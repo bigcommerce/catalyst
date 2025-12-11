@@ -210,6 +210,43 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.text();
   }
 
+  async fetchSitemap(
+    params: { type?: string | null; page?: string | number | null },
+    channelId?: string,
+  ): Promise<string> {
+    const response = await this.fetchSitemapResponse(params, channelId);
+
+    if (!response.ok) {
+      throw new Error(`Unable to get Sitemap: ${response.statusText}`);
+    }
+
+    return response.text();
+  }
+
+  async fetchSitemapResponse(
+    params: { type?: string | null; page?: string | number | null },
+    channelId?: string,
+  ): Promise<Response> {
+    const baseUrl = new URL(`${await this.getCanonicalUrl(channelId)}/xmlsitemap.php`);
+
+    // Only forward well-known params
+    if (params.type) baseUrl.searchParams.set('type', String(params.type));
+    if (params.page !== undefined && params.page !== null)
+      baseUrl.searchParams.set('page', String(params.page));
+
+    const response = await fetch(baseUrl.toString(), {
+      method: 'GET',
+      headers: {
+        Accept: 'application/xml',
+        'Content-Type': 'application/xml',
+        'User-Agent': this.backendUserAgent,
+        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
+      },
+    });
+
+    return response;
+  }
+
   private async getCanonicalUrl(channelId?: string) {
     const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
