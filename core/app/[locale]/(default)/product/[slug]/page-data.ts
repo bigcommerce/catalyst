@@ -189,6 +189,7 @@ const ProductQuery = graphql(
           }
           reviewSummary {
             averageRating
+            numberOfReviews
           }
           description
           ...ProductOptionsFragment

@@ -556,6 +556,7 @@ export default async function Product({ params, searchParams }: Props) {
             price: streamablePrices,
             reviewsEnabled,
             showRating,
+            numberOfReviews: baseProduct.reviewSummary.numberOfReviews,
             subtitle: baseProduct.brand?.name,
             rating: baseProduct.reviewSummary.averageRating,
             accordions: streameableAccordions,
@@ -583,12 +584,14 @@ export default async function Product({ params, searchParams }: Props) {
       />
 
       {showRating && (
-        <Reviews
-          productId={productId}
-          searchParams={searchParams}
-          streamableImages={streamableImages}
-          streamableProduct={streamableProduct}
-        />
+        <div id="reviews">
+          <Reviews
+            productId={productId}
+            searchParams={searchParams}
+            streamableImages={streamableImages}
+            streamableProduct={streamableProduct}
+          />
+        </div>
       )}
 
       <Stream

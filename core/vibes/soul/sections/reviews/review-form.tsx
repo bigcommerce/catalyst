@@ -183,25 +183,25 @@ export const ReviewForm = ({
               value={typeof textControl.value === 'string' ? textControl.value : ''}
             />
             <Input
-              disabled={isAuthorDisabled}
               errors={fields.author.errors}
               label={formNameLabel}
               name={fields.author.name}
               onBlur={authorControl.blur}
               onChange={(e) => authorControl.change(e.currentTarget.value)}
               onFocus={authorControl.focus}
+              readOnly={isAuthorDisabled}
               required={fields.author.required}
               type="text"
               value={typeof authorControl.value === 'string' ? authorControl.value : ''}
             />
             <Input
-              disabled={isEmailDisabled}
               errors={fields.email.errors}
               label={formEmailLabel}
               name={fields.email.name}
               onBlur={emailControl.blur}
               onChange={(e) => emailControl.change(e.currentTarget.value)}
               onFocus={emailControl.focus}
+              readOnly={isEmailDisabled}
               required={fields.email.required}
               type="email"
               value={typeof emailControl.value === 'string' ? emailControl.value : ''}
