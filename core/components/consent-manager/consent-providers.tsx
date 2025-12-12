@@ -1,16 +1,15 @@
-'use client';
-
 import { ConsentManagerProvider as C15TConsentManagerProvider } from '@c15t/nextjs';
 import { ClientSideOptionsProvider } from '@c15t/nextjs/client';
 import type { ComponentProps, PropsWithChildren } from 'react';
 
-import { setConsent, showConsentBanner, verifyConsent } from '~/lib/consent-manager/handlers';
+import { CONSENT_COOKIE_NAME } from '~/lib/consent-manager/cookies/constants';
 
 export type C15tScripts = NonNullable<ComponentProps<typeof ClientSideOptionsProvider>['scripts']>;
 
 interface ConsentManagerProviderProps extends PropsWithChildren {
   scripts: C15tScripts;
   isCookieConsentEnabled: boolean;
+  privacyPolicyUrl?: string | null;
 }
 
 export function ConsentManagerProvider({
@@ -21,15 +20,13 @@ export function ConsentManagerProvider({
   return (
     <C15TConsentManagerProvider
       options={{
-        mode: 'custom',
-        consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
-
-        // @ts-expect-error endpointHandlers type is not yet exposed by the package
-        endpointHandlers: {
-          showConsentBanner: () => showConsentBanner(isCookieConsentEnabled),
-          setConsent,
-          verifyConsent,
+        mode: 'offline',
+        storageConfig: {
+          storageKey: CONSENT_COOKIE_NAME,
+          crossSubdomain: true,
         },
+        consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
+        enabled: isCookieConsentEnabled,
       }}
     >
       <ClientSideOptionsProvider scripts={scripts}>{children}</ClientSideOptionsProvider>

@@ -66,6 +66,7 @@ export function scriptsTransformer(scripts: BigCommerceScripts): C15tScripts {
     const baseConfig: C15tScript = {
       category: mapConsentCategory(script.consentCategory),
       id: script.entityId,
+      target: script.location === 'HEAD' ? 'head' : 'body',
     };
 
     const integrityHashes = script.integrityHashes.map((h) => h.hash).filter(Boolean);
