@@ -1,5 +1,212 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- [#2754](https://github.com/bigcommerce/catalyst/pull/2754) [`4cbc124`](https://github.com/bigcommerce/catalyst/commit/4cbc124f3c63de58b97cba829aa9b63ecab6a157) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Conditionally display product ratings in the storefront based on `site.settings.display.showProductRating`. The storefront logic when this setting is enabled/disabled matches exactly the logic of Stencil + Cornerstone.
+
+- [#2709](https://github.com/bigcommerce/catalyst/pull/2709) [`3820a75`](https://github.com/bigcommerce/catalyst/commit/3820a754def724ddd335e7b36d5ac2633b6e23e2) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Adds product review submission functionality to the product detail page via a modal form with validation for rating, title, review text, name, and email fields. Integrates with BigCommerce's GraphQL API using Conform and Zod for form validation and real-time feedback.
+
+- [#2690](https://github.com/bigcommerce/catalyst/pull/2690) [`44f6bc0`](https://github.com/bigcommerce/catalyst/commit/44f6bc0e2549909fc2ff7dd456cc462fd0eafcde) Thanks [@jfugalde](https://github.com/jfugalde)! - Introduce displayName and displayKey fields to facets for improved labeling and filtering
+
+  Facet filters now use the `displayName` field for more descriptive labels in the UI, replacing the deprecated `name` field. Product attribute facets now support the `filterKey` field for consistent parameter naming. The facet transformer has been updated to use `displayName` with a fallback to `filterName` when `displayName` is not available.
+
+- [#2756](https://github.com/bigcommerce/catalyst/pull/2756) [`0e867a7`](https://github.com/bigcommerce/catalyst/commit/0e867a76f888c54112717c4a1f45c2d64dbbac7c) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Updated product and brand pages to include the number of reviews in the product data. Fixed visual spacing within product cards. Enhanced the Rating component to display the number of reviews alongside the rating. Introduced a new RatingLink component for smooth scrolling to reviews section on PDP.
+
+- [#2753](https://github.com/bigcommerce/catalyst/pull/2753) [`7927d26`](https://github.com/bigcommerce/catalyst/commit/7927d2673b264e52253ee6aeaa287eafe5b0bc9d) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Refactor the `ReviewForm` to accept `trigger` prop instead of `formButtonLabel` for flexible rendering.
+
+- [#2708](https://github.com/bigcommerce/catalyst/pull/2708) [`aa35bec`](https://github.com/bigcommerce/catalyst/commit/aa35bec2dd45c7a8280b2583e830deafe666277e) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Adds OpenTelemetry instrumentation for Catalyst, enabling the collection of spans for Catalyst storefronts.
+
+  ### Migration
+
+  Change is new code only, so just copy over `/core/instrumentation.ts` and `core/lib/otel/tracers.ts`.
+
+- [#2711](https://github.com/bigcommerce/catalyst/pull/2711) [`fcd0836`](https://github.com/bigcommerce/catalyst/commit/fcd08369ed17e97619e98c2f71cf7c2fa8467906) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Separate first and last name fields on user session object.
+
+- [#2752](https://github.com/bigcommerce/catalyst/pull/2752) [`4631b88`](https://github.com/bigcommerce/catalyst/commit/4631b88b49539cd30927d08554f96022ff014c8d) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Conditionally enable storefront reviews functionality based on `site.settings.reviews.enabled`. The storefront logic when this setting is enabled/disabled matches exactly the logic of Stencil + Cornerstone.
+
+- [#2739](https://github.com/bigcommerce/catalyst/pull/2739) [`e155398`](https://github.com/bigcommerce/catalyst/commit/e15539873c92a4b2791d992675c20e7e50a64ad2) Thanks [@Tharaae](https://github.com/Tharaae)! - Add out-of-stock / backorder message to product cards on PLPs based on store settings:
+  - Add out of stock message if the product is out of stock and stock is set to display it.
+  - Add the backorder message if the product has no on-hand stock and is available for backorder and the store/product is set to display the backorder message
+
+  ## Migration
+
+  ### Option 1: Automatic Migration (Recommended)
+
+  For existing Catalyst stores, the simplest way to get the newly added feature is to rebase the existing code with the new release code. The files that will be updated are listed below.
+
+  ### Option 2: Manual Migration
+
+  If you prefer not to rebase or have made customizations that prevent rebasing, follow these manual steps:
+
+  #### Step 1: Update GraphQL Fragment
+
+  Add the inventory fields to your product card fragment in `core/components/product-card/fragment.ts` under `Product`:
+
+  ```graphql
+  inventory {
+    hasVariantInventory
+    isInStock
+    aggregated {
+      availableForBackorder
+      unlimitedBackorder
+      availableOnHand
+    }
+  }
+  variants(first: 1) {
+    edges {
+      node {
+        entityId
+        sku
+        inventory {
+          byLocation {
+            edges {
+              node {
+                locationEntityId
+                backorderMessage
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  #### Step 2: Update Product interface in Product Card component
+
+  Update the `Product` interface in `core/vibes/soul/primitives/product-card/index.tsx` adding the following field to it:
+
+  `inventoryMessage?: string;`
+
+  #### Step 3: Update Data Transformer
+
+  Modify `core/data-transformers/product-card-transformer.ts` to include inventory message in the transformed data. You can simply copy the whole file from this release as it does not have UI breaking changes.
+
+  #### Step 4: Update Product Card Layout
+
+  Update `core/vibes/soul/primitives/product-card/index.tsx` layout to display the new `inventoryMessage` product field.
+
+  #### Step 5: Update Page Data GraphQL queries
+
+  Add inventory settings queries to the pages data. Add the following query to the main GQL query under `site.settings`:
+
+  ```
+  inventory {
+    defaultOutOfStockMessage
+    showOutOfStockMessage
+    showBackorderMessage
+  }
+  ```
+
+  to the following page data files:
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/search/page-data.ts`
+  - `core/app/[locale]/(default)/page-data.ts`
+
+  #### Step 6: Update Page Components
+
+  Update the corresponding page components to use the `productCardTransformer` method (if not already using it) to get the product card, and pass inventory data to those product cards based on the store inventory settings. Use the following code while retrieving the product lists:
+
+  ```
+      const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
+        data.site.settings?.inventory ?? {};
+
+      return productCardTransformer(
+        featuredProducts,
+        format,
+        showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
+        showBackorderMessage,
+      );
+  ```
+
+  in the following files:
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/search/page.tsx`
+  - `core/app/[locale]/(default)/page.tsx`
+
+  ### Files Modified in This Change
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/search/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/search/page.tsx`
+  - `core/app/[locale]/(default)/page-data.ts`
+  - `core/app/[locale]/(default)/page.tsx`
+  - `core/components/product-card/fragment.ts`
+  - `core/data-transformers/product-card-transformer.ts`
+  - `core/vibes/soul/primitives/product-card/index.tsx`
+
+- [#2733](https://github.com/bigcommerce/catalyst/pull/2733) [`9f70d2e`](https://github.com/bigcommerce/catalyst/commit/9f70d2e830c276a9742cf542cb03ee09a50a969e) Thanks [@Tharaae](https://github.com/Tharaae)! - Add the following backorder messages to PDP based on the store inventory settings and the product backorders data:
+  - Backorder availability prompt
+  - Quantity on backorder
+  - Backorder message
+
+  ## Migration
+
+  For existing Catalyst stores, to get the newly added feature, simply rebase the existing code with the new release code. The files to be rebased for this change to be applied are:
+  - core/messages/en.json
+  - core/app/[locale]/(default)/product/[slug]/page-data.ts
+  - core/app/[locale]/(default)/product/[slug]/page.tsx
+  - core/app/[locale]/(default)/product/[slug]/\_components/product-viewed/fragment.ts
+  - core/vibes/soul/sections/product-detail/index.tsx
+  - core/vibes/soul/sections/product-detail/product-detail-form.tsx
+
+### Patch Changes
+
+- [#2757](https://github.com/bigcommerce/catalyst/pull/2757) [`3f0fbb9`](https://github.com/bigcommerce/catalyst/commit/3f0fbb97035dd457ab388815991b4e9664685b2b) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Passes `formButtonLabel` from `Reviews` to `ReviewsEmptyState` (was missing) and sets a default value for `formButtonLabel`
+
+- [#2750](https://github.com/bigcommerce/catalyst/pull/2750) [`c22f0e8`](https://github.com/bigcommerce/catalyst/commit/c22f0e889e96d23a972fcd9a702ec137bdd3a800) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Improved login error handling to display a custom error message when BigCommerce indicates a password reset is required, instead of showing a generic error message.
+
+  ## What's Fixed
+
+  When attempting to log in with an account that requires a password reset, users now see an informative error message: "Password reset required. Please check your email for instructions to reset your password."
+
+  **Before**: Generic "something went wrong" error message
+  **After**: Clear error message explaining the password reset requirement
+
+  ## Migration
+
+  ### Step 1: Update Translation Files
+
+  Add this translation key to your locale files (e.g., `core/messages/en.json`):
+
+  ```json
+  {
+    "Auth": {
+      "Login": {
+        "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password."
+      }
+    }
+  }
+  ```
+
+  Repeat for all supported locales if you maintain custom translations.
+
+  ### Step 2: Update Login Server Action
+
+  In your login server action (e.g., `core/app/[locale]/(default)/(auth)/login/_actions/login.ts`):
+
+  Add the password reset error handling block:
+
+  ```typescript
+  if (
+    error instanceof AuthError &&
+    error.type === 'CallbackRouteError' &&
+    error.cause &&
+    error.cause.err instanceof BigCommerceGQLError &&
+    error.cause.err.message.includes('Reset password"')
+  ) {
+    return submission.reply({ formErrors: [t('passwordResetRequired')] });
+  }
+  ```
+
+  This should be placed in your error handling, before the generic "Invalid credentials" check.
+
 ## 1.3.7
 
 ### Patch Changes
