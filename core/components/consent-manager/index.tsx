@@ -1,5 +1,3 @@
-'use client';
-
 import type { PropsWithChildren } from 'react';
 
 import { ConsentManagerDialog } from './consent-manager-dialog';
@@ -9,13 +7,19 @@ import { CookieBanner } from './cookie-banner';
 interface ConsentManagerProps extends PropsWithChildren {
   scripts: C15tScripts;
   isCookieConsentEnabled: boolean;
+  privacyPolicyUrl?: string | null;
 }
 
-export function ConsentManager({ children, scripts, isCookieConsentEnabled }: ConsentManagerProps) {
+export function ConsentManager({
+  children,
+  scripts,
+  isCookieConsentEnabled,
+  privacyPolicyUrl,
+}: ConsentManagerProps) {
   return (
     <ConsentManagerProvider isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
       <ConsentManagerDialog />
-      <CookieBanner />
+      <CookieBanner privacyPolicyUrl={privacyPolicyUrl} />
       {children}
     </ConsentManagerProvider>
   );

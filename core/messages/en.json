@@ -515,7 +515,8 @@
       },
       "CookieBanner": {
         "title": "We value your privacy",
-        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+        "privacyPolicy": "Privacy Policy"
       },
       "Dialog": {
         "title": "Privacy Settings",

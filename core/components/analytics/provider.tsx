@@ -1,6 +1,6 @@
 'use client';
 
-import { useConsentManager } from '@c15t/nextjs';
+import { useConsentManager } from '@c15t/nextjs/client';
 import { PropsWithChildren, useEffect, useRef } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
@@ -25,10 +25,10 @@ const getConsent = () => {
   }
 
   return {
-    functionality: consentCookie.preferences.functionality ?? false,
-    marketing: consentCookie.preferences.marketing ?? false,
-    measurement: consentCookie.preferences.measurement ?? false,
-    necessary: consentCookie.preferences.necessary ?? false,
+    functionality: consentCookie['c.functionality'],
+    marketing: consentCookie['c.marketing'],
+    measurement: consentCookie['c.measurement'],
+    necessary: consentCookie['c.necessary'],
   };
 };
 

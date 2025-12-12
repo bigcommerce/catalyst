@@ -18,6 +18,7 @@ export const ScriptsFragment = graphql(`
           ... on SrcScript {
             src
           }
+          location
         }
       }
     }
