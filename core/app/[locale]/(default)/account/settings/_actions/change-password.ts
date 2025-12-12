@@ -2,6 +2,7 @@
 
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { ChangePasswordAction } from '@/vibes/soul/sections/account-settings/change-password-form';
@@ -71,6 +72,8 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
       successMessage: t('passwordUpdated'),
     };
   } catch (error) {
+    unstable_rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 
