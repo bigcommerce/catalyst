@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.24.4
+
+### Patch Changes
+
+- [#2775](https://github.com/bigcommerce/catalyst/pull/2775) [`442ae1b`](https://github.com/bigcommerce/catalyst/commit/442ae1b2ed3de731b21cbd8a205f4ea593310b3c) Thanks [@bookernath](https://github.com/bookernath)! - Bump Next.js to 15.5.9 to address security vulnerability
+
 ## 0.24.2
 
 ### Patch Changes
