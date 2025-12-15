@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -63,6 +63,14 @@ export default async function Home({ params }: Props) {
     );
   });
 
+  const streamableShowNewsletterSignup = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const { showNewsletterSignup } = data.site.settings?.newsletter ?? {};
+
+    return showNewsletterSignup;
+  });
+
   return (
     <>
       <Slideshow />
@@ -87,7 +95,9 @@ export default async function Home({ params }: Props) {
         title={t('NewestProducts.title')}
       />
 
-      <Subscribe />
+      <Stream fallback={null} value={streamableShowNewsletterSignup}>
+        {(showNewsletterSignup) => showNewsletterSignup && <Subscribe />}
+      </Stream>
     </>
   );
 }
