@@ -54,6 +54,7 @@
             "password": "Hasło",
             "invalidCredentials": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+            "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
             "CreateAccount": {
                 "title": "Nowy klient?",
                 "accountBenefits": "Załóż u nas konto, a będziesz mógł:",
@@ -307,7 +308,7 @@
                 "couponCode": "Kod kuponu",
                 "removeCouponCode": "Usuń kod kuponu",
                 "invalidCouponCode": "Wprowadź prawidłowy kod kuponu",
-                "cartNotFound": "Nie znaleziono pliku cookie cartId."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Wysyłka",
@@ -324,7 +325,7 @@
                 "shippingOptions": "Opcje wysyłki",
                 "updateShipping": "Zaktualizuj wysyłkę",
                 "addShipping": "Dodaj wysyłkę",
-                "cartNotFound": "Nie znaleziono pliku cookie cartId.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Brak dostępnych opcji wysyłki dla Państwa adresu"
             }
         },
@@ -336,7 +337,7 @@
             "to": "Do",
             "message": "Wiadomość",
             "invalidGiftCertificate": "Please enter a valid gift certificate code",
-            "cartNotFound": "Nie znaleziono pliku cookie cartId."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Twój koszyk jest pusty.",
@@ -344,7 +345,7 @@
             "cta": "Kontynuuj zakupy"
         },
         "Errors": {
-            "cartNotFound": "Nie znaleziono pliku cookie cartId.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Nie znaleziono pozycji.",
             "failedToUpdateQuantity": "Nie udało się zaktualizować liczby sztuk.",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
@@ -383,7 +384,8 @@
             "decreaseNumber": "Zmniejsz liczbę",
             "thumbnail": "Wyświetl numer obrazu",
             "additionalInformation": "Informacje dodatkowe",
-            "currentStock": "Current stock: {quantity, number}",
+            "currentStock": "{quantity, number} in stock",
+            "backorderQuantity": "{quantity, number} will be on backorder",
             "Submit": {
                 "addToCart": "Dodaj do koszyka",
                 "outOfStock": "Brak w magazynie",
@@ -411,7 +413,19 @@
             "title": "Opinie",
             "empty": "Nie dodano żadnych opinii dla tego produktu.",
             "previous": "Poprzednie recenzje",
-            "next": "Następne opinie"
+            "next": "Następne opinie",
+            "Form": {
+                "button": "Write a review",
+                "title": "Write a review",
+                "submit": "Wyślij",
+                "ratingLabel": "Ocena",
+                "titleLabel": "Tytuł",
+                "reviewLabel": "Przegląd",
+                "nameLabel": "Nazwa",
+                "emailLabel": "Email",
+                "successMessage": "Your review has been submitted successfully!",
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +472,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Koszyk",
-                "search": "Otwórz wyskakujące okienko wyszukiwania"
+                "search": "Otwórz wyskakujące okienko wyszukiwania",
+                "giftCertificates": "Bony upominkowe"
             },
             "SwitchCurrency": {
                 "label": "Switch currency",
@@ -482,7 +497,8 @@
             "socialMediaLinks": "Linki do mediów społecznościowych",
             "categories": "Kategorie",
             "brands": "Marki",
-            "navigate": "Nawiguj po stronie"
+            "navigate": "Nawiguj po stronie",
+            "giftCertificates": "Bony upominkowe"
         },
         "Subscribe": {
             "title": "Zapisz się do naszego newslettera",
