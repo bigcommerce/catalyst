@@ -116,3 +116,5 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
     );
   }
 }
+
+export const dynamic = 'force-dynamic';
