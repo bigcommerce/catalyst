@@ -54,6 +54,7 @@
             "password": "パスワード",
             "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+            "passwordResetRequired": "パスワードのリセットが必要です。パスワードをリセットするための手順については、メールを確認してください。",
             "CreateAccount": {
                 "title": "新規のお客様ですか？",
                 "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
@@ -307,7 +308,7 @@
                 "couponCode": "クーポンコード",
                 "removeCouponCode": "クーポンコードを削除",
                 "invalidCouponCode": "有効なクーポンコードを入力してください。",
-                "cartNotFound": "CartId Cookie が見つかりませんでした。"
+                "cartNotFound": "カートの取得中にエラーが発生しました"
             },
             "Shipping": {
                 "shipping": "配送",
@@ -324,7 +325,7 @@
                 "shippingOptions": "配送オプション",
                 "updateShipping": "配送情報を更新",
                 "addShipping": "配送を追加",
-                "cartNotFound": "CartId Cookie が見つかりませんでした。",
+                "cartNotFound": "カートの取得中にエラーが発生しました",
                 "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません"
             }
         },
@@ -336,7 +337,7 @@
             "to": "送信先",
             "message": "メッセージ",
             "invalidGiftCertificate": "有効なギフト券コードを入力してください",
-            "cartNotFound": "CartId Cookie が見つかりませんでした。"
+            "cartNotFound": "カートの取得中にエラーが発生しました"
         },
         "Empty": {
             "title": "お客様のカートは空です。",
@@ -344,7 +345,7 @@
             "cta": "買い物を続ける"
         },
         "Errors": {
-            "cartNotFound": "CartId Cookie が見つかりませんでした。",
+            "cartNotFound": "カートの取得中にエラーが発生しました",
             "lineItemNotFound": "行項目が見つかりませんでした。",
             "failedToUpdateQuantity": "数量の更新に失敗しました。",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
@@ -383,7 +384,8 @@
             "decreaseNumber": "数を減らす",
             "thumbnail": "画像番号を表示",
             "additionalInformation": "追加情報",
-            "currentStock": "現在の在庫: {quantity, number}",
+            "currentStock": "{quantity, number} 個の在庫あり",
+            "backorderQuantity": "{quantity, number} はバックオーダーになります",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",
@@ -411,7 +413,19 @@
             "title": "レビュー",
             "empty": "この商品にはまだレビューがありません",
             "previous": "過去のレビュー",
-            "next": "次のレビュー"
+            "next": "次のレビュー",
+            "Form": {
+                "button": "レビューを書く",
+                "title": "レビューを書く",
+                "submit": "提出",
+                "ratingLabel": "評価",
+                "titleLabel": "タイトル",
+                "reviewLabel": "レビュー",
+                "nameLabel": "名前",
+                "emailLabel": "Eメール",
+                "successMessage": "レビューは正常に送信されました。",
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            }
         }
     },
     "WebPages": {
@@ -458,7 +472,8 @@
             "Icons": {
                 "account": "プロフィール",
                 "cart": "ショッピングカート",
-                "search": "検索ポップアップを開く"
+                "search": "検索ポップアップを開く",
+                "giftCertificates": "ギフト券"
             },
             "SwitchCurrency": {
                 "label": "通貨を切り替える",
@@ -482,7 +497,8 @@
             "socialMediaLinks": "ソーシャル·メディア·リンク",
             "categories": "カテゴリー",
             "brands": "ブランド",
-            "navigate": "ナビゲート"
+            "navigate": "ナビゲート",
+            "giftCertificates": "ギフト券"
         },
         "Subscribe": {
             "title": "ニュースレターにご登録ください",
