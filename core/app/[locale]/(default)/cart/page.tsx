@@ -100,110 +100,108 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.digitalItems,
   ];
 
-  const formattedLineItems = await Promise.all(
-    lineItems.map((item) => {
-      if (item.__typename === 'CartGiftCertificate') {
-        return {
-          typename: item.__typename,
-          id: item.entityId,
-          title: item.name,
-          subtitle: `${t('GiftCertificate.to')}: ${item.recipient.name} (${item.recipient.email})${item.message ? `, ${t('GiftCertificate.message')}: ${item.message}` : ''}`,
-          quantity: 1,
-          price: format.number(item.amount.value, {
-            style: 'currency',
-            currency: item.amount.currencyCode,
-          }),
-          sender: item.sender,
-          recipient: item.recipient,
-          message: item.message,
-          href: undefined,
-          selectedOptions: [],
-          productEntityId: 0,
-          variantEntityId: 0,
-        };
-      }
-
-      let inventoryMessages;
-
-      if (item.__typename === 'CartPhysicalItem') {
-        if (item.stockPosition?.quantityOutOfStock === item.quantity) {
-          inventoryMessages = {
-            outOfStockMessage: data.site.settings?.inventory?.showOutOfStockMessage
-              ? data.site.settings.inventory.defaultOutOfStockMessage
-              : undefined,
-          };
-        } else {
-          inventoryMessages = {
-            quantityReadyToShipMessage:
-              data.site.settings?.inventory?.showQuantityOnHand &&
-              !!item.stockPosition?.quantityOnHand
-                ? t('quantityReadyToShip', {
-                    quantity: Number(item.stockPosition.quantityOnHand),
-                  })
-                : undefined,
-            quantityBackorderedMessage:
-              data.site.settings?.inventory?.showQuantityOnBackorder &&
-              !!item.stockPosition?.quantityBackordered
-                ? t('quantityOnBackorder', {
-                    quantity: Number(item.stockPosition.quantityBackordered),
-                  })
-                : undefined,
-            quantityOutOfStockMessage:
-              data.site.settings?.inventory?.showOutOfStockMessage &&
-              !!item.stockPosition?.quantityOutOfStock
-                ? t('quantityOutOfStock', {
-                    quantity: Number(item.stockPosition.quantityOutOfStock),
-                  })
-                : undefined,
-            backorderMessage:
-              data.site.settings?.inventory?.showBackorderMessage &&
-              !!item.stockPosition?.quantityBackordered
-                ? (item.stockPosition.backorderMessage ?? undefined)
-                : undefined,
-          };
-        }
-      }
-
+  const formattedLineItems = lineItems.map((item) => {
+    if (item.__typename === 'CartGiftCertificate') {
       return {
         typename: item.__typename,
         id: item.entityId,
-        quantity: item.quantity,
-        price: format.number(item.listPrice.value, {
-          style: 'currency',
-          currency: item.listPrice.currencyCode,
-        }),
-        subtitle: item.selectedOptions
-          .map((option) => {
-            switch (option.__typename) {
-              case 'CartSelectedMultipleChoiceOption':
-              case 'CartSelectedCheckboxOption':
-                return `${option.name}: ${option.value}`;
-
-              case 'CartSelectedNumberFieldOption':
-                return `${option.name}: ${option.number}`;
-
-              case 'CartSelectedMultiLineTextFieldOption':
-              case 'CartSelectedTextFieldOption':
-                return `${option.name}: ${option.text}`;
-
-              case 'CartSelectedDateFieldOption':
-                return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
-
-              default:
-                return '';
-            }
-          })
-          .join(', '),
         title: item.name,
-        image: item.image?.url ? { src: item.image.url, alt: item.name } : undefined,
-        href: new URL(item.url).pathname,
-        selectedOptions: item.selectedOptions,
-        productEntityId: item.productEntityId,
-        variantEntityId: item.variantEntityId,
-        inventoryMessages,
+        subtitle: `${t('GiftCertificate.to')}: ${item.recipient.name} (${item.recipient.email})${item.message ? `, ${t('GiftCertificate.message')}: ${item.message}` : ''}`,
+        quantity: 1,
+        price: format.number(item.amount.value, {
+          style: 'currency',
+          currency: item.amount.currencyCode,
+        }),
+        sender: item.sender,
+        recipient: item.recipient,
+        message: item.message,
+        href: undefined,
+        selectedOptions: [],
+        productEntityId: 0,
+        variantEntityId: 0,
       };
-    }),
-  );
+    }
+
+    let inventoryMessages;
+
+    if (item.__typename === 'CartPhysicalItem') {
+      if (item.stockPosition?.quantityOutOfStock === item.quantity) {
+        inventoryMessages = {
+          outOfStockMessage: data.site.settings?.inventory?.showOutOfStockMessage
+            ? data.site.settings.inventory.defaultOutOfStockMessage
+            : undefined,
+        };
+      } else {
+        inventoryMessages = {
+          quantityReadyToShipMessage:
+            data.site.settings?.inventory?.showQuantityOnHand &&
+            !!item.stockPosition?.quantityOnHand
+              ? t('quantityReadyToShip', {
+                  quantity: Number(item.stockPosition.quantityOnHand),
+                })
+              : undefined,
+          quantityBackorderedMessage:
+            data.site.settings?.inventory?.showQuantityOnBackorder &&
+            !!item.stockPosition?.quantityBackordered
+              ? t('quantityOnBackorder', {
+                  quantity: Number(item.stockPosition.quantityBackordered),
+                })
+              : undefined,
+          quantityOutOfStockMessage:
+            data.site.settings?.inventory?.showOutOfStockMessage &&
+            !!item.stockPosition?.quantityOutOfStock
+              ? t('partiallyAvailable', {
+                  quantity: item.quantity - Number(item.stockPosition.quantityOutOfStock),
+                })
+              : undefined,
+          backorderMessage:
+            data.site.settings?.inventory?.showBackorderMessage &&
+            !!item.stockPosition?.quantityBackordered
+              ? (item.stockPosition.backorderMessage ?? undefined)
+              : undefined,
+        };
+      }
+    }
+
+    return {
+      typename: item.__typename,
+      id: item.entityId,
+      quantity: item.quantity,
+      price: format.number(item.listPrice.value, {
+        style: 'currency',
+        currency: item.listPrice.currencyCode,
+      }),
+      subtitle: item.selectedOptions
+        .map((option) => {
+          switch (option.__typename) {
+            case 'CartSelectedMultipleChoiceOption':
+            case 'CartSelectedCheckboxOption':
+              return `${option.name}: ${option.value}`;
+
+            case 'CartSelectedNumberFieldOption':
+              return `${option.name}: ${option.number}`;
+
+            case 'CartSelectedMultiLineTextFieldOption':
+            case 'CartSelectedTextFieldOption':
+              return `${option.name}: ${option.text}`;
+
+            case 'CartSelectedDateFieldOption':
+              return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+
+            default:
+              return '';
+          }
+        })
+        .join(', '),
+      title: item.name,
+      image: item.image?.url ? { src: item.image.url, alt: item.name } : undefined,
+      href: new URL(item.url).pathname,
+      selectedOptions: item.selectedOptions,
+      productEntityId: item.productEntityId,
+      variantEntityId: item.variantEntityId,
+      inventoryMessages,
+    };
+  });
 
   const totalCouponDiscount =
     checkout?.coupons.reduce((sum, coupon) => sum + coupon.discountedAmount.value, 0) ?? 0;
