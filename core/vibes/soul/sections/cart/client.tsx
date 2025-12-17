@@ -567,10 +567,9 @@ function CounterForm({
     <form {...getFormProps(form)} action={action}>
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        <div className="flex flex-col gap-y-0">
+        <span className="mt-3 self-start font-medium @xl:ml-auto">{lineItem.price}</span>
+        <div className="flex size-min flex-col gap-y-0">
           <div className="mb-1 mt-1 flex items-center gap-x-5">
-            <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
-
             {/* Counter */}
             <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
               <button
@@ -617,46 +616,46 @@ function CounterForm({
                 />
               </button>
             </div>
+            <button
+              aria-label={deleteLabel}
+              className="group -ml-1 mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
+              name="intent"
+              type="submit"
+              value="delete"
+            >
+              <Trash2
+                className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
+                size={20}
+                strokeWidth={1}
+              />
+            </button>
           </div>
           {!!lineItem.inventoryMessages?.outOfStockMessage && (
-            <span className="text-xs/4 font-light text-red-500 @xl:ml-auto">
+            <span className="text-xs/4 font-light text-red-500">
               {lineItem.inventoryMessages.outOfStockMessage}
             </span>
           )}
+          {!!lineItem.inventoryMessages?.quantityOutOfStockMessage && (
+            <span className="mb-3 text-xs/4 font-light text-red-500">
+              {lineItem.inventoryMessages.quantityOutOfStockMessage}
+            </span>
+          )}
           {!!lineItem.inventoryMessages?.quantityReadyToShipMessage && (
-            <span className="text-xs/4 font-light @xl:ml-auto">
+            <span className="text-xs/4 font-light">
               {lineItem.inventoryMessages.quantityReadyToShipMessage}
             </span>
           )}
           {!!lineItem.inventoryMessages?.quantityBackorderedMessage && (
-            <span className="text-xs/4 font-light @xl:ml-auto">
+            <span className="text-xs/4 font-light">
               {lineItem.inventoryMessages.quantityBackorderedMessage}
             </span>
           )}
           {!!lineItem.inventoryMessages?.backorderMessage && (
-            <span className="text-xs/4 font-light @xl:ml-auto">
+            <span className="text-xs/4 font-light">
               {lineItem.inventoryMessages.backorderMessage}
             </span>
           )}
-          {!!lineItem.inventoryMessages?.quantityOutOfStockMessage && (
-            <span className="text-xs/4 font-light text-red-500 @xl:ml-auto">
-              {lineItem.inventoryMessages.quantityOutOfStockMessage}
-            </span>
-          )}
         </div>
-        <button
-          aria-label={deleteLabel}
-          className="group -ml-1 mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-          name="intent"
-          type="submit"
-          value="delete"
-        >
-          <Trash2
-            className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
-            size={20}
-            strokeWidth={1}
-          />
-        </button>
       </div>
     </form>
   );

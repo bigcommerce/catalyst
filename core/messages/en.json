@@ -306,7 +306,7 @@
     "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
     "quantityReadyToShip": "{quantity, number} ready to ship",
     "quantityOnBackorder": "{quantity, number} will be backordered",
-    "quantityOutOfStock": "{quantity, number} not in stock",
+    "partiallyAvailable": "Only {quantity, number} available",
     "CheckoutSummary": {
       "title": "Summary",
       "subTotal": "Subtotal",
