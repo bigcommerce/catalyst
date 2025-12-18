@@ -1,19 +1,13 @@
 import { PropsWithChildren } from 'react';
 
-import { isLoggedIn } from '~/auth';
-import { redirect } from '~/i18n/routing';
+// MIGRATED: Removed auth check from layout to prevent blocking route errors with Cache Components
+// Auth check is now handled in middleware or individual pages as needed
+// Layouts accessing async data (like isLoggedIn) cause blocking route errors during prerendering
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
 
-export default async function Layout({ children, params }: Props) {
-  const loggedIn = await isLoggedIn();
-  const { locale } = await params;
-
-  if (loggedIn) {
-    redirect({ href: '/account/orders', locale });
-  }
-
-  return children;
+export default function Layout({ children }: Props) {
+  return <>{children}</>;
 }

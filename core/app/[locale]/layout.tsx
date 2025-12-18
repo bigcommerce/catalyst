@@ -158,4 +158,5 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const fetchCache = 'default-cache';
+// MIGRATED: Removed export const fetchCache = 'default-cache' (incompatible with Cache Components)
+// TODO: Will add "use cache" + cacheLife() after analyzing build errors

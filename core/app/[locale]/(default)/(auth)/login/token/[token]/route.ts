@@ -31,4 +31,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
   }
 }
 
-export const dynamic = 'force-dynamic';
+// MIGRATED: Removed export const dynamic = 'force-dynamic' (incompatible with Cache Components)
+// This route is already dynamic by default with Cache Components - no changes needed

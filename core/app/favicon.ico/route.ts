@@ -48,4 +48,5 @@ export const GET = async () => {
   });
 };
 
-export const dynamic = 'force-static';
+// MIGRATED: Removed export const dynamic = 'force-static' (incompatible with Cache Components)
+// TODO: Will add "use cache" + cacheLife() after analyzing build errors
