@@ -47,7 +47,7 @@ export const removeGiftCertificate = async ({ checkoutEntityId, giftCertificateC
 
   const checkout = response.data.checkout.unapplyCheckoutGiftCertificate?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, 'max');
 
   return checkout;
 };

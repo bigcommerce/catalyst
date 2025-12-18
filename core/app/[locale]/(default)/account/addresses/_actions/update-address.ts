@@ -1,6 +1,6 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag as expireTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -243,7 +243,7 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
       };
     }
 
-    expireTag(TAGS.customer);
+    updateTag(TAGS.customer);
 
     return {
       addresses: prevState.addresses.map((address) =>

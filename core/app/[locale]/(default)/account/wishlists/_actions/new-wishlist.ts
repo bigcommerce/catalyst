@@ -58,7 +58,7 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
       };
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, 'max');
 
     return {
       lastResult: submission.reply(),

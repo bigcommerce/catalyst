@@ -6,7 +6,7 @@
 
 import { decodeJwt } from 'jose';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { signIn } from '~/auth';
 import { getCartId } from '~/lib/cart';
@@ -27,8 +27,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
     // and redirect to redirectTo
     await signIn('jwt', { jwt: token, cartId, redirectTo });
   } catch (error) {
-    rethrow(error);
-
     redirect(`/login?error=InvalidToken`);
   }
 }

@@ -5,7 +5,7 @@ import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
-export const middleware = composeMiddlewares(
+export const proxy = composeMiddlewares(
   withAuth,
   withIntl,
   withAnalyticsCookies,

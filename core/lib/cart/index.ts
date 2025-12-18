@@ -1,6 +1,6 @@
 'use server';
 
-import { unstable_expireTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { auth, getAnonymousSession, updateAnonymousSession, updateSession } from '~/auth';
 import { TAGS } from '~/client/tags';
@@ -59,7 +59,7 @@ export async function addToOrCreateCart(
       throw new MissingCartError();
     }
 
-    unstable_expireTag(TAGS.cart);
+    updateTag(TAGS.cart);
 
     return;
   }
@@ -72,5 +72,5 @@ export async function addToOrCreateCart(
 
   await setCartId(createResponse.data.cart.createCart.cart.entityId);
 
-  unstable_expireTag(TAGS.cart);
+  updateTag(TAGS.cart);
 }

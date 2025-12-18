@@ -1,5 +1,4 @@
 import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
-import { unstable_rethrow as rethrow } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 import { getTranslations } from 'next-intl/server';
 
@@ -101,8 +100,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
       locale,
     });
   } catch (error) {
-    rethrow(error);
-
     if (error instanceof BigCommerceAuthError) {
       return redirect({ href: '/logout?redirectTo=/checkout/', locale });
     }
