@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import {
   BcProductSchema,
+  Product,
   useBcProductToVibesProduct,
 } from './use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 
@@ -23,7 +24,10 @@ interface Props {
   additionalProductIds: string[];
 }
 
-export function useProducts({ collection, collectionLimit = 20, additionalProductIds }: Props) {
+export function useProducts({ collection, collectionLimit = 20, additionalProductIds }: Props): {
+  products: Product[] | null;
+  isLoading: boolean;
+} {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
   const locale = useLocale();
 
@@ -43,13 +47,17 @@ export function useProducts({ collection, collectionLimit = 20, additionalProduc
     additionalProductIds.length ? additionalProductsUrl : null,
     fetcher,
   );
+  const additionalProducts = useMemo(
+    () =>
+      additionalProductIds
+        .map((id) => additionalData?.products.find((product) => product.entityId.toString() === id))
+        .filter((product) => product != null),
+    [additionalData, additionalProductIds],
+  );
 
   const combinedProducts = useMemo(
-    () => [
-      ...(collectionData?.products.slice(0, collectionLimit) ?? []),
-      ...(additionalData?.products ?? []),
-    ],
-    [collectionData, additionalData, collectionLimit],
+    () => [...(collectionData?.products.slice(0, collectionLimit) ?? []), ...additionalProducts],
+    [collectionData, additionalProducts, collectionLimit],
   );
 
   const isLoading = isCollectionLoading || isAdditionalLoading;
