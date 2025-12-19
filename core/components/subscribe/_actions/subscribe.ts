@@ -61,9 +61,9 @@ export const subscribe = async (
       ({ __typename }) => __typename === 'CreateSubscriberAlreadyExistsError',
     );
 
-    // If there are no errors or the subscriber already exists, we want to reset the form and show the success message
+    // If subscriber already exists, we want to reset the form and show the success message as if this was the first time they subscribed
     // This is for privacy reasons, we don't want to show the error message to the user if they are already subscribed
-    if (!errors.length || subcriberAlreadyExists) {
+    if (subcriberAlreadyExists) {
       return {
         lastResult: submission.reply(),
         successMessage: t('subscribedToNewsletter'),
@@ -87,7 +87,10 @@ export const subscribe = async (
       };
     }
 
-    return { lastResult: submission.reply({ formErrors: [t('Errors.somethingWentWrong')] }) };
+    return {
+      lastResult: submission.reply(),
+      successMessage: t('subscribedToNewsletter'),
+    };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -104,6 +107,6 @@ export const subscribe = async (
       return { lastResult: submission.reply({ formErrors: [error.message] }) };
     }
 
-    return { lastResult: submission.reply({ formErrors: [t('Errors.somethingWentWrong')] }) };
+    return { lastResult: submission.reply({ formErrors: [String(error)] }) };
   }
 };

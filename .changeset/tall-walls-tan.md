@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor 
 ---
 
 Implement functional newsletter subscription feature with BigCommerce GraphQL API integration.

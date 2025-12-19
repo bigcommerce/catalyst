@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor 
 ---
 
 Make newsletter signup component on homepage render conditionally based on BigCommerce settings.
