@@ -67,6 +67,9 @@ const HomePageQuery = graphql(
             showOutOfStockMessage
             showBackorderMessage
           }
+          newsletter {
+            showNewsletterSignup
+          }
         }
       }
     }
