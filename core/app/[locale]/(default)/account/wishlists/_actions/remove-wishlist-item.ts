@@ -3,7 +3,7 @@
 import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -63,7 +63,7 @@ export async function removeWishlistItem(
       };
     }
 
-    revalidateTag(TAGS.customer);
+    updateTag(TAGS.customer);
 
     // Server toast has to be used here since the item is being deleted. When revalidateTag is called,
     // the wishlist items will update, and the element node containing the useEffect will be removed.

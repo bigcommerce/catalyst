@@ -7,7 +7,7 @@ import {
 } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -235,7 +235,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
       }
     }
 
-    revalidateTag(TAGS.customer);
+    updateTag(TAGS.customer);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -64,7 +64,7 @@ export const switchCurrency = async (_prevState: SubmissionResult | null, payloa
   if (cartId) {
     await updateCartCurrency(cartId, submission.value.id)
       .then(() => {
-        revalidateTag(TAGS.cart);
+        updateTag(TAGS.cart);
       })
       .catch((error: unknown) => {
         // eslint-disable-next-line no-console

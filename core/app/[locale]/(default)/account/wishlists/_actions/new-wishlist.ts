@@ -3,7 +3,7 @@
 import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -58,7 +58,7 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
       };
     }
 
-    revalidateTag(TAGS.customer);
+    updateTag(TAGS.customer);
 
     return {
       lastResult: submission.reply(),

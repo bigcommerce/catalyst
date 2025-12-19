@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -49,7 +49,7 @@ export const addShippingCost = async ({
 
   const result = response.data.checkout.selectCheckoutShippingOption?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  updateTag(TAGS.checkout);
 
   return result;
 };

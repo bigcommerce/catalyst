@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -45,7 +45,7 @@ export const removeCouponCode = async ({ checkoutEntityId, couponCode }: Props) 
 
   const checkout = response.data.checkout.unapplyCheckoutCoupon?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  updateTag(TAGS.checkout);
 
   return checkout;
 };
