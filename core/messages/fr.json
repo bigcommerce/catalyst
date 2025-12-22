@@ -504,7 +504,12 @@
             "title": "Abonnez-vous à notre newsletter",
             "placeholder": "Saisissez votre adresse e-mail",
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
-            "success": "Merci de l’intérêt que vous nous portez ! La fonctionnalité Newsletter sera bientôt disponible !"
+            "success": "You have been subscribed to our newsletter.",
+            "Errors": {
+                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
+                "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -515,7 +520,8 @@
             },
             "CookieBanner": {
                 "title": "Nous respectons votre vie privée",
-                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé."
+                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé.",
+                "privacyPolicy": "Politique de confidentialité"
             },
             "Dialog": {
                 "title": "Paramètres de confidentialité",

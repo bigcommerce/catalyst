@@ -504,7 +504,12 @@
             "title": "Assine nosso boletim informativo",
             "placeholder": "Digite seu email",
             "description": "Fique por dentro das últimas novidades e ofertas da nossa loja.",
-            "success": "Agradecemos o seu interesse! O recurso de newsletter estará disponível em breve!"
+            "success": "You have been subscribed to our newsletter.",
+            "Errors": {
+                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
+                "invalidEmail": "Informe um endereço de email válido.",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -515,7 +520,8 @@
             },
             "CookieBanner": {
                 "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+                "privacyPolicy": "Política de privacidade"
             },
             "Dialog": {
                 "title": "Privacy Settings",
