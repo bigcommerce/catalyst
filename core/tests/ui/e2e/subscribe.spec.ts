@@ -24,7 +24,7 @@ test(
     await submitButton.click();
     await page.waitForLoadState('networkidle');
 
-    await expect(page.getByText(t('success'))).toBeVisible();
+    await expect(page.getByText(t('subscribedToNewsletter'))).toBeVisible();
 
     subscribe.trackSubscription(email);
   },
@@ -50,14 +50,14 @@ test('Shows error when user tries to subscribe again with the same email', async
   await submitButton.click();
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText(t('success'))).toBeVisible();
+  await expect(page.getByText(t('subscribedToNewsletter'))).toBeVisible();
 
   // Try to subscribe again with the same email
   await emailInput.fill(email);
   await submitButton.click();
   await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText(t('Errors.subcriberAlreadyExists'))).toBeVisible();
+  await expect(page.getByText(t('subscribedToNewsletter'))).toBeVisible();
 
   // Track that we attempted to subscribe this email
   subscribe.trackSubscription(email);

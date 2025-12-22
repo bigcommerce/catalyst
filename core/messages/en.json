@@ -504,9 +504,8 @@
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "success": "You have been subscribed to our newsletter.",
+      "subscribedToNewsletter": "You have been subscribed to our newsletter.",
       "Errors": {
-        "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
         "invalidEmail": "Please enter a valid email address.",
         "somethingWentWrong": "Something went wrong. Please try again later."
       }
