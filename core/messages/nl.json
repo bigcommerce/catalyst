@@ -504,7 +504,12 @@
             "title": "Aanmelden voor onze nieuwsbrief",
             "placeholder": "Voer uw e-mail in",
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
-            "success": "Bedankt voor je interesse! De nieuwsbrieffunctie komt binnenkort!"
+            "success": "You have been subscribed to our newsletter.",
+            "Errors": {
+                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
+                "invalidEmail": "Voer een geldig e-mailadres in.",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -515,7 +520,8 @@
             },
             "CookieBanner": {
                 "title": "We waarderen je privacy",
-                "description": "Deze site maakt gebruik van cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en gepersonaliseerde inhoud weer te geven."
+                "description": "Deze site maakt gebruik van cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en gepersonaliseerde inhoud weer te geven.",
+                "privacyPolicy": "Privacybeleid"
             },
             "Dialog": {
                 "title": "Privacy-instellingen",
