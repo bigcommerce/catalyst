@@ -37,6 +37,7 @@ const RootLayoutMetadataQuery = graphql(
         settings {
           privacy {
             cookieConsentEnabled
+            privacyPolicyUrl
           }
           storeName
           seo {
@@ -125,6 +126,7 @@ export default async function RootLayout({ params, children }: Props) {
   const scripts = scriptsTransformer(rootData.data.site.content.scripts);
   const isCookieConsentEnabled =
     rootData.data.site.settings?.privacy?.cookieConsentEnabled ?? false;
+  const privacyPolicyUrl = rootData.data.site.settings?.privacy?.privacyPolicyUrl;
 
   return (
     <MakeswiftProvider siteVersion={siteVersion}>
@@ -134,7 +136,11 @@ export default async function RootLayout({ params, children }: Props) {
         </head>
         <body className="flex min-h-screen flex-col">
           <NextIntlClientProvider>
-            <ConsentManager isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
+            <ConsentManager
+              isCookieConsentEnabled={isCookieConsentEnabled}
+              privacyPolicyUrl={privacyPolicyUrl}
+              scripts={scripts}
+            >
               <NuqsAdapter>
                 <AnalyticsProvider
                   channelId={rootData.data.channel.entityId}

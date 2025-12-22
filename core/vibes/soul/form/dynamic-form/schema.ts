@@ -179,6 +179,8 @@ function getFieldSchema(field: Field) {
         });
       }
 
+      if (field.required !== true) fieldSchema = fieldSchema.optional();
+
       break;
 
     case 'password':

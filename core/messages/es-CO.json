@@ -54,6 +54,7 @@
             "password": "Contraseña",
             "invalidCredentials": "Tu dirección de correo electrónico o tu contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
+            "passwordResetRequired": "Se requiere restablecimiento de contraseña. Por favor, revisa tu email para ver instrucciones para restablecer tu contraseña.",
             "CreateAccount": {
                 "title": "¿Nuevo cliente?",
                 "accountBenefits": "Crea una cuenta con nosotros y podrás:",
@@ -363,7 +364,7 @@
                 "couponCode": "Código de cupón",
                 "removeCouponCode": "Elimina el código de cupón",
                 "invalidCouponCode": "Ingresa un código de cupón válido",
-                "cartNotFound": "No se encontró ninguna cookie de cartId."
+                "cartNotFound": "Se produjo un error al recuperar su carrito"
             },
             "Shipping": {
                 "shipping": "Envío",
@@ -380,7 +381,7 @@
                 "shippingOptions": "Opciones de envío",
                 "updateShipping": "Actualizar envío",
                 "addShipping": "Agregar envío",
-                "cartNotFound": "No se encontró ninguna cookie de cartId.",
+                "cartNotFound": "Se produjo un error al recuperar su carrito",
                 "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
             }
         },
@@ -392,7 +393,7 @@
             "to": "De",
             "message": "Mensaje",
             "invalidGiftCertificate": "Ingrese un código de certificado de regalo válido",
-            "cartNotFound": "No se encontró ninguna cookie de cartId."
+            "cartNotFound": "Se produjo un error al recuperar su carrito"
         },
         "Empty": {
             "title": "Su carrito está vacío.",
@@ -400,7 +401,7 @@
             "cta": "Seguir comprando"
         },
         "Errors": {
-            "cartNotFound": "No se encontró ninguna cookie de cartId.",
+            "cartNotFound": "Se produjo un error al recuperar su carrito",
             "lineItemNotFound": "Artículo no encontrado.",
             "failedToUpdateQuantity": "No se pudo actualizar la cantidad.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
@@ -439,7 +440,8 @@
             "decreaseNumber": "Disminuir número",
             "thumbnail": "Ver número de imagen",
             "additionalInformation": "Información adicional",
-            "currentStock": "Existencias actuales: {cantidad, número}",
+            "currentStock": "{cantidad, número} en stock",
+            "backorderQuantity": "{cantidad, número} estará en espera",
             "Submit": {
                 "addToCart": "Agregar al carrito",
                 "outOfStock": "Agotado/a",
@@ -467,7 +469,19 @@
             "title": "Reseñas",
             "empty": "No se han agregado reseñas para este producto.",
             "previous": "Reseñas anteriores",
-            "next": "Próximas reseñas"
+            "next": "Próximas reseñas",
+            "Form": {
+                "button": "Escribe una opinión",
+                "title": "Escribe una opinión",
+                "submit": "Enviar",
+                "ratingLabel": "Calificación",
+                "titleLabel": "Título",
+                "reviewLabel": "Revisar",
+                "nameLabel": "Nombre",
+                "emailLabel": "Correo electrónico",
+                "successMessage": "¡Tu reseña fue enviada con éxito!",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +528,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrito",
-                "search": "Abrir ventana emergente de búsqueda"
+                "search": "Abrir ventana emergente de búsqueda",
+                "giftCertificates": "Certificados de regalo"
             },
             "SwitchCurrency": {
                 "label": "Cambiar moneda",
@@ -538,7 +553,8 @@
             "socialMediaLinks": "Enlaces a redes sociales",
             "categories": "Categorías",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Certificados de regalo"
         },
         "Subscribe": {
             "title": "Suscríbete a nuestro boletín informativo",

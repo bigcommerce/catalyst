@@ -8,10 +8,21 @@ const SearchPageQuery = graphql(`
   query SearchPageQuery {
     site {
       settings {
+        inventory {
+          defaultOutOfStockMessage
+          showOutOfStockMessage
+          showBackorderMessage
+        }
         storefront {
           catalog {
             productComparisonsEnabled
           }
+        }
+        display {
+          showProductRating
+        }
+        reviews {
+          enabled
         }
       }
     }

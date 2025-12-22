@@ -54,6 +54,7 @@
       "password": "Password",
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
+      "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
@@ -439,7 +440,8 @@
       "decreaseNumber": "Decrease number",
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
-      "currentStock": "Current stock: {quantity, number}",
+      "currentStock": "{quantity, number} in stock",
+      "backorderQuantity": "{quantity, number} will be on backorder",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
@@ -467,7 +469,19 @@
       "title": "Reviews",
       "empty": "No reviews have been added for this product.",
       "previous": "Previous reviews",
-      "next": "Next reviews"
+      "next": "Next reviews",
+      "Form": {
+        "button": "Write a review",
+        "title": "Write a review",
+        "submit": "Submit",
+        "ratingLabel": "Rating",
+        "titleLabel": "Title",
+        "reviewLabel": "Review",
+        "nameLabel": "Name",
+        "emailLabel": "Email",
+        "successMessage": "Your review has been submitted successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "WebPages": {
@@ -546,7 +560,12 @@
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "success": "Thank you for your interest! Newsletter feature is coming soon!"
+      "success": "You have been subscribed to our newsletter.",
+      "Errors": {
+        "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
+        "invalidEmail": "Please enter a valid email address.",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     },
     "ConsentManager": {
       "Common": {
@@ -557,7 +576,8 @@
       },
       "CookieBanner": {
         "title": "We value your privacy",
-        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+        "privacyPolicy": "Privacy Policy"
       },
       "Dialog": {
         "title": "Privacy Settings",

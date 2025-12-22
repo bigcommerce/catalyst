@@ -54,6 +54,7 @@
             "password": "Lösenord",
             "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+            "passwordResetRequired": "Återställning av lösenord krävs. Kontrollera din e-post för instruktioner om hur du återställer ditt lösenord.",
             "CreateAccount": {
                 "title": "Nya kunder?",
                 "accountBenefits": "Skapa ett konto hos oss, så kan du:",
@@ -363,7 +364,7 @@
                 "couponCode": "Kupongkod",
                 "removeCouponCode": "Ta bort kupongkod",
                 "invalidCouponCode": "Ange en giltig kupongkod",
-                "cartNotFound": "Ingen cartId-kaka hittades."
+                "cartNotFound": "Ett fel uppstod när er varukorg hämtades"
             },
             "Shipping": {
                 "shipping": "Frakt",
@@ -380,7 +381,7 @@
                 "shippingOptions": "Frakt alternativ",
                 "updateShipping": "Uppdatera frakt",
                 "addShipping": "Lägg till frakt",
-                "cartNotFound": "Ingen cartId-kaka hittades.",
+                "cartNotFound": "Ett fel uppstod när er varukorg hämtades",
                 "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
             }
         },
@@ -392,7 +393,7 @@
             "to": "Till",
             "message": "Meddelande",
             "invalidGiftCertificate": "Ange en giltig presentkortskod",
-            "cartNotFound": "Ingen cartId-kaka hittades."
+            "cartNotFound": "Ett fel uppstod när er varukorg hämtades"
         },
         "Empty": {
             "title": "Din kundvagn är tom.",
@@ -400,7 +401,7 @@
             "cta": "Fortsätt att handla"
         },
         "Errors": {
-            "cartNotFound": "Ingen cartId-kaka hittades.",
+            "cartNotFound": "Ett fel uppstod när er varukorg hämtades",
             "lineItemNotFound": "Radartikeln hittades inte.",
             "failedToUpdateQuantity": "Det gick inte att uppdatera antalet.",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
@@ -439,7 +440,8 @@
             "decreaseNumber": "Minska antalet",
             "thumbnail": "Visa bildnummer",
             "additionalInformation": "Ytterligare information",
-            "currentStock": "Nuvarande lager: {kvantitet, antal}",
+            "currentStock": "{quantity, number} i lager",
+            "backorderQuantity": "{quantity, number} kommer att vara restnoterade",
             "Submit": {
                 "addToCart": "Lägg till i kundvagn",
                 "outOfStock": "Ej i lager",
@@ -467,7 +469,19 @@
             "title": "Recensioner",
             "empty": "Inga recensioner har lagts till för denna produkt.",
             "previous": "Tidigare recensioner",
-            "next": "Kommande recensioner"
+            "next": "Kommande recensioner",
+            "Form": {
+                "button": "Skriva en recension",
+                "title": "Skriva en recension",
+                "submit": "Skicka in",
+                "ratingLabel": "Bedömning",
+                "titleLabel": "Rubrik",
+                "reviewLabel": "Recension",
+                "nameLabel": "Namn",
+                "emailLabel": "E-post",
+                "successMessage": "Din recension har skickats in!",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +528,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Kundvagn",
-                "search": "Öppna popup-fönstret för sökning"
+                "search": "Öppna popup-fönstret för sökning",
+                "giftCertificates": "Presentkort"
             },
             "SwitchCurrency": {
                 "label": "Byt valuta",
@@ -538,7 +553,8 @@
             "socialMediaLinks": "Sociala Media-länkar",
             "categories": "Kategorier",
             "brands": "Varumärke",
-            "navigate": "Navigera"
+            "navigate": "Navigera",
+            "giftCertificates": "Presentkort"
         },
         "Subscribe": {
             "title": "Anmäl dig till vårt nyhetsbrev",

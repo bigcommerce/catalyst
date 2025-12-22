@@ -54,6 +54,7 @@
             "password": "Passord",
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
+            "passwordResetRequired": "Krever tilbakestilling av passord. Kontroller e-posten din for instruksjoner om hvordan du tilbakestiller passordet.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opprett en konto hos oss, så kan du:",
@@ -363,7 +364,7 @@
                 "couponCode": "Kupongkode",
                 "removeCouponCode": "Fjern kupongkode",
                 "invalidCouponCode": "Skriv inn en gyldig kupongkode",
-                "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+                "cartNotFound": "Det oppsto en feil da du hentet handlekurven din"
             },
             "Shipping": {
                 "shipping": "Frakt",
@@ -380,7 +381,7 @@
                 "shippingOptions": "Fraktalternativer",
                 "updateShipping": "Oppdater forsendelse",
                 "addShipping": "Legg til forsendelse",
-                "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet.",
+                "cartNotFound": "Det oppsto en feil da du hentet handlekurven din",
                 "noShippingOptions": "Det finnes ingen tilgjengelige forsendelsesalternativer for adressen din"
             }
         },
@@ -392,7 +393,7 @@
             "to": "Til",
             "message": "Melding",
             "invalidGiftCertificate": "Skriv inn en gyldig gavekortkode",
-            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+            "cartNotFound": "Det oppsto en feil da du hentet handlekurven din"
         },
         "Empty": {
             "title": "Handlekurven din er tom.",
@@ -400,7 +401,7 @@
             "cta": "Fortsett å handle"
         },
         "Errors": {
-            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet.",
+            "cartNotFound": "Det oppsto en feil da du hentet handlekurven din",
             "lineItemNotFound": "Linjeelement ikke funnet.",
             "failedToUpdateQuantity": "Kan ikke oppdatere antall.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
@@ -439,7 +440,8 @@
             "decreaseNumber": "Reduser tall",
             "thumbnail": "Vis bildets nummer",
             "additionalInformation": "Mer informasjon",
-            "currentStock": "Nåværende lagerbeholdning: {mengde, antall}",
+            "currentStock": "{antall, nummer} på lager",
+            "backorderQuantity": "{antall, nummer} vil være restordre",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",
@@ -467,7 +469,19 @@
             "title": "Anmeldelser",
             "empty": "Ingen anmeldelser har blitt lagt til for dette produktet.",
             "previous": "Tidligere anmeldelser",
-            "next": "Neste anmeldelser"
+            "next": "Neste anmeldelser",
+            "Form": {
+                "button": "Skriv en anmeldelse",
+                "title": "Skriv en anmeldelse",
+                "submit": "Send inn",
+                "ratingLabel": "Vurdering",
+                "titleLabel": "Tittel",
+                "reviewLabel": "Anmeldelse",
+                "nameLabel": "Navn",
+                "emailLabel": "E-post",
+                "successMessage": "Din anmeldelse er sendt inn!",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +528,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Handlekurv",
-                "search": "Åpne popup-vinduet for søk"
+                "search": "Åpne popup-vinduet for søk",
+                "giftCertificates": "Gavekort"
             },
             "SwitchCurrency": {
                 "label": "Bytt valuta",
@@ -538,7 +553,8 @@
             "socialMediaLinks": "Lenker til sosiale medier",
             "categories": "Kategorier",
             "brands": "merker",
-            "navigate": "Naviger"
+            "navigate": "Naviger",
+            "giftCertificates": "Gavekort"
         },
         "Subscribe": {
             "title": "Meld deg på nyhetsbrevet vårt",
