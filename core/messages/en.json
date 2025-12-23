@@ -198,7 +198,13 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
-      "cta": "Update"
+      "cta": "Update",
+      "NewsletterSubscription": {
+        "title": "Marketing preferences",
+        "label": "Opt-in to receive emails about new products and promotions.",
+        "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "Wishlist": {
@@ -504,7 +510,7 @@
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "subscribedToNewsletter": "You have been subscribed to our newsletter.",
+      "subscribedToNewsletter": "You have been subscribed to our newsletter!",
       "Errors": {
         "invalidEmail": "Please enter a valid email address.",
         "somethingWentWrong": "Something went wrong. Please try again later."

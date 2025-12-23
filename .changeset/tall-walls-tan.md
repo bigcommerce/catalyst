@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor 
 ---
 
 Implement functional newsletter subscription feature with BigCommerce GraphQL API integration.
@@ -73,7 +73,7 @@ Add the following translation keys to your locale files (e.g., `messages/en.json
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "subscribedToNewsletter": "You have been subscribed to our newsletter.",
+      "subscribedToNewsletter": "You have been subscribed to our newsletter!",
       "Errors": {
         "invalidEmail": "Please enter a valid email address.",
         "somethingWentWrong": "Something went wrong. Please try again later."

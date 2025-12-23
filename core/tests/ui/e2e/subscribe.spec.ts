@@ -26,6 +26,7 @@ test(
 
     await expect(page.getByText(t('subscribedToNewsletter'))).toBeVisible();
 
+    // Track that we attempted to subscribe this email
     subscribe.trackSubscription(email);
   },
 );

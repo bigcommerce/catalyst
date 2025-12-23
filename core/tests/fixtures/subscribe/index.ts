@@ -7,6 +7,20 @@ export class SubscribeFixture extends Fixture {
     this.subscribedEmails.push(email);
   }
 
+  async subscribe(email: string, firstName: string, lastName: string): Promise<void> {
+    this.skipIfReadonly();
+
+    await this.api.subscribe.subscribe(email, firstName, lastName);
+
+    this.trackSubscription(email);
+  }
+
+  async unsubscribe(email: string): Promise<void> {
+    this.skipIfReadonly();
+
+    await this.api.subscribe.unsubscribe(email);
+  }
+
   async cleanup(): Promise<void> {
     this.skipIfReadonly();
 
