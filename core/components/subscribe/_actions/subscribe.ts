@@ -57,11 +57,13 @@ export const subscribe = async (
 
     const errors = response.data.newsletter.subscribe.errors;
 
-    // If there are no errors or the error is that the email already exists, we want to reset the form and show the success message
-    if (
-      !errors.length ||
-      errors.some(({ __typename }) => __typename === 'CreateSubscriberAlreadyExistsError')
-    ) {
+    const subcriberAlreadyExists = errors.some(
+      ({ __typename }) => __typename === 'CreateSubscriberAlreadyExistsError',
+    );
+
+    // If there are no errors or the subscriber already exists, we want to reset the form and show the success message
+    // This is for privacy reasons, we don't want to show the error message to the user if they are already subscribed
+    if (!errors.length || subcriberAlreadyExists) {
       return {
         lastResult: submission.reply(),
         successMessage: t('subscribedToNewsletter'),
@@ -69,6 +71,7 @@ export const subscribe = async (
     }
 
     if (errors.length > 0) {
+      // If there are other errors, we want to show the error message to the user
       return {
         lastResult: submission.reply({
           formErrors: errors.map(({ __typename }) => {
