@@ -504,7 +504,12 @@
             "title": "Meld deg på nyhetsbrevet vårt",
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
-            "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
+            "success": "You have been subscribed to our newsletter.",
+            "Errors": {
+                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
+                "invalidEmail": "Skriv inn en gyldig e-postadresse.",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -515,7 +520,8 @@
             },
             "CookieBanner": {
                 "title": "Vi verdsetter personvernet ditt",
-                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold."
+                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold.",
+                "privacyPolicy": "Personvernerklæring"
             },
             "Dialog": {
                 "title": "Personverninnstillinger",
