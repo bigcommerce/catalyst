@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.9
+
+### Patch Changes
+
+- [#2791](https://github.com/bigcommerce/catalyst/pull/2791) [`bd30ed3`](https://github.com/bigcommerce/catalyst/commit/bd30ed3ebc73d91136190c7ba457458fed6f3eb7) Thanks [@migueloller](https://github.com/migueloller)! - Fix sort order of `additionalProducts` prop in `ProductsCarousel` Makeswift component.
+
 ## 1.3.8
 
 ### Patch Changes
