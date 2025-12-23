@@ -30,7 +30,7 @@ test(
   },
 );
 
-test('Shows error when user tries to subscribe again with the same email', async ({
+test('Shows success message when user tries to subscribe again with the same email', async ({
   page,
   subscribe,
 }) => {
