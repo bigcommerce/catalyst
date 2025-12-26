@@ -13,6 +13,7 @@ interface Props {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
     redirectTo?: string;
+    error?: string;
   }>;
 }
 
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Login({ params, searchParams }: Props) {
   const { locale } = await params;
-  const { redirectTo = '/account/orders' } = await searchParams;
+  const { redirectTo = '/account/orders', error } = await searchParams;
 
   setRequestLocale(locale);
 
@@ -37,6 +38,7 @@ export default async function Login({ params, searchParams }: Props) {
   const vanityUrl = buildConfig.get('urls').vanityUrl;
   const redirectUrl = new URL(redirectTo, vanityUrl);
   const redirectTarget = redirectUrl.pathname + redirectUrl.search;
+  const tokenErrorMessage = error === 'InvalidToken' ? t('invalidToken') : undefined;
 
   return (
     <>
@@ -44,6 +46,7 @@ export default async function Login({ params, searchParams }: Props) {
       <SignInSection
         action={login.bind(null, { redirectTo: redirectTarget })}
         emailLabel={t('email')}
+        error={tokenErrorMessage}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('forgotPassword')}
         passwordLabel={t('password')}

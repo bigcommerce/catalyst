@@ -12,6 +12,7 @@ interface Props {
   passwordLabel?: string;
   forgotPasswordHref?: string;
   forgotPasswordLabel?: string;
+  error?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -35,6 +36,7 @@ export function SignInSection({
   passwordLabel,
   forgotPasswordHref = '/forgot-password',
   forgotPasswordLabel = 'Forgot your password?',
+  error,
 }: Props) {
   return (
     <div className="@container">
@@ -46,6 +48,7 @@ export function SignInSection({
           <SignInForm
             action={action}
             emailLabel={emailLabel}
+            error={error}
             passwordLabel={passwordLabel}
             submitLabel={submitLabel}
           />

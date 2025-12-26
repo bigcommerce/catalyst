@@ -55,6 +55,7 @@
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+      "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
