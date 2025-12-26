@@ -5,7 +5,9 @@ import { PropsWithChildren, useEffect, useRef } from 'react';
 
 import { FragmentOf } from '~/client/graphql';
 import { Analytics } from '~/lib/analytics';
+import { AnalyticsProvider as AnalyticsProviderType } from '~/lib/analytics/types';
 import { GoogleAnalyticsProvider } from '~/lib/analytics/providers/google-analytics';
+import { MetaPixelProvider } from '~/lib/analytics/providers/meta-pixel';
 import { AnalyticsProvider as AnalyticsProviderLib } from '~/lib/analytics/react';
 import { getConsentCookie } from '~/lib/consent-manager/cookies/client';
 
@@ -33,6 +35,9 @@ const getConsent = () => {
 };
 
 const getAnalytics = ({ channelId, isCookieConsentEnabled, settings }: Props): Analytics | null => {
+  const providers: AnalyticsProviderType[] = [];
+
+  // Add Google Analytics if configured
   if (settings?.webAnalytics?.ga4?.tagId && channelId) {
     const googleAnalytics = new GoogleAnalyticsProvider({
       gaId: settings.webAnalytics.ga4.tagId,
@@ -40,14 +45,27 @@ const getAnalytics = ({ channelId, isCookieConsentEnabled, settings }: Props): A
       developerId: 'dMjk3Nj',
       getConsent,
     });
-
-    return new Analytics({
-      channelId,
-      providers: [googleAnalytics],
-    });
+    providers.push(googleAnalytics);
   }
 
-  return null;
+  // Add Meta Pixel if configured
+  if (settings?.webAnalytics?.metaPixel?.pixelId && channelId) {
+    const metaPixel = new MetaPixelProvider({
+      pixelId: settings.webAnalytics.metaPixel.pixelId,
+      consentModeEnabled: isCookieConsentEnabled,
+      getConsent,
+    });
+    providers.push(metaPixel);
+  }
+
+  if (providers.length === 0) {
+    return null;
+  }
+
+  return new Analytics({
+    channelId,
+    providers,
+  });
 };
 
 export function AnalyticsProvider({
