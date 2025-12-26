@@ -88,3 +88,35 @@ test('JWT login redirects to the specified redirect_to value in the token payloa
   await page.waitForURL('/account/addresses/');
   await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
 });
+
+test('JWT login with an invalid/expired token shows an error message', async ({ page }) => {
+  const t = await getTranslations('Auth.Login');
+
+  const invalidJwt =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+  await page.goto(`/login/token/${invalidJwt}`);
+  await page.waitForURL('/login/?error=InvalidToken');
+  await expect(page.getByText(t('invalidToken'))).toBeVisible();
+});
+
+test('After invalid JWT login, manually logging in with invalid credentials will replace the error message displayed', async ({
+  page,
+}) => {
+  const t = await getTranslations('Auth.Login');
+
+  const invalidJwt =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+
+  await page.goto(`/login/token/${invalidJwt}`);
+  await page.waitForURL('/login/?error=InvalidToken');
+  await expect(page.getByText(t('invalidToken'))).toBeVisible();
+
+  await page.getByLabel(t('email')).fill('invalid-email-testing@testing.com');
+  await page.getByLabel(t('password')).fill('invalid-password');
+  await page.getByRole('button', { name: t('cta') }).click();
+
+  await page.waitForURL('/login/');
+  await expect(page.getByText(t('invalidToken'))).not.toBeVisible();
+  await expect(page.getByText(t('invalidCredentials'))).toBeVisible();
+});
