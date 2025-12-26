@@ -201,7 +201,7 @@
       "cta": "Update",
       "NewsletterSubscription": {
         "title": "Marketing preferences",
-        "label": "Opt-in to receive emails about new products and promotions.",
+        "label": "Subscribe to our newsletter.",
         "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
         "somethingWentWrong": "Something went wrong. Please try again later."
       }
