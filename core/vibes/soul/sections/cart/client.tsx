@@ -571,7 +571,14 @@ function CounterForm({
         <div className="flex size-min flex-col gap-y-0">
           <div className="mb-1 mt-1 flex items-center gap-x-5">
             {/* Counter */}
-            <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
+            <div
+              className={clsx(
+                'flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]',
+                (lineItem.inventoryMessages?.outOfStockMessage != null ||
+                  lineItem.inventoryMessages?.quantityOutOfStockMessage != null) &&
+                  'border-red-500',
+              )}
+            >
               <button
                 aria-label={decrementLabel}
                 className={clsx(
@@ -608,9 +615,7 @@ function CounterForm({
                 value="increment"
               >
                 <Plus
-                  className={clsx(
-                    'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
-                  )}
+                  className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
                   size={18}
                   strokeWidth={1.5}
                 />
@@ -630,28 +635,28 @@ function CounterForm({
               />
             </button>
           </div>
-          {!!lineItem.inventoryMessages?.outOfStockMessage && (
-            <span className="text-xs/4 font-light text-red-500">
+          {lineItem.inventoryMessages?.outOfStockMessage != null && (
+            <span className="text-xs/5 font-light text-red-500">
               {lineItem.inventoryMessages.outOfStockMessage}
             </span>
           )}
-          {!!lineItem.inventoryMessages?.quantityOutOfStockMessage && (
-            <span className="mb-3 text-xs/4 font-light text-red-500">
+          {lineItem.inventoryMessages?.quantityOutOfStockMessage != null && (
+            <span className="mb-3 text-xs/5 font-light text-red-500">
               {lineItem.inventoryMessages.quantityOutOfStockMessage}
             </span>
           )}
-          {!!lineItem.inventoryMessages?.quantityReadyToShipMessage && (
-            <span className="text-xs/4 font-light">
+          {lineItem.inventoryMessages?.quantityReadyToShipMessage != null && (
+            <span className="text-xs/5 font-light">
               {lineItem.inventoryMessages.quantityReadyToShipMessage}
             </span>
           )}
-          {!!lineItem.inventoryMessages?.quantityBackorderedMessage && (
-            <span className="text-xs/4 font-light">
+          {lineItem.inventoryMessages?.quantityBackorderedMessage != null && (
+            <span className="text-xs/5 font-light">
               {lineItem.inventoryMessages.quantityBackorderedMessage}
             </span>
           )}
-          {!!lineItem.inventoryMessages?.backorderMessage && (
-            <span className="text-xs/4 font-light">
+          {lineItem.inventoryMessages?.backorderMessage != null && (
+            <span className="text-xs/5 font-light">
               {lineItem.inventoryMessages.backorderMessage}
             </span>
           )}
