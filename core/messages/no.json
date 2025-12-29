@@ -198,7 +198,13 @@
             "currentPassword": "Nåværende passord",
             "newPassword": "Nytt passord",
             "confirmPassword": "Bekreft passord",
-            "cta": "Oppdater"
+            "cta": "Oppdater",
+            "NewsletterSubscription": {
+                "title": "Markedsføringsinnstillinger",
+                "label": "Abonner på nyhetsbrevet vårt.",
+                "marketingPreferencesUpdated": "Markedsføringsinnstillingene er oppdatert!",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         }
     },
     "Wishlist": {
@@ -504,9 +510,8 @@
             "title": "Meld deg på nyhetsbrevet vårt",
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
-            "success": "You have been subscribed to our newsletter.",
+            "subscribedToNewsletter": "Du har abonnert på nyhetsbrevet vårt.",
             "Errors": {
-                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
                 "invalidEmail": "Skriv inn en gyldig e-postadresse.",
                 "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
             }
