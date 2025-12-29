@@ -198,7 +198,13 @@
             "currentPassword": "Nuvarande lösenord",
             "newPassword": "Nytt lösenord",
             "confirmPassword": "Bekräfta lösenord",
-            "cta": "Uppdatering"
+            "cta": "Uppdatering",
+            "NewsletterSubscription": {
+                "title": "Marknadsföringsinställningar",
+                "label": "Prenumerera på vårt nyhetsbrev.",
+                "marketingPreferencesUpdated": "Marknadsföringsinställningarna har uppdaterats framgångsrikt!",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
         }
     },
     "Wishlist": {
@@ -504,9 +510,8 @@
             "title": "Anmäl dig till vårt nyhetsbrev",
             "placeholder": "Ange din e-postadress",
             "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
-            "success": "You have been subscribed to our newsletter.",
+            "subscribedToNewsletter": "Du prenumererar nu på vårt nyhetsbrev!",
             "Errors": {
-                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
                 "invalidEmail": "Vänligen ange en giltig e-postadress",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
             }

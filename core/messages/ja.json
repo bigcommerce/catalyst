@@ -198,7 +198,13 @@
             "currentPassword": "現在のパスワード",
             "newPassword": "新しいパスワード",
             "confirmPassword": "パスワード確認",
-            "cta": "アップデート"
+            "cta": "アップデート",
+            "NewsletterSubscription": {
+                "title": "マーケティングの好み",
+                "label": "ニュースレターに登録してください。",
+                "marketingPreferencesUpdated": "マーケティング設定が正常に更新されました。",
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            }
         }
     },
     "Wishlist": {
@@ -504,9 +510,8 @@
             "title": "ニュースレターにご登録ください",
             "placeholder": "メールアドレスを入力してください",
             "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
-            "success": "You have been subscribed to our newsletter.",
+            "subscribedToNewsletter": "ニュースレターを購読されました。",
             "Errors": {
-                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
                 "invalidEmail": "有効なメールアドレスを入力してください。",
                 "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
             }

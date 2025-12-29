@@ -198,7 +198,13 @@
             "currentPassword": "Huidig wachtwoord",
             "newPassword": "Nieuw wachtwoord",
             "confirmPassword": "Wachtwoord bevestigen",
-            "cta": "Bijwerken"
+            "cta": "Bijwerken",
+            "NewsletterSubscription": {
+                "title": "Marketingvoorkeuren",
+                "label": "Meld u aan voor onze nieuwsbrief.",
+                "marketingPreferencesUpdated": "Marketingvoorkeuren zijn bijgewerkt!",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
         }
     },
     "Wishlist": {
@@ -504,9 +510,8 @@
             "title": "Aanmelden voor onze nieuwsbrief",
             "placeholder": "Voer uw e-mail in",
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
-            "success": "You have been subscribed to our newsletter.",
+            "subscribedToNewsletter": "Je bent nu geabonneerd op onze nieuwsbrief!",
             "Errors": {
-                "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
                 "invalidEmail": "Voer een geldig e-mailadres in.",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
             }
