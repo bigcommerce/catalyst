@@ -38,7 +38,7 @@ export function useProducts({ collection, collectionLimit = 20, additionalProduc
 
   const searchParams = new URLSearchParams();
 
-  searchParams.append('ids', additionalProductIds.join(','));
+  searchParams.append('ids', additionalProductIds.sort().join(','));
   searchParams.append('locale', locale);
 
   const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}`;
