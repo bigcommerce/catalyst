@@ -27,6 +27,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
     // and redirect to redirectTo
     await signIn('jwt', { jwt: token, cartId, redirectTo });
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     rethrow(error);
 
     redirect(`/login?error=InvalidToken`);
