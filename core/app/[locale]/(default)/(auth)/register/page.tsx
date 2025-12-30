@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Field } from '@/vibes/soul/form/dynamic-form/schema';
 import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
 import {
   formFieldTransformer,
@@ -30,6 +31,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('title'),
   };
+}
+
+// There is currently a GraphQL gap where the "Exclusive Offers" field isn't accounted for
+// during customer registration, so the field should not be shown on the Catalyst storefront until it is hooked up.
+function removeExlusiveOffersField(field: Field | Field[]): boolean {
+  if (Array.isArray(field)) {
+    // Exclusive offers field will always have ID '25', since it is made upon store creation and is also read-only.
+    return !field.some((f) => f.id === '25');
+  }
+
+  return field.id !== '25';
 }
 
 export default async function Register({ params }: Props) {
@@ -90,7 +102,8 @@ export default async function Register({ params }: Props) {
 
       return injectCountryCodeOptions(field, countries ?? []);
     })
-    .filter(exists);
+    .filter(exists)
+    .filter(removeExlusiveOffersField);
 
   return (
     <DynamicFormSection
