@@ -255,7 +255,7 @@ export const getStreamableProductVariant = cache(
       document: StreamableProductVariantBySkuQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product?.variants;
@@ -306,6 +306,36 @@ const StreamableProductQuery = graphql(
           minPurchaseQuantity
           maxPurchaseQuantity
           warranty
+          ...ProductViewedFragment
+          ...ProductSchemaFragment
+        }
+      }
+    }
+  `,
+  [ProductViewedFragment, ProductSchemaFragment],
+);
+
+type Variables = VariablesOf<typeof StreamableProductQuery>;
+
+export const getStreamableProduct = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: StreamableProductQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
+);
+
+const StreamableProductInventoryQuery = graphql(
+  `
+    query StreamableProductInventoryQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          sku
           inventory {
             hasVariantInventory
             isInStock
@@ -320,25 +350,23 @@ const StreamableProductQuery = graphql(
           availabilityV2 {
             status
           }
-          ...ProductViewedFragment
           ...ProductVariantsInventoryFragment
-          ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment, ProductVariantsInventoryFragment],
+  [ProductVariantsInventoryFragment],
 );
 
-type Variables = VariablesOf<typeof StreamableProductQuery>;
+type ProductInventoryVariables = VariablesOf<typeof StreamableProductQuery>;
 
-export const getStreamableProduct = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+export const getStreamableProductInventory = cache(
+  async (variables: ProductInventoryVariables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: StreamableProductQuery,
+      document: StreamableProductInventoryQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
