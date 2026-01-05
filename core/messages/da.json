@@ -55,6 +55,7 @@
             "invalidCredentials": "Din e-mailadresse eller adgangskode er forkert. Prøv at logge ind igen, eller nulstil din adgangskode",
             "somethingWentWrong": "Noget gik galt. Prøv igen senere.",
             "passwordResetRequired": "Nulstilling af adgangskode påkrævet. Kontrollér din e-mail for instruktioner til at nulstille din adgangskode.",
+            "invalidToken": "Dit login-link er ugyldigt eller udløbet. Prøv at logge ind igen.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opret en konto hos os, og du vil kunne:",
