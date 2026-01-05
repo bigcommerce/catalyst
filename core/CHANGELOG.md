@@ -1,5 +1,886 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Upgrade c15t to 1.8.2, migrate from custom mode to offline mode, refactor consent cookie handling to use c15t's compact format, add script location support for HEAD/BODY rendering, and add privacy policy link support to CookieBanner.
+
+  ## What Changed
+  - Upgraded `@c15t/nextjs` to version `1.8.2`
+  - Changed consent manager mode from `custom` (with endpoint handlers) to `offline` mode
+    - Removed custom `handlers.ts` implementation
+  - Added `enabled` prop to `C15TConsentManagerProvider` to control consent manager functionality
+  - Removed custom consent cookie encoder/decoder implementations (`decoder.ts`, `encoder.ts`)
+  - Added `parse-compact-format.ts` to handle c15t's compact cookie format
+    - Compact format: `i.t:timestamp,c.necessary:1,c.functionality:1,etc...`
+  - Updated cookie parsing logic in both client and server to use the new compact format parser
+  - Scripts now support `location` field from BigCommerce API and can be rendered in `<head>` or `<body>` based on the `target` property
+  - `CookieBanner` now supports the `privacyPolicyUrl` field from BigCommerce API and will be rendered in the banner description if available.
+
+  ## Migration Path
+
+  ### Consent Manager Provider Changes
+
+  The `ConsentManagerProvider` now uses `offline` mode instead of `custom` mode with endpoint handlers. The provider configuration has been simplified:
+
+  **Before:**
+
+  ```typescript
+  <C15TConsentManagerProvider
+    options={{
+      mode: 'custom',
+      consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
+      endpointHandlers: {
+        showConsentBanner: () => showConsentBanner(isCookieConsentEnabled),
+        setConsent,
+        verifyConsent,
+      },
+    }}
+  >
+    <ClientSideOptionsProvider scripts={scripts}>
+      {children}
+    </ClientSideOptionsProvider>
+  </C15TConsentManagerProvider>
+  ```
+
+  **After:**
+
+  ```typescript
+  <C15TConsentManagerProvider
+    options={{
+      mode: 'offline',
+      storageConfig: {
+        storageKey: CONSENT_COOKIE_NAME,
+        crossSubdomain: true,
+      },
+      consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
+      enabled: isCookieConsentEnabled,
+    }}
+  >
+    <ClientSideOptionsProvider scripts={scripts}>
+      {children}
+    </ClientSideOptionsProvider>
+  </C15TConsentManagerProvider>
+  ```
+
+  **Key changes:**
+  - `mode` changed from `'custom'` to `'offline'`
+  - Removed `endpointHandlers` - no longer needed in offline mode
+  - Added `enabled` prop to control consent manager functionality
+  - Added `storageConfig` for cookie storage configuration
+
+  ### Cookie Handling
+
+  If you have custom code that directly reads or writes consent cookies, you'll need to update it:
+
+  **Before:**
+  The previous implementation used custom encoding/decoding. If you were directly accessing consent cookie values, you would have needed to use the custom decoder.
+
+  **After:**
+  The consent cookie now uses c15t's compact format. The public API for reading cookies remains the same:
+
+  ```typescript
+  import { getConsentCookie } from '~/lib/consent-manager/cookies/client'; // client-side
+  // or
+  import { getConsentCookie } from '~/lib/consent-manager/cookies/server'; // server-side
+
+  const consent = getConsentCookie();
+  ```
+
+  The `getConsentCookie()` function now internally uses `parseCompactFormat()` to parse the compact format cookie string. If you were directly parsing cookie values, you should now use the `getConsentCookie()` helper instead.
+
+  `getConsentCookie` now returns a compact version of the consent values:
+
+  ```typescript
+  {
+    i.t: 123456789,
+    c.necessary: true,
+    c.functionality: true,
+    c.marketing: false,
+    c.measurment: false
+  }
+  ```
+
+  Updated instances where `getConsentCookie` is used to reflect this new schema.
+
+  Removed `setConsentCookie` from server and client since this is now handled by the c15t library.
+
+  ### Script Location Support
+
+  Scripts now support rendering in either `<head>` or `<body>` based on the `location` field from the BigCommerce API:
+
+  ```typescript
+  // Scripts transformer now includes target based on location
+  target: script.location === 'HEAD' ? 'head' : 'body';
+  ```
+
+  The `ScriptsFragment` GraphQL query now includes the `location` field, allowing scripts to be placed in the appropriate DOM location. `FOOTER` location is still not supported.
+
+  ### Privacy Policy
+
+  The `RootLayoutMetadataQuery` GraphQL query now includes the `privacyPolicyUrl` field, which renders a provicy policy link in the `CookieBanner` description.
+
+  ```typescript
+  <CookieBanner
+    privacyPolicyUrl="https://example.com/privacy-policy"
+    // ... other props
+  />
+  ```
+
+  The privacy policy link:
+  - Opens in a new tab (`target="_blank"`)
+  - Only renders if `privacyPolicyUrl` is provided as a non-empty string
+
+  Add translatable `privacyPolicy` field to `Components.ConsentManager.CookieBanner` translation namespace for the privacy policy link text.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Conditionally display product ratings in the storefront based on `site.settings.display.showProductRating`. The storefront logic when this setting is enabled/disabled matches exactly the logic of Stencil + Cornerstone.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds product review submission functionality to the product detail page via a modal form with validation for rating, title, review text, name, and email fields. Integrates with BigCommerce's GraphQL API using Conform and Zod for form validation and real-time feedback.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Introduce displayName and displayKey fields to facets for improved labeling and filtering
+
+  Facet filters now use the `displayName` field for more descriptive labels in the UI, replacing the deprecated `name` field. Product attribute facets now support the `filterKey` field for consistent parameter naming. The facet transformer has been updated to use `displayName` with a fallback to `filterName` when `displayName` is not available.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Updated product and brand pages to include the number of reviews in the product data. Fixed visual spacing within product cards. Enhanced the Rating component to display the number of reviews alongside the rating. Introduced a new RatingLink component for smooth scrolling to reviews section on PDP.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Make newsletter signup component on homepage render conditionally based on BigCommerce settings.
+
+  ## What Changed
+  - Newsletter signup component (`Subscribe`) on homepage now conditionally renders based on `showNewsletterSignup` setting from BigCommerce.
+  - Added `showNewsletterSignup` field to `HomePageQuery` GraphQL query to fetch newsletter settings.
+  - Newsletter signup now uses `Stream` component with `Streamable` pattern for progressive loading.
+
+  ## Migration
+
+  To make newsletter signup component render conditionally based on BigCommerce settings, update your homepage code:
+
+  ### 1. Update GraphQL Query (`page-data.ts`)
+
+  Add the `newsletter` field to your `HomePageQuery`:
+
+  ```typescript
+  const HomePageQuery = graphql(
+    `
+      query HomePageQuery($currencyCode: currencyCode) {
+        site {
+          // ... existing fields
+          settings {
+            inventory {
+              defaultOutOfStockMessage
+              showOutOfStockMessage
+              showBackorderMessage
+            }
+            newsletter {
+              showNewsletterSignup
+            }
+          }
+        }
+      }
+    `,
+    [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
+  );
+  ```
+
+  ### 2. Update Homepage Component (`page.tsx`)
+
+  Import `Stream` and create a streamable for newsletter settings:
+
+  ```typescript
+  import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+
+  // Inside your component, create the streamable:
+  const streamableShowNewsletterSignup = Streamable.from(async () => {
+    const data = await streamablePageData;
+    const { showNewsletterSignup } = data.site.settings?.newsletter ?? {};
+    return showNewsletterSignup;
+  });
+
+  // Replace direct rendering with conditional Stream:
+  <Stream fallback={null} value={streamableShowNewsletterSignup}>
+    {(showNewsletterSignup) => showNewsletterSignup && <Subscribe />}
+  </Stream>
+  ```
+
+  **Before:**
+
+  ```typescript
+  <Subscribe />
+  ```
+
+  **After:**
+
+  ```typescript
+  <Stream fallback={null} value={streamableShowNewsletterSignup}>
+    {(showNewsletterSignup) => showNewsletterSignup && <Subscribe />}
+  </Stream>
+  ```
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Refactor the `ReviewForm` to accept `trigger` prop instead of `formButtonLabel` for flexible rendering.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds OpenTelemetry instrumentation for Catalyst, enabling the collection of spans for Catalyst storefronts.
+
+  ### Migration
+
+  Change is new code only, so just copy over `/core/instrumentation.ts` and `core/lib/otel/tracers.ts`.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Implement functional newsletter subscription feature with BigCommerce GraphQL API integration.
+
+  ## What Changed
+  - Replaced the mock implementation in `subscribe.ts` with a real BigCommerce GraphQL API call using the `SubscribeToNewsletterMutation`.
+  - Added comprehensive error handling for invalid emails, already-subscribed users, and unexpected errors.
+  - Improved form error handling in `InlineEmailForm` to use `form.errors` instead of field-level errors for better error display.
+  - Added comprehensive E2E tests and test fixtures for subscription functionality.
+
+  ## Migration Guide
+
+  Replace the `subscribe` action in `core/components/subscribe/_actions/subscribe.ts` with the latest changes to include:
+  - BigCommerce GraphQL mutation for newsletter subscription
+  - Error handling for invalid emails, already-subscribed users, and unexpected errors
+  - Proper error messages returned via Conform's `submission.reply()`
+
+  Update `inline-email-form` to fix issue of not showing server-side error messages from form actions.
+
+  **`core/vibes/soul/primitives/inline-email-form/index.tsx`**
+  1. Add import for `FieldError` component:
+
+  ```tsx
+  import { FieldError } from '@/vibes/soul/form/field-error';
+  ```
+
+  2. Remove the field errors extraction:
+
+  ```tsx
+  // Remove: const { errors = [] } = fields.email;
+  ```
+
+  3. Update border styling to check both form and field errors:
+
+  ```tsx
+  // Changed from:
+  errors.length ? 'border-error' : 'border-black',
+
+  // Changed to:
+  form.errors?.length || fields.email.errors?.length
+    ? 'border-error focus-within:border-error'
+    : 'border-black focus-within:border-primary',
+  ```
+
+  4. Update error rendering to display both field-level and form-level errors:
+
+  ```tsx
+  // Changed from:
+  {
+    errors.map((error, index) => (
+      <FormStatus key={index} type="error">
+        {error}
+      </FormStatus>
+    ));
+  }
+
+  // Changed to:
+  {
+    fields.email.errors?.map((error) => <FieldError key={error}>{error}</FieldError>);
+  }
+  {
+    form.errors?.map((error, index) => (
+      <FormStatus key={index} type="error">
+        {error}
+      </FormStatus>
+    ));
+  }
+  ```
+
+  This change ensures that server-side error messages returned from form actions (like `formErrors` from Conform's `submission.reply()`) are now properly displayed to users.
+
+  Add the following translation keys to your locale files (e.g., `messages/en.json`):
+
+  ```json
+  {
+    "Components": {
+      "Subscribe": {
+        "title": "Sign up for our newsletter",
+        "placeholder": "Enter your email",
+        "description": "Stay up to date with the latest news and offers from our store.",
+        "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+        "Errors": {
+          "invalidEmail": "Please enter a valid email address.",
+          "somethingWentWrong": "Something went wrong. Please try again later."
+        }
+      }
+    }
+  }
+  ```
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Separate first and last name fields on user session object.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Conditionally enable storefront reviews functionality based on `site.settings.reviews.enabled`. The storefront logic when this setting is enabled/disabled matches exactly the logic of Stencil + Cornerstone.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add out-of-stock / backorder message to product cards on PLPs based on store settings:
+  - Add out of stock message if the product is out of stock and stock is set to display it.
+  - Add the backorder message if the product has no on-hand stock and is available for backorder and the store/product is set to display the backorder message
+
+  ## Migration
+
+  ### Option 1: Automatic Migration (Recommended)
+
+  For existing Catalyst stores, the simplest way to get the newly added feature is to rebase the existing code with the new release code. The files that will be updated are listed below.
+
+  ### Option 2: Manual Migration
+
+  If you prefer not to rebase or have made customizations that prevent rebasing, follow these manual steps:
+
+  #### Step 1: Update GraphQL Fragment
+
+  Add the inventory fields to your product card fragment in `core/components/product-card/fragment.ts` under `Product`:
+
+  ```graphql
+  inventory {
+    hasVariantInventory
+    isInStock
+    aggregated {
+      availableForBackorder
+      unlimitedBackorder
+      availableOnHand
+    }
+  }
+  variants(first: 1) {
+    edges {
+      node {
+        entityId
+        sku
+        inventory {
+          byLocation {
+            edges {
+              node {
+                locationEntityId
+                backorderMessage
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  ```
+
+  #### Step 2: Update Product interface in Product Card component
+
+  Update the `Product` interface in `core/vibes/soul/primitives/product-card/index.tsx` adding the following field to it:
+
+  `inventoryMessage?: string;`
+
+  #### Step 3: Update Data Transformer
+
+  Modify `core/data-transformers/product-card-transformer.ts` to include inventory message in the transformed data. You can simply copy the whole file from this release as it does not have UI breaking changes.
+
+  #### Step 4: Update Product Card Layout
+
+  Update `core/vibes/soul/primitives/product-card/index.tsx` layout to display the new `inventoryMessage` product field.
+
+  #### Step 5: Update Page Data GraphQL queries
+
+  Add inventory settings queries to the pages data. Add the following query to the main GQL query under `site.settings`:
+
+  ```
+  inventory {
+    defaultOutOfStockMessage
+    showOutOfStockMessage
+    showBackorderMessage
+  }
+  ```
+
+  to the following page data files:
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/search/page-data.ts`
+  - `core/app/[locale]/(default)/page-data.ts`
+
+  #### Step 6: Update Page Components
+
+  Update the corresponding page components to use the `productCardTransformer` method (if not already using it) to get the product card, and pass inventory data to those product cards based on the store inventory settings. Use the following code while retrieving the product lists:
+
+  ```
+      const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
+        data.site.settings?.inventory ?? {};
+
+      return productCardTransformer(
+        featuredProducts,
+        format,
+        showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
+        showBackorderMessage,
+      );
+  ```
+
+  in the following files:
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/search/page.tsx`
+  - `core/app/[locale]/(default)/page.tsx`
+
+  ### Files Modified in This Change
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/brand/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/category/[slug]/page.tsx`
+  - `core/app/[locale]/(default)/(faceted)/search/page-data.ts`
+  - `core/app/[locale]/(default)/(faceted)/search/page.tsx`
+  - `core/app/[locale]/(default)/page-data.ts`
+  - `core/app/[locale]/(default)/page.tsx`
+  - `core/components/product-card/fragment.ts`
+  - `core/data-transformers/product-card-transformer.ts`
+  - `core/vibes/soul/primitives/product-card/index.tsx`
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add newsletter subscription toggle to account settings page, allowing customers to manage their marketing preferences directly from their account.
+
+  ## What Changed
+  - Added `NewsletterSubscriptionForm` component with a toggle switch for subscribing/unsubscribing to newsletters
+  - Created `updateNewsletterSubscription` server action that handles both subscribe and unsubscribe operations via BigCommerce GraphQL API
+  - Updated `AccountSettingsSection` to conditionally display the newsletter subscription form when enabled
+  - Enhanced `CustomerSettingsQuery` to fetch `isSubscribedToNewsletter` status and `showNewsletterSignup` store setting
+  - Updated account settings page to pass newsletter subscription props and bind customer info to the action
+  - Added translation keys for newsletter subscription UI in `Account.Settings.NewsletterSubscription` namespace
+  - Added E2E tests for subscribing and unsubscribing functionality
+
+  ## Migration Guide
+
+  To add the newsletter subscription toggle to your account settings page:
+
+  ### Step 1: Copy the server action
+
+  Copy the new server action file to your account settings directory:
+
+  ```bash
+  cp core/app/[locale]/(default)/account/settings/_actions/update-newsletter-subscription.ts \
+     your-app/app/[locale]/(default)/account/settings/_actions/update-newsletter-subscription.ts
+  ```
+
+  ### Step 2: Update the GraphQL query
+
+  Update `core/app/[locale]/(default)/account/settings/page-data.tsx` to include newsletter subscription fields:
+
+  ```tsx
+  // Renamed CustomerSettingsQuery to AccountSettingsQuery
+  const AccountSettingsQuery = graphql(`
+    query AccountSettingsQuery(...) {
+      customer {
+        ...
+        isSubscribedToNewsletter  # Add this field
+      }
+      site {
+        settings {
+          ...
+          newsletter {            # Add this section
+            showNewsletterSignup
+          }
+        }
+      }
+    }
+  `);
+  ```
+
+  Also update the return statement to include `newsletterSettings`:
+
+  ```tsx
+  const newsletterSettings = response.data.site.settings?.newsletter;
+
+  return {
+    ...newsletterSettings, // Add this
+  };
+  ```
+
+  ### Step 3: Copy the NewsletterSubscriptionForm component
+
+  Copy the new form component:
+
+  ```bash
+  cp core/vibes/soul/sections/account-settings/newsletter-subscription-form.tsx \
+     your-app/vibes/soul/sections/account-settings/newsletter-subscription-form.tsx
+  ```
+
+  ### Step 4: Update AccountSettingsSection
+
+  Update `core/vibes/soul/sections/account-settings/index.tsx`:
+  1. Import the new component:
+
+  ```tsx
+  import {
+    NewsletterSubscriptionForm,
+    UpdateNewsletterSubscriptionAction,
+  } from './newsletter-subscription-form';
+  ```
+
+  2. Add props to the interface:
+
+  ```tsx
+  export interface AccountSettingsSectionProps {
+    ...
+    newsletterSubscriptionEnabled?: boolean;
+    isAccountSubscribed?: boolean;
+    newsletterSubscriptionTitle?: string;
+    newsletterSubscriptionLabel?: string;
+    newsletterSubscriptionCtaLabel?: string;
+    updateNewsletterSubscriptionAction?: UpdateNewsletterSubscriptionAction;
+  }
+  ```
+
+  3. Add the form section in the component (after the change password form):
+
+  ```tsx
+  {
+    newsletterSubscriptionEnabled && updateNewsletterSubscriptionAction && (
+      <div className="border-t border-[var(--account-settings-section-border,hsl(var(--contrast-100)))] pt-12">
+        <h1 className="@xl:text-2xl mb-10 font-[family-name:var(--account-settings-section-font-family,var(--font-family-heading))] text-2xl font-medium leading-none text-[var(--account-settings-section-text,var(--foreground))]">
+          {newsletterSubscriptionTitle}
+        </h1>
+        <NewsletterSubscriptionForm
+          action={updateNewsletterSubscriptionAction}
+          ctaLabel={newsletterSubscriptionCtaLabel}
+          isAccountSubscribed={isAccountSubscribed}
+          label={newsletterSubscriptionLabel}
+        />
+      </div>
+    );
+  }
+  ```
+
+  ### Step 5: Update the account settings page
+
+  Update `core/app/[locale]/(default)/account/settings/page.tsx`:
+  1. Import the action:
+
+  ```tsx
+  import { updateNewsletterSubscription } from './_actions/update-newsletter-subscription';
+  ```
+
+  2. Extract newsletter settings from the query:
+
+  ```tsx
+  const newsletterSubscriptionEnabled = accountSettings.storeSettings?.showNewsletterSignup;
+  const isAccountSubscribed = accountSettings.customerInfo.isSubscribedToNewsletter;
+  ```
+
+  3. Bind customer info to the action:
+
+  ```tsx
+  const updateNewsletterSubscriptionActionWithCustomerInfo = updateNewsletterSubscription.bind(
+    null,
+    {
+      customerInfo: accountSettings.customerInfo,
+    },
+  );
+  ```
+
+  4. Pass props to `AccountSettingsSection`:
+
+  ```tsx
+  <AccountSettingsSection
+    ...
+    isAccountSubscribed={isAccountSubscribed}
+    newsletterSubscriptionCtaLabel={t('cta')}
+    newsletterSubscriptionEnabled={newsletterSubscriptionEnabled}
+    newsletterSubscriptionLabel={t('NewsletterSubscription.label')}
+    newsletterSubscriptionTitle={t('NewsletterSubscription.title')}
+    updateNewsletterSubscriptionAction={updateNewsletterSubscriptionActionWithCustomerInfo}
+  />
+  ```
+
+  ### Step 6: Add translation keys
+
+  Add the following keys to your locale files (e.g., `messages/en.json`):
+
+  ```json
+  {
+    "Account": {
+      "Settings": {
+        ...
+        "NewsletterSubscription": {
+          "title": "Marketing preferences",
+          "label": "Opt-in to receive emails about new products and promotions.",
+          "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+          "somethingWentWrong": "Something went wrong. Please try again later."
+        }
+      }
+    }
+  }
+  ```
+
+  ### Step 7: Verify the feature
+  1. Ensure your BigCommerce store has newsletter signup enabled in store settings
+  2. Navigate to `/account/settings` as a logged-in customer
+  3. Verify the newsletter subscription toggle appears below the change password form
+  4. Test subscribing and unsubscribing functionality
+
+  The newsletter subscription form will only display if `newsletterSubscriptionEnabled` is `true` (controlled by the `showNewsletterSignup` store setting).
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add the following backorder messages to PDP based on the store inventory settings and the product backorders data:
+  - Backorder availability prompt
+  - Quantity on backorder
+  - Backorder message
+
+  ## Migration
+
+  For existing Catalyst stores, to get the newly added feature, simply rebase the existing code with the new release code. The files to be rebased for this change to be applied are:
+  - core/messages/en.json
+  - core/app/[locale]/(default)/product/[slug]/page-data.ts
+  - core/app/[locale]/(default)/product/[slug]/page.tsx
+  - core/app/[locale]/(default)/product/[slug]/\_components/product-viewed/fragment.ts
+  - core/vibes/soul/sections/product-detail/index.tsx
+  - core/vibes/soul/sections/product-detail/product-detail-form.tsx
+
+### Patch Changes
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update /login/token route error handling and messaging
+
+  ## Migration steps
+
+  ### 1. Add `invalidToken` translation key to the `Auth.Login` namespace:
+
+  ```json
+  "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
+  ```
+
+  ### 2. In `core/app/[locale]/(default)/(auth)/login/token/[token]/route.ts`, add a `console.error` in the `catch` block to log the error details:
+
+  ```typescript
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    // ...
+  }
+  ```
+
+  ### 3. In `core/app/[locale]/(default)/(auth)/login/page.tsx`, add `error` prop to searchParams and pass it down into the `SignInSection` component:
+
+  ```typescript
+  export default async function Login({ params, searchParams }: Props) {
+    const { locale } = await params;
+    const { redirectTo = '/account/orders', error } = await searchParams;
+
+    setRequestLocale(locale);
+
+    const t = await getTranslations('Auth.Login');
+    const vanityUrl = buildConfig.get('urls').vanityUrl;
+    const redirectUrl = new URL(redirectTo, vanityUrl);
+    const redirectTarget = redirectUrl.pathname + redirectUrl.search;
+    const tokenErrorMessage = error === 'InvalidToken' ? t('invalidToken') : undefined;
+
+    return (
+      <>
+        <ForceRefresh />
+        <SignInSection
+          action={login.bind(null, { redirectTo: redirectTarget })}
+          emailLabel={t('email')}
+          error={tokenErrorMessage}
+          ...
+  ```
+
+  ### 4. Update `core/vibes/soul/sections/sign-in-section/index.tsx` and add the `error` prop, and pass it down to `SignInForm`:
+
+  ```typescript
+  interface Props {
+    // ... existing props
+    error?: string;
+  }
+
+  // ...
+
+  export function SignInSection({
+    // ... existing variables
+    error,
+  }: Props) {
+    // ...
+    <SignInForm
+      action={action}
+      emailLabel={emailLabel}
+      error={error}
+  ```
+
+  ### 5. Update `core/vibes/soul/sections/sign-in-section/sign-in-form.tsx` to take the error prop and display it in the form errors:
+
+  ```typescript
+  interface Props {
+    // ... existing props
+    error?: string;
+  }
+
+  export function SignInForm({
+    // ... existing variables
+    error,
+  }: Props) {
+    // ...
+    useEffect(() => {
+      // If the form errors change when an "error" search param is in the URL,
+      // the search param should be removed to prevent showing stale errors.
+      if (form.errors) {
+        const url = new URL(window.location.href);
+
+        if (url.searchParams.has('error')) {
+          url.searchParams.delete('error');
+          window.history.replaceState({}, '', url.toString());
+        }
+      }
+    }, [form.errors]);
+
+    const formErrors = () => {
+      // Form errors should take precedence over the error prop that is passed in.
+      // This ensures that the most recent errors are displayed to avoid confusion.
+      if (form.errors) {
+        return form.errors;
+      }
+
+      if (error) {
+        return [error];
+      }
+
+      return [];
+    };
+
+    return (
+      <form {...getFormProps(form)} action={formAction} className="flex grow flex-col gap-5">
+        // ...
+        <SubmitButton>{submitLabel}</SubmitButton>
+        {formErrors().map((err, index) => (
+          <FormStatus key={index} type="error">
+            {err}
+          </FormStatus>
+        ))}
+      </form>
+    );
+  }
+  ```
+
+  ### 6. Copy all changes in the `core/tests` directory
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Passes `formButtonLabel` from `Reviews` to `ReviewsEmptyState` (was missing) and sets a default value for `formButtonLabel`
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Remove "Exclusive Offers" field temporarily. Currently, the field is not fully implemented in GraphQL, so it may be misleading to display it on the storefront if it's not actually doing anything when registering a customer.
+
+  Once the Register Customer operation takes this field into account, we can display it again.
+
+  ## Migration
+
+  Update `core/app/[locale]/(default)/(auth)/register/page.tsx` and add the function:
+
+  ```ts
+  // There is currently a GraphQL gap where the "Exclusive Offers" field isn't accounted for
+  // during customer registration, so the field should not be shown on the Catalyst storefront until it is hooked up.
+  function removeExlusiveOffersField(field: Field | Field[]): boolean {
+    if (Array.isArray(field)) {
+      // Exclusive offers field will always have ID '25', since it is made upon store creation and is also read-only.
+      return !field.some((f) => f.id === '25');
+    }
+
+    return field.id !== '25';
+  }
+  ```
+
+  Then, add the following code at the end of the `const fields` declaration:
+
+  ```ts
+      })
+      .filter(exists)
+      .filter(removeExlusiveOffersField); // <---
+  ```
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add missing check for optional text field in `core/vibes/soul/form/dynamic-form/schema.ts`.
+
+  ## Migration
+
+  Add `if (field.required !== true) fieldSchema = fieldSchema.optional();` to `text` case in `core/vibes/soul/form/dynamic-form/schema.ts`:
+
+  ```typescript
+  case 'text':
+      fieldSchema = z.string();
+
+      if (field.pattern != null) {
+      fieldSchema = fieldSchema.regex(new RegExp(field.pattern), {
+          message: 'Invalid format.',
+      });
+      }
+
+      if (field.required !== true) fieldSchema = fieldSchema.optional();
+
+      break;
+  ```
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Improved login error handling to display a custom error message when BigCommerce indicates a password reset is required, instead of showing a generic error message.
+
+  ## What's Fixed
+
+  When attempting to log in with an account that requires a password reset, users now see an informative error message: "Password reset required. Please check your email for instructions to reset your password."
+
+  **Before**: Generic "something went wrong" error message
+  **After**: Clear error message explaining the password reset requirement
+
+  ## Migration
+
+  ### Step 1: Update Translation Files
+
+  Add this translation key to your locale files (e.g., `core/messages/en.json`):
+
+  ```json
+  {
+    "Auth": {
+      "Login": {
+        "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password."
+      }
+    }
+  }
+  ```
+
+  Repeat for all supported locales if you maintain custom translations.
+
+  ### Step 2: Update Login Server Action
+
+  In your login server action (e.g., `core/app/[locale]/(default)/(auth)/login/_actions/login.ts`):
+
+  Add the password reset error handling block:
+
+  ```typescript
+  if (
+    error instanceof AuthError &&
+    error.type === 'CallbackRouteError' &&
+    error.cause &&
+    error.cause.err instanceof BigCommerceGQLError &&
+    error.cause.err.message.includes('Reset password"')
+  ) {
+    return submission.reply({ formErrors: [t('passwordResetRequired')] });
+  }
+  ```
+
+  This should be placed in your error handling, before the generic "Invalid credentials" check.
+
+- [#2803](https://github.com/bigcommerce/catalyst/pull/2803) [`dbd80fe`](https://github.com/bigcommerce/catalyst/commit/dbd80fe8d74d4e97252fa94c6568115748b6bbea) Thanks [@jorgemoya](https://github.com/jorgemoya)! - - Added optional `salePrice?: string` property to the `CartLineItem` interface
+  - Cart UI now displays sale prices with a strikethrough on the original price when `salePrice` is provided and differs from `price`
+
+  ## Migration
+
+  If you're using the `Cart` component with custom line items, you can now optionally include a `salePrice` property:
+
+  ```tsx
+  const lineItems = [
+    {
+      // ... other properties
+      price: '$100.00',
+      salePrice: '$80.00', // Optional: when provided, displays as strikethrough price + sale price
+    },
+  ];
+  ```
+
+  ### Backward Compatibility
+
+  This change is **fully backward compatible**. The `salePrice` property is optional, so existing implementations will continue to work without modification. If `salePrice` is not provided or equals `price`, only the regular price will be displayed.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update translations.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update translations.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update translations.
+
+- [#2806](https://github.com/bigcommerce/catalyst/pull/2806) [`becb67d`](https://github.com/bigcommerce/catalyst/commit/becb67df001e4a85a3e59ece24c3e44bd3a24cf6) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update translations.
+
 ## 1.3.7
 
 ### Patch Changes
