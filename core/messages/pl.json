@@ -55,6 +55,7 @@
             "invalidCredentials": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
             "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+            "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
             "CreateAccount": {
                 "title": "Nowy klient?",
                 "accountBenefits": "Załóż u nas konto, a będziesz mógł:",
@@ -198,7 +199,13 @@
             "currentPassword": "Aktualne hasło",
             "newPassword": "Nowe hasło",
             "confirmPassword": "Potwierdź hasło",
-            "cta": "Aktualizacja"
+            "cta": "Aktualizacja",
+            "NewsletterSubscription": {
+                "title": "Marketing preferences",
+                "label": "Zapisz się do naszego newslettera.",
+                "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Zapisz się do naszego newslettera",
             "placeholder": "Wpisz swój adres e-mail",
             "description": "Bądź na bieżąco z najnowszymi informacjami i ofertami naszego sklepu.",
-            "success": "Dziękujemy za Państwa zainteresowanie! Funkcja newslettera wkrótce będzie dostępna!"
+            "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+            "Errors": {
+                "invalidEmail": "Wpisz prawidłowy adres e-mail.",
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+                "privacyPolicy": "Polityka prywatności"
             },
             "Dialog": {
                 "title": "Privacy Settings",

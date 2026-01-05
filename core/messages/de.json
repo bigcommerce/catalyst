@@ -55,6 +55,7 @@
             "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "passwordResetRequired": "Passwortzurücksetzung erforderlich. Bitte überprüfen Sie Ihre E-Mails für die Anleitung zum Zurücksetzen Ihres Passworts.",
+            "invalidToken": "Ihr Anmeldelink ist ungültig oder abgelaufen. Bitte versuchen Sie erneut, sich anzumelden.",
             "CreateAccount": {
                 "title": "Neuer Kunde?",
                 "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
@@ -198,7 +199,13 @@
             "currentPassword": "Aktuelles Passwort",
             "newPassword": "Neues Passwort",
             "confirmPassword": "Passwort bestätigen",
-            "cta": "Update"
+            "cta": "Update",
+            "NewsletterSubscription": {
+                "title": "Marketingpräferenzen",
+                "label": "Abonnieren Sie unseren Newsletter.",
+                "marketingPreferencesUpdated": "Marketingeinstellungen wurden erfolgreich aktualisiert!",
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Melden Sie sich für unseren Newsletter an",
             "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
             "description": "Bleiben Sie auf dem Laufenden über die aktuellen Neuigkeiten und Angebote in unserem Shop.",
-            "success": "Vielen Dank für Ihr Interesse! Die Newsletter-Funktion wird in Kürze verfügbar sein!"
+            "subscribedToNewsletter": "Sie haben unseren Newsletter abonniert!",
+            "Errors": {
+                "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse an.",
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Wir respektieren Ihre Privatsphäre.",
-                "description": "Diese Website verwendet Cookies, um Ihr Surferlebnis zu verbessern, den Website-Traffic zu analysieren und personalisierte Inhalte anzuzeigen."
+                "description": "Diese Website verwendet Cookies, um Ihr Surferlebnis zu verbessern, den Website-Traffic zu analysieren und personalisierte Inhalte anzuzeigen.",
+                "privacyPolicy": "Datenschutzerklärung"
             },
             "Dialog": {
                 "title": "Datenschutzeinstellungen",

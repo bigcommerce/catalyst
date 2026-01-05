@@ -55,6 +55,7 @@
             "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "passwordResetRequired": "Réinitialisation du mot de passe requise. Veuillez consulter votre e-mail pour les instructions de réinitialisation de votre mot de passe.",
+            "invalidToken": "Votre lien de connexion n'est pas valide ou a expiré. Veuillez réessayer de vous connecter.",
             "CreateAccount": {
                 "title": "Nouveau client ?",
                 "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
@@ -198,7 +199,13 @@
             "currentPassword": "Mot de passe actuel",
             "newPassword": "Nouveau mot de passe",
             "confirmPassword": "Confirmer le mot de passe",
-            "cta": "Mettre à jour"
+            "cta": "Mettre à jour",
+            "NewsletterSubscription": {
+                "title": "Préférences de marketing",
+                "label": "Abonnez-vous à notre newsletter.",
+                "marketingPreferencesUpdated": "Les préférences marketing ont bien été mises à jour.",
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Abonnez-vous à notre newsletter",
             "placeholder": "Saisissez votre adresse e-mail",
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
-            "success": "Merci de l’intérêt que vous nous portez ! La fonctionnalité Newsletter sera bientôt disponible !"
+            "subscribedToNewsletter": "Votre abonnement à la newsletter a bien été pris en compte !",
+            "Errors": {
+                "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Nous respectons votre vie privée",
-                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé."
+                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé.",
+                "privacyPolicy": "Politique de confidentialité"
             },
             "Dialog": {
                 "title": "Paramètres de confidentialité",

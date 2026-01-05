@@ -55,6 +55,7 @@
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+      "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
@@ -198,7 +199,13 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
-      "cta": "Update"
+      "cta": "Update",
+      "NewsletterSubscription": {
+        "title": "Marketing preferences",
+        "label": "Subscribe to our newsletter.",
+        "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "Wishlist": {
@@ -560,9 +567,8 @@
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "success": "You have been subscribed to our newsletter.",
+      "subscribedToNewsletter": "You have been subscribed to our newsletter!",
       "Errors": {
-        "subcriberAlreadyExists": "You are already subscribed to our newsletter.",
         "invalidEmail": "Please enter a valid email address.",
         "somethingWentWrong": "Something went wrong. Please try again later."
       }

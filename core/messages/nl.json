@@ -55,6 +55,7 @@
             "invalidCredentials": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "passwordResetRequired": "Wachtwoord opnieuw instellen is vereist. Controleer uw e-mail voor instructies om uw wachtwoord opnieuw in te stellen.",
+            "invalidToken": "Je aanmeldingslink is ongeldig of verlopen. Probeer opnieuw in te loggen.",
             "CreateAccount": {
                 "title": "Nieuwe klant?",
                 "accountBenefits": "Maak een account aan bij ons om:",
@@ -198,7 +199,13 @@
             "currentPassword": "Huidig wachtwoord",
             "newPassword": "Nieuw wachtwoord",
             "confirmPassword": "Wachtwoord bevestigen",
-            "cta": "Bijwerken"
+            "cta": "Bijwerken",
+            "NewsletterSubscription": {
+                "title": "Marketingvoorkeuren",
+                "label": "Meld u aan voor onze nieuwsbrief.",
+                "marketingPreferencesUpdated": "Marketingvoorkeuren zijn bijgewerkt!",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Aanmelden voor onze nieuwsbrief",
             "placeholder": "Voer uw e-mail in",
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
-            "success": "Bedankt voor je interesse! De nieuwsbrieffunctie komt binnenkort!"
+            "subscribedToNewsletter": "Je bent nu geabonneerd op onze nieuwsbrief!",
+            "Errors": {
+                "invalidEmail": "Voer een geldig e-mailadres in.",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "We waarderen je privacy",
-                "description": "Deze site maakt gebruik van cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en gepersonaliseerde inhoud weer te geven."
+                "description": "Deze site maakt gebruik van cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en gepersonaliseerde inhoud weer te geven.",
+                "privacyPolicy": "Privacybeleid"
             },
             "Dialog": {
                 "title": "Privacy-instellingen",

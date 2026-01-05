@@ -55,6 +55,7 @@
             "invalidCredentials": "Din e-mailadresse eller adgangskode er forkert. Prøv at logge ind igen, eller nulstil din adgangskode",
             "somethingWentWrong": "Noget gik galt. Prøv igen senere.",
             "passwordResetRequired": "Nulstilling af adgangskode påkrævet. Kontrollér din e-mail for instruktioner til at nulstille din adgangskode.",
+            "invalidToken": "Dit login-link er ugyldigt eller udløbet. Prøv at logge ind igen.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opret en konto hos os, og du vil kunne:",
@@ -198,7 +199,13 @@
             "currentPassword": "Nuværende adgangskode",
             "newPassword": "Den nye adgangskode",
             "confirmPassword": "Bekræft adgangskode",
-            "cta": "Opdater"
+            "cta": "Opdater",
+            "NewsletterSubscription": {
+                "title": "Markedsføringspræferencer",
+                "label": "Abonner på vores nyhedsbrev.",
+                "marketingPreferencesUpdated": "Markedsføringspræferencerne er blevet opdateret!",
+                "somethingWentWrong": "Noget gik galt. Prøv igen senere."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Tilmeld dig vores nyhedsbrev",
             "placeholder": "Indtast din e-mailadresse",
             "description": "Hold dig opdateret med de seneste nyheder og tilbud fra vores butik.",
-            "success": "Tak for din interesse! Nyhedsbrevsfunktionen kommer snart!"
+            "subscribedToNewsletter": "Du er blevet tilmeldt vores nyhedsbrev!",
+            "Errors": {
+                "invalidEmail": "Indtast en gyldig e-mailadresse.",
+                "somethingWentWrong": "Noget gik galt. Prøv igen senere."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Vi værdsætter dit privatliv",
-                "description": "Denne hjemmeside bruger cookies til at forbedre din browseroplevelse, analysere webstedstrafik og vise personligt tilpasset indhold."
+                "description": "Denne hjemmeside bruger cookies til at forbedre din browseroplevelse, analysere webstedstrafik og vise personligt tilpasset indhold.",
+                "privacyPolicy": "Politik om beskyttelse af personlige oplysninger"
             },
             "Dialog": {
                 "title": "Privatlivsindstillinger",

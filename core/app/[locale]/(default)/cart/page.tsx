@@ -131,6 +131,10 @@ export default async function Cart({ params }: Props) {
         style: 'currency',
         currency: item.listPrice.currencyCode,
       }),
+      salePrice: format.number(item.salePrice.value, {
+        style: 'currency',
+        currency: item.salePrice.currencyCode,
+      }),
       subtitle: item.selectedOptions
         .map((option) => {
           switch (option.__typename) {

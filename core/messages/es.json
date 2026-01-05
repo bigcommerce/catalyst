@@ -55,6 +55,7 @@
             "invalidCredentials": "Tu dirección de correo electrónico o contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
             "passwordResetRequired": "Es necesario restablecer la contraseña. Consulta tu correo electrónico para recibir instrucciones sobre cómo restablecer tu contraseña.",
+            "invalidToken": "Tu enlace de inicio de sesión no es válido o ha caducado. Intenta conectarte de nuevo.",
             "CreateAccount": {
                 "title": "¿Cliente nuevo?",
                 "accountBenefits": "Cree una cuenta con nosotros y podrá:",
@@ -198,7 +199,13 @@
             "currentPassword": "Contraseña actual",
             "newPassword": "Nueva contraseña",
             "confirmPassword": "Confirmar contraseña",
-            "cta": "Actualizar"
+            "cta": "Actualizar",
+            "NewsletterSubscription": {
+                "title": "Preferencias de marketing",
+                "label": "Suscríbase a nuestro boletín.",
+                "marketingPreferencesUpdated": "¡Las preferencias de marketing se han actualizado correctamente!",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Suscribirse a nuestro boletín",
             "placeholder": "Introduzca su correo electrónico",
             "description": "Entérate de todas las novedades y ofertas de nuestra tienda.",
-            "success": "Gracias por tu interés. ¡La función de boletín estará disponible pronto!"
+            "subscribedToNewsletter": "¡Te has suscrito a nuestro boletín!",
+            "Errors": {
+                "invalidEmail": "Ingrese una dirección de correo electrónico válida.",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Valoramos tu privacidad",
-                "description": "Este sitio utiliza cookies para mejorar tu experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado."
+                "description": "Este sitio utiliza cookies para mejorar tu experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado.",
+                "privacyPolicy": "Política de privacidad"
             },
             "Dialog": {
                 "title": "Configuración de privacidad",

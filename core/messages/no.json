@@ -55,6 +55,7 @@
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "passwordResetRequired": "Krever tilbakestilling av passord. Kontroller e-posten din for instruksjoner om hvordan du tilbakestiller passordet.",
+            "invalidToken": "Innloggingskoblingen din er ugyldig eller har utløpt. Prøv å logge inn igjen.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opprett en konto hos oss, så kan du:",
@@ -198,7 +199,13 @@
             "currentPassword": "Nåværende passord",
             "newPassword": "Nytt passord",
             "confirmPassword": "Bekreft passord",
-            "cta": "Oppdater"
+            "cta": "Oppdater",
+            "NewsletterSubscription": {
+                "title": "Markedsføringsinnstillinger",
+                "label": "Abonner på nyhetsbrevet vårt.",
+                "marketingPreferencesUpdated": "Markedsføringsinnstillingene er oppdatert!",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Meld deg på nyhetsbrevet vårt",
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
-            "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
+            "subscribedToNewsletter": "Du har abonnert på nyhetsbrevet vårt.",
+            "Errors": {
+                "invalidEmail": "Skriv inn en gyldig e-postadresse.",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Vi verdsetter personvernet ditt",
-                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold."
+                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold.",
+                "privacyPolicy": "Personvernerklæring"
             },
             "Dialog": {
                 "title": "Personverninnstillinger",

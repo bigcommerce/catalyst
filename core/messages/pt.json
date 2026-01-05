@@ -55,6 +55,7 @@
             "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
             "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+            "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
             "CreateAccount": {
                 "title": "Cliente novo?",
                 "accountBenefits": "Crie uma conta conosco para poder:",
@@ -198,7 +199,13 @@
             "currentPassword": "Senha atual",
             "newPassword": "Nova senha",
             "confirmPassword": "Confirmar senha",
-            "cta": "Atualizar"
+            "cta": "Atualizar",
+            "NewsletterSubscription": {
+                "title": "Marketing preferences",
+                "label": "Inscreva-se no nosso boletim informativo.",
+                "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Assine nosso boletim informativo",
             "placeholder": "Digite seu email",
             "description": "Fique por dentro das últimas novidades e ofertas da nossa loja.",
-            "success": "Agradecemos o seu interesse! O recurso de newsletter estará disponível em breve!"
+            "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+            "Errors": {
+                "invalidEmail": "Informe um endereço de email válido.",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+                "privacyPolicy": "Política de privacidade"
             },
             "Dialog": {
                 "title": "Privacy Settings",

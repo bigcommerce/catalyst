@@ -55,6 +55,7 @@
             "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "passwordResetRequired": "パスワードのリセットが必要です。パスワードをリセットするための手順については、メールを確認してください。",
+            "invalidToken": "ログインリンクが無効または期限切れです。もう一度ログインしてください。",
             "CreateAccount": {
                 "title": "新規のお客様ですか？",
                 "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
@@ -198,7 +199,13 @@
             "currentPassword": "現在のパスワード",
             "newPassword": "新しいパスワード",
             "confirmPassword": "パスワード確認",
-            "cta": "アップデート"
+            "cta": "アップデート",
+            "NewsletterSubscription": {
+                "title": "マーケティングの好み",
+                "label": "ニュースレターに登録してください。",
+                "marketingPreferencesUpdated": "マーケティング設定が正常に更新されました。",
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "ニュースレターにご登録ください",
             "placeholder": "メールアドレスを入力してください",
             "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
-            "success": "ご関心をお寄せいただきありがとうございます！ニュースレター機能は近日開始予定です！"
+            "subscribedToNewsletter": "ニュースレターを購読されました。",
+            "Errors": {
+                "invalidEmail": "有効なメールアドレスを入力してください。",
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "私たちはあなたのプライバシーを大切にしています",
-                "description": "このサイトでは、ブラウジング体験の向上、サイトトラフィックの分析、パーソナライズされたコンテンツの表示のために Cookie を使用しています。"
+                "description": "このサイトでは、ブラウジング体験の向上、サイトトラフィックの分析、パーソナライズされたコンテンツの表示のために Cookie を使用しています。",
+                "privacyPolicy": "プライバシーポリシー"
             },
             "Dialog": {
                 "title": "プライバシー設定",

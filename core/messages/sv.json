@@ -55,6 +55,7 @@
             "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "passwordResetRequired": "Återställning av lösenord krävs. Kontrollera din e-post för instruktioner om hur du återställer ditt lösenord.",
+            "invalidToken": "Din inloggningslänk är ogiltig eller har löpt ut. Försök logga in igen.",
             "CreateAccount": {
                 "title": "Nya kunder?",
                 "accountBenefits": "Skapa ett konto hos oss, så kan du:",
@@ -198,7 +199,13 @@
             "currentPassword": "Nuvarande lösenord",
             "newPassword": "Nytt lösenord",
             "confirmPassword": "Bekräfta lösenord",
-            "cta": "Uppdatering"
+            "cta": "Uppdatering",
+            "NewsletterSubscription": {
+                "title": "Marknadsföringsinställningar",
+                "label": "Prenumerera på vårt nyhetsbrev.",
+                "marketingPreferencesUpdated": "Marknadsföringsinställningarna har uppdaterats framgångsrikt!",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Anmäl dig till vårt nyhetsbrev",
             "placeholder": "Ange din e-postadress",
             "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
-            "success": "Tack för ditt intresse! Funktionen för nyhetsbrev kommer snart!"
+            "subscribedToNewsletter": "Du prenumererar nu på vårt nyhetsbrev!",
+            "Errors": {
+                "invalidEmail": "Vänligen ange en giltig e-postadress",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Vi värdesätter din integritet",
-                "description": "Denna webbplats använder cookies för att förbättra din surfupplevelse, analysera webbplatstrafik och visa personligt innehåll."
+                "description": "Denna webbplats använder cookies för att förbättra din surfupplevelse, analysera webbplatstrafik och visa personligt innehåll.",
+                "privacyPolicy": "Sekretesspolicy"
             },
             "Dialog": {
                 "title": "Sekretessinställningar",

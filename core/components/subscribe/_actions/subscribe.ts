@@ -57,18 +57,25 @@ export const subscribe = async (
 
     const errors = response.data.newsletter.subscribe.errors;
 
-    if (!errors.length) {
-      return { lastResult: submission.reply({ resetForm: true }), successMessage: t('success') };
+    // If subscriber already exists, treat it as success for privacy reasons
+    // We don't want to reveal that the email is already subscribed
+    const subscriberAlreadyExists = errors.some(
+      ({ __typename }) => __typename === 'CreateSubscriberAlreadyExistsError',
+    );
+
+    if (subscriberAlreadyExists) {
+      return {
+        lastResult: submission.reply(),
+        successMessage: t('subscribedToNewsletter'),
+      };
     }
 
     if (errors.length > 0) {
+      // If there are other errors, we want to show the error message to the user
       return {
         lastResult: submission.reply({
           formErrors: errors.map(({ __typename }) => {
             switch (__typename) {
-              case 'CreateSubscriberAlreadyExistsError':
-                return t('Errors.subcriberAlreadyExists');
-
               case 'CreateSubscriberEmailInvalidError':
                 return t('Errors.invalidEmail');
 
@@ -80,7 +87,11 @@ export const subscribe = async (
       };
     }
 
-    return { lastResult: submission.reply({ formErrors: [t('Errors.somethingWentWrong')] }) };
+    // If there are no errors, we want to show the success message to the user
+    return {
+      lastResult: submission.reply(),
+      successMessage: t('subscribedToNewsletter'),
+    };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -97,6 +108,6 @@ export const subscribe = async (
       return { lastResult: submission.reply({ formErrors: [error.message] }) };
     }
 
-    return { lastResult: submission.reply({ formErrors: [t('Errors.somethingWentWrong')] }) };
+    return { lastResult: submission.reply({ formErrors: [String(error)] }) };
   }
 };

@@ -55,6 +55,7 @@
             "invalidCredentials": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "passwordResetRequired": "È necessario reimpostare la password. Controlla la tua email per le istruzioni su come reimpostare la password.",
+            "invalidToken": "Il tuo link di accesso non è valido o è scaduto. Riprova ad accedere.",
             "CreateAccount": {
                 "title": "Nuovo cliente?",
                 "accountBenefits": "Crea un account con noi e sarai in grado di:",
@@ -198,7 +199,13 @@
             "currentPassword": "Password attuale",
             "newPassword": "Nuova password",
             "confirmPassword": "Conferma password",
-            "cta": "Aggiorna"
+            "cta": "Aggiorna",
+            "NewsletterSubscription": {
+                "title": "Preferenze di marketing",
+                "label": "Iscriviti alla nostra newsletter.",
+                "marketingPreferencesUpdated": "Le preferenze di marketing sono state aggiornate.",
+                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            }
         }
     },
     "Wishlist": {
@@ -560,7 +567,11 @@
             "title": "Iscriviti alla nostra newsletter",
             "placeholder": "Inserisci la tua e-mail",
             "description": "Ricevi aggiornamenti sulle ultime novità e offerte dal nostro negozio.",
-            "success": "Grazie per il tuo interesse. La funzione Newsletter sarà presto disponibile!"
+            "subscribedToNewsletter": "Hai effettuato l'iscrizione alla nostra newsletter.",
+            "Errors": {
+                "invalidEmail": "Inserisci un indirizzo e-mail valido.",
+                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -571,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Rispettiamo la tua privacy",
-                "description": "Questo sito utilizza i cookie per migliorare la tua esperienza di navigazione, analizzare il traffico del sito e mostrare contenuti personalizzati."
+                "description": "Questo sito utilizza i cookie per migliorare la tua esperienza di navigazione, analizzare il traffico del sito e mostrare contenuti personalizzati.",
+                "privacyPolicy": "Informativa sulla privacy"
             },
             "Dialog": {
                 "title": "Impostazioni privacy",
