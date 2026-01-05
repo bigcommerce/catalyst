@@ -55,6 +55,7 @@
             "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "passwordResetRequired": "Passwortzurücksetzung erforderlich. Bitte überprüfen Sie Ihre E-Mails für die Anleitung zum Zurücksetzen Ihres Passworts.",
+            "invalidToken": "Ihr Anmeldelink ist ungültig oder abgelaufen. Bitte versuchen Sie erneut, sich anzumelden.",
             "CreateAccount": {
                 "title": "Neuer Kunde?",
                 "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",

@@ -55,6 +55,7 @@
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "passwordResetRequired": "Krever tilbakestilling av passord. Kontroller e-posten din for instruksjoner om hvordan du tilbakestiller passordet.",
+            "invalidToken": "Innloggingskoblingen din er ugyldig eller har utløpt. Prøv å logge inn igjen.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opprett en konto hos oss, så kan du:",

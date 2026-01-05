@@ -55,6 +55,7 @@
             "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
             "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+            "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
             "CreateAccount": {
                 "title": "Cliente novo?",
                 "accountBenefits": "Crie uma conta conosco para poder:",

@@ -55,6 +55,7 @@
             "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "passwordResetRequired": "Réinitialisation du mot de passe requise. Veuillez consulter votre e-mail pour les instructions de réinitialisation de votre mot de passe.",
+            "invalidToken": "Votre lien de connexion n'est pas valide ou a expiré. Veuillez réessayer de vous connecter.",
             "CreateAccount": {
                 "title": "Nouveau client ?",
                 "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
@@ -200,9 +201,9 @@
             "confirmPassword": "Confirmer le mot de passe",
             "cta": "Mettre à jour",
             "NewsletterSubscription": {
-                "title": "Marketing preferences",
+                "title": "Préférences de marketing",
                 "label": "Abonnez-vous à notre newsletter.",
-                "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+                "marketingPreferencesUpdated": "Les préférences marketing ont bien été mises à jour.",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
             }
         }
@@ -510,7 +511,7 @@
             "title": "Abonnez-vous à notre newsletter",
             "placeholder": "Saisissez votre adresse e-mail",
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
-            "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+            "subscribedToNewsletter": "Votre abonnement à la newsletter a bien été pris en compte !",
             "Errors": {
                 "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."

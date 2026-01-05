@@ -55,6 +55,7 @@
             "invalidCredentials": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "passwordResetRequired": "Wachtwoord opnieuw instellen is vereist. Controleer uw e-mail voor instructies om uw wachtwoord opnieuw in te stellen.",
+            "invalidToken": "Je aanmeldingslink is ongeldig of verlopen. Probeer opnieuw in te loggen.",
             "CreateAccount": {
                 "title": "Nieuwe klant?",
                 "accountBenefits": "Maak een account aan bij ons om:",
