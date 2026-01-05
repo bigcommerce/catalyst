@@ -63,6 +63,12 @@ export const PhysicalItemFragment = graphql(`
       }
     }
     url
+    stockPosition {
+      backorderMessage
+      quantityOnHand
+      quantityBackordered
+      quantityOutOfStock
+    }
   }
 `);
 
@@ -220,6 +226,13 @@ const CartPageQuery = graphql(
     query CartPageQuery($cartId: String, $currencyCode: currencyCode) {
       site {
         settings {
+          inventory {
+            defaultOutOfStockMessage
+            showOutOfStockMessage
+            showBackorderMessage
+            showQuantityOnBackorder
+            showQuantityOnHand
+          }
           url {
             checkoutUrl
           }
