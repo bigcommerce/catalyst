@@ -1,7 +1,8 @@
 name: Production Tag Deployment
 env:
-    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    # secrets is for dependabot compatibility; prefer vars when available
+    VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID != '' && vars.VERCEL_ORG_ID || secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID != '' && vars.VERCEL_PROJECT_ID || secrets.VERCEL_PROJECT_ID }}
 on:
     push:
         tags:
