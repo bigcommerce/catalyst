@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- [#2808](https://github.com/bigcommerce/catalyst/pull/2808) [`d6e2f1b`](https://github.com/bigcommerce/catalyst/commit/d6e2f1b5f9c726ed328fde76b8bedd0b95cec72e) Thanks [@matthewvolk](https://github.com/matthewvolk)! - This release includes all changes included in the `canary` 1.4.0 release (see the 1.4.0 changelog for more details: https://github.com/bigcommerce/catalyst/blob/44c682ef988030d7500275f3e4e4503a3a1af63c/core/CHANGELOG.md#140)
+
+### Patch Changes
+
+- [#2791](https://github.com/bigcommerce/catalyst/pull/2791) [`bd30ed3`](https://github.com/bigcommerce/catalyst/commit/bd30ed3ebc73d91136190c7ba457458fed6f3eb7) Thanks [@migueloller](https://github.com/migueloller)! - Fix sort order of `additionalProducts` prop in `ProductsCarousel` Makeswift component.
+
 ## 1.3.8
 
 ### Patch Changes
