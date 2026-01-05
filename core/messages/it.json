@@ -55,6 +55,7 @@
             "invalidCredentials": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "passwordResetRequired": "È necessario reimpostare la password. Controlla la tua email per le istruzioni su come reimpostare la password.",
+            "invalidToken": "Il tuo link di accesso non è valido o è scaduto. Riprova ad accedere.",
             "CreateAccount": {
                 "title": "Nuovo cliente?",
                 "accountBenefits": "Crea un account con noi e sarai in grado di:",
