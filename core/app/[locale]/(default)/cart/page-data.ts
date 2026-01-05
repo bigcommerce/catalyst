@@ -19,19 +19,11 @@ export const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
-    extendedListPrice {
-      currencyCode
-      value
-    }
-    extendedSalePrice {
-      currencyCode
-      value
-    }
-    originalPrice {
-      currencyCode
-      value
-    }
     listPrice {
+      currencyCode
+      value
+    }
+    salePrice {
       currencyCode
       value
     }
@@ -79,19 +71,11 @@ export const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
-    extendedListPrice {
-      currencyCode
-      value
-    }
-    extendedSalePrice {
-      currencyCode
-      value
-    }
-    originalPrice {
-      currencyCode
-      value
-    }
     listPrice {
+      currencyCode
+      value
+    }
+    salePrice {
       currencyCode
       value
     }
