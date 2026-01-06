@@ -17,7 +17,7 @@ interface Review {
 interface Props {
   reviews: Streamable<Review[]>;
   averageRating: Streamable<number>;
-  totalCount?: Streamable<string>;
+  totalCount?: Streamable<number>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   nextLabel?: Streamable<string>;
   previousLabel?: Streamable<string>;
@@ -117,7 +117,7 @@ export function Reviews({
                   {(averageRating) => (
                     <>
                       <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
-                        {averageRating}
+                        {parseFloat(averageRating.toFixed(1))}
                       </div>
                       <Rating rating={averageRating} showRating={false} />
                     </>
@@ -221,7 +221,7 @@ export function ReviewsEmptyState({
           <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
             0
           </div>
-          <Rating rating={0} />
+          <Rating rating={0} showRating={false} />
         </>
       }
       sidebarSize="medium"

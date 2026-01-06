@@ -35,6 +35,7 @@ const ReviewsQuery = graphql(
         product(entityId: $entityId) {
           reviewSummary {
             averageRating
+            numberOfReviews
           }
           reviews(first: $first, after: $after, before: $before, last: $last) {
             pageInfo {
@@ -161,6 +162,12 @@ export const Reviews = async ({
     return { email: session?.user?.email ?? '', name: obfuscatedName };
   });
 
+  const streamableTotalCount = Streamable.from(async () => {
+    const product = await streamableReviewsData;
+
+    return product?.reviewSummary.numberOfReviews ?? 0;
+  });
+
   return (
     <>
       <ReviewsSection
@@ -184,6 +191,7 @@ export const Reviews = async ({
         streamableImages={streamableImages}
         streamableProduct={streamableProductName}
         streamableUser={streamableUser}
+        totalCount={streamableTotalCount}
       />
       <Stream fallback={null} value={streamableReviewsData}>
         {(product) =>
