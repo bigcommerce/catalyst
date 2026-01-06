@@ -1,6 +1,6 @@
 'use client';
 
-import { parseAsString, useQueryState } from 'nuqs';
+import { parseAsString, useQueryStates } from 'nuqs';
 import { useOptimistic, useTransition } from 'react';
 
 import { SelectField } from '@/vibes/soul/form/select-field';
@@ -24,11 +24,15 @@ export function Sorting({
   defaultValue?: string;
   placeholder?: Streamable<string | null>;
 }) {
-  const [param, setParam] = useQueryState(
-    paramName,
-    parseAsString.withDefault(defaultValue).withOptions({ shallow: false, history: 'push' }),
+  const [params, setParams] = useQueryStates(
+    {
+      [paramName]: parseAsString.withDefault(defaultValue),
+      before: parseAsString,
+      after: parseAsString,
+    },
+    { shallow: false, history: 'push' },
   );
-  const [optimisticParam, setOptimisticParam] = useOptimistic(param);
+  const [optimisticParam, setOptimisticParam] = useOptimistic(params[paramName] ?? defaultValue);
   const [isPending, startTransition] = useTransition();
   const options = useStreamable(streamableOptions);
   const label = useStreamable(streamableLabel) ?? 'Sort';
@@ -42,7 +46,11 @@ export function Sorting({
       onValueChange={(value) => {
         startTransition(async () => {
           setOptimisticParam(value);
-          await setParam(value);
+          await setParams({
+            [paramName]: value,
+            before: null,
+            after: null,
+          });
         });
       }}
       options={options}
