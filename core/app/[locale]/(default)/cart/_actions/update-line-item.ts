@@ -4,6 +4,7 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { FragmentOf } from 'gql.tada';
+import { unstable_rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { CartLineItem } from '@/vibes/soul/sections/cart';
@@ -332,6 +333,8 @@ export const updateLineItem = async (
           quantity: cartLineItem.quantity - 1,
         });
       } catch (error) {
+        unstable_rethrow(error);
+
         // eslint-disable-next-line no-console
         console.error(error);
 
@@ -365,6 +368,8 @@ export const updateLineItem = async (
       try {
         await removeItem({ lineItemEntityId: submission.value.id });
       } catch (error) {
+        unstable_rethrow(error);
+
         // eslint-disable-next-line no-console
         console.error(error);
 
