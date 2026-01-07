@@ -60,7 +60,8 @@ export default async function Register({ params }: Props) {
     notFound();
   }
 
-  const { addressFields, customerFields, countries } = registerCustomerData;
+  const { addressFields, customerFields, countries, passwordComplexitySettings } =
+    registerCustomerData;
 
   const fields = transformFieldsToLayout(
     [
@@ -109,6 +110,7 @@ export default async function Register({ params }: Props) {
     <DynamicFormSection
       action={registerCustomer}
       fields={fields}
+      passwordComplexity={passwordComplexitySettings}
       submitLabel={t('cta')}
       title={t('heading')}
     />

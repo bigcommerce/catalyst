@@ -335,19 +335,26 @@ function parseRegisterCustomerInput(
 }
 
 export async function registerCustomer<F extends Field>(
-  prevState: { lastResult: SubmissionResult | null; fields: Array<F | FieldGroup<F>> },
+  prevState: {
+    lastResult: SubmissionResult | null;
+    fields: Array<F | FieldGroup<F>>;
+    passwordComplexity?: Parameters<typeof schema>[1];
+  },
   formData: FormData,
 ) {
   const t = await getTranslations('Auth.Register');
   const locale = await getLocale();
   const cartId = await getCartId();
 
-  const submission = parseWithZod(formData, { schema: schema(prevState.fields) });
+  const submission = parseWithZod(formData, {
+    schema: schema(prevState.fields, prevState.passwordComplexity),
+  });
 
   if (submission.status !== 'success') {
     return {
       lastResult: submission.reply(),
       fields: prevState.fields,
+      passwordComplexity: prevState.passwordComplexity,
     };
   }
 
@@ -369,6 +376,7 @@ export async function registerCustomer<F extends Field>(
           formErrors: response.data.customer.registerCustomer.errors.map((error) => error.message),
         }),
         fields: prevState.fields,
+        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
@@ -390,6 +398,7 @@ export async function registerCustomer<F extends Field>(
           formErrors: error.errors.map(({ message }) => message),
         }),
         fields: prevState.fields,
+        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
@@ -397,12 +406,14 @@ export async function registerCustomer<F extends Field>(
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
         fields: prevState.fields,
+        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
       fields: prevState.fields,
+      passwordComplexity: prevState.passwordComplexity,
     };
   }
 

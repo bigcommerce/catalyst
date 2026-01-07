@@ -36,7 +36,7 @@ import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
-import { Field, FieldGroup, schema } from './schema';
+import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -44,6 +44,7 @@ interface State<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
+  passwordComplexity?: PasswordComplexitySettings | null;
 }
 
 export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
@@ -59,6 +60,7 @@ export interface DynamicFormProps<F extends Field> {
   onCancel?: (e: MouseEvent<HTMLButtonElement>) => void;
   onChange?: (e: FormEvent<HTMLFormElement>) => void;
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
+  passwordComplexity?: PasswordComplexitySettings | null;
 }
 
 export function DynamicForm<F extends Field>({
@@ -72,13 +74,18 @@ export function DynamicForm<F extends Field>({
   onCancel,
   onChange,
   onSuccess,
+  passwordComplexity: defaultPasswordComplexity,
 }: DynamicFormProps<F>) {
-  const [{ lastResult, fields, successMessage }, formAction] = useActionState(action, {
-    fields: defaultFields,
-    lastResult: null,
-  });
+  const [{ lastResult, fields, successMessage, passwordComplexity }, formAction] = useActionState(
+    action,
+    {
+      fields: defaultFields,
+      lastResult: null,
+      passwordComplexity: defaultPasswordComplexity,
+    },
+  );
 
-  const dynamicSchema = schema(fields);
+  const dynamicSchema = schema(fields, passwordComplexity);
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
     .reduce<z.infer<typeof dynamicSchema>>(
