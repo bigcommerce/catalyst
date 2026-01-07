@@ -431,8 +431,6 @@ function FormField({
       );
 
     case 'select':
-      console.log('field', field);
-
       return (
         <Select
           errors={formField.errors}
