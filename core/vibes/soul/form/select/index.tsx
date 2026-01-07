@@ -95,7 +95,9 @@ export function Select({
           {label}
         </Label>
       )}
-      <SelectPrimitive.Root {...rest} name={name} value={value}>
+      {/* Workaround for https://github.com/radix-ui/primitives/issues/3198, remove when fixed */}
+      <input name={name} type="hidden" value={value} />
+      <SelectPrimitive.Root {...rest} name={`${name}_display`} value={value}>
         <SelectPrimitive.Trigger
           aria-label={label}
           className={clsx(

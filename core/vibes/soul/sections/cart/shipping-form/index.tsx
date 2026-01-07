@@ -16,7 +16,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Label } from '@/vibes/soul/form/label';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
-import { SelectField } from '@/vibes/soul/form/select-field';
+import { Select } from '@/vibes/soul/form/select';
 import { Button } from '@/vibes/soul/primitives/button';
 
 import { shippingActionFormDataSchema } from '../schema';
@@ -267,7 +267,7 @@ export function ShippingForm({
           className={clsx('mt-4 space-y-4', { hidden: !showAddressForm })}
         >
           {Array.isArray(countries) ? (
-            <SelectField
+            <Select
               errors={addressFields.country.errors}
               key={addressFields.country.id}
               label={countryLabel}
@@ -295,7 +295,7 @@ export function ShippingForm({
           />
           <div className="flex gap-3">
             {Array.isArray(states) ? (
-              <SelectField
+              <Select
                 disabled={addressFields.country.value === undefined}
                 errors={addressFields.state.errors}
                 key={addressFields.state.id}
