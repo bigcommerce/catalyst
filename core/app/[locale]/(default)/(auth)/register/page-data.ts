@@ -15,6 +15,17 @@ const RegisterCustomerQuery = graphql(
     ) {
       site {
         settings {
+          customers {
+            passwordComplexitySettings {
+              minimumNumbers
+              minimumPasswordLength
+              minimumSpecialCharacters
+              requireLowerCase
+              requireNumbers
+              requireSpecialCharacters
+              requireUpperCase
+            }
+          }
           formFields {
             customer(filters: $customerFilters, sortBy: $customerSortBy) {
               ...FormFieldsFragment
@@ -68,6 +79,8 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
   const countries = response.data.geography.countries;
+  const passwordComplexitySettings =
+    response.data.site.settings?.customers?.passwordComplexitySettings;
 
   if (!addressFields || !customerFields) {
     return null;
@@ -77,5 +90,6 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
     addressFields,
     customerFields,
     countries,
+    passwordComplexitySettings,
   };
 });
