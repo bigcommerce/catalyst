@@ -327,20 +327,16 @@ function FormField({
 }) {
   const controls = useInputControl(formField);
 
-  const [params, setParams] = useQueryStates(
+  const [, setParams] = useQueryStates(
     field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
   );
 
   const handleChange = useCallback(
     (value: string) => {
-      // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || params[field.name];
-
-      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
-
-      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
+      void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
     },
-    [setParams, field, controls, params],
+    [setParams, field, controls],
   );
 
   const handleOnOptionMouseEnter = (value: string) => {
@@ -417,13 +413,13 @@ function FormField({
     case 'checkbox':
       return (
         <Checkbox
-          checked={controls.value === 'true'}
+          checked={controls.value === field.checkedValue}
           errors={formField.errors}
           key={formField.id}
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onCheckedChange={(value) => handleChange(value ? 'true' : '')}
+          onCheckedChange={(value) => handleChange(value ? field.checkedValue.toString() : '')}
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? ''}

@@ -75,12 +75,7 @@ export const addToCart = async (
       case 'checkbox':
         checkboxOptionInput = {
           optionEntityId: Number(field.name),
-          optionValueEntityId:
-            optionValueEntityId === 'true'
-              ? // @ts-expect-error Types from custom fields are not yet available, pending fix
-                Number(field.checkedValue)
-              : // @ts-expect-error Types from custom fields are not yet available, pending fix
-                Number(field.uncheckedValue),
+          optionValueEntityId: Number(optionValueEntityId),
         };
 
         if (accum.checkboxes) {

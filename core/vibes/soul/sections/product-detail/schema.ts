@@ -23,6 +23,8 @@ type SelectField = {
 type CheckboxField = {
   type: 'checkbox';
   defaultValue?: string;
+  checkedValue: string;
+  uncheckedValue: string;
 } & FormField;
 
 type NumberInputField = {

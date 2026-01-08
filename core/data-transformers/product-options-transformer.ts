@@ -18,7 +18,7 @@ export const productOptionsTransformer = async (
         switch (option.displayStyle) {
           case 'Swatch': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'swatch-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -50,7 +50,7 @@ export const productOptionsTransformer = async (
 
           case 'RectangleBoxes': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'button-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -65,7 +65,7 @@ export const productOptionsTransformer = async (
 
           case 'RadioButtons': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -80,7 +80,7 @@ export const productOptionsTransformer = async (
 
           case 'DropdownList': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'select',
               label: option.displayName,
               required: option.isRequired,
@@ -95,7 +95,7 @@ export const productOptionsTransformer = async (
 
           case 'ProductPickList': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'card-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -115,7 +115,7 @@ export const productOptionsTransformer = async (
 
           case 'ProductPickListWithImages': {
             return {
-              persist: option.isVariantOption,
+              persist: true,
               type: 'card-radio-group',
               label: option.displayName,
               required: option.isRequired,
@@ -144,7 +144,7 @@ export const productOptionsTransformer = async (
 
       if (option.__typename === 'CheckboxOption') {
         return {
-          persist: option.isVariantOption,
+          persist: true,
           type: 'checkbox',
           label: option.displayName,
           required: option.isRequired,
@@ -157,7 +157,7 @@ export const productOptionsTransformer = async (
 
       if (option.__typename === 'NumberFieldOption') {
         return {
-          persist: option.isVariantOption,
+          persist: false,
           type: 'number',
           label: option.displayName,
           required: option.isRequired,
@@ -174,7 +174,7 @@ export const productOptionsTransformer = async (
 
       if (option.__typename === 'MultiLineTextFieldOption') {
         return {
-          persist: option.isVariantOption,
+          persist: false,
           type: 'textarea',
           label: option.displayName,
           required: option.isRequired,
@@ -187,7 +187,7 @@ export const productOptionsTransformer = async (
 
       if (option.__typename === 'TextFieldOption') {
         return {
-          persist: option.isVariantOption,
+          persist: false,
           type: 'text',
           label: option.displayName,
           required: option.isRequired,
@@ -198,7 +198,7 @@ export const productOptionsTransformer = async (
 
       if (option.__typename === 'DateFieldOption') {
         return {
-          persist: option.isVariantOption,
+          persist: false,
           type: 'date',
           label: option.displayName,
           required: option.isRequired,
