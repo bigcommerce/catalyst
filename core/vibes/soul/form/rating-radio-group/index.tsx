@@ -42,6 +42,7 @@ export const RatingRadioGroup = React.forwardRef<
       onOptionMouseEnter,
       onOptionMouseLeave,
       colorScheme = 'light',
+      required,
       ...rest
     },
     ref,
@@ -74,7 +75,7 @@ export const RatingRadioGroup = React.forwardRef<
 
     return (
       <div className={clsx('rating-radio-group space-y-2', className)}>
-        <Label colorScheme={colorScheme} id={groupId}>
+        <Label colorScheme={colorScheme} id={groupId} required={required}>
           {label}
         </Label>
 

@@ -80,6 +80,7 @@ export function Select({
   onBlur,
   onOptionMouseEnter,
   value,
+  required,
   ...rest
 }: Props) {
   const id = React.useId();
@@ -91,6 +92,7 @@ export function Select({
           className={clsx(hideLabel && 'sr-only', 'mb-2')}
           colorScheme={colorScheme}
           htmlFor={id}
+          required={required}
         >
           {label}
         </Label>

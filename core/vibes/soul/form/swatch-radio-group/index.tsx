@@ -58,7 +58,7 @@ export const SwatchRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, colorScheme = 'light', onOptionMouseEnter, ...rest },
+    { label, options, errors, className, colorScheme = 'light', onOptionMouseEnter, required, ...rest },
     ref,
   ) => {
     const id = React.useId();
@@ -66,7 +66,7 @@ export const SwatchRadioGroup = React.forwardRef<
     return (
       <div className={clsx('space-y-2', className)}>
         {label !== undefined && label !== '' && (
-          <Label colorScheme={colorScheme} id={id}>
+          <Label colorScheme={colorScheme} id={id} required={required}>
             {label}
           </Label>
         )}

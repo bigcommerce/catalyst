@@ -17,8 +17,13 @@ import { ComponentPropsWithoutRef } from 'react';
 export function Label({
   className,
   colorScheme = 'light',
+  required,
+  children,
   ...rest
-}: ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & { colorScheme?: 'light' | 'dark' }) {
+}: ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
+  colorScheme?: 'light' | 'dark';
+  required?: boolean;
+}) {
   return (
     <LabelPrimitive.Root
       {...rest}
@@ -30,6 +35,9 @@ export function Label({
         }[colorScheme],
         className,
       )}
-    />
+    >
+      {children}
+      {required && <span className="ml-1" aria-label="required">*</span>}
+    </LabelPrimitive.Root>
   );
 }

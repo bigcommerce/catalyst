@@ -23,14 +23,18 @@ export const RadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, onOptionMouseEnter, colorScheme = 'light', ...rest },
+    { label, options, errors, className, onOptionMouseEnter, colorScheme = 'light', required, ...rest },
     ref,
   ) => {
     const id = React.useId();
 
     return (
       <div className={clsx('space-y-2', className)}>
-        {label !== undefined && label !== '' && <Label id={id}>{label}</Label>}
+        {label !== undefined && label !== '' && (
+          <Label id={id} required={required} colorScheme={colorScheme}>
+            {label}
+          </Label>
+        )}
         <RadioGroupPrimitive.Root {...rest} aria-labelledby={id} className="space-y-2" ref={ref}>
           {options.map((option, index) => (
             <RadioGroupItem
