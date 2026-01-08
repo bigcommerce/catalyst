@@ -120,7 +120,7 @@ export function Checkbox({
             id={id !== undefined ? `${id}-label` : `${generatedId}-label`}
           >
             {label}
-            {props.required && <span className="ml-1" aria-label="required">*</span>}
+            {!props.required && <span className="ml-1 normal-case">(optional)</span>}
           </LabelPrimitive.Root>
         )}
       </div>

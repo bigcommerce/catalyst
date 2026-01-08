@@ -37,11 +37,7 @@ export function Label({
       )}
     >
       {children}
-      {required && (
-        <span className="ml-1" aria-label="required">
-          *
-        </span>
-      )}
+      {!required && <span className="ml-1 normal-case">(optional)</span>}
     </LabelPrimitive.Root>
   );
 }
