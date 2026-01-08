@@ -50,7 +50,16 @@ export const CardRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, onOptionMouseEnter, colorScheme = 'light', required, ...rest },
+    {
+      label,
+      options,
+      errors,
+      className,
+      onOptionMouseEnter,
+      colorScheme = 'light',
+      required,
+      ...rest
+    },
     ref,
   ) => {
     const id = React.useId();

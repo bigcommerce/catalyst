@@ -58,7 +58,16 @@ export const SwatchRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, colorScheme = 'light', onOptionMouseEnter, required, ...rest },
+    {
+      label,
+      options,
+      errors,
+      className,
+      colorScheme = 'light',
+      onOptionMouseEnter,
+      required,
+      ...rest
+    },
     ref,
   ) => {
     const id = React.useId();
