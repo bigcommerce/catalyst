@@ -27,6 +27,7 @@ import {
   getProductPricingAndRelatedProducts,
   getStreamableInventorySettingsQuery,
   getStreamableProduct,
+  getStreamableProductInventory,
   getStreamableProductVariant,
 } from './page-data';
 
@@ -117,8 +118,22 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
 
+  const streamableProductInventory = Streamable.from(async () => {
+    const variables = {
+      entityId: Number(productId),
+    };
+
+    const product = await getStreamableProductInventory(variables, customerAccessToken);
+
+    if (!product) {
+      return notFound();
+    }
+
+    return product;
+  });
+
   const streamableProductVariant = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableProductInventory;
 
     if (!product.inventory.hasVariantInventory) {
       return undefined;
@@ -188,7 +203,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableProductInventory;
 
     if (product.availabilityV2.status === 'Unavailable') {
       return t('ProductDetails.Submit.unavailable');
@@ -206,7 +221,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streameableCtaDisabled = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableProductInventory;
 
     if (product.availabilityV2.status === 'Unavailable') {
       return true;
@@ -253,7 +268,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableStockDisplayData = Streamable.from(async () => {
     const [product, variant, inventorySetting] = await Streamable.all([
-      streamableProduct,
+      streamableProductInventory,
       streamableProductVariant,
       streamableInventorySettings,
     ]);
@@ -343,7 +358,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const streamableBackorderDisplayData = Streamable.from(async () => {
     const [product, variant, inventorySetting] = await Streamable.all([
-      streamableProduct,
+      streamableProductInventory,
       streamableProductVariant,
       streamableInventorySettings,
     ]);
