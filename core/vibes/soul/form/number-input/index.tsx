@@ -130,8 +130,8 @@ export const NumberInput = React.forwardRef<
             disabled={disabled}
             id={id}
             ref={ref}
-            type="number"
             required={required}
+            type="number"
           />
           <button
             aria-label={incrementLabel}
