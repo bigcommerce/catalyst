@@ -119,12 +119,26 @@ export function ProductDetailForm<F extends Field>({
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
   }>(
     (acc, field) => {
-      // Checkbox fields need to be handled differently since we keep track of the checkedValue and not the boolean value of the default value.
+      // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+      // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
       if (field.type === 'checkbox') {
+        if (params[field.name] === field.checkedValue) {
+          return {
+            ...acc,
+            [field.name]: 'true',
+          };
+        }
+
+        if (params[field.name] === field.uncheckedValue) {
+          return {
+            ...acc,
+            [field.name]: undefined,
+          };
+        }
+
         return {
           ...acc,
-          [field.name]:
-            (params[field.name] ?? field.defaultValue === 'true') ? field.checkedValue : '',
+          [field.name]: field.defaultValue, // Default value is either 'true' or undefined
         };
       }
 
@@ -344,7 +358,13 @@ function FormField({
 
   const handleChange = useCallback(
     (value: string) => {
-      void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+      if (field.type === 'checkbox') {
+        void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+      } else {
+        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      }
+
       controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
     },
     [setParams, field, controls],
@@ -424,13 +444,13 @@ function FormField({
     case 'checkbox':
       return (
         <Checkbox
-          checked={controls.value === field.checkedValue}
+          checked={controls.value === 'true'}
           errors={formField.errors}
           key={formField.id}
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onCheckedChange={(value) => handleChange(value ? field.checkedValue.toString() : '')}
+          onCheckedChange={(value) => handleChange(value ? 'true' : '')}
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? ''}

@@ -14,7 +14,7 @@ Update `product-options-transformer.ts` to manually track persisted fields:
 case 'DropdownList': {
     return {
         // before
-        persist: option.isVariantOption,
+        // persist: option.isVariantOption,
         // after (manually persist)
         persist: true,
         type: 'select',
