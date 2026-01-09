@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+export interface PasswordComplexitySettings {
+  minimumNumbers?: number | null;
+  minimumPasswordLength?: number | null;
+  minimumSpecialCharacters?: number | null;
+  requireLowerCase?: boolean | null;
+  requireNumbers?: boolean | null;
+  requireSpecialCharacters?: boolean | null;
+  requireUpperCase?: boolean | null;
+}
+
 interface FormField {
   name: string;
   label?: string;
@@ -151,7 +161,8 @@ export type SchemaRawShape = Record<
   | z.ZodOptional<z.ZodArray<z.ZodString>>
 >;
 
-function getFieldSchema(field: Field) {
+// eslint-disable-next-line complexity
+function getFieldSchema(field: Field, passwordComplexity?: PasswordComplexitySettings | null) {
   let fieldSchema:
     | z.ZodString
     | z.ZodNumber
@@ -183,20 +194,67 @@ function getFieldSchema(field: Field) {
 
       break;
 
-    case 'password':
-      fieldSchema = z
-        .string()
-        .min(8, { message: 'Be at least 8 characters long' })
-        .regex(/[a-zA-Z]/, { message: 'Contain at least one letter.' })
-        .regex(/[0-9]/, { message: 'Contain at least one number.' })
-        .regex(/[^a-zA-Z0-9]/, {
+    case 'password': {
+      const minLength = passwordComplexity?.minimumPasswordLength ?? 8;
+      const minNumbers = passwordComplexity?.minimumNumbers ?? 0;
+      const minSpecialChars = passwordComplexity?.minimumSpecialCharacters ?? 0;
+      const requireLowerCase = passwordComplexity?.requireLowerCase ?? false;
+      const requireUpperCase = passwordComplexity?.requireUpperCase ?? false;
+      const requireNumbers = passwordComplexity?.requireNumbers ?? true;
+      const requireSpecialChars = passwordComplexity?.requireSpecialCharacters ?? true;
+
+      fieldSchema = z.string().trim();
+
+      fieldSchema = fieldSchema.min(minLength, {
+        message: `Be at least ${minLength} character${minLength !== 1 ? 's' : ''} long`,
+      });
+
+      if (requireLowerCase) {
+        fieldSchema = fieldSchema.regex(/[a-z]/, {
+          message: 'Contain at least one lowercase letter.',
+        });
+      }
+
+      if (requireUpperCase) {
+        fieldSchema = fieldSchema.regex(/[A-Z]/, {
+          message: 'Contain at least one uppercase letter.',
+        });
+      }
+
+      if (requireNumbers && minNumbers > 0) {
+        const numberRegex = new RegExp(`(.*[0-9]){${minNumbers},}`);
+
+        fieldSchema = fieldSchema.regex(numberRegex, {
+          message:
+            minNumbers === 1
+              ? 'Contain at least one number.'
+              : `Contain at least ${minNumbers} numbers.`,
+        });
+      } else if (requireNumbers) {
+        fieldSchema = fieldSchema.regex(/[0-9]/, {
+          message: 'Contain at least one number.',
+        });
+      }
+
+      if (requireSpecialChars && minSpecialChars > 0) {
+        const specialCharRegex = new RegExp(`(.*[^a-zA-Z0-9]){${minSpecialChars},}`);
+
+        fieldSchema = fieldSchema.regex(specialCharRegex, {
+          message:
+            minSpecialChars === 1
+              ? 'Contain at least one special character.'
+              : `Contain at least ${minSpecialChars} special characters.`,
+        });
+      } else if (requireSpecialChars) {
+        fieldSchema = fieldSchema.regex(/[^a-zA-Z0-9]/, {
           message: 'Contain at least one special character.',
-        })
-        .trim();
+        });
+      }
 
       if (field.required !== true) fieldSchema = fieldSchema.optional();
 
       break;
+    }
 
     case 'email':
       fieldSchema = z.string().email({ message: 'Please enter a valid email.' }).trim();
@@ -221,7 +279,10 @@ function getFieldSchema(field: Field) {
   return fieldSchema;
 }
 
-export function schema(fields: Array<Field | FieldGroup<Field>>) {
+export function schema(
+  fields: Array<Field | FieldGroup<Field>>,
+  passwordComplexity?: PasswordComplexitySettings | null,
+) {
   const shape: SchemaRawShape = {};
   let passwordFieldName: string | undefined;
   let confirmPasswordFieldName: string | undefined;
@@ -229,13 +290,13 @@ export function schema(fields: Array<Field | FieldGroup<Field>>) {
   fields.forEach((field) => {
     if (Array.isArray(field)) {
       field.forEach((f) => {
-        shape[f.name] = getFieldSchema(f);
+        shape[f.name] = getFieldSchema(f, passwordComplexity);
 
         if (f.type === 'password') passwordFieldName = f.name;
         if (f.type === 'confirm-password') confirmPasswordFieldName = f.name;
       });
     } else {
-      shape[field.name] = getFieldSchema(field);
+      shape[field.name] = getFieldSchema(field, passwordComplexity);
 
       if (field.type === 'password') passwordFieldName = field.name;
       if (field.type === 'confirm-password') confirmPasswordFieldName = field.name;
