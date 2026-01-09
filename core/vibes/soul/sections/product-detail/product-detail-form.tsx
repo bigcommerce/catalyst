@@ -118,10 +118,35 @@ export function ProductDetailForm<F extends Field>({
   const defaultValue = fields.reduce<{
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
   }>(
-    (acc, field) => ({
-      ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue,
-    }),
+    (acc, field) => {
+      // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+      // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
+      if (field.type === 'checkbox') {
+        if (params[field.name] === field.checkedValue) {
+          return {
+            ...acc,
+            [field.name]: 'true',
+          };
+        }
+
+        if (params[field.name] === field.uncheckedValue) {
+          return {
+            ...acc,
+            [field.name]: undefined,
+          };
+        }
+
+        return {
+          ...acc,
+          [field.name]: field.defaultValue, // Default value is either 'true' or undefined
+        };
+      }
+
+      return {
+        ...acc,
+        [field.name]: params[field.name] ?? field.defaultValue,
+      };
+    },
     { quantity: minQuantity ?? 1 },
   );
 
@@ -327,20 +352,22 @@ function FormField({
 }) {
   const controls = useInputControl(formField);
 
-  const [params, setParams] = useQueryStates(
+  const [, setParams] = useQueryStates(
     field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
   );
 
   const handleChange = useCallback(
     (value: string) => {
-      // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || params[field.name];
+      // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+      if (field.type === 'checkbox') {
+        void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+      } else {
+        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      }
 
-      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
-
-      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
+      controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
     },
-    [setParams, field, controls, params],
+    [setParams, field, controls],
   );
 
   const handleOnOptionMouseEnter = (value: string) => {
