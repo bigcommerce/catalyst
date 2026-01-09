@@ -67,7 +67,7 @@ export const ToggleGroup = React.forwardRef<
           <ToggleGroupPrimitive.Item
             aria-label={option.label}
             className={clsx(
-              'data-disabled:pointer-events-none data-disabled:opacity-50 h-12 whitespace-nowrap rounded-full border px-4 font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2',
+              'h-12 whitespace-nowrap rounded-full border px-4 font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
               {
                 light:
                   'border-[var(--toggle-group-light-border,hsl(var(--contrast-100)))] ring-[var(--toggle-group-light-focus,hsl(var(--primary)))] data-[state=on]:border-[var(--toggle-group-light-on-border,hsl(var(--foreground)))] data-[state=off]:bg-[var(--toggle-group-light-off-background,hsl(var(--background)))] data-[state=on]:bg-[var(--toggle-group-light-on-background,hsl(var(--foreground)))] data-[state=off]:text-[var(--toggle-group-light-off-text,hsl(var(--foreground)))] data-[state=on]:text-[var(--toggle-group-light-on-text,hsl(var(--background)))] data-[state=off]:hover:border-[var(--toggle-group-light-off-border-hover,hsl(var(--contrast-200)))] data-[state=off]:hover:bg-[var(--toggle-group-light-off-background-hover,hsl(var(--contrast-100)))]',
