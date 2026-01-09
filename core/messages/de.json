@@ -607,8 +607,5 @@
                 }
             }
         }
-    },
-    "Form": {
-        "optional": "optional"
     }
 }
