@@ -81,6 +81,7 @@ export const Input = React.forwardRef<
           )}
           id={id ?? generatedId}
           ref={ref}
+          required={required}
         />
       </div>
       {errors?.map((error) => (

@@ -44,7 +44,13 @@ export const RadioGroup = React.forwardRef<
             {label}
           </Label>
         )}
-        <RadioGroupPrimitive.Root {...rest} aria-labelledby={id} className="space-y-2" ref={ref}>
+        <RadioGroupPrimitive.Root
+          {...rest}
+          aria-labelledby={id}
+          className="space-y-2"
+          ref={ref}
+          required={required}
+        >
           {options.map((option, index) => (
             <RadioGroupItem
               colorScheme={colorScheme}

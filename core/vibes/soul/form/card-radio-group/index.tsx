@@ -71,7 +71,13 @@ export const CardRadioGroup = React.forwardRef<
             {label}
           </Label>
         )}
-        <RadioGroupPrimitive.Root {...rest} aria-labelledby={id} className="space-y-2" ref={ref}>
+        <RadioGroupPrimitive.Root
+          {...rest}
+          aria-labelledby={id}
+          className="space-y-2"
+          ref={ref}
+          required={required}
+        >
           {options.map((option) => (
             <RadioGroupPrimitive.Item
               aria-label={option.label}

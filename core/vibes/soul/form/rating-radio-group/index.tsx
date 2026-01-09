@@ -87,6 +87,7 @@ export const RatingRadioGroup = React.forwardRef<
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           ref={ref}
+          required={required}
         >
           <div className="flex items-center gap-1">
             {Array.from({ length: max }, (_, i) => {

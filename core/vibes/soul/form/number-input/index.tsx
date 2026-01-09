@@ -131,6 +131,7 @@ export const NumberInput = React.forwardRef<
             id={id}
             ref={ref}
             type="number"
+            required={required}
           />
           <button
             aria-label={incrementLabel}

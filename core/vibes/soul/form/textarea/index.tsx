@@ -65,6 +65,7 @@ export const Textarea = React.forwardRef<
         )}
         id={id}
         ref={ref}
+        required={required}
       />
       {errors?.map((error) => (
         <FieldError key={error}>{error}</FieldError>
