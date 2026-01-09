@@ -50,7 +50,16 @@ export const CardRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, onOptionMouseEnter, colorScheme = 'light', ...rest },
+    {
+      label,
+      options,
+      errors,
+      className,
+      onOptionMouseEnter,
+      colorScheme = 'light',
+      required,
+      ...rest
+    },
     ref,
   ) => {
     const id = React.useId();
@@ -58,11 +67,17 @@ export const CardRadioGroup = React.forwardRef<
     return (
       <div className={clsx('space-y-2', className)}>
         {label !== undefined && label !== '' && (
-          <Label colorScheme={colorScheme} id={id}>
+          <Label colorScheme={colorScheme} id={id} required={required}>
             {label}
           </Label>
         )}
-        <RadioGroupPrimitive.Root {...rest} aria-labelledby={id} className="space-y-2" ref={ref}>
+        <RadioGroupPrimitive.Root
+          {...rest}
+          aria-labelledby={id}
+          className="space-y-2"
+          ref={ref}
+          required={required}
+        >
           {options.map((option) => (
             <RadioGroupPrimitive.Item
               aria-label={option.label}

@@ -39,7 +39,7 @@ export const Input = React.forwardRef<
   return (
     <div className={clsx('w-full space-y-2', className)}>
       {label != null && label !== '' && (
-        <Label colorScheme={colorScheme} htmlFor={id ?? generatedId}>
+        <Label colorScheme={colorScheme} htmlFor={id ?? generatedId} required={required}>
           {label}
         </Label>
       )}
@@ -81,6 +81,7 @@ export const Input = React.forwardRef<
           )}
           id={id ?? generatedId}
           ref={ref}
+          required={required}
         />
       </div>
       {errors?.map((error) => (

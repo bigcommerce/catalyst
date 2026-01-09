@@ -39,7 +39,7 @@ export const Textarea = React.forwardRef<
   return (
     <div className={clsx('space-y-2', className)}>
       {label != null && label !== '' && (
-        <Label colorScheme={colorScheme} htmlFor={id}>
+        <Label colorScheme={colorScheme} htmlFor={id} required={required}>
           {label}
         </Label>
       )}
@@ -65,6 +65,7 @@ export const Textarea = React.forwardRef<
         )}
         id={id}
         ref={ref}
+        required={required}
       />
       {errors?.map((error) => (
         <FieldError key={error}>{error}</FieldError>

@@ -62,7 +62,7 @@ export const NumberInput = React.forwardRef<
     return (
       <div className={clsx('space-y-2', className)}>
         {label != null && label !== '' && (
-          <Label colorScheme={colorScheme} htmlFor={id}>
+          <Label colorScheme={colorScheme} htmlFor={id} required={required}>
             {label}
           </Label>
         )}
@@ -130,6 +130,7 @@ export const NumberInput = React.forwardRef<
             disabled={disabled}
             id={id}
             ref={ref}
+            required={required}
             type="number"
           />
           <button
