@@ -1,5 +1,167 @@
 # Changelog
 
+## 1.4.1
+
+### Patch Changes
+
+- [#2811](https://github.com/bigcommerce/catalyst/pull/2811) [`b57bffa`](https://github.com/bigcommerce/catalyst/commit/b57bffaf28b8c9714f99f7af581871f6e9f6f944) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix pagination cursor persistence when changing sort order. The `before` and `after` query parameters are now cleared when the sort option changes, preventing stale pagination cursors from causing incorrect results or empty pages.
+
+- [#2813](https://github.com/bigcommerce/catalyst/pull/2813) [`ea9d633`](https://github.com/bigcommerce/catalyst/commit/ea9d6337d2bb8e5c166cb1de3385631e12fea4a3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Delete duplicate Select component.
+
+- [#2816](https://github.com/bigcommerce/catalyst/pull/2816) [`b4b87a3`](https://github.com/bigcommerce/catalyst/commit/b4b87a361790bf2edd7614bab1d97490d91ed22f) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add support for additional HTML attributes on script tags. The scripts transformer now extracts and passes through attributes like `async`, `defer`, `crossorigin`, and `data-*` attributes from BigCommerce script tags to the C15T consent manager, ensuring scripts load with their intended behavior.
+
+- [#2817](https://github.com/bigcommerce/catalyst/pull/2817) [`d469078`](https://github.com/bigcommerce/catalyst/commit/d4690786b17a7d05ef32f8941e4090101980f8bc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Persist the checkbox product modifier since it can modify pricing and other product data. By persisting this and tracking in the url, this will trigger a product refetch when added or removed. Incidentally, now we manually control what fields are persisted, since `option.isVariantOption` doesn't apply to `checkbox`, additionally multi options modifiers that are not variant options can also modify price and other product data.
+
+  ## Migration
+
+  ### Step 1
+
+  Update `product-options-transformer.ts` to manually track persisted fields:
+
+  ```ts
+  case 'DropdownList': {
+      return {
+          // before
+          // persist: option.isVariantOption,
+          // after (manually persist)
+          persist: true,
+          type: 'select',
+          label: option.displayName,
+          required: option.isRequired,
+          name: option.entityId.toString(),
+          defaultValue: values.find((value) => value.isDefault)?.entityId.toString(),
+          options: values.map((value) => ({
+          label: value.label,
+          value: value.entityId.toString(),
+          })),
+      };
+  }
+  ```
+
+  Fields that persist and can affect product pricing when selected:
+  - Swatch
+  - RectangleBoxes
+  - RadioButtons
+  - ProductPickList
+  - ProductPickListWithImages
+  - CheckboxOption
+
+  ### Step 2
+
+  Remove `isVariantOption` from GQL query since we no longer use it:
+
+  ```ts
+  export const ProductOptionsFragment = graphql(
+    `
+      fragment ProductOptionsFragment on Product {
+        entityId
+        productOptions(first: 50) {
+          edges {
+            node {
+              __typename
+              entityId
+              displayName
+              isRequired
+              isVariantOption // remove this
+              ...MultipleChoiceFieldFragment
+              ...CheckboxFieldFragment
+              ...NumberFieldFragment
+              ...TextFieldFragment
+              ...MultiLineTextFieldFragment
+              ...DateFieldFragment
+            }
+          }
+        }
+      }
+    `,
+    [
+      MultipleChoiceFieldFragment,
+      CheckboxFieldFragment,
+      NumberFieldFragment,
+      TextFieldFragment,
+      MultiLineTextFieldFragment,
+      DateFieldFragment,
+    ],
+  );
+  ```
+
+  ### Step 3
+
+  Update `product-detail-form.tsx` to include separate handing of the checkbox field:
+
+  ```ts
+  const defaultValue = fields.reduce<{
+    [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
+  }>(
+    (acc, field) => {
+      // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+      // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
+      if (field.type === 'checkbox') {
+        if (params[field.name] === field.checkedValue) {
+          return {
+            ...acc,
+            [field.name]: 'true',
+          };
+        }
+
+        if (params[field.name] === field.uncheckedValue) {
+          return {
+            ...acc,
+            [field.name]: undefined,
+          };
+        }
+
+        return {
+          ...acc,
+          [field.name]: field.defaultValue, // Default value is either 'true' or undefined
+        };
+      }
+
+      return {
+        ...acc,
+        [field.name]: params[field.name] ?? field.defaultValue,
+      };
+    },
+    { quantity: minQuantity ?? 1 },
+  );
+
+  ...
+
+  const handleChange = useCallback(
+    (value: string) => {
+      // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+      if (field.type === 'checkbox') {
+        void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+      } else {
+        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      }
+
+      controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
+    },
+    [setParams, field, controls],
+  );
+  ```
+
+  ### Step 4
+
+  Update schema in `core/vibes/soul/sections/product-detail/schema.ts`:
+
+  ```ts
+  type CheckboxField = {
+    type: 'checkbox';
+    defaultValue?: string;
+    checkedValue: string; // add
+    uncheckedValue: string; // add
+  } & FormField;
+  ```
+
+- [#2814](https://github.com/bigcommerce/catalyst/pull/2814) [`fcb946e`](https://github.com/bigcommerce/catalyst/commit/fcb946e47aafc8be2e63bf3fe776ec6caab1fa72) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Shoppers will now see the store's actual password complexity requirements in the tooltip on the new customer registration form, preventing confusion and failed registration attempts. The schema() function in core/vibes/soul/form/dynamic-form/schema.ts now accepts an optional second parameter passwordComplexity to enable dynamic password validation. The DynamicForm, DynamicFormSection components and their associated server actions also accept an optional passwordComplexity prop that flows through to the schema. Action Required: If you have custom registration or password forms and want to use store-specific password complexity settings, fetch passwordComplexitySettings from the GraphQL API (under site.settings.customers.passwordComplexitySettings) and pass it to your DynamicFormSection component and maintain it in your server action's state. If you don't pass it, password validation defaults to: minimum 8 characters, at least one number, and at least one special character. Conflict Resolution: If merging into custom forms, ensure the passwordComplexity prop is threaded through: Page → DynamicFormSection → DynamicForm → useActionState → schema(). In server actions, add passwordComplexity?: Parameters<typeof schema>[1] to your state type and include it in all return statements to maintain state consistency.
+
+- [#2809](https://github.com/bigcommerce/catalyst/pull/2809) [`dd559b2`](https://github.com/bigcommerce/catalyst/commit/dd559b2d9f354387e19d7c81a809eed97bfc9be3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Minor UX improvements for the Reviews section:
+  - Show `totalCount` for reviews.
+  - Show `averageRating` up to the first decimal.
+  - Hide `averageRating` next to rating stars when there are no reviews.
+
 ## 1.4.0
 
 ### Minor Changes
