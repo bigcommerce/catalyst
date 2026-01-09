@@ -75,7 +75,10 @@ export const addToCart = async (
       case 'checkbox':
         checkboxOptionInput = {
           optionEntityId: Number(field.name),
-          optionValueEntityId: Number(optionValueEntityId),
+          optionValueEntityId:
+            optionValueEntityId === 'true'
+              ? Number(field.checkedValue)
+              : Number(field.uncheckedValue),
         };
 
         if (accum.checkboxes) {

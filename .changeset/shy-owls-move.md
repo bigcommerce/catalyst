@@ -78,51 +78,33 @@ export const ProductOptionsFragment = graphql(
 ```
 
 ### Step 3
-Update `product-detail-form.tsx` to handle checkbox persist logic:
-
-```ts
-case 'checkbox':
-    return (
-        <Checkbox
-            checked={controls.value === field.checkedValue} // add this
-            errors={formField.errors}
-            key={formField.id}
-            label={field.label}
-            name={formField.name}
-            onBlur={controls.blur}
-            onCheckedChange=(value) => handleChange(value ? field.checkedValue.toString() : ''); // add this
-            onFocus={controls.focus}
-            required={formField.required}
-            value={controls.value ?? ''}
-        />
-    );
-```
-
-Simplify `handleChange`:
-
-```ts
-const handleChange = useCallback(
-    (value: string) => {
-        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
-        controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
-    },
-    [setParams, field, controls],
-);
-```
-
-Update default value logic to handle checkbox case:
+Update `product-detail-form.tsx` to include separate handing of the checkbox field:
 
 ```ts
 const defaultValue = fields.reduce<{
   [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
 }>(
   (acc, field) => {
-    // Checkbox fields need to be handled differently since we keep track of the checkedValue and not the boolean value of the default value.
+    // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+    // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
     if (field.type === 'checkbox') {
+      if (params[field.name] === field.checkedValue) {
+        return {
+          ...acc,
+          [field.name]: 'true',
+        };
+      }
+
+      if (params[field.name] === field.uncheckedValue) {
+        return {
+          ...acc,
+          [field.name]: undefined,
+        };
+      }
+
       return {
         ...acc,
-        [field.name]:
-          (params[field.name] ?? field.defaultValue === 'true') ? field.checkedValue : '',
+        [field.name]: field.defaultValue, // Default value is either 'true' or undefined
       };
     }
 
@@ -133,34 +115,33 @@ const defaultValue = fields.reduce<{
   },
   { quantity: minQuantity ?? 1 },
 );
+
+...
+
+const handleChange = useCallback(
+  (value: string) => {
+    // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+    if (field.type === 'checkbox') {
+      void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+    } else {
+      void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+    }
+
+    controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
+  },
+  [setParams, field, controls],
+);
 ```
 
 ### Step 4
 
-Include update schema in `core/vibes/soul/sections/product-detail/schema.ts`:
+Update schema in `core/vibes/soul/sections/product-detail/schema.ts`:
 
 ```ts
 type CheckboxField = {
   type: 'checkbox';
   defaultValue?: string;
-  checkedValue: string;
-  uncheckedValue: string;
+  checkedValue: string; // add
+  uncheckedValue: string; // add
 } & FormField;
-```
-
-### Step 5
-Simplify `core/app/[locale]/(default)/product/[slug]/_actions/add-to-cart.tsx`:
-
-```ts
-case 'checkbox':
-    checkboxOptionInput = {
-        optionEntityId: Number(field.name),
-        optionValueEntityId: Number(optionValueEntityId),
-    };
-
-    if (accum.checkboxes) {
-        return { ...accum, checkboxes: [...accum.checkboxes, checkboxOptionInput] };
-    }
-
-    return { ...accum, checkboxes: [checkboxOptionInput] };
 ```
