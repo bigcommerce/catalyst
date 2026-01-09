@@ -74,6 +74,7 @@ export const ButtonRadioGroup = React.forwardRef<
           aria-labelledby={id}
           className="flex flex-wrap gap-2"
           ref={ref}
+          required={required}
         >
           {options.map((option) => (
             <RadioGroupPrimitive.Item
