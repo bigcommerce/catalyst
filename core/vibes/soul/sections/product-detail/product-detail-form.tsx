@@ -118,10 +118,21 @@ export function ProductDetailForm<F extends Field>({
   const defaultValue = fields.reduce<{
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
   }>(
-    (acc, field) => ({
-      ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue,
-    }),
+    (acc, field) => {
+      // Checkbox fields need to be handled differently since we keep track of the checkedValue and not the boolean value of the default value.
+      if (field.type === 'checkbox') {
+        return {
+          ...acc,
+          [field.name]:
+            (params[field.name] ?? field.defaultValue === 'true') ? field.checkedValue : '',
+        };
+      }
+
+      return {
+        ...acc,
+        [field.name]: params[field.name] ?? field.defaultValue,
+      };
+    },
     { quantity: minQuantity ?? 1 },
   );
 
