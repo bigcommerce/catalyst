@@ -6,12 +6,12 @@
 
 import { clsx } from 'clsx';
 import { parseAsString, useQueryStates } from 'nuqs';
-import { Suspense, useOptimistic, useState, useTransition } from 'react';
+import { useOptimistic, useState, useTransition } from 'react';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { RangeInput } from '@/vibes/soul/form/range-input';
 import { ToggleGroup } from '@/vibes/soul/form/toggle-group';
-import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
@@ -66,6 +66,8 @@ interface Props {
   rangeFilterApplyLabel?: Streamable<string>;
 }
 
+type InnerProps = Props & { filters: Filter[] };
+
 function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
   const value = params[key];
 
@@ -76,30 +78,31 @@ function getParamCountLabel(params: Record<string, string | null | string[]>, ke
 
 export function FiltersPanel({
   className,
-  filters,
+  filters: streamableFilters,
   resetFiltersLabel,
   rangeFilterApplyLabel,
 }: Props) {
   return (
-    <Suspense fallback={<FiltersSkeleton />}>
-      <FiltersPanelInner
-        className={className}
-        filters={filters}
-        rangeFilterApplyLabel={rangeFilterApplyLabel}
-        resetFiltersLabel={resetFiltersLabel}
-      />
-    </Suspense>
+    <Stream fallback={<FiltersSkeleton />} value={streamableFilters}>
+      {(filters) => (
+        <FiltersPanelInner
+          className={className}
+          filters={filters}
+          rangeFilterApplyLabel={rangeFilterApplyLabel}
+          resetFiltersLabel={resetFiltersLabel}
+        />
+      )}
+    </Stream>
   );
 }
 
 export function FiltersPanelInner({
   className,
-  filters: streamableFilters,
+  filters,
   resetFiltersLabel: streamableResetFiltersLabel,
   rangeFilterApplyLabel: streamableRangeFilterApplyLabel,
   paginationInfo: streamablePaginationInfo,
-}: Props) {
-  const filters = useStreamable(streamableFilters);
+}: InnerProps) {
   const resetFiltersLabel = useStreamable(streamableResetFiltersLabel) ?? 'Reset filters';
   const rangeFilterApplyLabel = useStreamable(streamableRangeFilterApplyLabel);
   const paginationInfo = useStreamable(streamablePaginationInfo);
@@ -118,16 +121,29 @@ export function FiltersPanelInner({
   );
   const [isPending, startTransition] = useTransition();
   const [optimisticParams, setOptimisticParams] = useOptimistic(params);
-  const [accordionItems, setAccordionItems] = useState(() =>
+  const [expandedItems, setExpandedItems] = useState(() => {
+    const initial = new Set<string>();
+
     filters
       .filter((filter) => filter.type !== 'link-group')
-      .map((filter, index) => ({
-        key: index.toString(),
-        value: index.toString(),
+      .slice(0, 3)
+      .forEach((filter) => {
+        initial.add(filter.label.toLowerCase());
+      });
+
+    return initial;
+  });
+
+  const accordionItems = filters
+    .filter((filter) => filter.type !== 'link-group')
+    .map((filter) => {
+      return {
+        key: filter.label.toLowerCase(),
+        value: filter.label.toLowerCase(),
         filter,
-        expanded: index < 3,
-      })),
-  );
+        expanded: expandedItems.has(filter.label.toLowerCase()),
+      };
+    });
 
   if (filters.length === 0) return null;
 
@@ -155,14 +171,9 @@ export function FiltersPanelInner({
         </div>
       ))}
       <Accordion
-        onValueChange={(items) =>
-          setAccordionItems((prevItems) =>
-            prevItems.map((prevItem) => ({
-              ...prevItem,
-              expanded: items.includes(prevItem.value),
-            })),
-          )
-        }
+        onValueChange={(items) => {
+          setExpandedItems(new Set(items));
+        }}
         type="multiple"
         value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
       >
