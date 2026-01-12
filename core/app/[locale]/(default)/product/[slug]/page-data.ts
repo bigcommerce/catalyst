@@ -112,7 +112,6 @@ export const ProductOptionsFragment = graphql(
             entityId
             displayName
             isRequired
-            isVariantOption
             ...MultipleChoiceFieldFragment
             ...CheckboxFieldFragment
             ...NumberFieldFragment
