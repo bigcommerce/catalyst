@@ -276,7 +276,7 @@ function DynamicFormField({
           onBlur={controls.blur}
           onCheckedChange={(value) => controls.change(String(value))}
           onFocus={controls.focus}
-          required={formField.required}
+          required={field.required}
           value={controls.value}
         />
       );
@@ -290,6 +290,7 @@ function DynamicFormField({
           name={formField.name}
           onValueChange={controls.change}
           options={field.options}
+          required={field.required}
           value={Array.isArray(controls.value) ? controls.value : []}
         />
       );
