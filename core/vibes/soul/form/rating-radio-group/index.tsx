@@ -101,7 +101,7 @@ export const RatingRadioGroup = React.forwardRef<
                   <RadioGroupPrimitive.Item
                     className={clsx(
                       'peer sr-only',
-                      'data-disabled:pointer-events-none data-disabled:opacity-50 transition-colors focus-visible:outline-0 focus-visible:ring-2',
+                      'transition-colors focus-visible:outline-0 focus-visible:ring-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                       {
                         light:
                           'focus-visible:ring-[var(--rating-radio-group-focus,hsl(var(--primary)))]',
