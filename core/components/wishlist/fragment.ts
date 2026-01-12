@@ -1,11 +1,25 @@
 import { PaginationFragment } from '~/client/fragments/pagination';
+import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
-import { ProductCardFragment } from '~/components/product-card/fragment';
 
 export const WishlistItemProductFragment = graphql(
   `
     fragment WishlistItemProductFragment on Product {
-      ...ProductCardFragment
+      entityId
+      name
+      defaultImage {
+        altText
+        url: urlTemplate(lossy: true)
+      }
+      path
+      brand {
+        name
+        path
+      }
+      reviewSummary {
+        numberOfReviews
+        averageRating
+      }
       sku
       showCartAction
       inventory {
@@ -14,9 +28,10 @@ export const WishlistItemProductFragment = graphql(
       availabilityV2 {
         status
       }
+      ...PricingFragment
     }
   `,
-  [ProductCardFragment],
+  [PricingFragment],
 );
 
 export const WishlistItemFragment = graphql(
@@ -30,7 +45,7 @@ export const WishlistItemFragment = graphql(
       }
     }
   `,
-  [WishlistItemProductFragment, ProductCardFragment],
+  [WishlistItemProductFragment],
 );
 
 export const WishlistFragment = graphql(
@@ -52,7 +67,7 @@ export const WishlistFragment = graphql(
       }
     }
   `,
-  [WishlistItemFragment, ProductCardFragment],
+  [WishlistItemFragment],
 );
 
 export const WishlistsFragment = graphql(
@@ -68,7 +83,7 @@ export const WishlistsFragment = graphql(
       }
     }
   `,
-  [WishlistFragment, ProductCardFragment, PaginationFragment],
+  [WishlistFragment, PaginationFragment],
 );
 
 export const WishlistPaginatedItemsFragment = graphql(
@@ -93,7 +108,7 @@ export const WishlistPaginatedItemsFragment = graphql(
       }
     }
   `,
-  [WishlistItemFragment, ProductCardFragment, PaginationFragment],
+  [WishlistItemFragment, PaginationFragment],
 );
 
 export const PublicWishlistFragment = graphql(
@@ -117,5 +132,5 @@ export const PublicWishlistFragment = graphql(
       }
     }
   `,
-  [WishlistItemFragment, ProductCardFragment, PaginationFragment],
+  [WishlistItemFragment, PaginationFragment],
 );

@@ -234,11 +234,11 @@ test.describe('Wishlist actions menu', () => {
       page.getByRole('heading', { name: t('Modal.renameTitle', { name }) }),
     ).toBeVisible();
 
-    await expect(page.getByLabel(t('Form.nameLabel'))).toHaveValue(name);
+    await expect(page.getByLabel(t('Form.nameLabel'), { exact: true })).toHaveValue(name);
 
     const newName = `${name} (renamed)`;
 
-    await page.getByLabel(t('Form.nameLabel')).fill(newName);
+    await page.getByLabel(t('Form.nameLabel'), { exact: true }).fill(newName);
     await page.getByRole('button', { name: t('Modal.save') }).click();
 
     await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
@@ -258,7 +258,7 @@ test.describe('Wishlist actions menu', () => {
     await locator.getByRole('button', { name: t('actionsTitle') }).click();
     await page.getByRole('menuitem', { name: t('rename') }).click();
 
-    await page.getByLabel(t('Form.nameLabel')).fill('');
+    await page.getByLabel(t('Form.nameLabel'), { exact: true }).fill('');
     await page.getByRole('button', { name: t('Modal.save') }).click();
 
     await expect(page.getByText(t('Errors.nameRequired'))).toBeVisible();
@@ -282,7 +282,7 @@ test.describe('Wishlist actions menu', () => {
 
     await locator.getByRole('button', { name: t('actionsTitle') }).click();
     await page.getByRole('menuitem', { name: t('rename') }).click();
-    await page.getByLabel(t('Form.nameLabel')).fill(`${name} (renamed)`);
+    await page.getByLabel(t('Form.nameLabel'), { exact: true }).fill(`${name} (renamed)`);
     await page.getByRole('button', { name: t('Modal.save') }).click();
 
     await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
