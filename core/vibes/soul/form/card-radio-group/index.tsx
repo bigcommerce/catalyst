@@ -50,7 +50,16 @@ export const CardRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, onOptionMouseEnter, colorScheme = 'light', ...rest },
+    {
+      label,
+      options,
+      errors,
+      className,
+      onOptionMouseEnter,
+      colorScheme = 'light',
+      required,
+      ...rest
+    },
     ref,
   ) => {
     const id = React.useId();
@@ -58,16 +67,22 @@ export const CardRadioGroup = React.forwardRef<
     return (
       <div className={clsx('space-y-2', className)}>
         {label !== undefined && label !== '' && (
-          <Label colorScheme={colorScheme} id={id}>
+          <Label colorScheme={colorScheme} id={id} required={required}>
             {label}
           </Label>
         )}
-        <RadioGroupPrimitive.Root {...rest} aria-labelledby={id} className="space-y-2" ref={ref}>
+        <RadioGroupPrimitive.Root
+          {...rest}
+          aria-labelledby={id}
+          className="space-y-2"
+          ref={ref}
+          required={required}
+        >
           {options.map((option) => (
             <RadioGroupPrimitive.Item
               aria-label={option.label}
               className={clsx(
-                'data-disabled:pointer-events-none data-disabled:opacity-50 relative flex h-12 w-full items-center overflow-hidden rounded-lg border font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--card-radio-group-focus,hsl(var(--primary)))]',
+                'relative flex h-12 w-full items-center overflow-hidden rounded-lg border font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--card-radio-group-focus,hsl(var(--primary)))] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                 {
                   light:
                     'border-[var(--card-radio-group-light-unchecked-border,hsl(var(--contrast-100)))] text-[var(--card-radio-group-light-unchecked-text,hsl(var(--foreground)))] data-[state=checked]:bg-[var(--card-radio-group-light-checked-background,hsl(var(--foreground)))] data-[state=unchecked]:bg-[var(--card-radio-group-light-unchecked-background,hsl(var(--background)))] data-[state=checked]:text-[var(--card-radio-group-light-checked-text,hsl(var(--background)))] data-[state=unchecked]:hover:border-[var(--card-radio-group-light-unchecked-border-hover,hsl(var(--contrast-200)))] data-[state=unchecked]:hover:bg-[var(--card-radio-group-light-unchecked-background-hover,hsl(var(--contrast-100)))]',

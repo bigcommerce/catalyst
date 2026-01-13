@@ -5,6 +5,7 @@ import { getFormatter } from 'next-intl/server';
 import { Product } from '@/vibes/soul/primitives/product-card';
 import { ExistingResultType } from '~/client/util';
 import { ProductCardFragment } from '~/components/product-card/fragment';
+import { WishlistItemProductFragment } from '~/components/wishlist/fragment';
 
 import { pricesTransformer } from './prices-transformer';
 
@@ -46,7 +47,7 @@ const getInventoryMessage = (
 };
 
 export const singleProductCardTransformer = (
-  product: ResultOf<typeof ProductCardFragment>,
+  product: ResultOf<typeof ProductCardFragment | typeof WishlistItemProductFragment>,
   format: ExistingResultType<typeof getFormatter>,
   outOfStockMessage?: string,
   showBackorderMessage?: boolean,
@@ -62,12 +63,15 @@ export const singleProductCardTransformer = (
     subtitle: product.brand?.name ?? undefined,
     rating: product.reviewSummary.averageRating,
     numberOfReviews: product.reviewSummary.numberOfReviews,
-    inventoryMessage: getInventoryMessage(product, outOfStockMessage, showBackorderMessage),
+    inventoryMessage:
+      'variants' in product
+        ? getInventoryMessage(product, outOfStockMessage, showBackorderMessage)
+        : undefined,
   };
 };
 
 export const productCardTransformer = (
-  products: Array<ResultOf<typeof ProductCardFragment>>,
+  products: Array<ResultOf<typeof ProductCardFragment | typeof WishlistItemProductFragment>>,
   format: ExistingResultType<typeof getFormatter>,
   outOfStockMessage?: string,
   showBackorderMessage?: boolean,

@@ -49,7 +49,7 @@ export const Switch = ({
         aria-busy={loading}
         checked={checked}
         className={clsx(
-          '[&:not([data-loading])]:data-disabled:bg-contrast-100 data-disabled:cursor-not-allowed w-12 rounded-full border border-contrast-200 p-[3px] transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2',
+          'w-12 rounded-full border border-contrast-200 p-[3px] transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 data-[disabled]:cursor-not-allowed [&:not([data-loading])]:data-[disabled]:bg-contrast-100',
         )}
         data-loading={loading ? '' : undefined}
         disabled={disabled || loading}
@@ -59,7 +59,7 @@ export const Switch = ({
       >
         <SwitchPrimitive.Thumb
           className={clsx(
-            'data-disabled:bg-contrast-200 relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full data-[state=unchecked]:bg-contrast-200',
+            'relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full data-[disabled]:bg-contrast-200 data-[state=unchecked]:bg-contrast-200',
             {
               primary: 'bg-[var(--toggle-primary-background,hsl(var(--primary)))]',
               secondary: 'bg-[var(--toggle-secondary-background,hsl(var(--foreground)))]',

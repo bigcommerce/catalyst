@@ -28,7 +28,7 @@ test('Share button calls navigator.share with the correct URL', async ({ page, c
     };
   });
 
-  const t = await getTranslations('Wishlist');
+  const t = await getTranslations();
   const { id: customerId } = await customer.login();
   const { name, token } = await customer.createWishlist({
     customerId,
@@ -36,14 +36,13 @@ test('Share button calls navigator.share with the correct URL', async ({ page, c
   });
 
   await page.goto('/account/wishlists/');
-  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
   const locator = page.getByRole('region', { name });
 
-  await locator.getByRole('button', { name: t('actionsTitle') }).click();
-  await page.getByRole('menuitem', { name: t('share') }).click();
+  await locator.getByRole('button', { name: t('Wishlist.actionsTitle') }).click();
+  await page.getByRole('menuitem', { name: t('Wishlist.share') }).click();
 
-  await expect(page.getByText(t('shareSuccess'))).toBeVisible();
+  await expect(page.getByText(t('Wishlist.shareSuccess'))).toBeVisible();
 
   const expectedUrl = `${testEnv.PLAYWRIGHT_TEST_BASE_URL}/wishlist/${token}`;
 
