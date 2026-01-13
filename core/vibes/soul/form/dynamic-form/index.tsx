@@ -38,16 +38,19 @@ import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
 import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
 
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
+type Action<F extends Field, S, P> = (
+  fields: Array<F | FieldGroup<F>>,
+  state: Awaited<S>,
+  payload: P,
+) => S | Promise<S>;
 
-interface State<F extends Field> {
-  fields: Array<F | FieldGroup<F>>;
+interface State {
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
   passwordComplexity?: PasswordComplexitySettings | null;
 }
 
-export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
+export type DynamicFormAction<F extends Field> = Action<F, State, FormData>;
 
 export interface DynamicFormProps<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
@@ -65,7 +68,7 @@ export interface DynamicFormProps<F extends Field> {
 
 export function DynamicForm<F extends Field>({
   action,
-  fields: defaultFields,
+  fields,
   buttonSize = 'medium',
   cancelLabel = 'Cancel',
   submitLabel = 'Submit',
@@ -76,10 +79,11 @@ export function DynamicForm<F extends Field>({
   onSuccess,
   passwordComplexity: defaultPasswordComplexity,
 }: DynamicFormProps<F>) {
-  const [{ lastResult, fields, successMessage, passwordComplexity }, formAction] = useActionState(
-    action,
+  const actionWithFields = action.bind(null, fields);
+
+  const [{ lastResult, successMessage, passwordComplexity }, formAction] = useActionState(
+    actionWithFields,
     {
-      fields: defaultFields,
       lastResult: null,
       passwordComplexity: defaultPasswordComplexity,
     },

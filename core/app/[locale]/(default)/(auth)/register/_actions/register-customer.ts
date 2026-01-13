@@ -335,9 +335,9 @@ function parseRegisterCustomerInput(
 }
 
 export async function registerCustomer<F extends Field>(
+  fields: Array<F | FieldGroup<F>>,
   prevState: {
     lastResult: SubmissionResult | null;
-    fields: Array<F | FieldGroup<F>>;
     passwordComplexity?: Parameters<typeof schema>[1];
   },
   formData: FormData,
@@ -347,19 +347,18 @@ export async function registerCustomer<F extends Field>(
   const cartId = await getCartId();
 
   const submission = parseWithZod(formData, {
-    schema: schema(prevState.fields, prevState.passwordComplexity),
+    schema: schema(fields, prevState.passwordComplexity),
   });
 
   if (submission.status !== 'success') {
     return {
       lastResult: submission.reply(),
-      fields: prevState.fields,
       passwordComplexity: prevState.passwordComplexity,
     };
   }
 
   try {
-    const input = parseRegisterCustomerInput(submission.value, prevState.fields);
+    const input = parseRegisterCustomerInput(submission.value, fields);
     const response = await client.fetch({
       document: RegisterCustomerMutation,
       variables: {
@@ -375,7 +374,6 @@ export async function registerCustomer<F extends Field>(
         lastResult: submission.reply({
           formErrors: response.data.customer.registerCustomer.errors.map((error) => error.message),
         }),
-        fields: prevState.fields,
         passwordComplexity: prevState.passwordComplexity,
       };
     }
@@ -397,7 +395,6 @@ export async function registerCustomer<F extends Field>(
         lastResult: submission.reply({
           formErrors: error.errors.map(({ message }) => message),
         }),
-        fields: prevState.fields,
         passwordComplexity: prevState.passwordComplexity,
       };
     }
@@ -405,14 +402,12 @@ export async function registerCustomer<F extends Field>(
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        fields: prevState.fields,
         passwordComplexity: prevState.passwordComplexity,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
-      fields: prevState.fields,
       passwordComplexity: prevState.passwordComplexity,
     };
   }

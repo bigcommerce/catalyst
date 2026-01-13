@@ -19,7 +19,6 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { GiftCertificateSettingsFragment } from '../fragment';
 
 interface State {
-  fields: Array<Field | FieldGroup<Field>>;
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
 }
@@ -101,7 +100,8 @@ const schema = (
 };
 
 export async function addGiftCertificateToCart(
-  prevState: State,
+  _fields: Array<Field | FieldGroup<Field>>,
+  _prevState: State,
   formData: FormData,
 ): Promise<State> {
   const t = await getTranslations('GiftCertificates.Purchase');
@@ -117,7 +117,7 @@ export async function addGiftCertificateToCart(
   });
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply(), fields: prevState.fields };
+    return { lastResult: submission.reply() };
   }
 
   const amountFormatted = format.number(submission.value.amount, {
@@ -148,7 +148,6 @@ export async function addGiftCertificateToCart(
 
     return {
       lastResult: submission.reply(),
-      fields: prevState.fields,
       successMessage: t.rich('successMessage', {
         cartLink: (chunks) => (
           <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
@@ -168,27 +167,23 @@ export async function addGiftCertificateToCart(
             return message;
           }),
         }),
-        fields: prevState.fields,
       };
     }
 
     if (error instanceof MissingCartError) {
       return {
         lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-        fields: prevState.fields,
       };
     }
 
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        fields: prevState.fields,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('unknownError')] }),
-      fields: prevState.fields,
     };
   }
 }

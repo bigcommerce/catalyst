@@ -58,18 +58,19 @@ function parseContactFormInput(
 }
 
 export async function submitContactForm<F extends Field>(
-  prevState: { lastResult: SubmissionResult | null; fields: Array<F | FieldGroup<F>> },
+  fields: Array<F | FieldGroup<F>>,
+  _prevState: { lastResult: SubmissionResult | null },
   formData: FormData,
 ) {
   const t = await getTranslations('WebPages.ContactUs.Form');
   const locale = await getLocale();
 
-  const submission = parseWithZod(formData, { schema: schema(prevState.fields) });
+  const submission = parseWithZod(formData, { schema: schema(fields) });
 
   if (submission.status !== 'success') {
     return {
       lastResult: submission.reply(),
-      fields: prevState.fields,
+      fields,
     };
   }
 
@@ -88,7 +89,7 @@ export async function submitContactForm<F extends Field>(
     if (result.errors.length > 0) {
       return {
         lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
-        fields: prevState.fields,
+        fields,
       };
     }
   } catch (error) {
@@ -100,20 +101,20 @@ export async function submitContactForm<F extends Field>(
         lastResult: submission.reply({
           formErrors: error.errors.map(({ message }) => message),
         }),
-        fields: prevState.fields,
+        fields,
       };
     }
 
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        fields: prevState.fields,
+        fields,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
-      fields: prevState.fields,
+      fields,
     };
   }
 

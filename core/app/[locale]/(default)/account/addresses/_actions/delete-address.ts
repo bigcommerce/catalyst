@@ -86,7 +86,6 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
       ),
       lastResult: submission.reply({ resetForm: true }),
       defaultAddress: prevState.defaultAddress,
-      fields: prevState.fields,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
