@@ -7,7 +7,8 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 import { z } from 'zod';
 
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
+import { Field } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
@@ -99,8 +100,8 @@ const schema = (
     });
 };
 
-export async function addGiftCertificateToCart(
-  _fields: Array<Field | FieldGroup<Field>>,
+export async function addGiftCertificateToCart<F extends Field>(
+  _args: DynamicFormActionArgs<F>,
   _prevState: State,
   formData: FormData,
 ): Promise<State> {

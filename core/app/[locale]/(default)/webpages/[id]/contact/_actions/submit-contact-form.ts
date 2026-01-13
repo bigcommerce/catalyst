@@ -6,7 +6,8 @@ import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
+import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
+import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
@@ -58,7 +59,7 @@ function parseContactFormInput(
 }
 
 export async function submitContactForm<F extends Field>(
-  fields: Array<F | FieldGroup<F>>,
+  { fields }: DynamicFormActionArgs<F>,
   _prevState: { lastResult: SubmissionResult | null },
   formData: FormData,
 ) {

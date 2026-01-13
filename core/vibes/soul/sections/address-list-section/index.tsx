@@ -180,7 +180,7 @@ export function AddressListSection<A extends Address, F extends Field>({
           <div className="border-b border-[var(--address-list-section-border,hsl(var(--contrast-100)))] pb-6 pt-5">
             <div className="w-[480px] space-y-4">
               <DynamicForm
-                action={(_fields, _prevState, formData) => {
+                action={(_args, _prevState, formData) => {
                   setShowNewAddressForm(false);
 
                   startTransition(() => {
@@ -239,7 +239,7 @@ export function AddressListSection<A extends Address, F extends Field>({
                 {activeAddressIds.includes(address.id) ? (
                   <div className="w-[480px] space-y-4">
                     <DynamicForm
-                      action={(_fields, _prevState, formData) => {
+                      action={(_args, _prevState, formData) => {
                         setActiveAddressIds((prev) => prev.filter((id) => id !== address.id));
 
                         startTransition(() => {

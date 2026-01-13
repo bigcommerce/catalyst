@@ -6,6 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
+import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
 import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { signIn } from '~/auth';
 import { client } from '~/client';
@@ -335,10 +336,9 @@ function parseRegisterCustomerInput(
 }
 
 export async function registerCustomer<F extends Field>(
-  fields: Array<F | FieldGroup<F>>,
-  prevState: {
+  { fields, passwordComplexity }: DynamicFormActionArgs<F>,
+  _prevState: {
     lastResult: SubmissionResult | null;
-    passwordComplexity?: Parameters<typeof schema>[1];
   },
   formData: FormData,
 ) {
@@ -347,13 +347,12 @@ export async function registerCustomer<F extends Field>(
   const cartId = await getCartId();
 
   const submission = parseWithZod(formData, {
-    schema: schema(fields, prevState.passwordComplexity),
+    schema: schema(fields, passwordComplexity),
   });
 
   if (submission.status !== 'success') {
     return {
       lastResult: submission.reply(),
-      passwordComplexity: prevState.passwordComplexity,
     };
   }
 
@@ -374,7 +373,6 @@ export async function registerCustomer<F extends Field>(
         lastResult: submission.reply({
           formErrors: response.data.customer.registerCustomer.errors.map((error) => error.message),
         }),
-        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
@@ -395,20 +393,17 @@ export async function registerCustomer<F extends Field>(
         lastResult: submission.reply({
           formErrors: error.errors.map(({ message }) => message),
         }),
-        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        passwordComplexity: prevState.passwordComplexity,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
-      passwordComplexity: prevState.passwordComplexity,
     };
   }
 

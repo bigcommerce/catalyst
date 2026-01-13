@@ -39,8 +39,13 @@ import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
 import { removeOptionsFromFields } from './utils';
 
+export interface DynamicFormActionArgs<F extends Field> {
+  fields: Array<F | FieldGroup<F>>;
+  passwordComplexity?: PasswordComplexitySettings | null;
+}
+
 type Action<F extends Field, S, P> = (
-  fields: Array<F | FieldGroup<F>>,
+  args: DynamicFormActionArgs<F>,
   state: Awaited<S>,
   payload: P,
 ) => S | Promise<S>;
@@ -48,7 +53,6 @@ type Action<F extends Field, S, P> = (
 interface State {
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
-  passwordComplexity?: PasswordComplexitySettings | null;
 }
 
 export type DynamicFormAction<F extends Field> = Action<F, State, FormData>;
@@ -78,21 +82,17 @@ export function DynamicForm<F extends Field>({
   onCancel,
   onChange,
   onSuccess,
-  passwordComplexity: defaultPasswordComplexity,
+  passwordComplexity,
 }: DynamicFormProps<F>) {
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const fieldsWithoutOptions = removeOptionsFromFields(fields) as Array<F | FieldGroup<F>>;
-  const actionWithFields = action.bind(null, fieldsWithoutOptions);
+  const actionWithFields = action.bind(null, { fields: fieldsWithoutOptions, passwordComplexity });
 
-  const [{ lastResult, successMessage, passwordComplexity }, formAction] = useActionState(
-    actionWithFields,
-    {
-      lastResult: null,
-      passwordComplexity: defaultPasswordComplexity,
-    },
-  );
+  const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
+    lastResult: null,
+  });
 
   const dynamicSchema = schema(fields, passwordComplexity);
   const defaultValue = fields
