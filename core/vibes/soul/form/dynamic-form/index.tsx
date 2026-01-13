@@ -37,6 +37,7 @@ import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
 import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
+import { removeOptionsFromFields } from './utils';
 
 type Action<F extends Field, S, P> = (
   fields: Array<F | FieldGroup<F>>,
@@ -79,7 +80,11 @@ export function DynamicForm<F extends Field>({
   onSuccess,
   passwordComplexity: defaultPasswordComplexity,
 }: DynamicFormProps<F>) {
-  const actionWithFields = action.bind(null, fields);
+  // Remove options from fields before passing to action to reduce payload size
+  // Options are only needed for rendering, not for processing form submissions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const fieldsWithoutOptions = removeOptionsFromFields(fields) as Array<F | FieldGroup<F>>;
+  const actionWithFields = action.bind(null, fieldsWithoutOptions);
 
   const [{ lastResult, successMessage, passwordComplexity }, formAction] = useActionState(
     actionWithFields,
