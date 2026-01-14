@@ -71,7 +71,6 @@ export async function submitContactForm<F extends Field>(
   if (submission.status !== 'success') {
     return {
       lastResult: submission.reply(),
-      fields,
     };
   }
 
@@ -90,7 +89,6 @@ export async function submitContactForm<F extends Field>(
     if (result.errors.length > 0) {
       return {
         lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
-        fields,
       };
     }
   } catch (error) {
@@ -102,20 +100,17 @@ export async function submitContactForm<F extends Field>(
         lastResult: submission.reply({
           formErrors: error.errors.map(({ message }) => message),
         }),
-        fields,
       };
     }
 
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        fields,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
-      fields,
     };
   }
 
