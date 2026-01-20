@@ -41,7 +41,9 @@ const getAnalyticsData = async (cartId: string) => {
     return [];
   }
 
-  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].filter(
+    (item) => !item.parentEntityId, // Only include top-level items
+  );
 
   return lineItems.map((item) => {
     return {
@@ -98,7 +100,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.giftCertificates,
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
-  ];
+  ].filter((item) => !('parentEntityId' in item) || !item.parentEntityId);
 
   const formattedLineItems = lineItems.map((item) => {
     if (item.__typename === 'CartGiftCertificate') {

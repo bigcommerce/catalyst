@@ -19,6 +19,7 @@ export const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    parentEntityId
     listPrice {
       currencyCode
       value
@@ -71,6 +72,7 @@ export const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    parentEntityId
     listPrice {
       currencyCode
       value
