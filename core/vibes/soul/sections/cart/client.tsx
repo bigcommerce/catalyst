@@ -561,7 +561,10 @@ function CounterForm({
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
         {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
           <span className="font-medium @xl:ml-auto">
-            <span className="line-through">{lineItem.price}</span> {lineItem.salePrice}
+            <span aria-hidden="true" className="line-through">
+              {lineItem.price}
+            </span>{' '}
+            {lineItem.salePrice}
           </span>
         ) : (
           <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
