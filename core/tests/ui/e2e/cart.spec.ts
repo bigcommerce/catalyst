@@ -8,8 +8,8 @@ test('Cart page displays empty state when no items are in the cart', async ({ pa
   await page.goto('/cart');
 
   await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
-  await expect(page.getByText(t('Empty.title'))).toBeVisible();
-  await expect(page.getByText(t('Empty.subtitle'))).toBeVisible();
+  await expect(page.getByRole('heading', { name: t('Empty.title'), exact: true })).toBeVisible();
+  await expect(page.getByText(t('Empty.subtitle')).first()).toBeVisible();
   await expect(page.getByRole('link', { name: t('Empty.cta') })).toBeVisible();
 });
 

@@ -19,6 +19,11 @@ test('Share button calls navigator.share with the correct URL', async ({ page, c
 
   await page.exposeFunction('setNavigatorShareCalled', setNavigatorShareCalled);
   await page.addInitScript(() => {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!window.navigator.share) {
+      window.navigator.share = async () => Promise.resolve();
+    }
+
     const originalNavigatorShare = window.navigator.share.bind(window.navigator);
 
     window.navigator.share = async (data) => {
@@ -36,6 +41,7 @@ test('Share button calls navigator.share with the correct URL', async ({ page, c
   });
 
   await page.goto('/account/wishlists/');
+  await page.waitForLoadState('networkidle');
 
   const locator = page.getByRole('region', { name });
 

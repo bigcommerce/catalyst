@@ -14,8 +14,8 @@ test('Validate compare page', async ({ page, catalog, currency }) => {
   await expect(page.getByRole('heading', { name: `${t('title')} 2` })).toBeVisible();
 
   // Products names
-  await expect(page.getByText(product.name, { exact: true })).toBeVisible();
-  await expect(page.getByText(productWithVariants.name, { exact: true })).toBeVisible();
+  await expect(page.getByText(product.name, { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(productWithVariants.name, { exact: true }).first()).toBeVisible();
 
   // Products CTAs
   await expect(page.getByRole('button', { name: t('addToCart') })).toBeVisible();
@@ -32,8 +32,8 @@ test('Validate compare page', async ({ page, catalog, currency }) => {
     currency: defaultCurrency,
   });
 
-  await expect(page.getByText(productPrice)).toBeVisible();
-  await expect(page.getByText(productWithVariantsPrice)).toBeVisible();
+  await expect(page.getByText(productPrice, { exact: true }).first()).toBeVisible();
+  await expect(page.getByText(productWithVariantsPrice, { exact: true }).first()).toBeVisible();
 });
 
 test('Validate compare page with alternate currency', async ({ page, catalog, currency }) => {
@@ -143,5 +143,5 @@ test('Show empty state when no products are selected', async ({ page }) => {
 
   await page.goto('/compare');
 
-  await expect(page.getByText(t('noProductsToCompare'))).toBeVisible();
+  await expect(page.getByText(t('noProductsToCompare')).first()).toBeVisible();
 });

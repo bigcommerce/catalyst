@@ -129,8 +129,12 @@ test('Wishlist details displays an out of stock product correctly', async ({
   page,
   catalog,
   customer,
+  settings,
 }) => {
+  await settings.setInventorySettings({ showOutOfStockMessage: true });
+
   const product = await catalog.createSimpleProduct({
+    inventoryTracking: 'product',
     inventoryLevel: 0,
   });
 

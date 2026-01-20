@@ -86,7 +86,7 @@ test('JWT login redirects to the specified redirect_to value in the token payloa
 
   await page.goto(`/login/token/${jwt}`);
   await page.waitForURL('/account/addresses/');
-  await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
+  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 });
 
 test('JWT login with an invalid/expired token shows an error message', async ({ page }) => {
