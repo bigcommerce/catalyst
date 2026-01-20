@@ -277,6 +277,7 @@ export function ShippingForm({
               onValueChange={countryControl.change}
               options={countries}
               placeholder=""
+              required
               value={countryControl.value ?? ''}
             />
           ) : (
@@ -285,6 +286,7 @@ export function ShippingForm({
               errors={addressFields.country.errors}
               key={addressFields.country.id}
               label={countryLabel}
+              required
             />
           )}
           <Input
