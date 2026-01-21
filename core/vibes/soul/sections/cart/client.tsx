@@ -4,6 +4,7 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithoutRef,
   startTransition,
@@ -512,6 +513,8 @@ function CounterForm({
   action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
 }) {
+  const t = useTranslations('Cart');
+
   const [form, fields] = useForm({
     defaultValue: { id: lineItem.id },
     shouldValidate: 'onBlur',
@@ -561,10 +564,12 @@ function CounterForm({
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
         {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
           <span className="font-medium @xl:ml-auto">
+            <span className="sr-only">{t('originalPrice', { price: lineItem.price })}</span>
             <span aria-hidden="true" className="line-through">
               {lineItem.price}
             </span>{' '}
-            {lineItem.salePrice}
+            <span className="sr-only">{t('currentPrice', { price: lineItem.salePrice })}</span>
+            <span aria-hidden="true">{lineItem.salePrice}</span>
           </span>
         ) : (
           <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
