@@ -87,9 +87,31 @@ jobs:
         run: pnpm run test
 
   e2e-tests:
-    name: E2E Functional Tests
+    name: E2E Functional Tests (${{ matrix.test-name }})
 
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test-name: default
+            browsers: chromium webkit
+            test-locale: ${{ vars.TESTS_LOCALE }}
+            test-command: pnpm exec playwright test tests/ui/e2e
+            artifact-name: playwright-report
+            default-revalidate-target: "1"
+          - test-name: no-trailing-slash
+            browsers: chromium
+            test-locale: ${{ vars.TESTS_LOCALE }}
+            test-command: pnpm exec playwright test tests/ui/e2e --grep @no-trailing-slash
+            artifact-name: playwright-report-no-trailing
+            trailing-slash: "false"
+          - test-name: alternate-locale
+            browsers: chromium
+            test-locale: ${{ vars.TESTS_ALTERNATE_LOCALE }}
+            test-command: pnpm exec playwright test tests/ui/e2e --grep @alternate-locale
+            artifact-name: playwright-report-alternate-locale
 
     steps:
       - name: Checkout code
@@ -109,7 +131,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium webkit
+        run: pnpm exec playwright install --with-deps ${{ matrix.browsers }}
         working-directory: ./core
 
       - name: Build catalyst-client
@@ -128,11 +150,12 @@ jobs:
           AUTH_SECRET: ${{ secrets.TESTS_AUTH_SECRET }}
           AUTH_TRUST_HOST: ${{ vars.TESTS_AUTH_TRUST_HOST }}
           BIGCOMMERCE_TRUSTED_PROXY_SECRET: ${{ secrets.BIGCOMMERCE_TRUSTED_PROXY_SECRET }}
-          TESTS_LOCALE: ${{ vars.TESTS_LOCALE }}
-          DEFAULT_REVALIDATE_TARGET: 1
+          TESTS_LOCALE: ${{ matrix.test-locale }}
+          TRAILING_SLASH: ${{ matrix.trailing-slash }}
+          DEFAULT_REVALIDATE_TARGET: ${{ matrix.default-revalidate-target }}
 
       - name: Run E2E tests
-        run: pnpm exec playwright test tests/ui/e2e
+        run: ${{ matrix.test-command }}
         working-directory: ./core
         env:
           PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
@@ -141,123 +164,6 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: ./core/.tests/reports/
-          retention-days: 3
-
-  e2e-tests-no-trailing:
-    name: E2E Functional Tests (TRAILING_SLASH=false)
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: pnpm/action-setup@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-        working-directory: ./core
-
-      - name: Build catalyst-client
-        run: pnpm --filter @bigcommerce/catalyst-client build
-
-      - name: Build catalyst-core
-        run: pnpm --filter @bigcommerce/catalyst-core build
-
-      - name: Start server
-        run: |
-          pnpm start &
-          npx wait-on http://localhost:3000 --timeout 60000
-        working-directory: ./core
-        env:
-          PORT: 3000
-          AUTH_SECRET: ${{ secrets.TESTS_AUTH_SECRET }}
-          AUTH_TRUST_HOST: ${{ vars.TESTS_AUTH_TRUST_HOST }}
-          BIGCOMMERCE_TRUSTED_PROXY_SECRET: ${{ secrets.BIGCOMMERCE_TRUSTED_PROXY_SECRET }}
-          TESTS_LOCALE: ${{ vars.TESTS_LOCALE }}
-          TRAILING_SLASH: false
-
-      - name: Run E2E tests
-        run: pnpm exec playwright test tests/ui/e2e --grep @no-trailing-slash
-        working-directory: ./core
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
-
-      - name: Upload test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-no-trailing
-          path: ./core/.tests/reports/
-          retention-days: 3
-
-  e2e-tests-alternate-locale:
-    name: E2E Functional Tests (alternate locale)
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: pnpm/action-setup@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps chromium
-        working-directory: ./core
-
-      - name: Build catalyst-client
-        run: pnpm --filter @bigcommerce/catalyst-client build
-
-      - name: Build catalyst-core
-        run: pnpm --filter @bigcommerce/catalyst-core build
-
-      - name: Start server
-        run: |
-          pnpm start &
-          npx wait-on http://localhost:3000 --timeout 60000
-        working-directory: ./core
-        env:
-          PORT: 3000
-          AUTH_SECRET: ${{ secrets.TESTS_AUTH_SECRET }}
-          AUTH_TRUST_HOST: ${{ vars.TESTS_AUTH_TRUST_HOST }}
-          BIGCOMMERCE_TRUSTED_PROXY_SECRET: ${{ secrets.BIGCOMMERCE_TRUSTED_PROXY_SECRET }}
-          TESTS_LOCALE: ${{ vars.TESTS_ALTERNATE_LOCALE }}
-
-      - name: Run E2E tests
-        run: pnpm exec playwright test tests/ui/e2e --grep @alternate-locale
-        working-directory: ./core
-        env:
-          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
-
-      - name: Upload test results
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report-alternate-locale
+          name: ${{ matrix.artifact-name }}
           path: ./core/.tests/reports/
           retention-days: 3
