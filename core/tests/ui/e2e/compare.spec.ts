@@ -55,12 +55,14 @@ test('Validate compare page with alternate currency', async ({ page, catalog, cu
   await page.goto(`/compare/?ids=${product.id},${productWithVariants.id}`);
   await page.waitForLoadState('networkidle');
   await expect(
-    page.getByText(
-      format.number(product.price, {
-        style: 'currency',
-        currency: defaultCurrency,
-      }),
-    ),
+    page
+      .getByText(
+        format.number(product.price, {
+          style: 'currency',
+          currency: defaultCurrency,
+        }),
+      )
+      .first(),
   ).toBeVisible();
 
   await currency.selectCurrency(alternateCurrency);
@@ -87,7 +89,7 @@ test('Validate compare page with alternate currency', async ({ page, catalog, cu
     currency: alternateCurrency,
   });
 
-  await expect(page.getByText(formattedProductWithVariantsPrice)).toBeVisible();
+  await expect(page.getByText(formattedProductWithVariantsPrice).first()).toBeVisible();
 });
 
 test('Can add simple product to cart', async ({ page, catalog }) => {
