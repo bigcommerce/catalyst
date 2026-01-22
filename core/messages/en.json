@@ -315,7 +315,6 @@
       "CouponCode": {
         "apply": "Apply",
         "couponCode": "Coupon code",
-        "inputPlaceholder": "xxxxxx",
         "removeCouponCode": "Remove coupon code",
         "invalidCouponCode": "Please enter a valid coupon code",
         "cartNotFound": "An error occurred when retrieving your cart"

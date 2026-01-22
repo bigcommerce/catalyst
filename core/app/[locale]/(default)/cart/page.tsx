@@ -266,7 +266,6 @@ export default async function Cart({ params }: Props) {
             couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
             ctaLabel: t('CheckoutSummary.CouponCode.apply'),
             label: t('CheckoutSummary.CouponCode.couponCode'),
-            placeholder: t('CheckoutSummary.CouponCode.inputPlaceholder'),
             removeLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
           }}
           decrementLineItemLabel={t('decrement')}
