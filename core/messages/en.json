@@ -574,7 +574,7 @@
       "title": "Check balance",
       "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
       "inputLabel": "Code",
-      "inputPlaceholder": "Enter code",
+      "inputPlaceholder": "xxx-xxx-xxx-xxx",
       "purchasedDateLabel": "Purchased",
       "senderLabel": "From",
       "Errors": {
