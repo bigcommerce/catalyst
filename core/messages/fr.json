@@ -373,7 +373,7 @@
         "otherDetails": "Autres informations",
         "noOtherDetails": "Aucune information supplémentaire.",
         "viewOptions": "Afficher les options",
-        "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+        "successMessage": "{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à <cartLink>votre panier</cartLink>",
         "missingCart": "Panier introuvable. Veuillez réessayer plus tard.",
         "unknownError": "Erreur inconnue. Veuillez réessayer plus tard."
     },
@@ -383,7 +383,7 @@
             "increaseQuantity": "Augmenter la quantité :",
             "decreaseQuantity": "Réduire la quantité",
             "emptySelectPlaceholder": "Sélectionner une option",
-            "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "successMessage": "{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à <cartLink>votre panier</cartLink>",
             "missingCart": "Panier introuvable. Veuillez réessayer plus tard !",
             "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
             "variantRequiredError": "Ce produit nécessite de sélectionner des options pour pouvoir être ajouté au panier.",

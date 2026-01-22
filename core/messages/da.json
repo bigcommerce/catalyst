@@ -373,7 +373,7 @@
         "otherDetails": "Andre oplysninger",
         "noOtherDetails": "Der er ingen andre oplysninger.",
         "viewOptions": "Se muligheder",
-        "successMessage": "<cartLink>{CartItems, plural, =1 {1 vare} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+        "successMessage": "{cartItems, plural, =1 {1 vare} other {# varer}} tilføjet til <cartLink>din indkøbskurv</cartLink>",
         "missingCart": "Indkøbskurven blev ikke fundet. Prøv igen senere.",
         "unknownError": "Ukendt fejl. Prøv igen senere."
     },
@@ -383,7 +383,7 @@
             "increaseQuantity": "Øg mængden",
             "decreaseQuantity": "Reducer mængden",
             "emptySelectPlaceholder": "Vælg en valgmulighed",
-            "successMessage": "<cartLink>{CartItems, plural, =1 {1 vare} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
+            "successMessage": "{cartItems, plural, =1 {1 vare} other {# varer}} tilføjet til <cartLink>din indkøbskurv</cartLink>",
             "missingCart": "Indkøbskurven blev ikke fundet. Prøv igen senere.",
             "unknownError": "Ukendt fejl. Prøv igen senere.",
             "variantRequiredError": "Dette produkt kræver, at der vælges muligheder for at kunne lægges i indkøbskurven.",
