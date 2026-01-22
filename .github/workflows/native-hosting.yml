@@ -1,0 +1,69 @@
+name: Native Hosting
+
+on:
+  push:
+    branches: [canary]
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Catalyst CLI
+        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare
+        working-directory: core
+
+      - name: Update package scripts
+        run: |
+          jq '.scripts.build = "npm run generate && catalyst build --framework catalyst" |
+              .scripts.dev = "npm run generate && catalyst dev" |
+              .scripts.start = "catalyst start" |
+              .scripts["deploy"] = "catalyst deploy"' \
+          package.json > package.tmp.json
+          mv package.tmp.json package.json
+        working-directory: core
+
+      - name: Build Dependencies
+        run: pnpm --filter "./packages/*" build
+
+      - name: Catalyst Build
+        run: pnpm run build
+        working-directory: core
+        # These environment variables are required for the build step to succeed
+        env:
+          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+
+      - name: Catalyst Deploy
+        run: |
+          pnpm run deploy \
+            --secret BIGCOMMERCE_STORE_HASH=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }} \
+            --secret BIGCOMMERCE_STOREFRONT_TOKEN=${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }} \
+            --secret BIGCOMMERCE_CHANNEL_ID=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }} \
+            --secret AUTH_SECRET=${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        working-directory: core
+        # These environment variables are for the deploy command only
+        # Added here to avoid polluting the run script with additional flags
+        env:
+          BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
+          BIGCOMMERCE_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
