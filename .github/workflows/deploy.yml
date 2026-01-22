@@ -21,54 +21,51 @@ jobs:
             - name: Install Vercel CLI
               run: npm install --global vercel@latest
 
-            - name: Parse Tag and Build Configuration
-              id: parse-tag
+            - name: Configure catalyst-core deployment
+              if: contains(github.ref_name, 'catalyst-core@')
               run: |
-                  TAG="${{ github.ref_name }}"
-                  PACKAGE_NAME=$(echo "$TAG" | sed -E 's/^@bigcommerce\/([^@]+)@.*$/\1/')
+                  echo "DOMAIN=catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.CORE_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.CORE_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
 
-                  case "$PACKAGE_NAME" in
-                    "catalyst-core")
-                      echo "domain=catalyst-demo.site" >> $GITHUB_OUTPUT
-                      echo "env_prefix=CORE" >> $GITHUB_OUTPUT
-                      echo "is_makeswift=false" >> $GITHUB_OUTPUT
-                      ;;
-                    "catalyst-makeswift")
-                      echo "domain=makeswift.catalyst-demo.site" >> $GITHUB_OUTPUT
-                      echo "env_prefix=MAKESWIFT" >> $GITHUB_OUTPUT
-                      echo "is_makeswift=true" >> $GITHUB_OUTPUT
-                      ;;
-                    "catalyst-b2b-makeswift")
-                      echo "domain=b2b-makeswift.catalyst-demo.site" >> $GITHUB_OUTPUT
-                      echo "env_prefix=B2B_MAKESWIFT" >> $GITHUB_OUTPUT
-                      echo "is_makeswift=true" >> $GITHUB_OUTPUT
-                      ;;
-                    *)
-                      echo "Error: Unknown package name: $PACKAGE_NAME"
-                      exit 1
-                      ;;
-                  esac
+            - name: Configure catalyst-makeswift deployment
+              if: contains(github.ref_name, 'catalyst-makeswift@')
+              run: |
+                  echo "DOMAIN=makeswift.catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
+                  echo "MAKESWIFT_KEY=${{ secrets.MAKESWIFT_SITE_API_KEY }}" >> $GITHUB_ENV
+
+            - name: Configure catalyst-b2b-makeswift deployment
+              if: contains(github.ref_name, 'catalyst-b2b-makeswift@')
+              run: |
+                  echo "DOMAIN=b2b-makeswift.catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.B2B_MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.B2B_MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
+                  echo "MAKESWIFT_KEY=${{ secrets.B2B_MAKESWIFT_SITE_API_KEY }}" >> $GITHUB_ENV
 
             - name: Deploy to Vercel
               id: deploy
+              timeout-minutes: 15
               env:
-                  CHANNEL_ID: ${{ steps.parse-tag.outputs.env_prefix == 'CORE' && vars.CORE_BIGCOMMERCE_CHANNEL_ID || steps.parse-tag.outputs.env_prefix == 'MAKESWIFT' && vars.MAKESWIFT_BIGCOMMERCE_CHANNEL_ID || vars.B2B_MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}
-                  STOREFRONT_TOKEN: ${{ steps.parse-tag.outputs.env_prefix == 'CORE' && secrets.CORE_BIGCOMMERCE_STOREFRONT_TOKEN || steps.parse-tag.outputs.env_prefix == 'MAKESWIFT' && secrets.MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN || secrets.B2B_MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}
-                  MAKESWIFT_KEY: ${{ steps.parse-tag.outputs.env_prefix == 'MAKESWIFT' && secrets.MAKESWIFT_SITE_API_KEY || secrets.B2B_MAKESWIFT_SITE_API_KEY }}
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
               run: |
-                  # Build deploy command with env vars
-                  DEPLOY_CMD="vercel deploy --token=${{ secrets.VERCEL_TOKEN }}"
-                  DEPLOY_CMD="$DEPLOY_CMD --env BIGCOMMERCE_CHANNEL_ID=$CHANNEL_ID"
-                  DEPLOY_CMD="$DEPLOY_CMD --env BIGCOMMERCE_STOREFRONT_TOKEN=$STOREFRONT_TOKEN"
+                  DEPLOY_ARGS=(
+                    --token="$VERCEL_TOKEN"
+                    --env BIGCOMMERCE_CHANNEL_ID="$CHANNEL_ID"
+                    --env BIGCOMMERCE_STOREFRONT_TOKEN="$STOREFRONT_TOKEN"
+                  )
 
-                  # Add Makeswift-specific env var if applicable
-                  if [[ "${{ steps.parse-tag.outputs.is_makeswift }}" == "true" ]]; then
-                    DEPLOY_CMD="$DEPLOY_CMD --env MAKESWIFT_SITE_API_KEY=$MAKESWIFT_KEY"
+                  if [[ -n "$MAKESWIFT_KEY" ]]; then
+                    DEPLOY_ARGS+=(--env MAKESWIFT_SITE_API_KEY="$MAKESWIFT_KEY")
                   fi
 
-                  DEPLOYMENT_URL=$(eval $DEPLOY_CMD)
+                  DEPLOYMENT_URL=$(vercel deploy "${DEPLOY_ARGS[@]}")
                   echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
 
             - name: Set Vercel Domain Alias
+              timeout-minutes: 5
+              env:
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
               run: |
-                  vercel alias ${{ steps.deploy.outputs.deployment_url }} ${{ steps.parse-tag.outputs.domain }} --token=${{ secrets.VERCEL_TOKEN }}
+                  vercel alias ${{ steps.deploy.outputs.deployment_url }} $DOMAIN --token="$VERCEL_TOKEN"
