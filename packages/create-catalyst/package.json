@@ -1,5 +1,6 @@
 {
   "name": "@bigcommerce/create-catalyst",
+  "prettier": "@bigcommerce/eslint-config/prettier",
   "version": "0.19.0",
   "type": "module",
   "bin": "bin/index.cjs",

@@ -60,9 +60,7 @@ export const Facets = ({ facets, pageType }: Props) => {
     const sortParam = searchParams.get('sort');
     const searchParam = searchParams.get('term');
     const filteredSearchParams = Array.from(formData.entries())
-      .filter((entry): entry is [string, string] => {
-        return !(entry instanceof File);
-      })
+      .filter((entry): entry is [string, string] => !(entry instanceof File))
       .filter(([, value]) => value !== '');
 
     const newSearchParams = new URLSearchParams(filteredSearchParams);

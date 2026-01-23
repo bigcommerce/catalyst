@@ -1,4 +1,3 @@
-/* eslint-disable check-file/folder-naming-convention */
 /*
  * Proxy to the store's favicon URL
  *

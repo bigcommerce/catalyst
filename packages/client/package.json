@@ -8,8 +8,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
-    "lint-fix": "eslint . --ext .ts,.js,.cjs --fix",
+    "lint": "eslint . --max-warnings 0",
+    "lint-fix": "eslint . --fix",
     "gen-types": "dotenv -e .env.local -- node scripts/types.js"
   },
   "files": [

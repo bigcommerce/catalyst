@@ -43,7 +43,9 @@ export async function handleAddToCart(
     let dateFieldOptionInput;
 
     // Skip empty strings since option is empty
-    if (optionValueEntityId === '') return accum;
+    if (optionValueEntityId === '') {
+      return accum;
+    }
 
     switch (option.__typename) {
       case 'MultipleChoiceOption':

@@ -28,6 +28,6 @@ export class AccountFactory {
   }
 
   async cleanup() {
-    await Promise.all(this.accounts.map(async (account) => await deleteAccount(account.id)));
+    await Promise.all(this.accounts.map(async (account) => deleteAccount(account.id)));
   }
 }

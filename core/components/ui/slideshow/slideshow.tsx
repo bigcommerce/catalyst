@@ -48,10 +48,21 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
 
   useEffect(() => {
     const autoplay = setInterval(() => {
-      if (isPaused) return;
-      if (isHoverPaused) return;
-      if (!emblaApi) return;
-      if (visibilityState === 'hidden') return;
+      if (isPaused) {
+        return;
+      }
+
+      if (isHoverPaused) {
+        return;
+      }
+
+      if (!emblaApi) {
+        return;
+      }
+
+      if (visibilityState === 'hidden') {
+        return;
+      }
 
       emblaApi.scrollNext();
     }, interval);
@@ -68,7 +79,9 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
   }, [visibilityState]);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi) {
+      return;
+    }
 
     // We must reinitialize Embla on client-side navigation
     // E.g., navigating from Homepage to PDP to Homepage
@@ -88,11 +101,15 @@ const Slideshow = ({ className, interval = 15_000, slides }: Props) => {
   }, [emblaApi, setActiveSlide]);
 
   const scrollPrev = () => {
-    if (emblaApi) emblaApi.scrollPrev();
+    if (emblaApi) {
+      emblaApi.scrollPrev();
+    }
   };
 
   const scrollNext = () => {
-    if (emblaApi) emblaApi.scrollNext();
+    if (emblaApi) {
+      emblaApi.scrollNext();
+    }
   };
 
   return (

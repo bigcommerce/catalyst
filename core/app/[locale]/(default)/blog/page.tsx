@@ -39,13 +39,11 @@ export default async function Blog(props: Props) {
       <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
 
       <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return (
-            <li key={post.entityId}>
-              <BlogPostCard data={post} />
-            </li>
-          );
-        })}
+        {blogPosts.posts.items.map((post) => (
+          <li key={post.entityId}>
+            <BlogPostCard data={post} />
+          </li>
+        ))}
       </ul>
 
       <Pagination

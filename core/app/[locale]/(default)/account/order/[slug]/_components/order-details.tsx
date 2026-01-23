@@ -261,20 +261,18 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                   />
                 )}
                 <ul className="my-4 flex flex-col gap-4">
-                  {lineItems.map((shipment) => {
-                    return (
-                      <li key={shipment.entityId}>
-                        <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
-                          <ProductSnippet
-                            imagePriority={true}
-                            imageSize="square"
-                            isExtended={true}
-                            product={assembleProductData(shipment)}
-                          />
-                        </Suspense>
-                      </li>
-                    );
-                  })}
+                  {lineItems.map((shipment) => (
+                    <li key={shipment.entityId}>
+                      <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
+                        <ProductSnippet
+                          imagePriority={true}
+                          imageSize="square"
+                          isExtended={true}
+                          product={assembleProductData(shipment)}
+                        />
+                      </Suspense>
+                    </li>
+                  ))}
                 </ul>
               </div>
             );

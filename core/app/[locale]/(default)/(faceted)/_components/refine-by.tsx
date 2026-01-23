@@ -62,13 +62,11 @@ const mapFacetsToRefinements = ({ facets, pageType }: Props) =>
         case 'ProductAttributeSearchFilter':
           return facet.attributes
             .filter(({ isSelected }) => isSelected)
-            .map<FacetProps<string>>(({ value }) => {
-              return {
-                key: `attr_${facet.filterName}`,
-                display_name: value,
-                value,
-              };
-            });
+            .map<FacetProps<string>>(({ value }) => ({
+              key: `attr_${facet.filterName}`,
+              display_name: value,
+              value,
+            }));
 
         case 'OtherSearchFilter': {
           const { freeShipping, isFeatured, isInStock } = facet;

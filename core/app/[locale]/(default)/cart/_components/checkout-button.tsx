@@ -18,11 +18,9 @@ const InternalButton = () => {
   );
 };
 
-export const CheckoutButton = ({ cartId }: { cartId: string }) => {
-  return (
-    <form action={redirectToCheckout}>
-      <input name="cartId" type="hidden" value={cartId} />
-      <InternalButton />
-    </form>
-  );
-};
+export const CheckoutButton = ({ cartId }: { cartId: string }) => (
+  <form action={redirectToCheckout}>
+    <input name="cartId" type="hidden" value={cartId} />
+    <InternalButton />
+  </form>
+);

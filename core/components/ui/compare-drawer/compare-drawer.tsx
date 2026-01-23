@@ -79,15 +79,13 @@ const CompareDrawer = () => {
       <div className="hidden md:flex">
         <CompareLink key={products.toString()} products={products} />
         <ul className="flex overflow-auto">
-          {products.map((product) => {
-            return (
-              <Product
-                key={product.id}
-                onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
-                product={product}
-              />
-            );
-          })}
+          {products.map((product) => (
+            <Product
+              key={product.id}
+              onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
+              product={product}
+            />
+          ))}
         </ul>
       </div>
 
@@ -101,15 +99,13 @@ const CompareDrawer = () => {
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content className="data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down mb-4 overflow-hidden transition-all">
             <ul className="flex max-h-44 flex-col overflow-auto">
-              {products.map((product) => {
-                return (
-                  <Product
-                    key={product.id}
-                    onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
-                    product={product}
-                  />
-                );
-              })}
+              {products.map((product) => (
+                <Product
+                  key={product.id}
+                  onDismiss={() => setProducts(products.filter(({ id }) => id !== product.id))}
+                  product={product}
+                />
+              ))}
             </ul>
           </AccordionPrimitive.Content>
         </AccordionPrimitive.Item>

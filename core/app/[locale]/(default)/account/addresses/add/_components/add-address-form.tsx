@@ -276,14 +276,12 @@ export const AddAddressForm = ({ addressFields, countries, defaultCountry }: Add
                   <PicklistOrText
                     defaultValue={
                       fieldId === FieldNameToFieldId.stateOrProvince
-                        ? countryStates[0]?.name
+                        ? countryStates[0].name
                         : undefined
                     }
                     field={field}
                     name={fieldName}
-                    options={countryStates.map(({ name }) => {
-                      return { entityId: name, label: name };
-                    })}
+                    options={countryStates.map(({ name }) => ({ entityId: name, label: name }))}
                   />
                 </FieldWrapper>
               );

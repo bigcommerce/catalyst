@@ -26,21 +26,23 @@ const Carousel = ({ className, title, pageSize = 4, products, ...props }: Props)
 
   const t = useTranslations('Components.Carousel');
 
-  const groupedProducts = useMemo(() => {
-    return products.reduce<ReactNode[][]>((batches, _, index) => {
-      if (index % itemsPerGroup === 0) {
-        batches.push([]);
-      }
+  const groupedProducts = useMemo(
+    () =>
+      products.reduce<ReactNode[][]>((batches, _, index) => {
+        if (index % itemsPerGroup === 0) {
+          batches.push([]);
+        }
 
-      const product = products[index];
+        const product = products[index];
 
-      if (batches[batches.length - 1] && product) {
-        batches[batches.length - 1]?.push(product);
-      }
+        if (batches[batches.length - 1] && product) {
+          batches[batches.length - 1]?.push(product);
+        }
 
-      return batches;
-    }, []);
-  }, [products, itemsPerGroup]);
+        return batches;
+      }, []),
+    [products, itemsPerGroup],
+  );
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);

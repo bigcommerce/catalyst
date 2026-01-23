@@ -89,9 +89,9 @@ export const Checkboxes = ({
                     if (checked) {
                       setCheckboxValues((prevState) => [...prevState, +entityId]);
                     } else {
-                      setCheckboxValues((prevState) => {
-                        return prevState.filter((prevValue) => prevValue !== +entityId);
-                      });
+                      setCheckboxValues((prevState) =>
+                        prevState.filter((prevValue) => prevValue !== +entityId),
+                      );
                     }
                   }}
                   required={field.isRequired && checkboxValues.length === 0 ? true : undefined}

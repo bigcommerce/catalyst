@@ -16,28 +16,26 @@ type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
 type DigitalItem = FragmentResult['digitalItems'][number];
 
-export type Product = PhysicalItem | DigitalItem;
+export type Product = PhysicalItem;
 
 interface Props {
   currency: string;
   product: Product;
 }
 
-const lineItemTransform = (item: Product) => {
-  return {
-    product_id: item.productEntityId.toString(),
-    product_name: item.name,
-    brand_name: item.brand ?? undefined,
-    sku: item.sku ?? undefined,
-    sale_price: item.extendedSalePrice.value,
-    purchase_price: item.listPrice.value,
-    base_price: item.originalPrice.value,
-    retail_price: item.listPrice.value,
-    currency: item.listPrice.currencyCode,
-    variant_id: item.variantEntityId ? [item.variantEntityId] : undefined,
-    quantity: item.quantity,
-  };
-};
+const lineItemTransform = (item: Product) => ({
+  product_id: item.productEntityId.toString(),
+  product_name: item.name,
+  brand_name: item.brand ?? undefined,
+  sku: item.sku ?? undefined,
+  sale_price: item.extendedSalePrice.value,
+  purchase_price: item.listPrice.value,
+  base_price: item.originalPrice.value,
+  retail_price: item.listPrice.value,
+  currency: item.listPrice.currencyCode,
+  variant_id: item.variantEntityId ? [item.variantEntityId] : undefined,
+  quantity: item.quantity,
+});
 
 export const RemoveItem = ({ currency, product }: Props) => {
   const t = useTranslations('Cart.SubmitRemoveItem');

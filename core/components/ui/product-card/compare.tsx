@@ -42,11 +42,7 @@ export const Compare = ({ id, image, name }: Props) => {
         },
       ]);
     } else {
-      setProducts(
-        products.filter(({ id: productId }) => {
-          return productId !== id;
-        }),
-      );
+      setProducts(products.filter(({ id: productId }) => productId !== id));
     }
   };
 

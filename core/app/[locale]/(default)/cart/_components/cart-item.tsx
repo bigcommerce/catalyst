@@ -140,7 +140,7 @@ type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
 type DigitalItem = FragmentResult['digitalItems'][number];
 
-export type Product = PhysicalItem | DigitalItem;
+export type Product = PhysicalItem;
 
 interface Props {
   product: Product;

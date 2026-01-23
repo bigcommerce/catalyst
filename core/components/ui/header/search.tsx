@@ -177,18 +177,16 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     {t('categories')}
                   </h3>
                   <ul id="categories" role="listbox">
-                    {searchResults.categories.map(({ label, href }) => {
-                      return (
-                        <li className="mb-3 last:mb-6" key={label}>
-                          <a
-                            className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={href}
-                          >
-                            {label}
-                          </a>
-                        </li>
-                      );
-                    })}
+                    {searchResults.categories.map(({ label, href }) => (
+                      <li className="mb-3 last:mb-6" key={label}>
+                        <a
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                          href={href}
+                        >
+                          {label}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </section>
                 <section aria-label={t('products')}>
@@ -196,58 +194,54 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     {t('products')}
                   </h3>
                   <ul id="products" role="listbox">
-                    {searchResults.products.map(({ name, href, price, image }) => {
-                      return (
-                        <li key={href}>
-                          <a
-                            className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={href}
-                          >
-                            {image ? (
-                              <Image
-                                alt={image.altText}
-                                className="self-start object-contain"
-                                height={80}
-                                src={image.src}
-                                width={80}
-                              />
-                            ) : (
-                              <span className="flex h-20 w-20 flex-shrink-0 items-center justify-center bg-gray-200 text-lg font-bold text-gray-500">
-                                {t('photo')}
-                              </span>
-                            )}
-
-                            <span className="flex flex-col">
-                              <p className="text-lg font-bold lg:text-2xl">{name}</p>
-                              {Boolean(price) &&
-                                (typeof price === 'object' ? (
-                                  <p className="flex flex-col gap-1">
-                                    {price.type === 'range' && (
-                                      <span>
-                                        {price.minValue} - {price.maxValue}
-                                      </span>
-                                    )}
-
-                                    {price.type === 'sale' && (
-                                      <>
-                                        <span>
-                                          Was:{' '}
-                                          <span className="line-through">
-                                            {price.previousValue}
-                                          </span>
-                                        </span>
-                                        <span>Now: {price.currentValue}</span>
-                                      </>
-                                    )}
-                                  </p>
-                                ) : (
-                                  <span>{price}</span>
-                                ))}
+                    {searchResults.products.map(({ name, href, price, image }) => (
+                      <li key={href}>
+                        <a
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                          href={href}
+                        >
+                          {image ? (
+                            <Image
+                              alt={image.altText}
+                              className="self-start object-contain"
+                              height={80}
+                              src={image.src}
+                              width={80}
+                            />
+                          ) : (
+                            <span className="flex h-20 w-20 flex-shrink-0 items-center justify-center bg-gray-200 text-lg font-bold text-gray-500">
+                              {t('photo')}
                             </span>
-                          </a>
-                        </li>
-                      );
-                    })}
+                          )}
+
+                          <span className="flex flex-col">
+                            <p className="text-lg font-bold lg:text-2xl">{name}</p>
+                            {Boolean(price) &&
+                              (typeof price === 'object' ? (
+                                <p className="flex flex-col gap-1">
+                                  {price.type === 'range' && (
+                                    <span>
+                                      {price.minValue} - {price.maxValue}
+                                    </span>
+                                  )}
+
+                                  {price.type === 'sale' && (
+                                    <>
+                                      <span>
+                                        Was:{' '}
+                                        <span className="line-through">{price.previousValue}</span>
+                                      </span>
+                                      <span>Now: {price.currentValue}</span>
+                                    </>
+                                  )}
+                                </p>
+                              ) : (
+                                <span>{price}</span>
+                              ))}
+                          </span>
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </section>
                 <section aria-label={t('brands')}>
@@ -255,18 +249,16 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     {t('brands')}
                   </h3>
                   <ul id="brands" role="listbox">
-                    {searchResults.brands.map(({ label, href }) => {
-                      return (
-                        <li className="mb-3 last:mb-6" key={label}>
-                          <a
-                            className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-                            href={href}
-                          >
-                            {label}
-                          </a>
-                        </li>
-                      );
-                    })}
+                    {searchResults.brands.map(({ label, href }) => (
+                      <li className="mb-3 last:mb-6" key={label}>
+                        <a
+                          className="align-items mb-6 flex gap-x-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                          href={href}
+                        >
+                          {label}
+                        </a>
+                      </li>
+                    ))}
                   </ul>
                 </section>
               </div>

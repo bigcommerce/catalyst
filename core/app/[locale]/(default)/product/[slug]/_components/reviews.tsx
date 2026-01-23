@@ -77,24 +77,22 @@ export const Reviews = async ({ productId }: Props) => {
             <p className="pb-6 pt-1">{t('unreviewed')}</p>
           </li>
         ) : (
-          reviews.map((review) => {
-            return (
-              <li key={review.entityId}>
-                <p className="mb-3 flex flex-nowrap text-primary">
-                  <Rating rating={review.rating} />
-                  <span className="sr-only">{t('reviewRating', { rating: review.rating })}</span>
-                </p>
-                <h4 className="text-base font-semibold">{review.title}</h4>
-                <p className="mb-2 text-gray-500">
-                  {t('reviewAuthor', { author: review.author.name })}{' '}
-                  {format.dateTime(new Date(review.createdAt.utc), {
-                    dateStyle: 'medium',
-                  })}
-                </p>
-                <p className="mb-6">{review.text}</p>
-              </li>
-            );
-          })
+          reviews.map((review) => (
+            <li key={review.entityId}>
+              <p className="mb-3 flex flex-nowrap text-primary">
+                <Rating rating={review.rating} />
+                <span className="sr-only">{t('reviewRating', { rating: review.rating })}</span>
+              </p>
+              <h4 className="text-base font-semibold">{review.title}</h4>
+              <p className="mb-2 text-gray-500">
+                {t('reviewAuthor', { author: review.author.name })}{' '}
+                {format.dateTime(new Date(review.createdAt.utc), {
+                  dateStyle: 'medium',
+                })}
+              </p>
+              <p className="mb-6">{review.text}</p>
+            </li>
+          ))
         )}
       </ul>
       {reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />}

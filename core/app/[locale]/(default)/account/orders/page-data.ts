@@ -112,15 +112,13 @@ export const getCustomerOrders = cache(
     }
 
     const data = {
-      orders: removeEdgesAndNodes(orders).map((order) => {
-        return {
-          ...order,
-          consignments: {
-            shipping:
-              order.consignments?.shipping && removeEdgesAndNodes(order.consignments.shipping),
-          },
-        };
-      }),
+      orders: removeEdgesAndNodes(orders).map((order) => ({
+        ...order,
+        consignments: {
+          shipping:
+            order.consignments?.shipping && removeEdgesAndNodes(order.consignments.shipping),
+        },
+      })),
       pageInfo: orders.pageInfo,
     };
 

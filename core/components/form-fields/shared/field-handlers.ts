@@ -37,7 +37,9 @@ const createPreSubmitPicklistValidationHandler = (
   );
 
   return (form: HTMLFormElement | null) => {
-    if (!form) return;
+    if (!form) {
+      return;
+    }
 
     const multipleChoices = Object.fromEntries(
       [...new FormData(form).entries()]
@@ -79,7 +81,9 @@ const createPreSubmitCheckboxesValidationHandler = (
   );
 
   return (form: HTMLFormElement | null) => {
-    if (!form) return;
+    if (!form) {
+      return;
+    }
 
     const checkboxesFormFields = Object.fromEntries(
       [...new FormData(form).entries()]

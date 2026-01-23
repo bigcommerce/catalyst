@@ -21,7 +21,7 @@ import { SignJWT } from 'jose';
 export const generateCustomerLoginApiJwt = async (
   customerId: number,
   channelId: number,
-  redirectTo: string = '/account/orders',
+  redirectTo = '/account/orders',
   additionalClaims?: Record<string, any>,
 ): Promise<string> => {
   const clientId = process.env.BIGCOMMERCE_CLIENT_ID;
@@ -56,5 +56,5 @@ export const generateCustomerLoginApiJwt = async (
   const secretKey = new TextEncoder().encode(clientSecret);
 
   // Create and sign the JWT
-  return await new SignJWT(payload).setProtectedHeader({ alg: 'HS256', typ: 'JWT' }).sign(secretKey);
+  return new SignJWT(payload).setProtectedHeader({ alg: 'HS256', typ: 'JWT' }).sign(secretKey);
 };

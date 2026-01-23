@@ -252,110 +252,108 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
-export const withRoutes: MiddlewareFactory = () => {
-  return async (request, event) => {
-    const locale = request.headers.get('x-bc-locale') ?? '';
+export const withRoutes: MiddlewareFactory = () => async (request, event) => {
+  const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+  const { route, status } = await getRouteInfo(request, event);
 
-    if (status === 'MAINTENANCE') {
-      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
-    }
+  if (status === 'MAINTENANCE') {
+    // 503 status code not working - https://github.com/vercel/next.js/issues/50155
+    return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
+  }
 
-    const redirectConfig = {
-      // Use 301 status code as it is more universally supported by crawlers
-      status: 301,
-      nextConfig: {
-        // Preserve the trailing slash if it was present in the original URL
-        // BigCommerce by default returns the trailing slash.
-        trailingSlash: process.env.TRAILING_SLASH !== 'false',
-      },
-    };
+  const redirectConfig = {
+    // Use 301 status code as it is more universally supported by crawlers
+    status: 301,
+    nextConfig: {
+      // Preserve the trailing slash if it was present in the original URL
+      // BigCommerce by default returns the trailing slash.
+      trailingSlash: process.env.TRAILING_SLASH !== 'false',
+    },
+  };
 
-    if (route?.redirect) {
-      switch (route.redirect.to.__typename) {
-        case 'BlogPostRedirect':
-        case 'BrandRedirect':
-        case 'CategoryRedirect':
-        case 'PageRedirect':
-        case 'ProductRedirect': {
-          // For dynamic redirects, assume an internal redirect and construct the URL from the path
-          const redirectUrl = new URL(route.redirect.to.path, request.url);
+  if (route?.redirect) {
+    switch (route.redirect.to.__typename) {
+      case 'BlogPostRedirect':
+      case 'BrandRedirect':
+      case 'CategoryRedirect':
+      case 'PageRedirect':
+      case 'ProductRedirect': {
+        // For dynamic redirects, assume an internal redirect and construct the URL from the path
+        const redirectUrl = new URL(route.redirect.to.path, request.url);
 
-          return NextResponse.redirect(redirectUrl, redirectConfig);
-        }
-
-        default: {
-          // For manual redirects, redirect to the full URL to handle cases
-          // where the destination URL might be external to the site.
-          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
-        }
-      }
-    }
-
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    let postfix = '';
-
-    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
-      postfix = '/static';
-    }
-
-    const node = route?.node;
-    let url: string;
-
-    switch (node?.__typename) {
-      case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'Category': {
-        url = `/${locale}/category/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}${postfix}`;
-        break;
-      }
-
-      case 'NormalPage': {
-        url = `/${locale}/webpages/normal/${node.id}`;
-        break;
-      }
-
-      case 'ContactPage': {
-        url = `/${locale}/webpages/contact/${node.id}`;
-        break;
-      }
-
-      case 'RawHtmlPage': {
-        const { htmlBody } = await getRawWebPageContent(node.id);
-
-        return new NextResponse(htmlBody, {
-          headers: { 'content-type': 'text/html' },
-        });
+        return NextResponse.redirect(redirectUrl, redirectConfig);
       }
 
       default: {
-        const { pathname } = new URL(request.url);
-
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        if (cleanPathName === '/' && postfix) {
-          url = `/${locale}${postfix}`;
-          break;
-        }
-
-        url = `/${locale}${cleanPathName}`;
+        // For manual redirects, redirect to the full URL to handle cases
+        // where the destination URL might be external to the site.
+        return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
       }
     }
+  }
 
-    const rewriteUrl = new URL(url, request.url);
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  let postfix = '';
 
-    rewriteUrl.search = request.nextUrl.search;
+  if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
+    postfix = '/static';
+  }
 
-    return NextResponse.rewrite(rewriteUrl);
-  };
+  const node = route?.node;
+  let url: string;
+
+  switch (node?.__typename) {
+    case 'Brand': {
+      url = `/${locale}/brand/${node.entityId}${postfix}`;
+      break;
+    }
+
+    case 'Category': {
+      url = `/${locale}/category/${node.entityId}${postfix}`;
+      break;
+    }
+
+    case 'Product': {
+      url = `/${locale}/product/${node.entityId}${postfix}`;
+      break;
+    }
+
+    case 'NormalPage': {
+      url = `/${locale}/webpages/normal/${node.id}`;
+      break;
+    }
+
+    case 'ContactPage': {
+      url = `/${locale}/webpages/contact/${node.id}`;
+      break;
+    }
+
+    case 'RawHtmlPage': {
+      const { htmlBody } = await getRawWebPageContent(node.id);
+
+      return new NextResponse(htmlBody, {
+        headers: { 'content-type': 'text/html' },
+      });
+    }
+
+    default: {
+      const { pathname } = new URL(request.url);
+
+      const cleanPathName = clearLocaleFromPath(pathname, locale);
+
+      if (cleanPathName === '/' && postfix) {
+        url = `/${locale}${postfix}`;
+        break;
+      }
+
+      url = `/${locale}${cleanPathName}`;
+    }
+  }
+
+  const rewriteUrl = new URL(url, request.url);
+
+  rewriteUrl.search = request.nextUrl.search;
+
+  return NextResponse.rewrite(rewriteUrl);
 };

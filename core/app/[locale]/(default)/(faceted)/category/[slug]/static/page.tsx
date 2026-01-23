@@ -52,12 +52,12 @@ export async function generateStaticParams() {
 
   const entityIds = getEntityIdsOfChildren(categories);
 
-  return locales.map((locale) => {
-    return entityIds.map((entityId) => ({
+  return locales.map((locale) =>
+    entityIds.map((entityId) => ({
       locale,
       slug: entityId.toString(),
-    }));
-  });
+    })),
+  );
 }
 
 export const dynamic = 'force-static';

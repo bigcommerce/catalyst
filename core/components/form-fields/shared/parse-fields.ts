@@ -72,7 +72,7 @@ const updateFormFields = ({
         fieldValueEntityIds: [Number(fieldValue)],
         fieldEntityId,
       };
-      const previouslyParsedCheckbox = definedCheckboxes?.find(
+      const previouslyParsedCheckbox = definedCheckboxes.find(
         (defined) => fieldEntityId === defined.fieldEntityId,
       );
 

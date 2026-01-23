@@ -1,5 +1,4 @@
 import { expect, test } from '~/tests/fixtures';
-
 import routes from '~/tests/routes';
 
 test('Changing selection on radio button options should update query parameters', async ({
