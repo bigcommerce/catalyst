@@ -43,6 +43,8 @@ jobs:
                   echo "CHANNEL_ID=${{ vars.B2B_MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
                   echo "STOREFRONT_TOKEN=${{ secrets.B2B_MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
                   echo "MAKESWIFT_KEY=${{ secrets.B2B_MAKESWIFT_SITE_API_KEY }}" >> $GITHUB_ENV
+                  echo "B2B_API_HOST=${{ vars.B2B_API_HOST }}" >> $GITHUB_ENV
+                  echo "BIGCOMMERCE_ACCESS_TOKEN=${{ secrets.B2B_BIGCOMMERCE_ACCESS_TOKEN }}" >> $GITHUB_ENV
 
             - name: Deploy to Vercel
               id: deploy
@@ -58,6 +60,14 @@ jobs:
 
                   if [[ -n "$MAKESWIFT_KEY" ]]; then
                     DEPLOY_ARGS+=(--env MAKESWIFT_SITE_API_KEY="$MAKESWIFT_KEY")
+                  fi
+
+                  if [[ -n "$B2B_API_HOST" ]]; then
+                    DEPLOY_ARGS+=(--env B2B_API_HOST="$B2B_API_HOST")
+                  fi
+
+                  if [[ -n "$BIGCOMMERCE_ACCESS_TOKEN" ]]; then
+                    DEPLOY_ARGS+=(--env BIGCOMMERCE_ACCESS_TOKEN="$BIGCOMMERCE_ACCESS_TOKEN")
                   fi
 
                   DEPLOYMENT_URL=$(vercel deploy "${DEPLOY_ARGS[@]}")
