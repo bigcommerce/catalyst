@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": minor
+"@bigcommerce/catalyst-core": patch
 ---
 
 Add default optional text to form input labels for inputs that are not required.
