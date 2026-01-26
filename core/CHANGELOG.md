@@ -1,5 +1,1070 @@
 # Changelog
 
+## 1.4.1
+
+### Patch Changes
+
+- [#2827](https://github.com/bigcommerce/catalyst/pull/2827) [`49b1097`](https://github.com/bigcommerce/catalyst/commit/49b1097c5d4f56b8c3a8d3d97181b09cb79a4070) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Filter out child cart items (items with `parentEntityId`) from cart and cart analytics to prevent duplicate line items when products have parent-child relationships, such as product bundles.
+
+  ## Migration steps
+
+  ### Step 1: GraphQL Fragment Updates
+
+  The `parentEntityId` field has been added to both physical and digital cart item fragments to identify child items.
+
+  Update `core/app/[locale]/(default)/cart/page-data.ts`:
+
+  ```diff
+    export const PhysicalItemFragment = graphql(`
+      fragment PhysicalItemFragment on CartPhysicalItem {
+        entityId
+        quantity
+        productEntityId
+        variantEntityId
+  +     parentEntityId
+        listPrice {
+          currencyCode
+          value
+        }
+      }
+    `);
+
+    export const DigitalItemFragment = graphql(`
+      fragment DigitalItemFragment on CartDigitalItem {
+        entityId
+        quantity
+        productEntityId
+        variantEntityId
+  +     parentEntityId
+        listPrice {
+          currencyCode
+          value
+        }
+      }
+    `);
+  ```
+
+  ### Step 2: Cart Display Filtering
+
+  Cart line items are now filtered to exclude child items when displaying the cart.
+
+  Update `core/app/[locale]/(default)/cart/page.tsx`:
+
+  ```diff
+    const lineItems = [
+      ...cart.lineItems.giftCertificates,
+      ...cart.lineItems.physicalItems,
+      ...cart.lineItems.digitalItems,
+  - ];
+  + ].filter((item) => !('parentEntityId' in item) || !item.parentEntityId);
+  ```
+
+  ### Step 3: Analytics Data Filtering
+
+  Analytics data collection now only includes top-level items to prevent duplicate tracking.
+
+  Update `core/app/[locale]/(default)/cart/page.tsx` in the `getAnalyticsData` function:
+
+  ```diff
+  - const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  + const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].filter(
+  +   (item) => !item.parentEntityId, // Only include top-level items
+  + );
+  ```
+
+  ### Step 4: Styling Update
+
+  Cart subtitle text color has been updated for improved contrast.
+
+  Update `core/vibes/soul/sections/cart/client.tsx`:
+
+  ```diff
+  -                  <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
+  +                  <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-400)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
+                       {lineItem.subtitle}
+                     </span>
+  ```
+
+- [#2811](https://github.com/bigcommerce/catalyst/pull/2811) [`b57bffa`](https://github.com/bigcommerce/catalyst/commit/b57bffaf28b8c9714f99f7af581871f6e9f6f944) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix pagination cursor persistence when changing sort order. The `before` and `after` query parameters are now cleared when the sort option changes, preventing stale pagination cursors from causing incorrect results or empty pages.
+
+- [#2833](https://github.com/bigcommerce/catalyst/pull/2833) [`a520dbc`](https://github.com/bigcommerce/catalyst/commit/a520dbcf14e78b54e10a38c05e11f427b30431c1) Thanks [@jamesqquick](https://github.com/jamesqquick)! - Add placeholders for gift certificate inputs and remove redundant placeholders in the gift certificate purchase form.
+
+- [#2818](https://github.com/bigcommerce/catalyst/pull/2818) [`74e4dd1`](https://github.com/bigcommerce/catalyst/commit/74e4dd11ebf00c312695013c86aab29930fd7a53) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Disable product filters that are no longer available based on the selection.
+
+  ## Migration steps
+
+  ### Step 1
+
+  Update the `facetsTransformer` function in `core/data-transformers/facets-transformer.ts` to handle disabled filters:
+
+  ```diff
+    return allFacets.map((facet) => {
+      const refinedFacet = refinedFacets.find((f) => f.displayName === facet.displayName);
+
+  +    if (refinedFacet == null) {
+  +      return null;
+  +    }
+  +
+      if (facet.__typename === 'CategorySearchFilter') {
+        const refinedCategorySearchFilter =
+  -        refinedFacet?.__typename === 'CategorySearchFilter' ? refinedFacet : null;
+  +        refinedFacet.__typename === 'CategorySearchFilter' ? refinedFacet : null;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: 'categoryIn',
+          label: facet.displayName,
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: facet.categories.map((category) => {
+            const refinedCategory = refinedCategorySearchFilter?.categories.find(
+              (c) => c.entityId === category.entityId,
+            );
+            const isSelected = filters.categoryEntityIds?.includes(category.entityId) === true;
+  +          const disabled = refinedCategory == null && !isSelected;
+  +          const productCountLabel = disabled ? '' : ` (${category.productCount})`;
+  +          const label = facet.displayProductCount
+  +            ? `${category.name}${productCountLabel}`
+  +            : category.name;
+
+            return {
+  -            label: facet.displayProductCount
+  -              ? `${category.name} (${category.productCount})`
+  -              : category.name,
+  +            label,
+              value: category.entityId.toString(),
+  -            disabled: refinedCategory == null && !isSelected,
+  +            disabled,
+            };
+          }),
+        };
+      }
+
+      if (facet.__typename === 'BrandSearchFilter') {
+        const refinedBrandSearchFilter =
+  -        refinedFacet?.__typename === 'BrandSearchFilter' ? refinedFacet : null;
+  +        refinedFacet.__typename === 'BrandSearchFilter' ? refinedFacet : null;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: 'brand',
+          label: facet.displayName,
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: facet.brands.map((brand) => {
+            const refinedBrand = refinedBrandSearchFilter?.brands.find(
+              (b) => b.entityId === brand.entityId,
+            );
+            const isSelected = filters.brandEntityIds?.includes(brand.entityId) === true;
+  +          const disabled = refinedBrand == null && !isSelected;
+  +          const productCountLabel = disabled ? '' : ` (${brand.productCount})`;
+  +          const label = facet.displayProductCount
+  +            ? `${brand.name}${productCountLabel}`
+  +            : brand.name;
+
+            return {
+  -            label: facet.displayProductCount ? `${brand.name} (${brand.productCount})` : brand.name,
+  +            label,
+              value: brand.entityId.toString(),
+  -            disabled: refinedBrand == null && !isSelected,
+  +            disabled,
+            };
+          }),
+        };
+      }
+
+      if (facet.__typename === 'ProductAttributeSearchFilter') {
+        const refinedProductAttributeSearchFilter =
+  -        refinedFacet?.__typename === 'ProductAttributeSearchFilter' ? refinedFacet : null;
+  +        refinedFacet.__typename === 'ProductAttributeSearchFilter' ? refinedFacet : null;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: `attr_${facet.filterKey}`,
+          label: facet.displayName,
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: facet.attributes.map((attribute) => {
+            const refinedAttribute = refinedProductAttributeSearchFilter?.attributes.find(
+              (a) => a.value === attribute.value,
+            );
+
+            const isSelected =
+              filters.productAttributes?.some((attr) => attr.values.includes(attribute.value)) ===
+              true;
+
+  +          const disabled = refinedAttribute == null && !isSelected;
+  +          const productCountLabel = disabled ? '' : ` (${attribute.productCount})`;
+  +          const label = facet.displayProductCount
+  +            ? `${attribute.value}${productCountLabel}`
+  +            : attribute.value;
+  +
+            return {
+  -            label: facet.displayProductCount
+  -              ? `${attribute.value} (${attribute.productCount})`
+  -              : attribute.value,
+  +            label,
+              value: attribute.value,
+  -            disabled: refinedAttribute == null && !isSelected,
+  +            disabled,
+            };
+          }),
+        };
+      }
+
+      if (facet.__typename === 'RatingSearchFilter') {
+        const refinedRatingSearchFilter =
+  -        refinedFacet?.__typename === 'RatingSearchFilter' ? refinedFacet : null;
+  +        refinedFacet.__typename === 'RatingSearchFilter' ? refinedFacet : null;
+        const isSelected = filters.rating?.minRating != null;
+
+        return {
+          type: 'rating' as const,
+          paramName: 'minRating',
+          label: facet.displayName,
+          disabled: refinedRatingSearchFilter == null && !isSelected,
+          defaultCollapsed: facet.isCollapsedByDefault,
+        };
+      }
+
+      if (facet.__typename === 'PriceSearchFilter') {
+        const refinedPriceSearchFilter =
+  -        refinedFacet?.__typename === 'PriceSearchFilter' ? refinedFacet : null;
+  +        refinedFacet.__typename === 'PriceSearchFilter' ? refinedFacet : null;
+        const isSelected = filters.price?.minPrice != null || filters.price?.maxPrice != null;
+
+        return {
+          type: 'range' as const,
+          minParamName: 'minPrice',
+          maxParamName: 'maxPrice',
+          label: facet.displayName,
+          min: facet.selected?.minPrice ?? undefined,
+          max: facet.selected?.maxPrice ?? undefined,
+          disabled: refinedPriceSearchFilter == null && !isSelected,
+          defaultCollapsed: facet.isCollapsedByDefault,
+        };
+      }
+
+      if (facet.freeShipping) {
+        const refinedFreeShippingSearchFilter =
+  -        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.freeShipping
+  +        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.freeShipping
+            ? refinedFacet
+            : null;
+        const isSelected = filters.isFreeShipping === true;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: `shipping`,
+          label: t('freeShippingLabel'),
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: [
+            {
+              label: t('freeShippingLabel'),
+              value: 'free_shipping',
+              disabled: refinedFreeShippingSearchFilter == null && !isSelected,
+            },
+          ],
+        };
+      }
+
+      if (facet.isFeatured) {
+        const refinedIsFeaturedSearchFilter =
+  -        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.isFeatured
+  +        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.isFeatured
+            ? refinedFacet
+            : null;
+        const isSelected = filters.isFeatured === true;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: `isFeatured`,
+          label: t('isFeaturedLabel'),
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: [
+            {
+              label: t('isFeaturedLabel'),
+              value: 'on',
+              disabled: refinedIsFeaturedSearchFilter == null && !isSelected,
+            },
+          ],
+        };
+      }
+
+      if (facet.isInStock) {
+        const refinedIsInStockSearchFilter =
+  -        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.isInStock
+  +        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.isInStock
+            ? refinedFacet
+            : null;
+        const isSelected = filters.hideOutOfStock === true;
+
+        return {
+          type: 'toggle-group' as const,
+          paramName: `stock`,
+          label: t('inStockLabel'),
+          defaultCollapsed: facet.isCollapsedByDefault,
+          options: [
+            {
+              label: t('inStockLabel'),
+              value: 'in_stock',
+              disabled: refinedIsInStockSearchFilter == null && !isSelected,
+            },
+          ],
+        };
+      }
+
+      return null;
+    });
+  ```
+
+  ### Step 2
+
+  Fix the disabled state CSS classes in `core/vibes/soul/form/toggle-group/index.tsx`:
+
+  ```diff
+            <ToggleGroupPrimitive.Item
+              aria-label={option.label}
+              className={clsx(
+  -              'data-disabled:pointer-events-none data-disabled:opacity-50 h-12 whitespace-nowrap rounded-full border px-4 font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2',
+  +              'h-12 whitespace-nowrap rounded-full border px-4 font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+                {
+                  light:
+                    'border-[var(--toggle-group-light-border,hsl(var(--contrast-100)))] ring-[var(--toggle-group-light-focus,hsl(var(--primary)))] data-[state=on]:border-[var(--toggle-group-light-on-border,hsl(var(--foreground)))] data-[state=off]:bg-[var(--toggle-group-light-off-background,hsl(var(--background)))] data-[state=on]:bg-[var(--toggle-group-light-on-background,hsl(var(--foreground)))] data-[state=off]:text-[var(--toggle-group-light-off-text,hsl(var(--foreground)))] data-[state=on]:text-[var(--toggle-group-light-on-text,hsl(var(--background)))] data-[state=off]:hover:border-[var(--toggle-group-light-off-border-hover,hsl(var(--contrast-200)))] data-[state=off]:hover:bg-[var(--toggle-group-light-off-background-hover,hsl(var(--contrast-100)))]',
+  ```
+
+  ### Step 3
+
+  Update the FiltersPanel component in `core/vibes/soul/sections/products-list-section/filters-panel.tsx`
+
+  ```diff
+  import { clsx } from 'clsx';
+  import { parseAsString, useQueryStates } from 'nuqs';
+  -import { Suspense, useOptimistic, useState, useTransition } from 'react';
+  +import { useOptimistic, useState, useTransition } from 'react';
+
+  import { Checkbox } from '@/vibes/soul/form/checkbox';
+  import { RangeInput } from '@/vibes/soul/form/range-input';
+  import { ToggleGroup } from '@/vibes/soul/form/toggle-group';
+  -import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
+  +import { Stream, Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
+  import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
+  import { Button } from '@/vibes/soul/primitives/button';
+  import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+  import { Rating } from '@/vibes/soul/primitives/rating';
+  import { Link } from '~/components/link';
+
+  import { getFilterParsers } from './filter-parsers';
+  ```
+
+  ```diff
+    rangeFilterApplyLabel?: Streamable<string>;
+  }
+
+  +type InnerProps = Props & { filters: Filter[] };
+  +
+  function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
+    const value = params[key];
+
+    if (Array.isArray(value) && value.length > 0) return `(${value.length})`;
+
+    return '';
+  }
+
+  export function FiltersPanel({
+    className,
+  -  filters,
+  +  filters: streamableFilters,
+    resetFiltersLabel,
+    rangeFilterApplyLabel,
+  }: Props) {
+    return (
+  -    <Suspense fallback={<FiltersSkeleton />}>
+  -      <FiltersPanelInner
+  -        className={className}
+  -        filters={filters}
+  -        rangeFilterApplyLabel={rangeFilterApplyLabel}
+  -        resetFiltersLabel={resetFiltersLabel}
+  -      />
+  -    </Suspense>
+  +    <Stream fallback={<FiltersSkeleton />} value={streamableFilters}>
+  +      {(filters) => (
+  +        <FiltersPanelInner
+  +          className={className}
+  +          filters={filters}
+  +          rangeFilterApplyLabel={rangeFilterApplyLabel}
+  +          resetFiltersLabel={resetFiltersLabel}
+  +        />
+  +      )}
+  +    </Stream>
+    );
+  }
+
+  export function FiltersPanelInner({
+    className,
+  -  filters: streamableFilters,
+  +  filters,
+    resetFiltersLabel: streamableResetFiltersLabel,
+    rangeFilterApplyLabel: streamableRangeFilterApplyLabel,
+    paginationInfo: streamablePaginationInfo,
+  -}: Props) {
+  -  const filters = useStreamable(streamableFilters);
+  +}: InnerProps) {
+    const resetFiltersLabel = useStreamable(streamableResetFiltersLabel) ?? 'Reset filters';
+    const rangeFilterApplyLabel = useStreamable(streamableRangeFilterApplyLabel);
+    const paginationInfo = useStreamable(streamablePaginationInfo);
+    const startCursorParamName = paginationInfo?.startCursorParamName ?? 'before';
+    const endCursorParamName = paginationInfo?.endCursorParamName ?? 'after';
+    const [params, setParams] = useQueryStates(
+      {
+        ...getFilterParsers(filters),
+        [startCursorParamName]: parseAsString,
+        [endCursorParamName]: parseAsString,
+      },
+      {
+        shallow: false,
+        history: 'push',
+      },
+    );
+    const [isPending, startTransition] = useTransition();
+    const [optimisticParams, setOptimisticParams] = useOptimistic(params);
+  -  const [accordionItems, setAccordionItems] = useState(() =>
+  +  const [expandedItems, setExpandedItems] = useState(() => {
+  +    const initial = new Set<string>();
+  +
+      filters
+        .filter((filter) => filter.type !== 'link-group')
+  -      .map((filter, index) => ({
+  -        key: index.toString(),
+  -        value: index.toString(),
+  +      .slice(0, 3)
+  +      .forEach((filter) => {
+  +        initial.add(filter.label.toLowerCase());
+  +      });
+  +
+  +    return initial;
+  +  });
+  +
+  +  const accordionItems = filters
+  +    .filter((filter) => filter.type !== 'link-group')
+  +    .map((filter) => {
+  +      return {
+  +        key: filter.label.toLowerCase(),
+  +        value: filter.label.toLowerCase(),
+          filter,
+  -        expanded: index < 3,
+  -      })),
+  -  );
+  +        expanded: expandedItems.has(filter.label.toLowerCase()),
+  +      };
+  +    });
+
+    if (filters.length === 0) return null;
+
+    const linkGroupFilters = filters.filter(
+      (filter): filter is LinkGroupFilter => filter.type === 'link-group',
+    );
+  ```
+
+  ```diff
+        ))}
+        <Accordion
+  -        onValueChange={(items) =>
+  -          setAccordionItems((prevItems) =>
+  -            prevItems.map((prevItem) => ({
+  -              ...prevItem,
+  -              expanded: items.includes(prevItem.value),
+  -            })),
+  -          )
+  -        }
+  +        onValueChange={(items) => {
+  +          setExpandedItems(new Set(items));
+  +        }}
+          type="multiple"
+          value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
+        >
+  ```
+
+- [#2822](https://github.com/bigcommerce/catalyst/pull/2822) [`5c3e4d2`](https://github.com/bigcommerce/catalyst/commit/5c3e4d25c2d929af2b86cee3e4133838e5f3987b) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Run E2E tests on PRs, add 'required' prop to cart shipping calculator
+
+  ## Migration
+
+  Add `required` prop to the Country selector and Country input fields in `core/vibes/soul/sections/cart/shipping-form/index.tsx` on lines 280 and 289.
+
+- [#2813](https://github.com/bigcommerce/catalyst/pull/2813) [`ea9d633`](https://github.com/bigcommerce/catalyst/commit/ea9d6337d2bb8e5c166cb1de3385631e12fea4a3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Delete duplicate Select component.
+
+- [#2823](https://github.com/bigcommerce/catalyst/pull/2823) [`dcad856`](https://github.com/bigcommerce/catalyst/commit/dcad8565d5eb835a5a68785f59811a67149d0137) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Refactor DynamicForm actions to decouple fields and passwordComplexity from state, passing them as separate arguments instead. This reduces state payload size by removing fields from state objects and stripping options from fields before passing them to actions (options are only needed for rendering, not processing). All form actions now accept a `DynamicFormActionArgs` object as the first parameter containing fields and optional passwordComplexity, followed by the previous state and formData.
+
+  ## Migration steps
+
+  ### Step 1: Changes to DynamicForm component
+
+  The `DynamicForm` component and related utilities have been updated to support the new action signature pattern:
+
+  **`core/vibes/soul/form/dynamic-form/index.tsx`**:
+  - Added `DynamicFormActionArgs<F>` interface that contains `fields` and optional `passwordComplexity`
+  - Updated `DynamicFormAction<F>` type to accept `DynamicFormActionArgs<F>` as the first parameter
+  - Removed `fields` and `passwordComplexity` from the `State` interface
+  - Added automatic removal of `options` from fields before passing to actions (options are only needed for rendering)
+  - Updated action binding to use `action.bind(null, { fields: fieldsWithoutOptions, passwordComplexity })`
+
+  **`core/vibes/soul/form/dynamic-form/utils.ts`** (new file):
+  - Added `removeOptionsFromFields()` utility function that strips the `options` property from field definitions before passing them to actions, reducing the state payload size
+
+  ```diff
+  + export interface DynamicFormActionArgs<F extends Field> {
+  +   fields: Array<F | FieldGroup<F>>;
+  +   passwordComplexity?: PasswordComplexitySettings | null;
+  + }
+  +
+  + type Action<F extends Field, S, P> = (
+  +   args: DynamicFormActionArgs<F>,
+  +   state: Awaited<S>,
+  +   payload: P,
+  + ) => S | Promise<S>;
+  +
+    interface State {
+      lastResult: SubmissionResult | null;
+  -   fields: Array<F | FieldGroup<F>>;
+  -   passwordComplexity?: PasswordComplexitySettings | null;
+    }
+  ```
+
+  ### Step 2: Update DynamicForm action signatures
+
+  All form actions that use `DynamicForm` must be updated to accept `DynamicFormActionArgs<F>` as the first parameter instead of including fields in the state.
+
+  Update your form action function signature:
+
+  ```diff
+  + import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
+    import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
+
+  - export async function myFormAction<F extends Field>(
+  -   prevState: {
+  -     lastResult: SubmissionResult | null;
+  -     fields: Array<F | FieldGroup<F>>;
+  -     passwordComplexity?: PasswordComplexitySettings | null;
+  -   },
+  -   formData: FormData,
+  - ) {
+  + export async function myFormAction<F extends Field>(
+  +   { fields, passwordComplexity }: DynamicFormActionArgs<F>,
+  +   _prevState: {
+  +     lastResult: SubmissionResult | null;
+  +   },
+  +   formData: FormData,
+  + ) {
+  ```
+
+  ### Step 2: Remove fields and passwordComplexity from state interfaces
+
+  Update state interfaces to remove fields and passwordComplexity properties:
+
+  ```diff
+    interface State {
+      lastResult: SubmissionResult | null;
+  -   fields: Array<Field | FieldGroup<Field>>;
+  -   passwordComplexity?: PasswordComplexitySettings | null;
+    }
+  ```
+
+  ### Step 3: Update action implementations
+
+  Remove references to `prevState.fields` and `prevState.passwordComplexity` in action implementations:
+
+  ```diff
+    const submission = parseWithZod(formData, {
+  -   schema: schema(prevState.fields, prevState.passwordComplexity),
+  +   schema: schema(fields, passwordComplexity),
+    });
+
+    if (submission.status !== 'success') {
+      return {
+        lastResult: submission.reply(),
+  -     fields: prevState.fields,
+  -     passwordComplexity: prevState.passwordComplexity,
+      };
+    }
+  ```
+
+  ### Step 4: Update action calls in components
+
+  For actions used with `AddressListSection`, update the action signature to accept fields as the first parameter:
+
+  ```diff
+  - export async function addressAction(
+  -   prevState: Awaited<State>,
+  -   formData: FormData,
+  - ): Promise<State> {
+  + export async function addressAction(
+  +   fields: Array<Field | FieldGroup<Field>>,
+  +   prevState: Awaited<State>,
+  +   formData: FormData,
+  + ): Promise<State> {
+  ```
+
+  ### Step 5: Update DynamicForm usage
+
+  No changes needed to `DynamicForm` component usage. The component automatically handles binding fields and passwordComplexity to actions. The `DynamicForm` component now:
+  - Automatically removes options from fields before passing them to actions (reducing payload size)
+  - Binds fields and passwordComplexity to the action using `action.bind()`
+  - Maintains the same props interface, so existing usage continues to work
+
+  ### Affected files
+
+  The following files were updated in this refactor:
+  - `core/vibes/soul/form/dynamic-form/index.tsx` - Added `DynamicFormActionArgs` type and updated action binding
+  - `core/vibes/soul/form/dynamic-form/utils.ts` - Added `removeOptionsFromFields` utility function
+  - `core/app/[locale]/(default)/(auth)/register/_actions/register-customer.ts`
+  - `core/app/[locale]/(default)/account/addresses/_actions/address-action.ts`
+  - `core/app/[locale]/(default)/account/addresses/_actions/create-address.ts`
+  - `core/app/[locale]/(default)/account/addresses/_actions/update-address.ts`
+  - `core/app/[locale]/(default)/account/addresses/_actions/delete-address.ts`
+  - `core/app/[locale]/(default)/gift-certificates/purchase/_actions/add-to-cart.tsx`
+  - `core/app/[locale]/(default)/webpages/[id]/contact/_actions/submit-contact-form.ts`
+  - `core/vibes/soul/sections/address-list-section/index.tsx`
+
+- [#2816](https://github.com/bigcommerce/catalyst/pull/2816) [`b4b87a3`](https://github.com/bigcommerce/catalyst/commit/b4b87a361790bf2edd7614bab1d97490d91ed22f) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add support for additional HTML attributes on script tags. The scripts transformer now extracts and passes through attributes like `async`, `defer`, `crossorigin`, and `data-*` attributes from BigCommerce script tags to the C15T consent manager, ensuring scripts load with their intended behavior.
+
+- [#2817](https://github.com/bigcommerce/catalyst/pull/2817) [`d469078`](https://github.com/bigcommerce/catalyst/commit/d4690786b17a7d05ef32f8941e4090101980f8bc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Persist the checkbox product modifier since it can modify pricing and other product data. By persisting this and tracking in the url, this will trigger a product refetch when added or removed. Incidentally, now we manually control what fields are persisted, since `option.isVariantOption` doesn't apply to `checkbox`, additionally multi options modifiers that are not variant options can also modify price and other product data.
+
+  ## Migration
+
+  ### Step 1
+
+  Update `product-options-transformer.ts` to manually track persisted fields:
+
+  ```ts
+  case 'DropdownList': {
+      return {
+          // before
+          // persist: option.isVariantOption,
+          // after (manually persist)
+          persist: true,
+          type: 'select',
+          label: option.displayName,
+          required: option.isRequired,
+          name: option.entityId.toString(),
+          defaultValue: values.find((value) => value.isDefault)?.entityId.toString(),
+          options: values.map((value) => ({
+          label: value.label,
+          value: value.entityId.toString(),
+          })),
+      };
+  }
+  ```
+
+  Fields that persist and can affect product pricing when selected:
+  - Swatch
+  - RectangleBoxes
+  - RadioButtons
+  - ProductPickList
+  - ProductPickListWithImages
+  - CheckboxOption
+
+  ### Step 2
+
+  Remove `isVariantOption` from GQL query since we no longer use it:
+
+  ```ts
+  export const ProductOptionsFragment = graphql(
+    `
+      fragment ProductOptionsFragment on Product {
+        entityId
+        productOptions(first: 50) {
+          edges {
+            node {
+              __typename
+              entityId
+              displayName
+              isRequired
+              isVariantOption // remove this
+              ...MultipleChoiceFieldFragment
+              ...CheckboxFieldFragment
+              ...NumberFieldFragment
+              ...TextFieldFragment
+              ...MultiLineTextFieldFragment
+              ...DateFieldFragment
+            }
+          }
+        }
+      }
+    `,
+    [
+      MultipleChoiceFieldFragment,
+      CheckboxFieldFragment,
+      NumberFieldFragment,
+      TextFieldFragment,
+      MultiLineTextFieldFragment,
+      DateFieldFragment,
+    ],
+  );
+  ```
+
+  ### Step 3
+
+  Update `product-detail-form.tsx` to include separate handing of the checkbox field:
+
+  ```ts
+  const defaultValue = fields.reduce<{
+    [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
+  }>(
+    (acc, field) => {
+      // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+      // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
+      if (field.type === 'checkbox') {
+        if (params[field.name] === field.checkedValue) {
+          return {
+            ...acc,
+            [field.name]: 'true',
+          };
+        }
+
+        if (params[field.name] === field.uncheckedValue) {
+          return {
+            ...acc,
+            [field.name]: undefined,
+          };
+        }
+
+        return {
+          ...acc,
+          [field.name]: field.defaultValue, // Default value is either 'true' or undefined
+        };
+      }
+
+      return {
+        ...acc,
+        [field.name]: params[field.name] ?? field.defaultValue,
+      };
+    },
+    { quantity: minQuantity ?? 1 },
+  );
+
+  ...
+
+  const handleChange = useCallback(
+    (value: string) => {
+      // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+      if (field.type === 'checkbox') {
+        void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+      } else {
+        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      }
+
+      controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
+    },
+    [setParams, field, controls],
+  );
+  ```
+
+  ### Step 4
+
+  Update schema in `core/vibes/soul/sections/product-detail/schema.ts`:
+
+  ```ts
+  type CheckboxField = {
+    type: 'checkbox';
+    defaultValue?: string;
+    checkedValue: string; // add
+    uncheckedValue: string; // add
+  } & FormField;
+  ```
+
+- [#2820](https://github.com/bigcommerce/catalyst/pull/2820) [`a50fa6f`](https://github.com/bigcommerce/catalyst/commit/a50fa6fda64cbb1370862f43d272b0069f6d6307) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix WishlistDetails page from exceeding GraphQL complexity limit, and fix wishlist e2e tests.
+
+  Additionally, add the `required` prop to `core/components/wishlist/modals/new.tsx` and `core/components/wishlist/modals/rename.tsx`
+
+  ## Migration
+
+  ### Step 1: Update wishlist GraphQL fragments
+
+  In `core/components/wishlist/fragment.ts`, replace the `WishlistItemProductFragment` to use explicit fields instead of `ProductCardFragment`:
+
+  ```typescript
+  export const WishlistItemProductFragment = graphql(
+    `
+      fragment WishlistItemProductFragment on Product {
+        entityId
+        name
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
+        }
+        path
+        brand {
+          name
+          path
+        }
+        reviewSummary {
+          numberOfReviews
+          averageRating
+        }
+        sku
+        showCartAction
+        inventory {
+          isInStock
+        }
+        availabilityV2 {
+          status
+        }
+        ...PricingFragment
+      }
+    `,
+    [PricingFragment],
+  );
+  ```
+
+  Remove `ProductCardFragment` from all fragment dependencies in the same file.
+
+  ### Step 2: Update product card transformer
+
+  In `core/data-transformers/product-card-transformer.ts`:
+  1. Import the `WishlistItemProductFragment`:
+     ```typescript
+     import { WishlistItemProductFragment } from '~/components/wishlist/fragment';
+     ```
+  2. Update the `singleProductCardTransformer` function signature to accept both fragment types:
+     ```typescript
+     product: ResultOf<typeof ProductCardFragment | typeof WishlistItemProductFragment>;
+     ```
+  3. Add a conditional check for the `inventoryMessage` field:
+     ```typescript
+     inventoryMessage:
+       'variants' in product
+         ? getInventoryMessage(product, outOfStockMessage, showBackorderMessage)
+         : undefined,
+     ```
+  4. Update the `productCardTransformer` function signature similarly:
+     ```typescript
+     products: Array<ResultOf<typeof ProductCardFragment | typeof WishlistItemProductFragment>>;
+     ```
+
+  ### Step 3: Fix wishlist e2e tests
+
+  In `core/tests/ui/e2e/account/wishlists.spec.ts`, update label selectors to use `{ exact: true }` for specificity:
+
+  Update all locators for the wishlist name input selectors:
+
+  ```diff
+  - page.getByLabel(t('Form.nameLabel'))
+  + page.getByLabel(t('Form.nameLabel'), { exact: true })
+  ```
+
+  ### Step 4: Fix mobile wishlist e2e tests
+
+  In `core/tests/ui/e2e/account/wishlists.mobile.spec.ts`, update translation calls to use namespace prefixes:
+  1. Update the translation initialization:
+
+  ```diff
+  - const t = await getTranslations('Account.Wishlist');
+  + const t = await getTranslations();
+  ```
+
+  2. Update all translation keys to include the namespace:
+
+  ```diff
+  - await locator.getByRole('button', { name: t('actionsTitle') }).click();
+  - await page.getByRole('menuitem', { name: t('share') }).click();
+  + await locator.getByRole('button', { name: t('Wishlist.actionsTitle') }).click();
+  + await page.getByRole('menuitem', { name: t('Wishlist.share') }).click();
+  ```
+
+  ```diff
+  - await expect(page.getByText(t('shareSuccess'))).toBeVisible();
+  + await expect(page.getByText(t('Wishlist.shareSuccess'))).toBeVisible();
+  ```
+
+  ### Step 5: Add `required` prop to wishlist modals
+
+  Update the modal forms to include the `required` prop on the name input field:
+
+  In `core/components/wishlist/modals/new.tsx`:
+
+  ```diff
+        <Input
+          {...getInputProps(fields.wishlistName, { type: 'text' })}
+          defaultValue={defaultValue.current}
+          errors={fields.wishlistName.errors}
+          key={fields.wishlistName.id}
+          label={nameLabel}
+          onChange={(e) => {
+            defaultValue.current = e.target.value;
+          }}
+  +       required
+        />
+  ```
+
+  In `core/components/wishlist/modals/rename.tsx`:
+
+  ```diff
+        <Input
+          {...getInputProps(fields.wishlistName, { type: 'text' })}
+          defaultValue={defaultValue.current}
+          errors={fields.wishlistName.errors}
+          key={fields.wishlistName.id}
+          label={nameLabel}
+          onChange={(e) => {
+            defaultValue.current = e.target.value;
+          }}
+  +       required
+        />
+  ```
+
+- [#2814](https://github.com/bigcommerce/catalyst/pull/2814) [`fcb946e`](https://github.com/bigcommerce/catalyst/commit/fcb946e47aafc8be2e63bf3fe776ec6caab1fa72) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Shoppers will now see the store's actual password complexity requirements in the tooltip on the new customer registration form, preventing confusion and failed registration attempts. The schema() function in core/vibes/soul/form/dynamic-form/schema.ts now accepts an optional second parameter passwordComplexity to enable dynamic password validation. The DynamicForm, DynamicFormSection components and their associated server actions also accept an optional passwordComplexity prop that flows through to the schema. Action Required: If you have custom registration or password forms and want to use store-specific password complexity settings, fetch passwordComplexitySettings from the GraphQL API (under site.settings.customers.passwordComplexitySettings) and pass it to your DynamicFormSection component and maintain it in your server action's state. If you don't pass it, password validation defaults to: minimum 8 characters, at least one number, and at least one special character. Conflict Resolution: If merging into custom forms, ensure the passwordComplexity prop is threaded through: Page → DynamicFormSection → DynamicForm → useActionState → schema(). In server actions, add passwordComplexity?: Parameters<typeof schema>[1] to your state type and include it in all return statements to maintain state consistency.
+
+- [#2821](https://github.com/bigcommerce/catalyst/pull/2821) [`e5a03f6`](https://github.com/bigcommerce/catalyst/commit/e5a03f6a73fe16da55b96b75de70d3bbd846dfba) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix data-disabled class selectors in UI components
+
+  ## Migration
+
+  Updated Tailwind CSS class selectors from `data-disabled:` to `data-[disabled]:` in the following components:
+  - `vibes/soul/form/button-radio-group/index.tsx`
+  - `vibes/soul/form/card-radio-group/index.tsx`
+  - `vibes/soul/form/radio-group/index.tsx`
+  - `vibes/soul/form/rating-radio-group/index.tsx`
+  - `vibes/soul/form/swatch-radio-group/index.tsx`
+  - `vibes/soul/form/switch/index.tsx`
+  - `vibes/soul/primitives/dropdown-menu/index.tsx`
+
+  If you have customized any of these components, update your class names:
+
+  ```diff
+  - data-disabled:pointer-events-none data-disabled:opacity-50
+  + data-[disabled]:pointer-events-none data-[disabled]:opacity-50
+  ```
+
+  This change ensures proper styling of disabled states using the correct Tailwind CSS data attribute syntax.
+
+- [#2819](https://github.com/bigcommerce/catalyst/pull/2819) [`a1f1ed8`](https://github.com/bigcommerce/catalyst/commit/a1f1ed857eab954e085ba67956a954fb2b63882a) Thanks [@jamesqquick](https://github.com/jamesqquick)! - The login form input data will no longer reset on a failed login attempt.
+
+- [#2836](https://github.com/bigcommerce/catalyst/pull/2836) [`06fd9aa`](https://github.com/bigcommerce/catalyst/commit/06fd9aa921ad2c4b8b60706e114a9f425f049d40) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2826](https://github.com/bigcommerce/catalyst/pull/2826) [`b5f460c`](https://github.com/bigcommerce/catalyst/commit/b5f460c0a5fa5161c853884e18816796b9ea73d9) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2815](https://github.com/bigcommerce/catalyst/pull/2815) [`52ee85e`](https://github.com/bigcommerce/catalyst/commit/52ee85ef1b08fc6114aa953f7a7e67c11876e7e2) Thanks [@jamesqquick](https://github.com/jamesqquick)! - Add default optional text to form input labels for inputs that are not required.
+
+  ## Migration
+
+  The new required props are optional, so they are backwards compatible. However, this does mean that the `(optional)` text will now show up on fields that aren't explicitly marked as required by passing the required prop to the Label component.
+
+- [#2829](https://github.com/bigcommerce/catalyst/pull/2829) [`8096cc5`](https://github.com/bigcommerce/catalyst/commit/8096cc5ebaf983431f06bd2bd94a9a81899c2b29) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Improve accessibility for price displays by adding screen reader announcements for original prices, sale prices, and price ranges. Visual price elements are hidden from assistive technologies using `aria-hidden="true"` to prevent duplicate announcements, while visually hidden text provides context about pricing information.
+
+  ## Migration steps
+
+  ### Step 1: Update Cart Price Display
+
+  Update `core/vibes/soul/sections/cart/client.tsx` to add accessibility labels for sale prices:
+
+  ```diff
+          {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
+            <span className="font-medium @xl:ml-auto">
+  -           <span className="line-through">{lineItem.price}</span> {lineItem.salePrice}
+  +           <span className="sr-only">{t('originalPrice', { price: lineItem.price })}</span>
+  +           <span aria-hidden="true" className="line-through">
+  +             {lineItem.price}
+  +           </span>{' '}
+  +           <span className="sr-only">{t('currentPrice', { price: lineItem.salePrice })}</span>
+  +           <span aria-hidden="true">{lineItem.salePrice}</span>
+            </span>
+          ) : (
+            <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+          )}
+  ```
+
+  ### Step 2: Update PriceLabel Component
+
+  Update `core/vibes/soul/primitives/price-label/index.tsx` to add accessibility improvements for sale prices and price ranges:
+
+  ```diff
+    import { clsx } from 'clsx';
+  + import { useTranslations } from 'next-intl';
+
+    export function PriceLabel({ className, colorScheme = 'light', price }: Props) {
+  +   const t = useTranslations('Components.Price');
+
+      if (typeof price === 'string') {
+        return (
+          ...
+        );
+      }
+
+      switch (price.type) {
+        case 'range':
+          return (
+            <span ...>
+  -           {price.minValue}
+  -           &nbsp;&ndash;&nbsp;
+  -           {price.maxValue}
+  +           <span className="sr-only">
+  +             {t('range', { minValue: price.minValue, maxValue: price.maxValue })}
+  +           </span>
+  +           <span aria-hidden="true">
+  +             {price.minValue} - {price.maxValue}
+  +           </span>
+            </span>
+          );
+
+        case 'sale':
+          return (
+            <span className={clsx('block font-semibold', className)}>
+  +           <span className="sr-only">{t('originalPrice', { price: price.previousValue })}</span>
+              <span
+  +             aria-hidden="true"
+                className={clsx(
+                  'font-normal line-through opacity-50',
+                  ...
+                )}
+              >
+                {price.previousValue}
+              </span>{' '}
+  +           <span className="sr-only">{t('currentPrice', { price: price.currentValue })}</span>
+              <span
+  +             aria-hidden="true"
+                className={clsx(
+                  ...
+                )}
+              >
+                {price.currentValue}
+              </span>
+            </span>
+          );
+      }
+    }
+  ```
+
+  ### Step 3: Add Translation Keys
+
+  Update `core/messages/en.json` to include new translation keys for price accessibility:
+
+  ```diff
+    "Cart": {
+      "title": "Cart",
+      "heading": "Your cart",
+      "proceedToCheckout": "Proceed to checkout",
+      "increment": "Increase quantity",
+      "decrement": "Decrease quantity",
+      "removeItem": "Remove item",
+      "cartCombined": "We noticed you had items saved in a previous cart, so we've added them to your current cart for you.",
+      "cartRestored": "You started a cart on another device, and we've restored it here so you can pick up where you left off.",
+      "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
+  +   "originalPrice": "Original price was {price}.",
+  +   "currentPrice": "Current price is {price}.",
+  ```
+
+  ```diff
+      },
+  +   "Price": {
+  +     "originalPrice": "Original price was {price}.",
+  +     "currentPrice": "Current price is {price}.",
+  +     "range": "Price from {minValue} to {maxValue}."
+  +   }
+    },
+    "GiftCertificates": {
+  ```
+
+- [#2809](https://github.com/bigcommerce/catalyst/pull/2809) [`dd559b2`](https://github.com/bigcommerce/catalyst/commit/dd559b2d9f354387e19d7c81a809eed97bfc9be3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Minor UX improvements for the Reviews section:
+  - Show `totalCount` for reviews.
+  - Show `averageRating` up to the first decimal.
+  - Hide `averageRating` next to rating stars when there are no reviews.
+
 ## 1.4.0
 
 ### Minor Changes
