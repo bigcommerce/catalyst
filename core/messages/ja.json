@@ -304,6 +304,8 @@
         "cartCombined": "以前のカートに商品が保存されていたので、それを現在のカートに追加しました。",
         "cartRestored": "別のデバイスでカートに商品が追加されていたため、中断されたところからお買い物を再開できるよう、こちらにカートの内容を復元しました。",
         "cartUpdateInProgress": "カートの更新が進行中です。このページを離れてもよろしいですか?変更内容が失われる可能性があります。",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "要約",
             "subTotal": "小計",
@@ -555,6 +557,11 @@
                     "description": "これらの Cookie は、より良いユーザー エクスペリエンスを提供し、新しい機能をテストするのに役立ちます。"
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "残高を確認する",
             "description": "下のボックスにコードを入力すると、残高を確認したり、ギフト券に関する情報を取得したりできます。",
             "inputLabel": "コード",
-            "inputPlaceholder": "コードを入力",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "購入済み",
             "senderLabel": "から",
             "Errors": {

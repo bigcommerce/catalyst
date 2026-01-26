@@ -304,6 +304,8 @@
         "cartCombined": "We hebben gezien dat je artikelen in een eerder winkelmandje had opgeslagen, dus we hebben ze voor je aan je huidige winkelmandje toegevoegd.",
         "cartRestored": "Je bent een winkelmandje begonnen op een ander apparaat en we hebben het hier hersteld, zodat je verder kunt gaan waar je was gebleven.",
         "cartUpdateInProgress": "Je winkelwagentje wordt bijgewerkt. Weet je zeker dat je deze pagina wilt verlaten? Je wijzigingen kunnen verloren gaan.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Overzicht",
             "subTotal": "Subtotaal",
@@ -555,6 +557,11 @@
                     "description": "Deze cookies helpen ons een betere gebruikerservaring te bieden en nieuwe functies te testen."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "Saldo controleren",
             "description": "Je kunt het saldo controleren en de informatie over je cadeaubon opvragen door de code in het vak hieronder in te voeren.",
             "inputLabel": "Code",
-            "inputPlaceholder": "Code invoeren",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Gekocht",
             "senderLabel": "Van",
             "Errors": {

@@ -304,6 +304,8 @@
         "cartCombined": "Zauważyliśmy, że w poprzednim koszyku były zapisane produkty, więc dodaliśmy je do bieżącego koszyka.",
         "cartRestored": "Dodano produkty do koszyka na innym urządzeniu. Przywróciliśmy koszyk tutaj, aby umożliwić kontynuowanie zakupów.",
         "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Podsumowanie",
             "subTotal": "Suma cząstkowa",
@@ -555,6 +557,11 @@
                     "description": "These cookies help us provide a better user experience and test new features."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "Check balance",
             "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
             "inputLabel": "Kod",
-            "inputPlaceholder": "Wprowadź kod",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Zakupione",
             "senderLabel": "Ze strony",
             "Errors": {

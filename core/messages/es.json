@@ -304,6 +304,8 @@
         "cartCombined": "Nos hemos dado cuenta de que tenías artículos guardados en un carrito anterior, así que los hemos añadido a tu carrito actual.",
         "cartRestored": "Empezaste a llenar un carrito en otro dispositivo y lo hemos restaurado aquí para que puedas seguir donde lo dejaste.",
         "cartUpdateInProgress": "Tienes una actualización del carrito en curso. ¿Seguro que quieres abandonar esta página? Es posible que se pierdan los cambios.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Resumen",
             "subTotal": "Subtotal",
@@ -555,6 +557,11 @@
                     "description": "Estas cookies nos ayudan a brindar una mejor experiencia de usuario y probar nuevas funciones."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "Verificar saldo",
             "description": "Puedes comprobar el saldo y obtener la información sobre tu cupón de regalo escribiendo el código en la casilla de abajo.",
             "inputLabel": "Código",
-            "inputPlaceholder": "Introducir código",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Comprado",
             "senderLabel": "de",
             "Errors": {

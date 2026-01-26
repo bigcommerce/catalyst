@@ -304,6 +304,8 @@
         "cartCombined": "Abbiamo notato che avevi salvato degli articoli in un carrello precedente, quindi li abbiamo aggiunti al carrello attuale.",
         "cartRestored": "Hai avviato un carrello su un altro dispositivo e lo abbiamo ripristinato qui, così puoi riprendere da dove avevi lasciato.",
         "cartUpdateInProgress": "Hai un aggiornamento del carrello attivo in corso. Uscire dalla pagina? Le modifiche potrebbero andare perse.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Riepilogo",
             "subTotal": "Subtotale",
@@ -555,6 +557,11 @@
                     "description": "Questi cookie ci aiutano a fornire un'esperienza utente migliore e a testare nuove funzionalità."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "Controlla il saldo",
             "description": "Puoi controllare il saldo e ottenere informazioni sul tuo buono regalo inserendo il codice nella casella sottostante.",
             "inputLabel": "Codice",
-            "inputPlaceholder": "Inserisci codice",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Acquistato",
             "senderLabel": "Da",
             "Errors": {

@@ -304,6 +304,8 @@
         "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
         "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
         "cartUpdateInProgress": "Sie führen derzeit eine Aktualisierung Ihres Warenkorbs durch. Sind Sie sicher, dass Sie diese Seite verlassen möchten? Ihre Änderungen könnten verloren gehen.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Übersicht",
             "subTotal": "Zwischensumme",
@@ -555,6 +557,11 @@
                     "description": "Diese Cookies helfen uns, eine bessere Benutzererfahrung zu bieten und neue Funktionen zu testen."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -567,7 +574,7 @@
             "title": "Guthaben abfragen",
             "description": "Sie können das Guthaben überprüfen und Informationen zu Ihrem Geschenkgutschein erhalten, indem Sie den Code in das Feld unten eingeben.",
             "inputLabel": "Code",
-            "inputPlaceholder": "Code eingeben",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Gekauft",
             "senderLabel": "Von",
             "Errors": {
