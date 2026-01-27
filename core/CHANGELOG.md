@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2
+
+### Patch Changes
+
+- [#2842](https://github.com/bigcommerce/catalyst/pull/2842) [`aadc1e3`](https://github.com/bigcommerce/catalyst/commit/aadc1e35533733905e7ce9ada457c2679995a727) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Addresses https://vercel.com/changelog/summary-of-cve-2026-23864 by bumping React and Next.js
+
 ## 1.4.1
 
 ### Patch Changes
