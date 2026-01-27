@@ -168,7 +168,7 @@ describe('deployment and event streaming', () => {
   });
 
   test('streams deployment status until completion', async () => {
-    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
+    const result = await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
 
     expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
 
@@ -178,6 +178,8 @@ describe('deployment and event streaming', () => {
       'Finalizing...',
       'Deployment completed successfully.',
     ]);
+
+    expect(result.deploymentUrl).toBe('https://test-deployment.bigcommerce.app');
   });
 
   test('warns if event stream is incomplete or unable to be parsed', async () => {
@@ -191,7 +193,7 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":"","event":{"step":"processing","progress":75}}`,
                 ),
               );
               setTimeout(() => {
@@ -201,7 +203,7 @@ describe('deployment and event streaming', () => {
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":"","event":{"step":"finalizing","progress":99}}`,
                   ),
                 );
                 controller.close();
@@ -245,13 +247,13 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":"","event":{"step":"processing","progress":75}}`,
                 ),
               );
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":"","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
                   ),
                 );
               }, 10);

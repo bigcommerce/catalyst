@@ -47,6 +47,7 @@ const CreateDeploymentSchema = z.object({
 const DeploymentStatusSchema = z.object({
   deployment_uuid: z.uuid(),
   deployment_status: z.enum(['queued', 'in_progress', 'failed', 'completed']),
+  deployment_url: z.string().optional().default(''),
   event: z
     .object({
       step: stepsEnum,
@@ -237,6 +238,7 @@ export const getDeploymentStatus = async (
 
   const decoder = new TextDecoder();
   let done = false;
+  let deploymentUrl = '';
 
   while (!done) {
     // eslint-disable-next-line no-await-in-loop
@@ -265,6 +267,10 @@ export const getDeploymentStatus = async (
           throw new Error(`Deployment failed with error code: ${data.error.code}`);
         }
 
+        if (data.deployment_url) {
+          deploymentUrl = data.deployment_url;
+        }
+
         if (data.event && STEPS[data.event.step] !== spinner.text) {
           spinner.text = STEPS[data.event.step];
         }
@@ -275,6 +281,8 @@ export const getDeploymentStatus = async (
   }
 
   spinner.success('Deployment completed successfully.');
+
+  return { deploymentUrl };
 };
 
 export const deploy = new Command('deploy')
@@ -359,12 +367,16 @@ export const deploy = new Command('deploy')
         environmentVariables,
       );
 
-      await getDeploymentStatus(
+      const { deploymentUrl } = await getDeploymentStatus(
         deploymentUuid,
         options.storeHash,
         options.accessToken,
         options.apiHost,
       );
+
+      if (deploymentUrl) {
+        consola.info(`Deployment URL: ${deploymentUrl}`);
+      }
     } catch (error) {
       consola.error(error);
       process.exit(1);
