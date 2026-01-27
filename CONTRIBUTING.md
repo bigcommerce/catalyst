@@ -60,6 +60,7 @@ In order to complete the following steps, you will need to have met the followin
 >
 > - The `name` field in `core/package.json` should remain `@bigcommerce/catalyst-makeswift`
 > - The `version` field in `core/package.json` should remain whatever the latest published `@bigcommerce/catalyst-makeswift` version was
+> - The latest release in `core/CHANGELOG.md` should remain whatever the latest published `@bigcommerce/catalyst-makeswift` version was
 
 4. After resolving any merge conflicts, open a new PR in GitHub to merge your `sync-integrations-makeswift` into `integrations/makeswift`. This PR should be code reviewed and approved before the next steps.
 
@@ -104,6 +105,16 @@ This ensures `integrations/makeswift` remains a faithful mirror of `canary` whil
    - From this new `bump-version` branch, run `pnpm changeset`
    - Select `@bigcommerce/catalyst-makeswift`
    - For choosing between a `patch/minor/major` bump, you should copy the bump from Stage 1. (e.g., if `@bigcommerce/catalyst-core` went from `1.1.0` to `1.2.0`, choose `minor`)
+     - Example changeset:
+
+     ```
+     ---
+     "@bigcommerce/catalyst-makeswift": patch
+     ---
+
+     Pulls in changes from the `@bigcommerce/catalyst-core@1.4.1` patch.
+     ```
+
    - Commit the generated changeset file and open a PR to merge this branch into `integrations/makeswift`
    - Once merged, you can proceed to the next step
 
