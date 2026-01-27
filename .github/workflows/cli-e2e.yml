@@ -1,0 +1,59 @@
+name: CLI Deploy E2E
+
+on:
+  pull_request:
+    branches: [canary]
+
+concurrency:
+  group: cli-deploy-e2e
+  cancel-in-progress: true
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+
+jobs:
+  ignition-deploy:
+    name: Ignition Deploy E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build workspace packages
+        run: pnpm --filter "./packages/*" build
+
+      - name: Run Ignition deploy E2E
+        run: bash .github/scripts/ignition-deploy-e2e.sh
+        env:
+          HOME: ${{ runner.temp }}/e2e-home
+          BIGCOMMERCE_STORE_HASH: ${{ secrets.DEPLOY_E2E_STORE_HASH }}
+          BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.DEPLOY_E2E_ACCESS_TOKEN }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.DEPLOY_E2E_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ secrets.DEPLOY_E2E_CHANNEL_ID }}
+          AUTH_SECRET: ${{ secrets.DEPLOY_E2E_AUTH_SECRET }}
+          BIGCOMMERCE_PROJECT_UUID: ${{ secrets.DEPLOY_E2E_PROJECT_UUID }}
+
+      - name: Upload E2E logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli-e2e-logs
+          path: /tmp/e2e-*.log
+          retention-days: 7
