@@ -120,6 +120,18 @@ This ensures `integrations/makeswift` remains a faithful mirror of `canary` whil
 
 4. Merge the **Version Packages (`integrations/makeswift`)** PR: Changesets will open another PR (similar to Stage 1) bumping `@bigcommerce/catalyst-makeswift`. Merge it following the same process. This cuts a new release of the Makeswift variant.
 
+5. **Tags and Releases:** Confirm tags exist for both `@bigcommerce/catalyst-core` and `@bigcommerce/catalyst-makeswift`. If needed, update `latest` tags in GitHub manually.
+
+- Push manually:
+  ```
+  git checkout canary
+  # Make sure you have the latest code
+  git fetch origin
+  git pull
+  git tag @bigcommerce/catalyst-core@latest -f
+  git push origin @bigcommerce/catalyst-core@latest -f
+  ```
+
 ### Additional Notes
 
 - **Tags and Releases:** Confirm tags exist for both `@bigcommerce/catalyst-core` and `@bigcommerce/catalyst-makeswift`. If needed, update `latest` tags in GitHub manually.
