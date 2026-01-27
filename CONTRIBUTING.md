@@ -134,7 +134,6 @@ This ensures `integrations/makeswift` remains a faithful mirror of `canary` whil
 
 ### Additional Notes
 
-- **Tags and Releases:** Confirm tags exist for both `@bigcommerce/catalyst-core` and `@bigcommerce/catalyst-makeswift`. If needed, update `latest` tags in GitHub manually.
 - **Release cadence:** Teams typically review on Wednesdays whether to cut a release, but you may cut releases more frequently as needed.
 
 ## Other Ways to Contribute
