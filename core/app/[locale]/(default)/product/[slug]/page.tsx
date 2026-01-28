@@ -12,6 +12,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { defaultLocale } from '~/i18n/locales';
 
 import { addToCart } from './_actions/add-to-cart';
 import { submitReview } from './_actions/submit-review';
@@ -527,6 +528,10 @@ export default async function Product({ params, searchParams }: Props) {
     return { email: session?.user?.email ?? '', name: obfuscatedName };
   });
 
+  const currentPath = locale === defaultLocale ? `/product/${slug}` : `/${locale}/product/${slug}`;
+  const loginRedirectPath = `${currentPath}#reviews`;
+  const loginHref = `/login?redirectTo=${encodeURIComponent(loginRedirectPath)}`;
+
   return (
     <>
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
@@ -586,6 +591,7 @@ export default async function Product({ params, searchParams }: Props) {
       {showRating && (
         <div id="reviews">
           <Reviews
+            formLoginHref={loginHref}
             productId={productId}
             searchParams={searchParams}
             streamableImages={streamableImages}

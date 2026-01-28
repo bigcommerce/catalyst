@@ -425,6 +425,8 @@
       "next": "Next reviews",
       "Form": {
         "button": "Write a review",
+        "loginRequired": "You must be logged in to submit a review.",
+        "loginButton": "Log in",
         "title": "Write a review",
         "submit": "Submit",
         "ratingLabel": "Rating",

@@ -75,6 +75,7 @@ const getReviews = cache(async (productId: number, paginationArgs: object) => {
 });
 
 interface Props {
+  formLoginHref?: string;
   productId: number;
   searchParams: Promise<SearchParams>;
   streamableImages: Streamable<Array<{ src: string; alt: string }>>;
@@ -82,6 +83,7 @@ interface Props {
 }
 
 export const Reviews = async ({
+  formLoginHref = '/login',
   productId,
   searchParams,
   streamableProduct,
@@ -176,6 +178,9 @@ export const Reviews = async ({
         emptyStateMessage={t('empty')}
         formButtonLabel={t('Form.button')}
         formEmailLabel={t('Form.emailLabel')}
+        formLoginRequiredMessage={t('Form.loginRequired')}
+        formLoginHref={formLoginHref}
+        formLoginButtonLabel={t('Form.loginButton')}
         formModalTitle={t('Form.title')}
         formNameLabel={t('Form.nameLabel')}
         formRatingLabel={t('Form.ratingLabel')}

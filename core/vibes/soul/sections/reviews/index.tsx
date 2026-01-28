@@ -4,6 +4,8 @@ import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 
+import { Link } from '~/components/link';
+
 import { ReviewForm, SubmitReviewAction } from './review-form';
 
 interface Review {
@@ -33,6 +35,9 @@ interface Props {
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
+  formLoginRequiredMessage?: string;
+  formLoginHref?: string;
+  formLoginButtonLabel?: string;
   streamableImages: Streamable<Array<{ src: string; alt: string }>>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
@@ -57,6 +62,9 @@ export function Reviews({
   formReviewLabel,
   formNameLabel,
   formEmailLabel,
+  formLoginRequiredMessage = 'You must be logged in to submit a review.',
+  formLoginHref = '/login',
+  formLoginButtonLabel = 'Log in',
   streamableProduct,
   streamableImages,
   streamableUser,
@@ -70,6 +78,9 @@ export function Reviews({
               action={action}
               formButtonLabel={formButtonLabel}
               formEmailLabel={formEmailLabel}
+              formLoginRequiredMessage={formLoginRequiredMessage}
+              formLoginHref={formLoginHref}
+              formLoginButtonLabel={formLoginButtonLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
               formRatingLabel={formRatingLabel}
@@ -123,25 +134,37 @@ export function Reviews({
                     </>
                   )}
                 </Stream>
-                <ReviewForm
-                  action={action}
-                  formEmailLabel={formEmailLabel}
-                  formModalTitle={formModalTitle}
-                  formNameLabel={formNameLabel}
-                  formRatingLabel={formRatingLabel}
-                  formReviewLabel={formReviewLabel}
-                  formSubmitLabel={formSubmitLabel}
-                  formTitleLabel={formTitleLabel}
-                  productId={productId}
-                  streamableImages={streamableImages}
-                  streamableProduct={streamableProduct}
-                  streamableUser={streamableUser}
-                  trigger={
-                    <Button className="mx-auto mt-8" size="small" variant="tertiary">
-                      {formButtonLabel}
-                    </Button>
+                <Stream fallback={null} value={streamableUser}>
+                  {(user) =>
+                    user.email ? (
+                      <ReviewForm
+                        action={action}
+                        formEmailLabel={formEmailLabel}
+                        formModalTitle={formModalTitle}
+                        formNameLabel={formNameLabel}
+                        formRatingLabel={formRatingLabel}
+                        formReviewLabel={formReviewLabel}
+                        formSubmitLabel={formSubmitLabel}
+                        formTitleLabel={formTitleLabel}
+                        productId={productId}
+                        streamableImages={streamableImages}
+                        streamableProduct={streamableProduct}
+                        streamableUser={streamableUser}
+                        trigger={
+                          <Button className="mx-auto mt-8" size="small" variant="tertiary">
+                            {formButtonLabel}
+                          </Button>
+                        }
+                      />
+                    ) : (
+                      <LoginRequiredMessage
+                        loginHref={formLoginHref}
+                        loginLabel={formLoginButtonLabel}
+                        message={formLoginRequiredMessage}
+                      />
+                    )
                   }
-                />
+                </Stream>
               </>
             }
             sidebarSize="medium"
@@ -191,6 +214,9 @@ export function ReviewsEmptyState({
   formReviewLabel,
   formNameLabel,
   formEmailLabel,
+  formLoginRequiredMessage = 'You must be logged in to submit a review',
+  formLoginHref = '/login',
+  formLoginButtonLabel = 'Log in',
   streamableProduct,
   streamableImages,
   streamableUser,
@@ -207,6 +233,9 @@ export function ReviewsEmptyState({
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
+  formLoginRequiredMessage?: string;
+  formLoginHref?: string;
+  formLoginButtonLabel?: string;
   streamableImages: Streamable<Array<{ src: string; alt: string }>>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
@@ -222,31 +251,43 @@ export function ReviewsEmptyState({
             0
           </div>
           <Rating rating={0} showRating={false} />
+          <Stream fallback={null} value={streamableUser}>
+            {(user) =>
+              user.email ? (
+                <ReviewForm
+                  action={action}
+                  formEmailLabel={formEmailLabel}
+                  formModalTitle={formModalTitle}
+                  formNameLabel={formNameLabel}
+                  formRatingLabel={formRatingLabel}
+                  formReviewLabel={formReviewLabel}
+                  formSubmitLabel={formSubmitLabel}
+                  formTitleLabel={formTitleLabel}
+                  productId={productId}
+                  streamableImages={streamableImages}
+                  streamableProduct={streamableProduct}
+                  streamableUser={streamableUser}
+                  trigger={
+                    <Button className="mx-auto mt-8" size="small" variant="tertiary">
+                      {formButtonLabel}
+                    </Button>
+                  }
+                />
+              ) : (
+                <LoginRequiredMessage
+                  loginHref={formLoginHref}
+                  loginLabel={formLoginButtonLabel}
+                  message={formLoginRequiredMessage}
+                />
+              )
+            }
+          </Stream>
         </>
       }
       sidebarSize="medium"
     >
       <div className="flex flex-1 flex-col border-t border-contrast-100 py-12">
         <p className="text-center">{message}</p>
-        <ReviewForm
-          action={action}
-          formEmailLabel={formEmailLabel}
-          formModalTitle={formModalTitle}
-          formNameLabel={formNameLabel}
-          formRatingLabel={formRatingLabel}
-          formReviewLabel={formReviewLabel}
-          formSubmitLabel={formSubmitLabel}
-          formTitleLabel={formTitleLabel}
-          productId={productId}
-          streamableImages={streamableImages}
-          streamableProduct={streamableProduct}
-          streamableUser={streamableUser}
-          trigger={
-            <Button className="mx-auto mt-8" size="small" variant="tertiary">
-              {formButtonLabel}
-            </Button>
-          }
-        />
       </div>
     </StickySidebarLayout>
   );
@@ -275,5 +316,31 @@ export function ReviewsSkeleton({ reviewsLabel = 'Reviews' }: { reviewsLabel?: s
         ))}
       </div>
     </StickySidebarLayout>
+  );
+}
+
+function LoginRequiredMessage({
+  message = 'You must be logged in to submit a review',
+  loginHref = '/login',
+  loginLabel = 'Log in',
+}: {
+  message?: string;
+  loginHref?: string;
+  loginLabel?: string;
+}) {
+  return (
+    <div className="mt-8 flex flex-wrap items-baseline gap-x-2 gap-y-1 text-left">
+      <p className="text-sm text-contrast-500">
+        {message}
+        {loginHref ? (
+          <Link
+            className="ml-1 text-sm font-medium text-foreground underline hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            href={loginHref}
+          >
+            {loginLabel}
+          </Link>
+        ) : null}
+      </p>
+    </div>
   );
 }
