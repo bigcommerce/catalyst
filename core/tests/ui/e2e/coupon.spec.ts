@@ -21,7 +21,7 @@ test('Valid coupon code can be applied to the cart', async ({ page, catalog, pro
   await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
 
   await page.getByLabel(t('Cart.CheckoutSummary.CouponCode.couponCode')).fill(coupon.code);
-  await page.getByRole('button', { name: t('Cart.CheckoutSummary.CouponCode.apply') }).click();
+  await page.getByRole('button', { name: t('Cart.CheckoutSummary.PromoCode.apply') }).click();
   await page.waitForLoadState('networkidle');
 
   try {
@@ -69,18 +69,18 @@ test('Invalid coupon code cannot be applied', async ({ page, catalog }) => {
     .getByLabel(t('Cart.CheckoutSummary.CouponCode.couponCode'))
     .fill('some-invalid-coupon-code');
 
-  await page.getByRole('button', { name: t('Cart.CheckoutSummary.CouponCode.apply') }).click();
+  await page.getByRole('button', { name: t('Cart.CheckoutSummary.PromoCode.apply') }).click();
   await page.waitForLoadState('networkidle');
 
   try {
     await expect(
-      page.getByText(t('Cart.CheckoutSummary.CouponCode.invalidCouponCode')),
+      page.getByText(t('Cart.CheckoutSummary.PromoCode.invalidPromoCode')),
     ).toBeVisible();
   } catch {
     // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
     await page.reload();
     await expect(
-      page.getByText(t('Cart.CheckoutSummary.CouponCode.invalidCouponCode')),
+      page.getByText(t('Cart.CheckoutSummary.PromoCode.invalidPromoCode')),
     ).toBeVisible();
   }
 });

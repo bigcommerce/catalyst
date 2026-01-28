@@ -47,21 +47,36 @@ export const giftCertificateCodeActionFormDataSchema = ({
     }),
   ]);
 
-export const shippingActionFormDataSchema = ({
-  required_error = 'Country is required',
+export const promoCodeActionFormDataSchema = ({
+  required_error = 'Please enter a valid promo code or gift certificate code',
 }: {
   required_error?: string;
 }) =>
   z.discriminatedUnion('intent', [
     z.object({
-      intent: z.literal('add-address'),
-      country: z.string({ required_error }),
-      city: z.string().optional(),
-      state: z.string().optional(),
-      postalCode: z.string().optional(),
+      intent: z.literal('apply'),
+      code: z.string({ required_error }),
     }),
     z.object({
-      intent: z.literal('add-shipping'),
-      shippingOption: z.string(),
+      intent: z.literal('delete-coupon'),
+      couponCode: z.string(),
+    }),
+    z.object({
+      intent: z.literal('delete-gift-certificate'),
+      giftCertificateCode: z.string(),
     }),
   ]);
+
+export const shippingActionFormDataSchema = z.discriminatedUnion('intent', [
+  z.object({
+    intent: z.literal('add-address'),
+    country: z.string(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    postalCode: z.string().optional(),
+  }),
+  z.object({
+    intent: z.literal('add-shipping'),
+    shippingOption: z.string(),
+  }),
+]);

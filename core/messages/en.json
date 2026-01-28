@@ -386,6 +386,11 @@
         "invalidCouponCode": "Please enter a valid coupon code",
         "cartNotFound": "An error occurred when retrieving your cart"
       },
+      "PromoCode": {
+        "apply": "Apply",
+        "label": "Coupon/GiftCertificate",
+        "invalidPromoCode": "Please enter a valid coupon code or gift certificate"
+      },
       "Shipping": {
         "shipping": "Shipping",
         "add": "Add",

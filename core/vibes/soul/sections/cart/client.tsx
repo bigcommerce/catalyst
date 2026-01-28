@@ -19,14 +19,13 @@ import { Button } from '@/vibes/soul/primitives/button';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import {
-  GiftCertificateCodeForm,
-  GiftCertificateCodeFormState,
-} from '@/vibes/soul/sections/cart/gift-certificate-code-form';
+  PromoCodeForm,
+  PromoCodeFormState,
+} from '@/vibes/soul/sections/cart/promo-code-form';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { useEvents } from '~/components/analytics/events';
 import { Image } from '~/components/image';
 
-import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
 import { ShippingForm, ShippingFormState } from './shipping-form';
 
@@ -84,24 +83,16 @@ export interface Cart<LineItem extends CartLineItem> {
   totalLabel?: string;
 }
 
-interface CouponCode {
-  action: Action<CouponCodeFormState, FormData>;
+interface PromoCode {
+  action: Action<PromoCodeFormState, FormData>;
   couponCodes?: string[];
-  ctaLabel?: string;
-  disabled?: boolean;
-  label?: string;
-  placeholder?: string;
-  removeLabel?: string;
-}
-
-interface GiftCertificate {
-  action: Action<GiftCertificateCodeFormState, FormData>;
   giftCertificateCodes?: string[];
   ctaLabel?: string;
   disabled?: boolean;
   label?: string;
   placeholder?: string;
-  removeLabel?: string;
+  couponRemoveLabel?: string;
+  giftCertificateRemoveLabel?: string;
 }
 
 interface ShippingOption {
@@ -166,8 +157,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
-  couponCode?: CouponCode;
-  giftCertificate?: GiftCertificate;
+  promoCode?: PromoCode;
   shipping?: Shipping;
   lineItemActionPendingLabel?: string;
 }
@@ -206,8 +196,7 @@ const defaultEmptyState = {
 export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
-  couponCode,
-  giftCertificate,
+  promoCode,
   decrementLineItemLabel,
   incrementLineItemLabel,
   deleteLineItemLabel,
@@ -383,26 +372,17 @@ export function CartClient<LineItem extends CartLineItem>({
 
               {shipping && <ShippingForm {...shipping} />}
             </div>
-            {couponCode && (
-              <CouponCodeForm
-                action={couponCode.action}
-                couponCodes={couponCode.couponCodes}
-                ctaLabel={couponCode.ctaLabel}
-                disabled={couponCode.disabled}
-                label={couponCode.label}
-                placeholder={couponCode.placeholder}
-                removeLabel={couponCode.removeLabel}
-              />
-            )}
-            {giftCertificate && (
-              <GiftCertificateCodeForm
-                action={giftCertificate.action}
-                ctaLabel={giftCertificate.ctaLabel}
-                disabled={giftCertificate.disabled}
-                giftCertificateCodes={giftCertificate.giftCertificateCodes}
-                label={giftCertificate.label}
-                placeholder={giftCertificate.placeholder}
-                removeLabel={giftCertificate.removeLabel}
+            {promoCode && (
+              <PromoCodeForm
+                action={promoCode.action}
+                couponCodes={promoCode.couponCodes}
+                ctaLabel={promoCode.ctaLabel}
+                disabled={promoCode.disabled}
+                giftCertificateCodes={promoCode.giftCertificateCodes}
+                label={promoCode.label}
+                placeholder={promoCode.placeholder}
+                couponRemoveLabel={promoCode.couponRemoveLabel}
+                giftCertificateRemoveLabel={promoCode.giftCertificateRemoveLabel}
               />
             )}
             <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">

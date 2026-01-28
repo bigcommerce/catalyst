@@ -8,8 +8,7 @@ import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
 
-import { updateCouponCode } from './_actions/update-coupon-code';
-import { updateGiftCertificate } from './_actions/update-gift-certificate';
+import { updatePromoCode } from './_actions/update-promo-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
@@ -314,13 +313,6 @@ export default async function Cart({ params }: Props) {
           }}
           checkoutAction={CHECKOUT_URL}
           checkoutLabel={t('proceedToCheckout')}
-          couponCode={{
-            action: updateCouponCode,
-            couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
-            ctaLabel: t('CheckoutSummary.CouponCode.apply'),
-            label: t('CheckoutSummary.CouponCode.couponCode'),
-            removeLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
-          }}
           decrementLineItemLabel={t('decrement')}
           deleteLineItemLabel={t('removeItem')}
           emptyState={{
@@ -328,17 +320,25 @@ export default async function Cart({ params }: Props) {
             subtitle: t('Empty.subtitle'),
             cta: { label: t('Empty.cta'), href: '/shop-all' },
           }}
-          giftCertificate={
+          promoCode={
             giftCertificatesEnabled
               ? {
-                  action: updateGiftCertificate,
+                  action: updatePromoCode,
+                  couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
                   giftCertificateCodes: checkout?.giftCertificates.map((gc) => gc.code) ?? [],
-                  ctaLabel: t('GiftCertificate.apply'),
-                  label: t('GiftCertificate.giftCertificateCode'),
-                  placeholder: tGiftCertificates('CheckBalance.inputPlaceholder'),
-                  removeLabel: t('GiftCertificate.removeGiftCertificate'),
+                  ctaLabel: t('CheckoutSummary.PromoCode.apply'),
+                  label: t('CheckoutSummary.PromoCode.label'),
+                  couponRemoveLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
+                  giftCertificateRemoveLabel: t('GiftCertificate.removeGiftCertificate'),
                 }
-              : undefined
+              : {
+                  action: updatePromoCode,
+                  couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
+                  giftCertificateCodes: [],
+                  ctaLabel: t('CheckoutSummary.PromoCode.apply'),
+                  label: t('CheckoutSummary.CouponCode.couponCode'),
+                  couponRemoveLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
+                }
           }
           incrementLineItemLabel={t('increment')}
           key={`${cart.entityId}-${cart.version}`}
