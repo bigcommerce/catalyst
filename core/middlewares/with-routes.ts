@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { defaultLocale } from '~/i18n/locales';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
@@ -291,6 +292,14 @@ export const withRoutes: MiddlewareFactory = () => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
     const { route, status } = await getRouteInfo(request, event);
+
+    if (request.url === '/404' || request.url === '/404/') {
+      const notFoundRewriteUrl = new URL(`/${locale}/not-found-2`, request.url);
+
+      notFoundRewriteUrl.search = request.nextUrl.search;
+
+      return NextResponse.rewrite(notFoundRewriteUrl);
+    }
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
