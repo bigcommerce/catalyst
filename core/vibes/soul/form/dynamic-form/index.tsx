@@ -11,6 +11,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import {
   FormEvent,
   MouseEvent,
@@ -36,7 +37,13 @@ import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
-import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
+import {
+  Field,
+  FieldGroup,
+  FormErrorTranslationMap,
+  PasswordComplexitySettings,
+  schema,
+} from './schema';
 import { removeOptionsFromFields } from './utils';
 
 export interface DynamicFormActionArgs<F extends Field> {
@@ -69,6 +76,7 @@ export interface DynamicFormProps<F extends Field> {
   onChange?: (e: FormEvent<HTMLFormElement>) => void;
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
   passwordComplexity?: PasswordComplexitySettings | null;
+  errorTranslations?: FormErrorTranslationMap;
 }
 
 export function DynamicForm<F extends Field>({
@@ -83,7 +91,9 @@ export function DynamicForm<F extends Field>({
   onChange,
   onSuccess,
   passwordComplexity,
+  errorTranslations,
 }: DynamicFormProps<F>) {
+  const t = useTranslations('Form');
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -94,7 +104,7 @@ export function DynamicForm<F extends Field>({
     lastResult: null,
   });
 
-  const dynamicSchema = schema(fields, passwordComplexity);
+  const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
     .reduce<z.infer<typeof dynamicSchema>>(
@@ -104,11 +114,33 @@ export function DynamicForm<F extends Field>({
       }),
       {},
     );
+
   const [form, formFields] = useForm({
     lastResult,
     constraint: getZodConstraint(dynamicSchema),
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: dynamicSchema });
+      return parseWithZod(formData, {
+        schema: dynamicSchema,
+        errorMap: (issue) => {
+          if (
+            !errorTranslations &&
+            issue.code === z.ZodIssueCode.invalid_string &&
+            issue.validation === 'regex'
+          ) {
+            return { message: t('Errors.invalidFormat') };
+          }
+
+          if (!errorTranslations) {
+            return { message: issue.message ?? t('Errors.invalidInput') };
+          }
+
+          const field = issue.path[0];
+          const fieldKey = typeof field === 'string' ? field : '';
+          const errorMessage = errorTranslations[fieldKey]?.[issue.code];
+
+          return { message: errorMessage ?? issue.message ?? t('Errors.invalidInput') };
+        },
+      });
     },
     defaultValue,
     shouldValidate: 'onSubmit',

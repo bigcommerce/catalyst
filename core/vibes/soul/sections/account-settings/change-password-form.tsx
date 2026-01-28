@@ -1,15 +1,18 @@
 'use client';
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { ReactNode, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
+import { PasswordComplexitySettings } from '@/vibes/soul/form/dynamic-form/schema';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { changePasswordSchema } from './schema';
+import { changePasswordErrorTranslations, changePasswordSchema } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -26,6 +29,7 @@ export interface ChangePasswordFormProps {
   newPasswordLabel?: string;
   confirmPasswordLabel?: string;
   submitLabel?: string;
+  passwordComplexitySettings?: PasswordComplexitySettings | null;
 }
 
 export function ChangePasswordForm({
@@ -34,14 +38,18 @@ export function ChangePasswordForm({
   newPasswordLabel = 'New password',
   confirmPasswordLabel = 'Confirm password',
   submitLabel = 'Update',
+  passwordComplexitySettings,
 }: ChangePasswordFormProps) {
+  const t = useTranslations('Account.Settings');
+  const errorTranslations = changePasswordErrorTranslations(t, passwordComplexitySettings);
+  const schema = changePasswordSchema(passwordComplexitySettings, errorTranslations);
   const [state, formAction] = useActionState(action, { lastResult: null });
   const [form, fields] = useForm({
-    constraint: getZodConstraint(changePasswordSchema),
+    constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: changePasswordSchema });
+      return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
   });
 

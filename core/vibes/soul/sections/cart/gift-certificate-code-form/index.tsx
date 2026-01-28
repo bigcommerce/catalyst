@@ -2,6 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useOptimistic } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -28,7 +29,6 @@ export interface GiftCertificateCodeFormProps {
   label?: string;
   placeholder?: string;
   removeLabel?: string;
-  requiredErrorMessage?: string;
 }
 
 export function GiftCertificateCodeForm({
@@ -39,14 +39,16 @@ export function GiftCertificateCodeForm({
   label = 'Gift certificate code',
   placeholder,
   removeLabel,
-  requiredErrorMessage,
 }: GiftCertificateCodeFormProps) {
+  const t = useTranslations('Cart.GiftCertificate');
   const [state, formAction] = useActionState(action, {
     giftCertificateCodes: giftCertificateCodes ?? [],
     lastResult: null,
   });
 
-  const schema = giftCertificateCodeActionFormDataSchema({ required_error: requiredErrorMessage });
+  const schema = giftCertificateCodeActionFormDataSchema({
+    required_error: t('invalidGiftCertificate'),
+  });
 
   const [optimisticGiftCertificateCodes, setOptimisticGiftCertificateCodes] = useOptimistic<
     string[],

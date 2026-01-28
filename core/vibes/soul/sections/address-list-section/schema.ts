@@ -1,4 +1,34 @@
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
+
+import { FormErrorTranslationMap } from '@/vibes/soul/form/dynamic-form/schema';
+import { ExistingResultType } from '~/client/util';
+
+export const addressFormErrorTranslations = (
+  t: ExistingResultType<typeof getTranslations<'Account.Addresses'>>,
+): FormErrorTranslationMap => ({
+  firstName: {
+    invalid_type: t('FieldErrors.firstNameRequired'),
+  },
+  lastName: {
+    invalid_type: t('FieldErrors.lastNameRequired'),
+  },
+  address1: {
+    invalid_type: t('FieldErrors.addressLine1Required'),
+  },
+  city: {
+    invalid_type: t('FieldErrors.cityRequired'),
+  },
+  countryCode: {
+    invalid_type: t('FieldErrors.countryRequired'),
+  },
+  stateOrProvince: {
+    invalid_type: t('FieldErrors.stateRequired'),
+  },
+  postalCode: {
+    invalid_type: t('FieldErrors.postalCodeRequired'),
+  },
+});
 
 export const schema = z
   .object({

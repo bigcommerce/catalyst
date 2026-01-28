@@ -47,16 +47,21 @@ export const giftCertificateCodeActionFormDataSchema = ({
     }),
   ]);
 
-export const shippingActionFormDataSchema = z.discriminatedUnion('intent', [
-  z.object({
-    intent: z.literal('add-address'),
-    country: z.string(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    postalCode: z.string().optional(),
-  }),
-  z.object({
-    intent: z.literal('add-shipping'),
-    shippingOption: z.string(),
-  }),
-]);
+export const shippingActionFormDataSchema = ({
+  required_error = 'Country is required',
+}: {
+  required_error?: string;
+}) =>
+  z.discriminatedUnion('intent', [
+    z.object({
+      intent: z.literal('add-address'),
+      country: z.string({ required_error }),
+      city: z.string().optional(),
+      state: z.string().optional(),
+      postalCode: z.string().optional(),
+    }),
+    z.object({
+      intent: z.literal('add-shipping'),
+      shippingOption: z.string(),
+    }),
+  ]);

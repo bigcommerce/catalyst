@@ -2,6 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import {
   ComponentProps,
   ReactNode,
@@ -21,7 +22,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Spinner } from '@/vibes/soul/primitives/spinner';
 import { toast } from '@/vibes/soul/primitives/toaster';
 
-import { schema } from './schema';
+import { addressFormErrorTranslations, schema } from './schema';
 
 export type Address = z.infer<typeof schema>;
 
@@ -96,6 +97,8 @@ export function AddressListSection<A extends Address, F extends Field>({
   setDefaultLabel = 'Set as default',
   emptyStateTitle = "You don't have any addresses",
 }: AddressListSectionProps<A, F>) {
+  const t = useTranslations('Account.Addresses');
+  const errorTranslations = addressFormErrorTranslations(t);
   const actionWithFields = addressAction.bind(null, fields);
 
   const [state, formAction] = useActionState(actionWithFields, {
@@ -194,6 +197,7 @@ export function AddressListSection<A extends Address, F extends Field>({
                 }}
                 buttonSize="small"
                 cancelLabel={cancelLabel}
+                errorTranslations={errorTranslations}
                 fields={fields.map((field) => {
                   if ('name' in field && field.name === 'id') {
                     return {
@@ -253,6 +257,7 @@ export function AddressListSection<A extends Address, F extends Field>({
                       }}
                       buttonSize="small"
                       cancelLabel={cancelLabel}
+                      errorTranslations={errorTranslations}
                       fields={addressFields}
                       onCancel={() =>
                         setActiveAddressIds((prev) => prev.filter((id) => id !== address.id))

@@ -1,7 +1,8 @@
 'use client';
 
 import { getFormProps, SubmissionResult, useForm, useInputControl } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -14,8 +15,9 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Modal } from '@/vibes/soul/primitives/modal';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { Image } from '~/components/image';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { schema } from './schema';
+import { reviewFormErrorTranslations, schema } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -30,6 +32,7 @@ interface Props {
   trigger: React.ReactNode;
   formModalTitle?: string;
   formSubmitLabel?: string;
+  formCancelLabel?: string;
   formRatingLabel?: string;
   formTitleLabel?: string;
   formReviewLabel?: string;
@@ -46,6 +49,7 @@ export const ReviewForm = ({
   trigger,
   formModalTitle = 'Write a review',
   formSubmitLabel = 'Submit',
+  formCancelLabel = 'Cancel',
   formRatingLabel = 'Rating',
   formTitleLabel = 'Title',
   formReviewLabel = 'Review',
@@ -55,6 +59,8 @@ export const ReviewForm = ({
   streamableImages,
   streamableUser,
 }: Props) => {
+  const t = useTranslations('Product.Reviews.Form');
+  const errorTranslations = reviewFormErrorTranslations(t);
   const [isOpen, setIsOpen] = useState(false);
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
     lastResult: null,
@@ -73,7 +79,7 @@ export const ReviewForm = ({
       author: user.name,
     },
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();
@@ -213,7 +219,7 @@ export const ReviewForm = ({
             ))}
             <div className="mt-auto flex justify-end gap-3">
               <Button onClick={() => setIsOpen(false)} size="small" type="button" variant="ghost">
-                Cancel
+                {formCancelLabel}
               </Button>
               <SubmitButton>{formSubmitLabel}</SubmitButton>
             </div>

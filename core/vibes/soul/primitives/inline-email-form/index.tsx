@@ -4,6 +4,7 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
 
 import { FieldError } from '@/vibes/soul/form/field-error';
@@ -28,6 +29,12 @@ export function InlineEmailForm({
   submitLabel?: string;
   action: Action<{ lastResult: SubmissionResult | null; successMessage?: string }, FormData>;
 }) {
+  const t = useTranslations('Components.Subscribe');
+  const subscribeSchema = schema({
+    requiredMessage: t('Errors.emailRequired'),
+    invalidMessage: t('Errors.invalidEmail'),
+  });
+
   const [{ lastResult, successMessage }, formAction, isPending] = useActionState(action, {
     lastResult: null,
   });
@@ -35,7 +42,7 @@ export function InlineEmailForm({
   const [form, fields] = useForm({
     lastResult,
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZod(formData, { schema: subscribeSchema });
     },
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',

@@ -41,7 +41,7 @@ const GiftCertificateSettingsQuery = graphql(
 
 const schema = (
   giftCertificateSettings: ResultOf<typeof GiftCertificateSettingsFragment> | undefined,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'GiftCertificates.Purchase'>>,
 ) => {
   return z
     .object({

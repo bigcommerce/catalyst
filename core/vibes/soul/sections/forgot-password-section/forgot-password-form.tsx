@@ -1,15 +1,17 @@
 'use client';
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { schema } from './schema';
+import { forgotPasswordErrorTranslations, schema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -29,6 +31,8 @@ export function ForgotPasswordForm({
   emailLabel = 'Email',
   submitLabel = 'Reset password',
 }: Props) {
+  const t = useTranslations('Auth.Login.ForgotPassword');
+  const errorTranslations = forgotPasswordErrorTranslations(t);
   const [{ lastResult, successMessage }, formAction] = useActionState(action, { lastResult: null });
   const [form, fields] = useForm({
     lastResult,
@@ -36,7 +40,7 @@ export function ForgotPasswordForm({
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
   });
 

@@ -1,14 +1,17 @@
 'use client';
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
 
+import { PasswordComplexitySettings } from '@/vibes/soul/form/dynamic-form/schema';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { schema } from './schema';
+import { resetPasswordErrorTranslations, resetPasswordSchema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -22,6 +25,7 @@ interface Props {
   submitLabel?: string;
   newPasswordLabel?: string;
   confirmPasswordLabel?: string;
+  passwordComplexitySettings?: PasswordComplexitySettings | null;
 }
 
 export function ResetPasswordForm({
@@ -29,7 +33,11 @@ export function ResetPasswordForm({
   newPasswordLabel = 'New password',
   confirmPasswordLabel = 'Confirm Password',
   submitLabel = 'Update',
+  passwordComplexitySettings,
 }: Props) {
+  const t = useTranslations('Auth.ChangePassword');
+  const errorTranslations = resetPasswordErrorTranslations(t, passwordComplexitySettings);
+  const schema = resetPasswordSchema(passwordComplexitySettings, errorTranslations);
   const [{ lastResult, successMessage }, formAction, isPending] = useActionState(action, {
     lastResult: null,
   });
@@ -39,7 +47,7 @@ export function ResetPasswordForm({
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
   });
 

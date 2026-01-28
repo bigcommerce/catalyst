@@ -18,20 +18,20 @@ interface Props {
 function getFields(
   giftCertificateSettings: ResultOf<typeof GiftCertificateSettingsFragment>,
   expiresAt: string | undefined,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'GiftCertificates'>>,
 ): Array<Field | FieldGroup<Field>> {
   const baseFields: Array<Field | FieldGroup<Field>> = [
     [
       {
         type: 'text',
         name: 'senderName',
-        label: `${t('Purchase.Form.senderNameLabel')} *`,
+        label: t('Purchase.Form.senderNameLabel'),
         required: true,
       },
       {
         type: 'email',
         name: 'senderEmail',
-        label: `${t('Purchase.Form.senderEmailLabel')} *`,
+        label: t('Purchase.Form.senderEmailLabel'),
         required: true,
       },
     ],
@@ -39,13 +39,13 @@ function getFields(
       {
         type: 'text',
         name: 'recipientName',
-        label: `${t('Purchase.Form.recipientNameLabel')} *`,
+        label: t('Purchase.Form.recipientNameLabel'),
         required: true,
       },
       {
         type: 'email',
         name: 'recipientEmail',
-        label: `${t('Purchase.Form.recipientEmailLabel')} *`,
+        label: t('Purchase.Form.recipientEmailLabel'),
         required: true,
       },
     ],
@@ -78,10 +78,10 @@ function getFields(
           {
             type: 'text',
             name: 'amount',
-            label: `${t('Purchase.Form.customAmountLabel', {
+            label: t('Purchase.Form.customAmountLabel', {
               minAmount: String(giftCertificateSettings.minimumAmount.value),
               maxAmount: String(giftCertificateSettings.maximumAmount.value),
-            })} *`,
+            }),
             pattern: '^[0-9]*\\.?[0-9]+$',
             required: true,
           },
@@ -90,7 +90,7 @@ function getFields(
           {
             type: 'select',
             name: 'amount',
-            label: `${t('Purchase.Form.amountLabel')} *`,
+            label: t('Purchase.Form.amountLabel'),
             defaultValue: '0',
             options: [
               {

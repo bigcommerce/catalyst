@@ -35,6 +35,17 @@ const AccountSettingsQuery = graphql(
           newsletter {
             showNewsletterSignup
           }
+          customers {
+            passwordComplexitySettings {
+              minimumNumbers
+              minimumPasswordLength
+              minimumSpecialCharacters
+              requireLowerCase
+              requireNumbers
+              requireSpecialCharacters
+              requireUpperCase
+            }
+          }
         }
       }
     }
@@ -75,6 +86,8 @@ export const getAccountSettingsQuery = cache(async ({ address, customer }: Props
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
   const newsletterSettings = response.data.site.settings?.newsletter;
+  const passwordComplexitySettings =
+    response.data.site.settings?.customers?.passwordComplexitySettings;
 
   if (!addressFields || !customerFields || !customerInfo) {
     return null;
@@ -85,5 +98,6 @@ export const getAccountSettingsQuery = cache(async ({ address, customer }: Props
     customerFields,
     customerInfo,
     newsletterSettings,
+    passwordComplexitySettings,
   };
 });

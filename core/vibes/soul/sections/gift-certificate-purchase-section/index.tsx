@@ -2,11 +2,11 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { clsx } from 'clsx';
-import { useFormatter } from 'next-intl';
+import { useFormatter, useTranslations } from 'next-intl';
 import { ReactNode, useCallback, useState } from 'react';
 
 import { DynamicForm, DynamicFormAction } from '@/vibes/soul/form/dynamic-form';
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { Field, FieldGroup, FormErrorTranslationMap } from '@/vibes/soul/form/dynamic-form/schema';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { GiftCertificateCard } from '@/vibes/soul/primitives/gift-certificate-card';
 import { toast } from '@/vibes/soul/primitives/toaster';
@@ -58,8 +58,36 @@ export function GiftCertificatePurchaseSection({
   expiresAtLabel,
   ctaLabel = 'Add to cart',
 }: Props) {
+  const t = useTranslations('GiftCertificates.Purchase');
   const format = useFormatter();
   const [formattedAmount, setFormattedAmount] = useState<string | undefined>(undefined);
+  const errorTranslations: FormErrorTranslationMap = {
+    amount: {
+      invalid_type: t('Form.Errors.amountRequired'),
+      invalid_string: t('Form.Errors.amountInvalid'),
+    },
+    senderName: {
+      invalid_type: t('Form.Errors.senderNameRequired'),
+    },
+    senderEmail: {
+      invalid_type: t('Form.Errors.senderEmailRequired'),
+      invalid_string: t('Form.Errors.emailInvalid'),
+    },
+    recipientName: {
+      invalid_type: t('Form.Errors.recipientNameRequired'),
+    },
+    recipientEmail: {
+      invalid_type: t('Form.Errors.recipientEmailRequired'),
+      invalid_string: t('Form.Errors.emailInvalid'),
+    },
+    nonRefundable: {
+      invalid_literal: t('Form.Errors.checkboxRequired'),
+    },
+    expirationConsent: {
+      invalid_literal: t('Form.Errors.checkboxRequired'),
+    },
+  };
+
   const handleFormChange = (e: React.FormEvent<HTMLFormElement>) => {
     if (!(e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement)) {
       return;
@@ -156,6 +184,7 @@ export function GiftCertificatePurchaseSection({
           </div>
           <DynamicForm
             action={action}
+            errorTranslations={errorTranslations}
             fields={formFields}
             key={JSON.stringify(formFields)}
             onChange={handleFormChange}

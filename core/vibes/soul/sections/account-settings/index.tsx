@@ -1,3 +1,5 @@
+import { PasswordComplexitySettings } from '@/vibes/soul/form/dynamic-form/schema';
+
 import { ChangePasswordAction, ChangePasswordForm } from './change-password-form';
 import {
   NewsletterSubscriptionForm,
@@ -22,6 +24,7 @@ export interface AccountSettingsSectionProps {
   newsletterSubscriptionLabel?: string;
   newsletterSubscriptionCtaLabel?: string;
   updateNewsletterSubscriptionAction?: UpdateNewsletterSubscriptionAction;
+  passwordComplexitySettings?: PasswordComplexitySettings | null;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -55,6 +58,7 @@ export function AccountSettingsSection({
   newsletterSubscriptionLabel = 'Opt-in to receive emails about new products and promotions.',
   newsletterSubscriptionCtaLabel = 'Save preferences',
   updateNewsletterSubscriptionAction,
+  passwordComplexitySettings,
 }: AccountSettingsSectionProps) {
   return (
     <section className="w-full @container">
@@ -81,6 +85,7 @@ export function AccountSettingsSection({
               confirmPasswordLabel={confirmPasswordLabel}
               currentPasswordLabel={currentPasswordLabel}
               newPasswordLabel={newPasswordLabel}
+              passwordComplexitySettings={passwordComplexitySettings}
               submitLabel={changePasswordSubmitLabel}
             />
           </div>

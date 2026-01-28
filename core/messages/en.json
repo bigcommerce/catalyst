@@ -43,7 +43,17 @@
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
       "passwordUpdated": "Password has been updated successfully!",
-      "somethingWentWrong": "Something went wrong. Please try again later."
+      "somethingWentWrong": "Something went wrong. Please try again later.",
+      "FieldErrors": {
+        "passwordRequired": "Password is required",
+        "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+        "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+        "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+        "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+        "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+        "passwordsMustMatch": "The passwords do not match",
+        "confirmPasswordRequired": "Please confirm your password"
+      }
     },
     "Login": {
       "title": "Login",
@@ -56,6 +66,12 @@
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
       "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
+      "FieldErrors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "invalidInput": "Please check your input and try again."
+      },
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
@@ -70,14 +86,36 @@
         "title": "Forgot password",
         "subtitle": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
         "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
-        "somethingWentWrong": "Something went wrong. Please try again later."
+        "somethingWentWrong": "Something went wrong. Please try again later.",
+        "FieldErrors": {
+          "emailRequired": "Email is required",
+          "emailInvalid": "Please enter a valid email address"
+        }
       }
     },
     "Register": {
       "title": "Register account",
       "heading": "New account",
       "cta": "Create account",
-      "somethingWentWrong": "Something went wrong. Please try again later."
+      "somethingWentWrong": "Something went wrong. Please try again later.",
+      "FieldErrors": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+        "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+        "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+        "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+        "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+        "passwordsMustMatch": "The passwords do not match",
+        "addressLine1Required": "Address line 1 is required",
+        "cityRequired": "City is required",
+        "countryRequired": "Country is required",
+        "stateRequired": "State/Province is required",
+        "postalCodeRequired": "Postal code is required"
+      }
     }
   },
   "Faceted": {
@@ -188,6 +226,15 @@
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "EmptyState": {
         "title": "You don't have any addresses"
+      },
+      "FieldErrors": {
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "addressLine1Required": "Address line 1 is required",
+        "cityRequired": "City is required",
+        "countryRequired": "Country is required",
+        "stateRequired": "State/Province is required",
+        "postalCodeRequired": "Postal code is required"
       }
     },
     "Settings": {
@@ -205,6 +252,23 @@
         "label": "Subscribe to our newsletter.",
         "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
         "somethingWentWrong": "Something went wrong. Please try again later."
+      },
+      "FieldErrors": {
+        "firstNameRequired": "First name is required",
+        "firstNameTooSmall": "First name must be at least 2 characters long",
+        "lastNameRequired": "Last name is required",
+        "lastNameTooSmall": "Last name must be at least 2 characters long",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "currentPasswordRequired": "Current password is required",
+        "passwordRequired": "Password is required",
+        "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+        "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+        "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+        "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+        "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+        "passwordsMustMatch": "The passwords do not match",
+        "confirmPasswordRequired": "Please confirm your password"
       }
     }
   },
@@ -335,7 +399,8 @@
         "updateShipping": "Update shipping",
         "addShipping": "Add shipping",
         "cartNotFound": "An error occurred when retrieving your cart",
-        "noShippingOptions": "There are no shipping options available for your address"
+        "noShippingOptions": "There are no shipping options available for your address",
+        "countryRequired": "Country is required"
       }
     },
     "GiftCertificate": {
@@ -427,13 +492,24 @@
         "button": "Write a review",
         "title": "Write a review",
         "submit": "Submit",
+        "cancel": "Cancel",
         "ratingLabel": "Rating",
         "titleLabel": "Title",
         "reviewLabel": "Review",
         "nameLabel": "Name",
         "emailLabel": "Email",
         "successMessage": "Your review has been submitted successfully!",
-        "somethingWentWrong": "Something went wrong. Please try again later."
+        "somethingWentWrong": "Something went wrong. Please try again later.",
+        "FieldErrors": {
+          "titleRequired": "Title is required",
+          "authorRequired": "Name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Please enter a valid email address",
+          "textRequired": "Review is required",
+          "ratingRequired": "Rating is required",
+          "ratingTooSmall": "Rating must be at least 1",
+          "ratingTooLarge": "Rating must be at most 5"
+        }
       }
     }
   },
@@ -515,7 +591,8 @@
       "description": "Stay up to date with the latest news and offers from our store.",
       "subscribedToNewsletter": "You have been subscribed to our newsletter!",
       "Errors": {
-        "invalidEmail": "Please enter a valid email address.",
+        "emailRequired": "Email is required",
+        "invalidEmail": "Please enter a valid email address",
         "somethingWentWrong": "Something went wrong. Please try again later."
       }
     },
@@ -607,15 +684,25 @@
         "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
         "ctaLabel": "Add to cart",
         "Errors": {
-          "amountRequired": "Please select or enter a gift certificate amount.",
-          "amountInvalid": "Please select a valid gift certificate amount.",
-          "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-          "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+          "amountRequired": "Please select or enter a gift certificate amount",
+          "amountInvalid": "Please select a valid gift certificate amount",
+          "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}",
+          "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later.",
+          "senderNameRequired": "Your name is required",
+          "senderEmailRequired": "Your email is required",
+          "recipientNameRequired": "Recipient's name is required",
+          "recipientEmailRequired": "Recipient's email is required",
+          "emailInvalid": "Please enter a valid email address",
+          "checkboxRequired": "You must check this box to continue"
         }
       }
     }
   },
   "Form": {
-    "optional": "optional"
+    "optional": "optional",
+    "Errors": {
+      "invalidInput": "Please check your input and try again",
+      "invalidFormat": "The value entered does not match the required format"
+    }
   }
 }

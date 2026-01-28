@@ -4,8 +4,8 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
+import { z } from 'zod';
 
-import { schema } from '@/vibes/soul/sections/reset-password-section/schema';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -24,6 +24,10 @@ const ChangePasswordMutation = graphql(`
     }
   }
 `);
+
+const schema = z.object({
+  password: z.string(),
+});
 
 export async function changePassword(
   { token, customerEntityId }: { token: string; customerEntityId: string },

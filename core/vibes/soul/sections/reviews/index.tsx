@@ -28,6 +28,7 @@ interface Props {
   formButtonLabel?: string;
   formModalTitle?: string;
   formSubmitLabel?: string;
+  formCancelLabel?: string;
   formRatingLabel?: string;
   formTitleLabel?: string;
   formReviewLabel?: string;
@@ -52,6 +53,7 @@ export function Reviews({
   formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
+  formCancelLabel,
   formRatingLabel,
   formTitleLabel,
   formReviewLabel,
@@ -69,6 +71,7 @@ export function Reviews({
             <ReviewsEmptyState
               action={action}
               formButtonLabel={formButtonLabel}
+              formCancelLabel={formCancelLabel}
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
@@ -186,6 +189,7 @@ export function ReviewsEmptyState({
   formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
+  formCancelLabel,
   formRatingLabel,
   formTitleLabel,
   formReviewLabel,
@@ -202,6 +206,7 @@ export function ReviewsEmptyState({
   formButtonLabel?: string;
   formModalTitle?: string;
   formSubmitLabel?: string;
+  formCancelLabel?: string;
   formRatingLabel?: string;
   formTitleLabel?: string;
   formReviewLabel?: string;
@@ -230,6 +235,7 @@ export function ReviewsEmptyState({
         <p className="text-center">{message}</p>
         <ReviewForm
           action={action}
+          formCancelLabel={formCancelLabel}
           formEmailLabel={formEmailLabel}
           formModalTitle={formModalTitle}
           formNameLabel={formNameLabel}

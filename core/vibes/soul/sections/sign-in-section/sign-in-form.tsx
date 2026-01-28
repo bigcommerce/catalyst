@@ -1,15 +1,17 @@
 'use client';
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { schema } from './schema';
+import { loginErrorTranslations, schema } from './schema';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -30,6 +32,8 @@ export function SignInForm({
   submitLabel = 'Sign in',
   error,
 }: Props) {
+  const t = useTranslations('Auth.Login');
+  const errorTranslations = loginErrorTranslations(t);
   const [lastResult, formAction] = useActionState(action, null);
   const [form, fields] = useForm({
     lastResult,
@@ -44,7 +48,7 @@ export function SignInForm({
       });
     },
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema });
+      return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
   });
 

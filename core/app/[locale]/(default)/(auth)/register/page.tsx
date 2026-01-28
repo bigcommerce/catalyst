@@ -109,6 +109,49 @@ export default async function Register({ params }: Props) {
   return (
     <DynamicFormSection
       action={registerCustomer}
+      errorTranslations={{
+        firstName: {
+          invalid_type: t('FieldErrors.firstNameRequired'),
+        },
+        lastName: {
+          invalid_type: t('FieldErrors.lastNameRequired'),
+        },
+        email: {
+          invalid_type: t('FieldErrors.emailRequired'),
+          invalid_string: t('FieldErrors.emailInvalid'),
+        },
+        password: {
+          invalid_type: t('FieldErrors.passwordRequired'),
+          too_small: t('FieldErrors.passwordTooSmall', {
+            minLength: passwordComplexitySettings?.minimumPasswordLength ?? 0,
+          }),
+          lowercase_required: t('FieldErrors.passwordLowercaseRequired'),
+          uppercase_required: t('FieldErrors.passwordUppercaseRequired'),
+          number_required: t('FieldErrors.passwordNumberRequired', {
+            minNumbers: passwordComplexitySettings?.minimumNumbers ?? 1,
+          }),
+          special_character_required: t('FieldErrors.passwordSpecialCharacterRequired'),
+          passwords_must_match: t('FieldErrors.passwordsMustMatch'),
+        },
+        confirmPassword: {
+          invalid_type: t('FieldErrors.passwordRequired'),
+        },
+        address1: {
+          invalid_type: t('FieldErrors.addressLine1Required'),
+        },
+        city: {
+          invalid_type: t('FieldErrors.cityRequired'),
+        },
+        countryCode: {
+          invalid_type: t('FieldErrors.countryRequired'),
+        },
+        stateOrProvince: {
+          invalid_type: t('FieldErrors.stateRequired'),
+        },
+        postalCode: {
+          invalid_type: t('FieldErrors.postalCodeRequired'),
+        },
+      }}
       fields={fields}
       passwordComplexity={passwordComplexitySettings}
       submitLabel={t('cta')}

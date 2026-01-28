@@ -61,6 +61,7 @@ export default async function Settings({ params }: Props) {
       newsletterSubscriptionEnabled={newsletterSubscriptionEnabled}
       newsletterSubscriptionLabel={t('NewsletterSubscription.label')}
       newsletterSubscriptionTitle={t('NewsletterSubscription.title')}
+      passwordComplexitySettings={accountSettings.passwordComplexitySettings}
       title={t('title')}
       updateAccountAction={updateCustomer}
       updateAccountSubmitLabel={t('cta')}

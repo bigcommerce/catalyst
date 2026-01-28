@@ -1,15 +1,17 @@
 'use client';
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { getZodConstraint } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { useActionState, useEffect, useOptimistic, useTransition } from 'react';
 import { z } from 'zod';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 
-import { updateAccountSchema } from './schema';
+import { updateAccountErrorTranslations, updateAccountSchema } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -42,6 +44,8 @@ export function UpdateAccountForm({
   companyLabel = 'Company',
   submitLabel = 'Update',
 }: UpdateAccountFormProps) {
+  const t = useTranslations('Account.Settings');
+  const errorTranslations = updateAccountErrorTranslations(t);
   const [state, formAction] = useActionState(action, { account, lastResult: null });
   const [pending, startTransition] = useTransition();
 
@@ -49,7 +53,10 @@ export function UpdateAccountForm({
     state,
     (prevState, formData) => {
       const intent = formData.get('intent');
-      const submission = parseWithZod(formData, { schema: updateAccountSchema });
+      const submission = parseWithZodTranslatedErrors(formData, {
+        schema: updateAccountSchema,
+        errorTranslations,
+      });
 
       if (submission.status !== 'success') return prevState;
 
@@ -74,7 +81,10 @@ export function UpdateAccountForm({
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: updateAccountSchema });
+      return parseWithZodTranslatedErrors(formData, {
+        schema: updateAccountSchema,
+        errorTranslations,
+      });
     },
   });
 
