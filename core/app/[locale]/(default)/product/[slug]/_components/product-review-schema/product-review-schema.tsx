@@ -1,4 +1,7 @@
-import DOMPurify from 'isomorphic-dompurify';
+'use client';
+
+// eslint-disable-next-line import/no-named-as-default
+import DOMPurify from 'dompurify';
 import { useFormatter } from 'next-intl';
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
