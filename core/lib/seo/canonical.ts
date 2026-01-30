@@ -25,6 +25,9 @@ interface CanonicalUrlOptions {
  * - Default locale: no prefix (e.g., https://example.com/product/)
  * - Other locales: with prefix (e.g., https://example.com/fr/product/)
  * - Respects TRAILING_SLASH environment variable
+ *
+ * @param {CanonicalUrlOptions} options - The options for generating canonical URLs
+ * @returns {object} The metadata alternates object with canonical URL and optional language alternates
  */
 export function getMetadataAlternates(options: CanonicalUrlOptions) {
   const { path, locale, includeAlternates = true } = options;
@@ -38,11 +41,11 @@ export function getMetadataAlternates(options: CanonicalUrlOptions) {
     return { canonical };
   }
 
-  const languages: Record<string, string> = {};
+  const languages = locales.reduce<Record<string, string>>((acc, loc) => {
+    acc[loc] = buildLocalizedUrl(vanityUrl, normalizedPath, loc);
 
-  for (const loc of locales) {
-    languages[loc] = buildLocalizedUrl(vanityUrl, normalizedPath, loc);
-  }
+    return acc;
+  }, {});
 
   languages['x-default'] = buildLocalizedUrl(vanityUrl, normalizedPath, defaultLocale);
 
