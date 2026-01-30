@@ -6,6 +6,7 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { createStateValue, parseStateAbbreviation } from '~/lib/state-utils';
 import { exists } from '~/lib/utils';
 
 import { updateCouponCode } from './_actions/update-coupon-code';
@@ -195,9 +196,7 @@ export default async function Cart({ params }: Props) {
   const statesOrProvinces = shippingCountries.map((country) => ({
     country: country.code,
     states: country.statesOrProvinces.map((state) => ({
-      // Use abbreviation and entityId as value to avoid duplicate values (Radix uses value as key)
-      // Workaround until all statesOrProvince are unique values
-      value: `${state.entityId}-${state.abbreviation}`,
+      value: createStateValue(state.entityId, state.abbreviation),
       label: state.name,
     })),
   }));
@@ -207,12 +206,11 @@ export default async function Cart({ params }: Props) {
 
   const checkoutUrl = data.site.settings?.url.checkoutUrl;
 
-  // Map a non-unique stateOrProvince to a unique value used in the select field
-  // Workaround until all statesOrProvince are unique values
   const selectedStateOrProvince = statesOrProvinces
     .find((country) => country.country === shippingConsignment?.address.countryCode)
     ?.states.find(
-      (state) => state.value.split('-')[1] === shippingConsignment?.address.stateOrProvince,
+      (state) =>
+        parseStateAbbreviation(state.value) === shippingConsignment?.address.stateOrProvince,
     )?.value;
 
   const selectedAddress = shippingConsignment?.address

@@ -7,6 +7,7 @@ import { getTranslations } from 'next-intl/server';
 import { shippingActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
 import { ShippingFormState } from '@/vibes/soul/sections/cart/shipping-form';
 import { getCartId } from '~/lib/cart';
+import { parseStateAbbreviation } from '~/lib/state-utils';
 
 import { getCart } from '../page-data';
 
@@ -75,9 +76,7 @@ export const updateShippingInfo = async (
               address: {
                 countryCode: submission.value.country,
                 city: submission.value.city,
-                // Split the state value to get the abbreviation
-                // Workaround until statesOrProvince are unique values
-                stateOrProvince: submission.value.state?.split('-')[1],
+                stateOrProvince: parseStateAbbreviation(submission.value.state),
                 postalCode: submission.value.postalCode,
               },
               lineItems,
@@ -88,9 +87,7 @@ export const updateShippingInfo = async (
               address: {
                 countryCode: submission.value.country,
                 city: submission.value.city,
-                // Split the state value to get the abbreviation
-                // Workaround until statesOrProvince are unique values
-                stateOrProvince: submission.value.state?.split('-')[1],
+                stateOrProvince: parseStateAbbreviation(submission.value.state),
                 postalCode: submission.value.postalCode,
               },
               lineItems,
