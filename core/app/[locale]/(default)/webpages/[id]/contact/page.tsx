@@ -12,6 +12,7 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { WebPage, WebPageContent } from '../_components/web-page';
 
@@ -153,7 +154,7 @@ async function getContactFields(id: string) {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const webpage = await getWebPage(id);
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
@@ -161,6 +162,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle || webpage.title,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: getMetadataAlternates({ path: webpage.path, locale }),
   };
 }
 

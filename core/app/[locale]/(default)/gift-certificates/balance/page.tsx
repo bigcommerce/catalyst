@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { GiftCertificateCheckBalanceSection } from '@/vibes/soul/sections/gift-certificate-balance-section';
 import { redirect } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { getGiftCertificatesData } from '../page-data';
 
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title') || 'Gift certificates - Check balance',
+    alternates: getMetadataAlternates({ path: '/gift-certificates/balance', locale }),
   };
 }
 

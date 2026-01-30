@@ -1,4 +1,5 @@
 import { ResultOf } from 'gql.tada';
+import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
@@ -7,12 +8,24 @@ import { GiftCertificateSettingsFragment } from '~/app/[locale]/(default)/gift-c
 import { ExistingResultType } from '~/client/util';
 import { redirect } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { addGiftCertificateToCart } from './_actions/add-to-cart';
 import { getGiftCertificatePurchaseData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+
+  return {
+    title: t('Purchase.title'),
+    alternates: getMetadataAlternates({ path: '/gift-certificates/purchase', locale }),
+  };
 }
 
 function getFields(

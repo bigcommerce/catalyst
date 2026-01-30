@@ -8,6 +8,7 @@ import { CompareSection } from '@/vibes/soul/sections/compare-section';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { addToCart } from './_actions/add-to-cart';
 import { CompareAnalyticsProvider } from './_components/compare-analytics-provider';
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title'),
+    alternates: getMetadataAlternates({ path: '/compare', locale }),
   };
 }
 

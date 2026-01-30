@@ -4,6 +4,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { GiftCertificatesSection } from '@/vibes/soul/sections/gift-certificates-section';
 import { redirect } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { getGiftCertificatesData } from './page-data';
 
@@ -18,6 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title') || 'Gift certificates',
+    alternates: getMetadataAlternates({ path: '/gift-certificates', locale }),
   };
 }
 

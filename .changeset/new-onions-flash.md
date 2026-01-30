@@ -95,3 +95,108 @@ For entity pages (product, category, brand, blog, blog post, webpage), add the i
     };
   }
 ```
+
+### Step 4: Gift certificates pages
+
+Update `core/app/[locale]/(default)/gift-certificates/page.tsx`:
+
+```diff
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
+  export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+
+    return {
+      title: t('title') || 'Gift certificates',
++     alternates: getMetadataAlternates({ path: '/gift-certificates', locale }),
+    };
+  }
+```
+
+Update `core/app/[locale]/(default)/gift-certificates/balance/page.tsx`:
+
+```diff
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
+    return {
+      title: t('title') || 'Gift certificates - Check balance',
++     alternates: getMetadataAlternates({ path: '/gift-certificates/balance', locale }),
+    };
+```
+
+Add `generateMetadata` to `core/app/[locale]/(default)/gift-certificates/purchase/page.tsx`:
+
+```diff
++ import { Metadata } from 'next';
+  import { getFormatter, getTranslations } from 'next-intl/server';
+  ...
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
++ export async function generateMetadata({ params }: Props): Promise<Metadata> {
++   const { locale } = await params;
++   const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
++
++   return {
++     title: t('Purchase.title'),
++     alternates: getMetadataAlternates({ path: '/gift-certificates/purchase', locale }),
++   };
++ }
+```
+
+### Step 5: Contact page
+
+Update `core/app/[locale]/(default)/webpages/[id]/contact/page.tsx`:
+
+```diff
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
+  export async function generateMetadata({ params }: Props): Promise<Metadata> {
+-   const { id } = await params;
++   const { id, locale } = await params;
+    const webpage = await getWebPage(id);
+    const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
+
+    return {
+      title: pageTitle || webpage.title,
+      description: metaDescription,
+      keywords: metaKeywords ? metaKeywords.split(',') : null,
++     alternates: getMetadataAlternates({ path: webpage.path, locale }),
+    };
+  }
+```
+
+### Step 6: Public wishlist page
+
+Update `core/app/[locale]/(default)/wishlist/[token]/page.tsx`:
+
+```diff
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
+  export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+    const { locale, token } = await params;
+    ...
+    return {
+      title: wishlist?.name ?? t('title'),
++     alternates: getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
+    };
+  }
+```
+
+### Step 7: Compare page
+
+Update `core/app/[locale]/(default)/compare/page.tsx`:
+
+```diff
++ import { getMetadataAlternates } from '~/lib/seo/canonical';
+  ...
+  export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'Compare' });
+
+    return {
+      title: t('title'),
++     alternates: getMetadataAlternates({ path: '/compare', locale }),
+    };
+  }
+```
