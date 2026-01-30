@@ -75,7 +75,9 @@ export const updateShippingInfo = async (
               address: {
                 countryCode: submission.value.country,
                 city: submission.value.city,
-                stateOrProvince: submission.value.state,
+                // Split the state value to get the abbreviation
+                // Workaround until statesOrProvince are unique values
+                stateOrProvince: submission.value.state?.split('-')[1],
                 postalCode: submission.value.postalCode,
               },
               lineItems,
@@ -86,7 +88,9 @@ export const updateShippingInfo = async (
               address: {
                 countryCode: submission.value.country,
                 city: submission.value.city,
-                stateOrProvince: submission.value.state,
+                // Split the state value to get the abbreviation
+                // Workaround until statesOrProvince are unique values
+                stateOrProvince: submission.value.state?.split('-')[1],
                 postalCode: submission.value.postalCode,
               },
               lineItems,

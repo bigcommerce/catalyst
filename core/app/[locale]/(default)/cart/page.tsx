@@ -195,7 +195,9 @@ export default async function Cart({ params }: Props) {
   const statesOrProvinces = shippingCountries.map((country) => ({
     country: country.code,
     states: country.statesOrProvinces.map((state) => ({
-      value: state.entityId.toString(),
+      // Use abbreviation and entityId as value to avoid duplicate values (Radix uses value as key)
+      // Workaround until all statesOrProvince are unique values
+      value: `${state.entityId}-${state.abbreviation}`,
       label: state.name,
     })),
   }));
@@ -204,6 +206,30 @@ export default async function Cart({ params }: Props) {
     shippingConsignment?.address && !shippingConsignment.selectedShippingOption;
 
   const checkoutUrl = data.site.settings?.url.checkoutUrl;
+
+  // Map a non-unique stateOrProvince to a unique value used in the select field
+  // Workaround until all statesOrProvince are unique values
+  const selectedStateOrProvince = statesOrProvinces
+    .find((country) => country.country === shippingConsignment?.address.countryCode)
+    ?.states.find(
+      (state) => state.value.split('-')[1] === shippingConsignment?.address.stateOrProvince,
+    )?.value;
+
+  const selectedAddress = shippingConsignment?.address
+    ? {
+        country: shippingConsignment.address.countryCode,
+        city:
+          shippingConsignment.address.city !== ''
+            ? (shippingConsignment.address.city ?? undefined)
+            : undefined,
+        state:
+          shippingConsignment.address.stateOrProvince !== '' ? selectedStateOrProvince : undefined,
+        postalCode:
+          shippingConsignment.address.postalCode !== ''
+            ? (shippingConsignment.address.postalCode ?? undefined)
+            : undefined,
+      }
+    : undefined;
 
   return (
     <>
@@ -295,23 +321,7 @@ export default async function Cart({ params }: Props) {
             action: updateShippingInfo,
             countries,
             states: statesOrProvinces,
-            address: shippingConsignment?.address
-              ? {
-                  country: shippingConsignment.address.countryCode,
-                  city:
-                    shippingConsignment.address.city !== ''
-                      ? (shippingConsignment.address.city ?? undefined)
-                      : undefined,
-                  state:
-                    shippingConsignment.address.stateOrProvince !== ''
-                      ? (shippingConsignment.address.stateOrProvince ?? undefined)
-                      : undefined,
-                  postalCode:
-                    shippingConsignment.address.postalCode !== ''
-                      ? (shippingConsignment.address.postalCode ?? undefined)
-                      : undefined,
-                }
-              : undefined,
+            address: selectedAddress,
             shippingOptions: shippingConsignment?.availableShippingOptions
               ? shippingConsignment.availableShippingOptions.map((option) => ({
                   label: option.description,
