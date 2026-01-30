@@ -77,7 +77,8 @@ jobs:
 
       - name: Start server
         run: |
-          pnpm start &
+          mkdir -p ./.tests/reports/
+          pnpm start > ./.tests/reports/nextjs.app.log 2>&1 &
           npx wait-on http://localhost:3000 --timeout 60000
         working-directory: ./core
         env:
