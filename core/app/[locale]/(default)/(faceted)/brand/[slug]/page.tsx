@@ -13,6 +13,7 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
@@ -67,7 +68,7 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+  const { slug, locale } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const brandId = Number(slug);
@@ -84,6 +85,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || brand.name,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: getMetadataAlternates({ path: brand.path, locale }),
   };
 }
 

@@ -12,6 +12,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { addToCart } from './_actions/add-to-cart';
 import { getMoreProductImages } from './_actions/get-more-images';
@@ -37,7 +38,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const productId = Number(slug);
@@ -55,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: getMetadataAlternates({ path: product.path, locale }),
     openGraph: url
       ? {
           images: [

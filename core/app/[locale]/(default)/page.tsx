@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -8,12 +9,21 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    alternates: getMetadataAlternates({ path: '/', locale }),
+  };
 }
 
 export default async function Home({ params }: Props) {

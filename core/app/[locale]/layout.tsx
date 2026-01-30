@@ -13,6 +13,7 @@ import '../../globals.css';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
+import { buildConfig } from '~/build-config/reader';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -69,6 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { pageTitle, metaDescription, metaKeywords } = data.site.settings?.seo || {};
 
   return {
+    metadataBase: new URL(buildConfig.get('urls').vanityUrl),
     title: {
       template: `%s - ${storeName}`,
       default: pageTitle || storeName,

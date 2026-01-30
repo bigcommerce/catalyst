@@ -9,6 +9,7 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { WebPageContent, WebPage as WebPageData } from '../_components/web-page';
 
@@ -57,14 +58,18 @@ async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const webpage = await getWebPage(id);
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
+
+  // Get the path from the last breadcrumb
+  const pagePath = webpage.breadcrumbs[webpage.breadcrumbs.length - 1]?.href;
 
   return {
     title: pageTitle || webpage.title,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    ...(pagePath && { alternates: getMetadataAlternates({ path: pagePath, locale }) }),
   };
 }
 
