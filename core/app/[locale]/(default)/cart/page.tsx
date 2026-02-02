@@ -192,12 +192,23 @@ export default async function Cart({ params }: Props) {
     label: country.name,
   }));
 
+  // These US states share the same abbreviation (AE), which causes issues:
+  // 1. The shipping API uses abbreviations, so it can't distinguish between them
+  // 2. React select dropdowns require unique keys, causing duplicate key warnings
+  const blacklistedUSStates = new Set([
+    'Armed Forces Africa',
+    'Armed Forces Canada',
+    'Armed Forces Middle East',
+  ]);
+
   const statesOrProvinces = shippingCountries.map((country) => ({
     country: country.code,
-    states: country.statesOrProvinces.map((state) => ({
-      value: state.entityId.toString(),
-      label: state.name,
-    })),
+    states: country.statesOrProvinces
+      .filter((state) => country.code !== 'US' || !blacklistedUSStates.has(state.name))
+      .map((state) => ({
+        value: state.abbreviation,
+        label: state.name,
+      })),
   }));
 
   const showShippingForm =
