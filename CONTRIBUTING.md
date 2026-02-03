@@ -12,6 +12,12 @@ The default branch for this repository is called `canary`. This is the primary d
 
 To contribute to the `canary` branch, you can create a new branch off of `canary` and submit a PR against that branch.
 
+## API Scope
+
+Catalyst is intended to work with the [BigCommerce Storefront GraphQL API](https://developer.bigcommerce.com/docs/storefront/headless) and not integrate out of the box with the [REST Management API](https://developer.bigcommerce.com/docs/rest-management/overview).
+
+You're welcome to integrate the REST Management API in your own fork, but we will not accept pull requests that incorporate or depend on the REST Management API. If your contribution requires Management API functionality, it is out of scope for this project.
+
 ## Makeswift Integration
 
 In addition to `canary`, we also maintain the `integrations/makeswift` branch, which contains additional code required to integrate with [Makeswift](https://www.makeswift.com).
