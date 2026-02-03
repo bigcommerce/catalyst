@@ -26,6 +26,16 @@ export type SubmitReviewAction = Action<
   FormData
 >;
 
+type ImageArray = Array<{ src: string; alt: string }>;
+
+interface PaginatedImages {
+  images: ImageArray;
+  pageInfo?: unknown;
+  productId?: unknown;
+  loadMoreAction?: unknown;
+  loadMoreLabel?: unknown;
+}
+
 interface Props {
   productId: number;
   action: SubmitReviewAction;
@@ -38,7 +48,7 @@ interface Props {
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<ImageArray | PaginatedImages>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
 }
@@ -126,8 +136,9 @@ export const ReviewForm = ({
             }
             value={Streamable.all([streamableProduct, streamableImages])}
           >
-            {([product, images]) => {
-              const firstImage = images[0];
+            {([product, imagesData]) => {
+              const imagesArray = Array.isArray(imagesData) ? imagesData : imagesData.images;
+              const firstImage = imagesArray[0];
 
               return (
                 <>

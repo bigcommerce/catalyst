@@ -14,6 +14,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { getMoreProductImages } from './_actions/get-more-images';
 import { submitReview } from './_actions/submit-review';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
@@ -185,6 +186,19 @@ export default async function Product({ params, searchParams }: Props) {
     return product.defaultImage
       ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
       : images;
+  });
+
+  const streamableImagesPaginated = Streamable.from(async () => {
+    const product = await streamableProduct;
+    const images = await streamableImages;
+
+    return {
+      images,
+      pageInfo: product.images.pageInfo,
+      productId: product.entityId,
+      loadMoreAction: getMoreProductImages,
+      loadMoreLabel: t('ProductDetails.loadMoreImages'),
+    };
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
@@ -552,7 +566,7 @@ export default async function Product({ params, searchParams }: Props) {
             title: baseProduct.name,
             description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
             href: baseProduct.path,
-            images: streamableImages,
+            images: streamableImagesPaginated,
             price: streamablePrices,
             reviewsEnabled,
             showRating,

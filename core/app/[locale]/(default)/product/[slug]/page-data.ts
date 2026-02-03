@@ -274,7 +274,12 @@ const StreamableProductQuery = graphql(
           optionValueIds: $optionValueIds
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
-          images {
+          entityId
+          images(first: 10) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 altText
