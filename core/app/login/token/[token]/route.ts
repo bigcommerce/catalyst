@@ -5,7 +5,6 @@
  */
 
 import { decodeJwt } from 'jose';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
 
 import { signIn } from '~/auth';

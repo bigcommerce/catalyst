@@ -14,8 +14,8 @@ import { updateItemQuantity } from './update-item-quantity';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
-const parseSelectedOptions = (selectedOptions: Product['selectedOptions']) => {
-  return selectedOptions.reduce<CartSelectedOptionsInput>((accum, option) => {
+const parseSelectedOptions = (selectedOptions: Product['selectedOptions']) =>
+  selectedOptions.reduce<CartSelectedOptionsInput>((accum, option) => {
     let multipleChoicesOptionInput;
     let checkboxOptionInput;
     let numberFieldOptionInput;
@@ -111,7 +111,6 @@ const parseSelectedOptions = (selectedOptions: Product['selectedOptions']) => {
 
     return accum;
   }, {});
-};
 
 const SubmitButton = ({ children, ...props }: ComponentPropsWithoutRef<'button'>) => {
   const { pending } = useFormStatus();

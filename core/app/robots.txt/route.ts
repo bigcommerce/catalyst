@@ -1,4 +1,3 @@
-/* eslint-disable check-file/folder-naming-convention */
 /*
  * Robots.txt route
  *

@@ -11,7 +11,7 @@ import { CheckoutSummaryFragment } from './checkout-summary';
 type FragmentResult = FragmentOf<typeof CartItemFragment>;
 type PhysicalItem = FragmentResult['physicalItems'][number];
 type DigitalItem = FragmentResult['digitalItems'][number];
-type lineItem = PhysicalItem | DigitalItem;
+type lineItem = PhysicalItem;
 
 interface Props {
   checkout: FragmentOf<typeof CheckoutSummaryFragment> | null;
@@ -19,21 +19,19 @@ interface Props {
   lineItems: lineItem[];
 }
 
-const lineItemTransform = (item: lineItem) => {
-  return {
-    product_id: item.productEntityId.toString(),
-    product_name: item.name,
-    brand_name: item.brand ?? undefined,
-    sku: item.sku ?? undefined,
-    sale_price: item.extendedSalePrice.value,
-    purchase_price: item.listPrice.value,
-    base_price: item.originalPrice.value,
-    retail_price: item.listPrice.value,
-    currency: item.listPrice.currencyCode,
-    variant_id: item.variantEntityId ? [item.variantEntityId] : undefined,
-    quantity: item.quantity,
-  };
-};
+const lineItemTransform = (item: lineItem) => ({
+  product_id: item.productEntityId.toString(),
+  product_name: item.name,
+  brand_name: item.brand ?? undefined,
+  sku: item.sku ?? undefined,
+  sale_price: item.extendedSalePrice.value,
+  purchase_price: item.listPrice.value,
+  base_price: item.originalPrice.value,
+  retail_price: item.listPrice.value,
+  currency: item.listPrice.currencyCode,
+  variant_id: item.variantEntityId ? [item.variantEntityId] : undefined,
+  quantity: item.quantity,
+});
 
 export const CartViewed = ({ checkout, currencyCode, lineItems }: Props) => {
   useEffect(() => {

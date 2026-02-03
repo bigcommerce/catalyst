@@ -21,7 +21,7 @@ export const ShippingOptions = ({ data, checkoutEntityId, currencyCode }: Props)
   const format = useFormatter();
   const { availableShippingOptions, entityId } = data;
 
-  const shippingOptions = availableShippingOptions?.map(
+  const shippingOptions = availableShippingOptions.map(
     ({ cost, description, entityId: shippingOptionEntityId, isRecommended }) => ({
       cost: cost.value,
       description,

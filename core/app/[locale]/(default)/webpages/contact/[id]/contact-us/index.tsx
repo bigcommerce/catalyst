@@ -74,7 +74,7 @@ export const ContactUs = ({ node, reCaptchaSettings }: Props) => {
 
   const t = useTranslations('WebPages.ContactUs.Form');
 
-  if (node?.__typename !== 'ContactPage') {
+  if (node.__typename !== 'ContactPage') {
     return null;
   }
 

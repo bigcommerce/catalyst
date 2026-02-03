@@ -143,9 +143,10 @@ export const getCart = cache(async (cartId?: string, channelId?: string) => {
     return;
   }
 
-  const totalExtendedListPrice = cart.lineItems.physicalItems.reduce((acc, item) => {
-    return acc + item.extendedListPrice.value;
-  }, 0);
+  const totalExtendedListPrice = cart.lineItems.physicalItems.reduce(
+    (acc, item) => acc + item.extendedListPrice.value,
+    0,
+  );
 
   return {
     ...cart,

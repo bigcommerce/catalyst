@@ -35,6 +35,6 @@ export class OrderFactory {
   }
 
   async cleanup() {
-    await Promise.all(this.orders.map(async (order) => await deleteOrder(order.id)));
+    await Promise.all(this.orders.map(async (order) => deleteOrder(order.id)));
   }
 }

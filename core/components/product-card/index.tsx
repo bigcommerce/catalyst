@@ -39,7 +39,7 @@ export const ProductCard = ({
       name={name}
       price={price}
       showCompare={showCompare}
-      subtitle={brand?.name}
+      subtitle={brand.name}
     />
   );
 };

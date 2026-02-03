@@ -58,9 +58,7 @@ export const QuickSearch = ({ logo }: SearchProps) => {
 
                   return categories;
                 }, {}),
-              ).map(([name, path]) => {
-                return { label: name, href: path };
-              })
+              ).map(([name, path]) => ({ label: name, href: path }))
             : [],
         brands:
           searchResults.products.length > 0
@@ -72,9 +70,7 @@ export const QuickSearch = ({ logo }: SearchProps) => {
 
                   return brands;
                 }, {}),
-              ).map(([name, path]) => {
-                return { label: name, href: path };
-              })
+              ).map(([name, path]) => ({ label: name, href: path }))
             : [],
       };
     }

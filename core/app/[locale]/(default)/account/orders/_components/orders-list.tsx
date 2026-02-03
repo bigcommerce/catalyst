@@ -158,85 +158,81 @@ const OrderDetails = async ({
   );
 };
 
-export const OrdersList = ({ customerOrders }: OrdersListProps) => {
-  return (
-    <ul className="flex w-full flex-col">
-      {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
-        const shippingConsignments = consignments.shipping
-          ? consignments.shipping.map(({ lineItems, shipments }) => ({
-              lineItems: removeEdgesAndNodes(lineItems),
-              shipments: removeEdgesAndNodes(shipments),
-            }))
-          : undefined;
-        // NOTE: tracking url will be supported later
-        const trackingUrl = shippingConsignments
-          ? shippingConsignments
-              .flatMap(({ shipments }) =>
-                shipments.map((shipment) => {
-                  if (
-                    shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
-                    shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
-                  ) {
-                    return shipment.tracking.url;
-                  }
+export const OrdersList = ({ customerOrders }: OrdersListProps) => (
+  <ul className="flex w-full flex-col">
+    {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
+      const shippingConsignments = consignments.shipping
+        ? consignments.shipping.map(({ lineItems, shipments }) => ({
+            lineItems: removeEdgesAndNodes(lineItems),
+            shipments: removeEdgesAndNodes(shipments),
+          }))
+        : undefined;
+      // NOTE: tracking url will be supported later
+      const trackingUrl = shippingConsignments
+        ? shippingConsignments
+            .flatMap(({ shipments }) =>
+              shipments.map((shipment) => {
+                if (
+                  shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
+                  shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
+                ) {
+                  return shipment.tracking.url;
+                }
 
-                  return null;
-                }),
-              )
-              .find((url) => url !== null)
-          : undefined;
+                return null;
+              }),
+            )
+            .find((url) => url !== null)
+        : undefined;
 
-        return (
-          <li
-            className="inline-flex border-collapse flex-col gap-y-6 border-t border-gray-200 py-6 last:border-b"
-            key={entityId}
-          >
-            <OrderDetails
-              orderDate={orderedAt.utc}
-              orderId={entityId}
-              orderPrice={totalIncTax}
-              orderStatus={status.label}
+      return (
+        <li
+          className="inline-flex border-collapse flex-col gap-y-6 border-t border-gray-200 py-6 last:border-b"
+          key={entityId}
+        >
+          <OrderDetails
+            orderDate={orderedAt.utc}
+            orderId={entityId}
+            orderPrice={totalIncTax}
+            orderStatus={status.label}
+          />
+          <div className="flex gap-4">
+            <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
+              {(shippingConsignments ?? []).map(({ lineItems }) =>
+                lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => (
+                  <li className="w-36" key={shippedProduct.entityId}>
+                    <Suspense fallback={<ProductSnippetSkeleton />}>
+                      <ProductSnippet
+                        imagePriority={true}
+                        imageSize="square"
+                        product={assembleProductData({ ...shippedProduct, productOptions: [] })}
+                      />
+                    </Suspense>
+                  </li>
+                )),
+              )}
+            </ul>
+            <TruncatedCard
+              itemsQuantity={(shippingConsignments ?? []).reduce(
+                (orderItems, shipment) => orderItems + shipment.lineItems.length,
+                0,
+              )}
             />
-            <div className="flex gap-4">
-              <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
-                {(shippingConsignments ?? []).map(({ lineItems }) => {
-                  return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
-                    return (
-                      <li className="w-36" key={shippedProduct.entityId}>
-                        <Suspense fallback={<ProductSnippetSkeleton />}>
-                          <ProductSnippet
-                            imagePriority={true}
-                            imageSize="square"
-                            product={assembleProductData({ ...shippedProduct, productOptions: [] })}
-                          />
-                        </Suspense>
-                      </li>
-                    );
-                  });
-                })}
-              </ul>
-              <TruncatedCard
-                itemsQuantity={(shippingConsignments ?? []).reduce(
-                  (orderItems, shipment) => orderItems + shipment.lineItems.length,
-                  0,
-                )}
-              />
-              <ManageOrderButtons
-                className="hidden lg:ms-auto lg:inline-flex lg:flex-col lg:gap-2"
-                orderId={entityId}
-                orderStatus={status.value}
-                orderTrackingUrl={trackingUrl}
-              />
-            </div>
             <ManageOrderButtons
-              className="inline-flex flex-col gap-2 md:flex-row lg:hidden"
+              className="hidden lg:ms-auto lg:inline-flex lg:flex-col lg:gap-2"
               orderId={entityId}
               orderStatus={status.value}
               orderTrackingUrl={trackingUrl}
             />
-          </li>
-        );
-      })}
-    </ul>
-  );
-};
+          </div>
+          <ManageOrderButtons
+            className="inline-flex flex-col gap-2 md:flex-row lg:hidden"
+            orderId={entityId}
+            orderStatus={status.value}
+            orderTrackingUrl={trackingUrl}
+          />
+        </li>
+      );
+    })}
+  </ul>
+);

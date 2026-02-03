@@ -12,7 +12,5 @@ export const composeMiddlewares = (
     firstMiddlewareWrapper,
   );
 
-  return middlewares(() => {
-    return NextResponse.next();
-  });
+  return middlewares(() => NextResponse.next());
 };

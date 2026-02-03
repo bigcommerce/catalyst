@@ -1,4 +1,3 @@
-/* eslint-disable check-file/folder-naming-convention */
 import { defaultLocale, permanentRedirect } from '~/i18n/routing';
 
 /*

@@ -320,9 +320,9 @@ export const PublicSearchParamsSchema = z.object({
   term: z.string().optional(),
 });
 
-const AttributeKey = z.custom<`attr_${string}`>((val) => {
-  return typeof val === 'string' ? /^attr_\w+$/.test(val) : false;
-});
+const AttributeKey = z.custom<`attr_${string}`>((val) =>
+  typeof val === 'string' ? /^attr_\w+$/.test(val) : false,
+);
 
 const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchParamToArray)
   .transform((publicParams) => {

@@ -7,9 +7,7 @@ import { StarFilledIcon } from './star-icons/star-filled';
 import { StarHalfIcon } from './star-icons/star-half';
 
 const MAX_RATING = 5;
-const roundHalf = (num: number) => {
-  return Math.round(num * 2) / 2;
-};
+const roundHalf = (num: number) => Math.round(num * 2) / 2;
 
 interface Props {
   className?: string;

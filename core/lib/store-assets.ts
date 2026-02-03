@@ -11,9 +11,8 @@ const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
  * @param {string} path - The path of the image relative to the source.
  * @returns {string} The CDN image URL.
  */
-const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
-};
+const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string =>
+  `https://${cdnHostname}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
 
 /**
  * Given a path, return the full URL to the content asset.
@@ -24,9 +23,8 @@ const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): 
  * @param {string} path - The path of the content asset.
  * @returns {string} The full URL to the content asset.
  */
-export const contentAssetUrl = (path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/content/${path}`;
-};
+export const contentAssetUrl = (path: string): string =>
+  `https://${cdnHostname}/s-${storeHash}/content/${path}`;
 
 /**
  * Build a URL or resizable URL template for an image in the /content folder in WebDAV.
@@ -35,10 +33,9 @@ export const contentAssetUrl = (path: string): string => {
  * @param {string} sizeParam - The optional size parameter. Can be of the form `{:size}` (to make it a urlTemplate) or `original` or `123w` or `123x123`. If omitted, will return the templated string containing `{:size}`.
  * @returns {string} The resizeable URL template for the image, which can be used with `<Image>`.
  */
-export const contentImageUrl = (path: string, sizeParam?: string): string => {
+export const contentImageUrl = (path: string, sizeParam?: string): string =>
   // return a urlTemplate that can be used with the <Image> component
-  return cdnImageUrlBuilder(sizeParam || '{:size}', 'content', path);
-};
+  cdnImageUrlBuilder(sizeParam || '{:size}', 'content', path);
 
 /**
  * Build a URL or resizable URL template for an image in the Image Manager.
@@ -47,7 +44,6 @@ export const contentImageUrl = (path: string, sizeParam?: string): string => {
  * @param {string} sizeParam - The optional size parameter. Can be of the form `{:size}` (to make it a urlTemplate) or `original` or `123w` or `123x123`. If omitted, will return the templated string containing `{:size}`.
  * @returns {string} The resizeable URL template for the image, which can be used with `<Image>`.
  */
-export const imageManagerImageUrl = (filename: string, sizeParam?: string): string => {
+export const imageManagerImageUrl = (filename: string, sizeParam?: string): string =>
   // return a urlTemplate that can be used with the <Image> component
-  return cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);
-};
+  cdnImageUrlBuilder(sizeParam || '{:size}', 'image-manager', filename);

@@ -205,14 +205,12 @@ export const ProductSnippet = async ({
                 </Link>
               </h3>
               <div className="mb-2 mt-2 lg:mb-0">
-                {product.productOptions?.map(({ name: optionName, value }, idx) => {
-                  return (
-                    <p className="flex gap-1 text-xs" key={idx}>
-                      <span>{optionName}:</span>
-                      <span className="font-semibold">{value}</span>
-                    </p>
-                  );
-                })}
+                {product.productOptions?.map(({ name: optionName, value }, idx) => (
+                  <p className="flex gap-1 text-xs" key={idx}>
+                    <span>{optionName}:</span>
+                    <span className="font-semibold">{value}</span>
+                  </p>
+                ))}
                 <p className="flex gap-1 text-xs">
                   <span>{t('qty')}:</span>
                   <span className="font-semibold">{product.quantity}</span>
@@ -244,36 +242,34 @@ export const ProductSnippet = async ({
   );
 };
 
-export const ProductSnippetSkeleton = ({ isExtended = false }: { isExtended?: boolean }) => {
-  return (
-    <div
-      className={cn(
-        'relative flex animate-pulse flex-col overflow-visible',
-        isExtended && 'flex-row gap-4',
-      )}
-    >
-      <div className="flex justify-center pb-3">
-        <div className={cn('relative aspect-square flex-auto', isExtended && 'h-20 md:h-36')}>
-          <div className="flex h-full w-full items-center justify-center bg-slate-200 text-gray-500" />
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col gap-1">
-        {isExtended ? (
-          <div className="flex h-full flex-col items-start justify-between md:flex-row">
-            <div className="flex h-20 flex-col justify-between md:h-36">
-              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
-              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
-              <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-1 flex-col gap-2">
-            <div className="h-5 w-36 bg-slate-200 md:h-6" />
-            <div className="h-5 w-36 bg-slate-200 md:h-6" />
-            <div className="h-5 w-36 bg-slate-200 md:h-6" />
-          </div>
-        )}
+export const ProductSnippetSkeleton = ({ isExtended = false }: { isExtended?: boolean }) => (
+  <div
+    className={cn(
+      'relative flex animate-pulse flex-col overflow-visible',
+      isExtended && 'flex-row gap-4',
+    )}
+  >
+    <div className="flex justify-center pb-3">
+      <div className={cn('relative aspect-square flex-auto', isExtended && 'h-20 md:h-36')}>
+        <div className="flex h-full w-full items-center justify-center bg-slate-200 text-gray-500" />
       </div>
     </div>
-  );
-};
+    <div className="flex flex-1 flex-col gap-1">
+      {isExtended ? (
+        <div className="flex h-full flex-col items-start justify-between md:flex-row">
+          <div className="flex h-20 flex-col justify-between md:h-36">
+            <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+            <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+            <div className="h-5 w-20 bg-slate-200 md:h-10 md:w-36" />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="h-5 w-36 bg-slate-200 md:h-6" />
+          <div className="h-5 w-36 bg-slate-200 md:h-6" />
+          <div className="h-5 w-36 bg-slate-200 md:h-6" />
+        </div>
+      )}
+    </div>
+  </div>
+);

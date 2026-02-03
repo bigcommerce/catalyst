@@ -51,12 +51,12 @@ const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
 export async function generateStaticParams() {
   const products = await getFeaturedProducts();
 
-  return locales.map((locale) => {
-    return products.map((product) => ({
+  return locales.map((locale) =>
+    products.map((product) => ({
       locale,
       slug: product.entityId.toString(),
-    }));
-  });
+    })),
+  );
 }
 
 interface Props {

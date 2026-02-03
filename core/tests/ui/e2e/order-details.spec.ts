@@ -1,6 +1,10 @@
 import { expect, test } from '~/tests/fixtures';
 
-test('Order contains all necessary info and sections on Order Details page', async ({ page, account, order }) => {
+test('Order contains all necessary info and sections on Order Details page', async ({
+  page,
+  account,
+  order,
+}) => {
   const customer = await account.create();
 
   await customer.login();

@@ -1,6 +1,5 @@
 'use client';
 
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import NextImage, { ImageProps } from 'next/image';
 
 import bcCdnImageLoader from '~/lib/cdn-image-loader';

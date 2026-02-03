@@ -57,9 +57,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         {fieldName === 'confirmPassword' && (
           <FieldMessage
             className="inline-flex w-full text-xs font-normal text-error"
-            match={() => {
-              return !isValid;
-            }}
+            match={() => !isValid}
           >
             {t('confirmPassword')}
           </FieldMessage>

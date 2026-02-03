@@ -58,16 +58,16 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
       <div className="flex justify-between border-t border-t-gray-200 py-4">
         <span className="font-semibold">{t('subTotal')}</span>
         <span>
-          {format.number(subtotal?.value || 0, {
+          {format.number(subtotal.value || 0, {
             style: 'currency',
-            currency: cart?.currencyCode,
+            currency: cart.currencyCode,
           })}
         </span>
       </div>
 
       <ShippingEstimator checkout={checkout} shippingCountries={shippingCountries} />
 
-      {cart?.discountedAmount && (
+      {cart.discountedAmount && (
         <div className="flex justify-between border-t border-t-gray-200 py-4">
           <span className="font-semibold">{t('discounts')}</span>
           <span>
@@ -88,7 +88,7 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
           <span>
             {format.number(taxTotal.value, {
               style: 'currency',
-              currency: cart?.currencyCode,
+              currency: cart.currencyCode,
             })}
           </span>
         </div>
@@ -97,9 +97,9 @@ export const CheckoutSummary = async ({ checkout, geography }: Props) => {
       <div className="flex justify-between border-t border-t-gray-200 py-4 text-xl font-bold lg:text-2xl">
         {t('grandTotal')}
         <span>
-          {format.number(grandTotal?.value || 0, {
+          {format.number(grandTotal.value || 0, {
             style: 'currency',
-            currency: cart?.currencyCode,
+            currency: cart.currencyCode,
           })}
         </span>
       </div>

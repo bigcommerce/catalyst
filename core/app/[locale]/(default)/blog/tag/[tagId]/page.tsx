@@ -27,9 +27,9 @@ export default async function Tag(props: Props) {
       <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
 
       <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return <BlogPostCard data={post} key={post.entityId} />;
-        })}
+        {blogPosts.posts.items.map((post) => (
+          <BlogPostCard data={post} key={post.entityId} />
+        ))}
       </div>
 
       <Pagination

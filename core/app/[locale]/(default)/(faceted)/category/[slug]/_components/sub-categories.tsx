@@ -33,7 +33,7 @@ interface Props {
 export function SubCategories({ categoryTree }: Props) {
   const t = useTranslations('FacetedGroup.MobileSideNav');
 
-  if (!categoryTree[0]?.children?.length) {
+  if (!categoryTree[0].children?.length) {
     return null;
   }
 

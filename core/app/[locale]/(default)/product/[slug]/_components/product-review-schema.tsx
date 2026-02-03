@@ -29,24 +29,22 @@ export const ProductReviewSchema = ({ reviews, productId }: Props) => {
     '@context': 'https://schema.org',
     '@type': 'Product',
     '@id': `product-${productId}`,
-    review: reviews.map((review) => {
-      return {
-        '@type': 'Review' as const,
-        datePublished: format.dateTime(new Date(review.createdAt.utc)),
-        name: review.title,
-        reviewBody: review.text,
-        author: {
-          '@type': 'Person' as const,
-          name: review.author.name,
-        },
-        reviewRating: {
-          '@type': 'Rating' as const,
-          bestRating: 5,
-          ratingValue: review.rating,
-          worstRating: 1,
-        },
-      };
-    }),
+    review: reviews.map((review) => ({
+      '@type': 'Review' as const,
+      datePublished: format.dateTime(new Date(review.createdAt.utc)),
+      name: review.title,
+      reviewBody: review.text,
+      author: {
+        '@type': 'Person' as const,
+        name: review.author.name,
+      },
+      reviewRating: {
+        '@type': 'Rating' as const,
+        bestRating: 5,
+        ratingValue: review.rating,
+        worstRating: 1,
+      },
+    })),
   };
 
   return (

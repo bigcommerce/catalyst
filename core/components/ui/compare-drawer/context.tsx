@@ -18,12 +18,9 @@ const CompareDrawerContext = createContext<{
   setProducts: (products: Product[]) => void;
 } | null>(null);
 
-const isCheckedProducts = (products: unknown): products is Product[] => {
-  return (
-    Array.isArray(products) &&
-    products.every((product) => product !== null && typeof product === 'object' && 'id' in product)
-  );
-};
+const isCheckedProducts = (products: unknown): products is Product[] =>
+  Array.isArray(products) &&
+  products.every((product) => product !== null && typeof product === 'object' && 'id' in product);
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<Product[]>([]);

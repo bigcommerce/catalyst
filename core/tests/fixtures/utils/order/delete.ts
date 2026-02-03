@@ -21,6 +21,7 @@ export async function deleteOrder(orderId: number) {
 
   if (!response.ok) {
     const errorText = await response.text();
+
     throw new Error(`Failed to delete order with id ${orderId}: ${errorText}`);
   }
 }
