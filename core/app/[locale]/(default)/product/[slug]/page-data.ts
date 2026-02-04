@@ -275,7 +275,7 @@ const StreamableProductQuery = graphql(
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
           entityId
-          images(first: 15) {
+          images(first: 12) {
             pageInfo {
               hasNextPage
               endCursor

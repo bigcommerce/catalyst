@@ -71,20 +71,12 @@ export function ProductGallery({
   const scrollListenerRef = useRef<() => void>(() => undefined);
   const listenForScrollRef = useRef(true);
   const hasMoreToLoadRef = useRef(hasMoreToLoad);
-  const isLoadingMoreRef = useRef(false);
 
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
     containScroll: 'keepSnaps',
     dragFree: true,
   });
-
-  // Sync props to state
-  // useEffect(() => {
-  //   setImages(initialImages);
-  //   setPageInfo(initialPageInfo);
-  //   setHasMoreToLoad(initialPageInfo?.hasNextPage ?? false);
-  // }, [initialImages, initialPageInfo]);
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -103,36 +95,26 @@ export function ProductGallery({
     if (!emblaApi || !emblaThumbsApi) return;
     setSelectedIndex(emblaApi.selectedSnap());
 
-    // Don't scroll thumbnails if we're loading more (preserve scroll position)
-    // if (!isLoadingMoreRef.current) {
     emblaThumbsApi.goTo(emblaApi.selectedSnap());
-    // }
   }, [emblaApi, emblaThumbsApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
     emblaApi.on('select', onSelect);
-    // emblaApi.on('reinit', onSelect);
 
     return () => {
       emblaApi.off('select', onSelect);
-      // emblaApi.off('reinit', onSelect);
     };
   }, [emblaApi, onSelect]);
 
   const onSlideChanges = useCallback((carouselApi: EmblaCarouselType) => {
     const reloadEmbla = (): void => {
-      // if (!emblaThumbsApi) return;
-
       const oldEngine = carouselApi.internalEngine();
-      // const oldThumbsEngine = emblaThumbsApi.internalEngine();
 
       carouselApi.reInit();
-      // emblaThumbsApi.reInit();
 
       const newEngine = carouselApi.internalEngine();
-      // const newThumbsEngine = emblaThumbsApi.internalEngine();
       const copyEngineModules: Array<keyof EngineType> = [
         'scrollBody',
         'location',
@@ -144,22 +126,15 @@ export function ProductGallery({
       copyEngineModules.forEach((engineModule) => {
         Object.assign(newEngine[engineModule], oldEngine[engineModule]);
       });
-      // copyEngineModules.forEach((engineModule) => {
-      //   Object.assign(newThumbsEngine[engineModule], oldThumbsEngine[engineModule]);
-      // });
 
       newEngine.translate.to(oldEngine.location.get());
-      // newThumbsEngine.translate.to(oldThumbsEngine.location.get());
 
       const { index } = newEngine.scrollTarget.byDistance(0, false);
 
       newEngine.indexCurrent.set(index);
-      // newThumbsEngine.indexCurrent.set(index);
       newEngine.animation.start();
-      // newThumbsEngine.animation.start();
 
       listenForScrollRef.current = true;
-      isLoadingMoreRef.current = false;
     };
 
     const reloadAfterPointerUp = (): void => {
@@ -186,7 +161,6 @@ export function ProductGallery({
       if (!loadMoreAction || !productId || !pageInfo?.endCursor) return;
 
       listenForScrollRef.current = false;
-      isLoadingMoreRef.current = true;
 
       startTransition(async () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -232,7 +206,6 @@ export function ProductGallery({
     [onThumbsScroll],
   );
 
-  // Thumbnails scroll listener
   useEffect(() => {
     if (!emblaThumbsApi) return;
 
@@ -325,6 +298,19 @@ export function ProductGallery({
                 </div>
               </button>
             ))}
+            {hasMoreToLoad && (
+              <div
+                aria-label="Loading more images"
+                className={clsx(
+                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
+                  'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
+                  'text-[var(--product-gallery-load-more,hsl(var(--foreground)))]',
+                  '@md:h-16 @md:w-16',
+                )}
+              >
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              </div>
+            )}
           </div>
         </div>
       </div>
