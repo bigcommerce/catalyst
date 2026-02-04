@@ -71,6 +71,7 @@ export function ProductGallery({
   const scrollListenerRef = useRef<() => void>(() => undefined);
   const listenForScrollRef = useRef(true);
   const hasMoreToLoadRef = useRef(hasMoreToLoad);
+  const isLoadingMoreRef = useRef(false);
 
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
@@ -101,7 +102,11 @@ export function ProductGallery({
   const onSelect = useCallback(() => {
     if (!emblaApi || !emblaThumbsApi) return;
     setSelectedIndex(emblaApi.selectedSnap());
-    emblaThumbsApi.goTo(emblaApi.selectedSnap());
+
+    // Don't scroll thumbnails if we're loading more (preserve scroll position)
+    if (!isLoadingMoreRef.current) {
+      emblaThumbsApi.goTo(emblaApi.selectedSnap());
+    }
   }, [emblaApi, emblaThumbsApi]);
 
   useEffect(() => {
@@ -143,6 +148,8 @@ export function ProductGallery({
       newEngine.animation.start();
 
       listenForScrollRef.current = true;
+      // isLoadingMoreRef.current = false;
+      console.log('reloadEmbla', isLoadingMoreRef.current);
     };
 
     const reloadAfterPointerUp = (): void => {
@@ -169,6 +176,7 @@ export function ProductGallery({
       if (!loadMoreAction || !productId || !pageInfo?.endCursor) return;
 
       listenForScrollRef.current = false;
+      isLoadingMoreRef.current = true;
 
       startTransition(async () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -206,37 +214,36 @@ export function ProductGallery({
     [loadMore],
   );
 
-  const addThumbsScrollListener = useCallback(
-    (thumbsApi: EmblaCarouselType) => {
-      scrollListenerRef.current = () => onThumbsScroll(thumbsApi);
-      thumbsApi.on('scroll', scrollListenerRef.current);
-    },
-    [onThumbsScroll],
-  );
+  // const addThumbsScrollListener = useCallback(
+  //   (thumbsApi: EmblaCarouselType) => {
+  //     scrollListenerRef.current = () => onThumbsScroll(thumbsApi);
+  //     thumbsApi.on('scroll', scrollListenerRef.current);
+  //   },
+  //   [onThumbsScroll],
+  // );
 
   // Main carousel slideschanged handler
-  useEffect(() => {
-    if (!emblaApi) return;
+  // useEffect(() => {
+  //   if (!emblaApi) return;
 
-    emblaApi.on('slideschanged', onSlideChanges);
+  //   emblaApi.on('slideschanged', onSlideChanges);
 
-    return () => {
-      emblaApi.off('slideschanged', onSlideChanges);
-    };
-  }, [emblaApi, onSlideChanges]);
+  //   return () => {
+  //     emblaApi.off('slideschanged', onSlideChanges);
+  //   };
+  // }, [emblaApi, onSlideChanges]);
 
-  // Thumbnails scroll listener and slideschanged handler
+  // Thumbnails scroll listener
   useEffect(() => {
     if (!emblaThumbsApi) return;
 
-    addThumbsScrollListener(emblaThumbsApi);
-    emblaThumbsApi.on('slideschanged', onSlideChanges);
+    scrollListenerRef.current = () => onThumbsScroll(emblaThumbsApi);
+    emblaThumbsApi.on('scroll', scrollListenerRef.current);
 
     return () => {
       emblaThumbsApi.off('scroll', scrollListenerRef.current);
-      emblaThumbsApi.off('slideschanged', onSlideChanges);
     };
-  }, [emblaThumbsApi, addThumbsScrollListener, onSlideChanges]);
+  }, [emblaThumbsApi, onThumbsScroll]);
 
   // ReInit main carousel when images change
   useEffect(() => {

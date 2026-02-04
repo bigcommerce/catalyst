@@ -31,7 +31,7 @@ const MoreProductImagesQuery = graphql(`
 export async function getMoreProductImages(
   productId: number,
   cursor: string,
-  limit = 10,
+  limit = 15,
 ): Promise<{
   images: Array<{ src: string; alt: string }>;
   pageInfo: { hasNextPage: boolean; endCursor: string | null };
