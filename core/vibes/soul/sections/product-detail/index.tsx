@@ -143,13 +143,11 @@ export function ProductDetail<F extends Field>({
                       const pageInfo = isArray ? undefined : imagesData.pageInfo;
                       const productId = isArray ? undefined : imagesData.productId;
                       const loadMoreAction = isArray ? undefined : imagesData.loadMoreAction;
-                      const loadMoreLabel = isArray ? undefined : imagesData.loadMoreLabel;
 
                       return (
                         <ProductGallery
                           images={images}
                           loadMoreAction={loadMoreAction}
-                          loadMoreLabel={loadMoreLabel}
                           pageInfo={pageInfo}
                           productId={productId}
                         />
@@ -221,13 +219,11 @@ export function ProductDetail<F extends Field>({
                         const pageInfo = isArray ? undefined : imagesData.pageInfo;
                         const productId = isArray ? undefined : imagesData.productId;
                         const loadMoreAction = isArray ? undefined : imagesData.loadMoreAction;
-                        const loadMoreLabel = isArray ? undefined : imagesData.loadMoreLabel;
 
                         return (
                           <ProductGallery
                             images={images}
                             loadMoreAction={loadMoreAction}
-                            loadMoreLabel={loadMoreLabel}
                             pageInfo={pageInfo}
                             productId={productId}
                             thumbnailLabel={thumbnailLabel}

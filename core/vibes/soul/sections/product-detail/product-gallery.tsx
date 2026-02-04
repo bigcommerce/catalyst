@@ -1,8 +1,8 @@
 'use client';
 
 import { clsx } from 'clsx';
+import { EmblaCarouselType, EngineType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Ellipsis } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 
 import { Image } from '~/components/image';
@@ -36,7 +36,6 @@ export interface ProductGalleryProps {
   pageInfo?: { hasNextPage: boolean; endCursor: string | null };
   productId?: number;
   loadMoreAction?: ProductGalleryLoadMoreAction;
-  loadMoreLabel?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -57,84 +56,144 @@ export interface ProductGalleryProps {
 export function ProductGallery({
   images: initialImages,
   className,
-  thumbnailLabel = 'View image number',
+  // thumbnailLabel = 'View image number',
   aspectRatio = '4:5',
   fit = 'contain',
   pageInfo: initialPageInfo,
   productId,
   loadMoreAction,
-  loadMoreLabel = 'Load more images',
 }: ProductGalleryProps) {
   const [images, setImages] = useState(initialImages);
   const [pageInfo, setPageInfo] = useState(initialPageInfo);
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [hasMoreToLoad, setHasMoreToLoad] = useState(initialPageInfo?.hasNextPage ?? false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const scrollListenerRef = useRef<() => void>(() => undefined);
+  const listenForScrollRef = useRef(true);
+  const hasMoreToLoadRef = useRef(hasMoreToLoad);
+
   const [emblaRef, emblaApi] = useEmblaCarousel();
 
-  const [emblaThumbsRef, emblaThumbsApi] = useEmblaCarousel({
-    containScroll: 'keepSnaps',
-    dragFree: true,
-  });
-  const [isPending, startTransition] = useTransition();
-  const pendingScrollIndexRef = useRef<number | null>(null);
-
-  const onThumbClick = useCallback(
-    (index: number) => {
-      if (!emblaApi || !emblaThumbsApi) return;
-      emblaApi.goTo(index);
-    },
-    [emblaApi, emblaThumbsApi],
-  );
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi || !emblaThumbsApi) return;
-    setSelectedIndex(emblaApi.selectedSnap());
-    emblaThumbsApi.goTo(emblaApi.selectedSnap());
-  }, [emblaApi, emblaThumbsApi]);
-
+  // Sync props to state
   useEffect(() => {
     setImages(initialImages);
     setPageInfo(initialPageInfo);
+    setHasMoreToLoad(initialPageInfo?.hasNextPage ?? false);
   }, [initialImages, initialPageInfo]);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    hasMoreToLoadRef.current = hasMoreToLoad;
+  }, [hasMoreToLoad]);
+
+  const onSlideChanges = useCallback((carouselApi: EmblaCarouselType) => {
+    const reloadEmbla = (): void => {
+      const oldEngine = carouselApi.internalEngine();
+
+      carouselApi.reInit();
+
+      const newEngine = carouselApi.internalEngine();
+      const copyEngineModules: Array<keyof EngineType> = [
+        'scrollBody',
+        'location',
+        'offsetLocation',
+        'previousLocation',
+        'target',
+      ];
+
+      copyEngineModules.forEach((engineModule) => {
+        Object.assign(newEngine[engineModule], oldEngine[engineModule]);
+      });
+
+      newEngine.translate.to(oldEngine.location.get());
+
+      const { index } = newEngine.scrollTarget.byDistance(0, false);
+
+      newEngine.indexCurrent.set(index);
+      newEngine.animation.start();
+
+      setLoadingMore(false);
+      listenForScrollRef.current = true;
+    };
+
+    const reloadAfterPointerUp = (): void => {
+      // @ts-expect-error - Embla types expect callback params but work without them
+      carouselApi.off('pointerUp', reloadAfterPointerUp);
+      reloadEmbla();
+    };
+
+    const engine = carouselApi.internalEngine();
+
+    if (hasMoreToLoadRef.current && engine.dragHandler.pointerDown()) {
+      const boundsActive = engine.limit.pastMaxBound(engine.target.get());
+
+      engine.scrollBounds.toggleActive(boundsActive);
+      // @ts-expect-error - Embla types expect callback params but work without them
+      carouselApi.on('pointerUp', reloadAfterPointerUp);
+    } else {
+      reloadEmbla();
+    }
+  }, []);
+
+  const loadMore = useCallback(
+    (carouselApi: EmblaCarouselType) => {
+      if (!loadMoreAction || !productId || !pageInfo?.endCursor) return;
+
+      listenForScrollRef.current = false;
+      setLoadingMore(true);
+
+      startTransition(async () => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const result = await loadMoreAction(productId, pageInfo.endCursor!);
+
+        if (!result.pageInfo.hasNextPage) {
+          setHasMoreToLoad(false);
+          carouselApi.off('scroll', scrollListenerRef.current);
+        }
+
+        setImages((prev) => [...prev, ...result.images]);
+        setPageInfo(result.pageInfo);
+      });
+    },
+    [loadMoreAction, productId, pageInfo?.endCursor],
+  );
+
+  const onScroll = useCallback(
+    (carouselApi: EmblaCarouselType) => {
+      if (!listenForScrollRef.current) return;
+
+      const lastSlide = carouselApi.slideNodes().length - 1;
+      const lastSlideInView = carouselApi.slidesInView().includes(lastSlide);
+
+      if (lastSlideInView) {
+        loadMore(carouselApi);
+      }
+    },
+    [loadMore],
+  );
+
+  const addScrollListener = useCallback(
+    (carouselApi: EmblaCarouselType) => {
+      scrollListenerRef.current = () => onScroll(carouselApi);
+      carouselApi.on('scroll', scrollListenerRef.current);
+    },
+    [onScroll],
+  );
 
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
-    emblaApi.on('select', onSelect);
-    emblaApi.on('reinit', onSelect);
+
+    addScrollListener(emblaApi);
+    emblaApi.on('slideschanged', onSlideChanges);
 
     return () => {
-      emblaApi.off('select', onSelect);
-      emblaApi.off('reinit', onSelect);
+      emblaApi.off('scroll', scrollListenerRef.current);
+      emblaApi.off('slideschanged', onSlideChanges);
     };
-  }, [emblaApi, onSelect]);
+  }, [emblaApi, addScrollListener, onSlideChanges]);
 
-  useEffect(() => {
-    if (emblaApi) emblaApi.reInit();
-    if (emblaThumbsApi) emblaThumbsApi.reInit();
-
-    // Navigate to the first newly loaded image after load more
-    if (pendingScrollIndexRef.current !== null && emblaApi) {
-      emblaApi.goTo(pendingScrollIndexRef.current);
-      pendingScrollIndexRef.current = null;
-    }
-  }, [emblaApi, emblaThumbsApi, images]);
-
-  const loadMore = () => {
-    if (!loadMoreAction || !productId || !pageInfo?.endCursor) return;
-
-    startTransition(async () => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const result = await loadMoreAction(productId, pageInfo.endCursor!);
-
-      // Store the index of the first new image to scroll to after reInit
-      pendingScrollIndexRef.current = images.length;
-
-      setImages((prev) => [...prev, ...result.images]);
-      setPageInfo(result.pageInfo);
-    });
-  };
-
-  const canLoadMore = Boolean(pageInfo?.hasNextPage && loadMoreAction && productId);
+  const canLoadMore = Boolean(hasMoreToLoad && loadMoreAction && productId);
 
   return (
     <div className={clsx('sticky top-4 flex flex-col gap-2', className)}>
@@ -176,9 +235,36 @@ export function ProductGallery({
               />
             </div>
           ))}
+          {canLoadMore && (
+            <div
+              className={clsx(
+                'relative flex w-full shrink-0 grow-0 basis-full items-center justify-center',
+                'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
+                {
+                  '5:6': 'aspect-[5/6]',
+                  '3:4': 'aspect-[3/4]',
+                  '4:5': 'aspect-[4/5]',
+                  '3:2': 'aspect-[3/2]',
+                  '2:3': 'aspect-[2/3]',
+                  '16:9': 'aspect-[16/9]',
+                  '9:16': 'aspect-[9/16]',
+                  '6:5': 'aspect-[6/5]',
+                  '5:4': 'aspect-[5/4]',
+                  '4:3': 'aspect-[4/3]',
+                  '1:1': 'aspect-square',
+                }[aspectRatio],
+              )}
+            >
+              {(loadingMore || isPending) && (
+                <span className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-current border-t-transparent text-[var(--product-gallery-load-more,hsl(var(--foreground)))]" />
+              )}
+            </div>
+          )}
         </div>
       </div>
-      <div className="flex max-w-full shrink-0 flex-col gap-2">
+
+      {/* Thumbnails commented out for now */}
+      {/* <div className="flex max-w-full shrink-0 flex-col gap-2">
         <div className="overflow-hidden" ref={emblaThumbsRef}>
           <div className="flex flex-row gap-2 p-1">
             {images.map((image, index) => (
@@ -210,27 +296,9 @@ export function ProductGallery({
                 </div>
               </button>
             ))}
-            {canLoadMore && (
-              <button
-                aria-label={loadMoreLabel}
-                className={clsx(
-                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-transparent bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))] text-[var(--product-gallery-load-more,hsl(var(--foreground)))] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-16 @md:w-16',
-                  'opacity-50 hover:opacity-100 disabled:pointer-events-none',
-                )}
-                disabled={isPending}
-                onClick={loadMore}
-                type="button"
-              >
-                {isPending ? (
-                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                ) : (
-                  <Ellipsis className="h-5 w-5" strokeWidth={2} />
-                )}
-              </button>
-            )}
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
