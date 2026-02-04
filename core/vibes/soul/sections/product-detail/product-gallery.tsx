@@ -80,11 +80,11 @@ export function ProductGallery({
   });
 
   // Sync props to state
-  useEffect(() => {
-    setImages(initialImages);
-    setPageInfo(initialPageInfo);
-    setHasMoreToLoad(initialPageInfo?.hasNextPage ?? false);
-  }, [initialImages, initialPageInfo]);
+  // useEffect(() => {
+  //   setImages(initialImages);
+  //   setPageInfo(initialPageInfo);
+  //   setHasMoreToLoad(initialPageInfo?.hasNextPage ?? false);
+  // }, [initialImages, initialPageInfo]);
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -104,30 +104,35 @@ export function ProductGallery({
     setSelectedIndex(emblaApi.selectedSnap());
 
     // Don't scroll thumbnails if we're loading more (preserve scroll position)
-    if (!isLoadingMoreRef.current) {
-      emblaThumbsApi.goTo(emblaApi.selectedSnap());
-    }
+    // if (!isLoadingMoreRef.current) {
+    emblaThumbsApi.goTo(emblaApi.selectedSnap());
+    // }
   }, [emblaApi, emblaThumbsApi]);
 
   useEffect(() => {
     if (!emblaApi) return;
     onSelect();
     emblaApi.on('select', onSelect);
-    emblaApi.on('reinit', onSelect);
+    // emblaApi.on('reinit', onSelect);
 
     return () => {
       emblaApi.off('select', onSelect);
-      emblaApi.off('reinit', onSelect);
+      // emblaApi.off('reinit', onSelect);
     };
   }, [emblaApi, onSelect]);
 
   const onSlideChanges = useCallback((carouselApi: EmblaCarouselType) => {
     const reloadEmbla = (): void => {
+      // if (!emblaThumbsApi) return;
+
       const oldEngine = carouselApi.internalEngine();
+      // const oldThumbsEngine = emblaThumbsApi.internalEngine();
 
       carouselApi.reInit();
+      // emblaThumbsApi.reInit();
 
       const newEngine = carouselApi.internalEngine();
+      // const newThumbsEngine = emblaThumbsApi.internalEngine();
       const copyEngineModules: Array<keyof EngineType> = [
         'scrollBody',
         'location',
@@ -139,17 +144,22 @@ export function ProductGallery({
       copyEngineModules.forEach((engineModule) => {
         Object.assign(newEngine[engineModule], oldEngine[engineModule]);
       });
+      // copyEngineModules.forEach((engineModule) => {
+      //   Object.assign(newThumbsEngine[engineModule], oldThumbsEngine[engineModule]);
+      // });
 
       newEngine.translate.to(oldEngine.location.get());
+      // newThumbsEngine.translate.to(oldThumbsEngine.location.get());
 
       const { index } = newEngine.scrollTarget.byDistance(0, false);
 
       newEngine.indexCurrent.set(index);
+      // newThumbsEngine.indexCurrent.set(index);
       newEngine.animation.start();
+      // newThumbsEngine.animation.start();
 
       listenForScrollRef.current = true;
-      // isLoadingMoreRef.current = false;
-      console.log('reloadEmbla', isLoadingMoreRef.current);
+      isLoadingMoreRef.current = false;
     };
 
     const reloadAfterPointerUp = (): void => {
@@ -214,43 +224,31 @@ export function ProductGallery({
     [loadMore],
   );
 
-  // const addThumbsScrollListener = useCallback(
-  //   (thumbsApi: EmblaCarouselType) => {
-  //     scrollListenerRef.current = () => onThumbsScroll(thumbsApi);
-  //     thumbsApi.on('scroll', scrollListenerRef.current);
-  //   },
-  //   [onThumbsScroll],
-  // );
-
-  // Main carousel slideschanged handler
-  // useEffect(() => {
-  //   if (!emblaApi) return;
-
-  //   emblaApi.on('slideschanged', onSlideChanges);
-
-  //   return () => {
-  //     emblaApi.off('slideschanged', onSlideChanges);
-  //   };
-  // }, [emblaApi, onSlideChanges]);
+  const addThumbsScrollListener = useCallback(
+    (thumbsApi: EmblaCarouselType) => {
+      scrollListenerRef.current = () => onThumbsScroll(thumbsApi);
+      thumbsApi.on('scroll', scrollListenerRef.current);
+    },
+    [onThumbsScroll],
+  );
 
   // Thumbnails scroll listener
   useEffect(() => {
     if (!emblaThumbsApi) return;
 
-    scrollListenerRef.current = () => onThumbsScroll(emblaThumbsApi);
-    emblaThumbsApi.on('scroll', scrollListenerRef.current);
+    addThumbsScrollListener(emblaThumbsApi);
+
+    const onResize = () => emblaThumbsApi.reInit();
+
+    window.addEventListener('resize', onResize);
+    emblaThumbsApi.on('destroy', () => window.removeEventListener('resize', onResize));
+    emblaThumbsApi.on('slideschanged', onSlideChanges);
 
     return () => {
       emblaThumbsApi.off('scroll', scrollListenerRef.current);
+      emblaThumbsApi.off('slideschanged', onSlideChanges);
     };
-  }, [emblaThumbsApi, onThumbsScroll]);
-
-  // ReInit main carousel when images change
-  useEffect(() => {
-    if (emblaApi) {
-      emblaApi.reInit();
-    }
-  }, [emblaApi, images]);
+  }, [emblaThumbsApi, addThumbsScrollListener, onSlideChanges]);
 
   return (
     <div className={clsx('sticky top-4 flex flex-col gap-2', className)}>
