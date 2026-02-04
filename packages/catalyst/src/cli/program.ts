@@ -8,7 +8,7 @@ import PACKAGE_INFO from '../../package.json';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
 import { dev } from './commands/dev';
-import { link } from './commands/link';
+import { project } from './commands/project';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
 import { version } from './commands/version';
@@ -38,7 +38,7 @@ program
   .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
-  .addCommand(link)
+  .addCommand(project)
   .addCommand(telemetry)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);

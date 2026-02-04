@@ -9,7 +9,7 @@ import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 import { program } from '../program';
 
-import { link } from './link';
+import { link } from './project';
 
 let exitMock: MockInstance;
 
@@ -85,6 +85,7 @@ test('sets projectUuid when called with --project-uuid', async () => {
   await program.parseAsync([
     'node',
     'catalyst',
+    'project',
     'link',
     '--project-uuid',
     projectUuid1,
@@ -130,6 +131,7 @@ test('fetches projects and prompts user to select one', async () => {
   await program.parseAsync([
     'node',
     'catalyst',
+    'project',
     'link',
     '--store-hash',
     storeHash,
@@ -191,6 +193,7 @@ test('prompts to create a new project', async () => {
   await program.parseAsync([
     'node',
     'catalyst',
+    'project',
     'link',
     '--store-hash',
     storeHash,
@@ -253,6 +256,7 @@ test('prompts to create a new project', async () => {
   await program.parseAsync([
     'node',
     'catalyst',
+    'project',
     'link',
     '--store-hash',
     storeHash,
@@ -286,6 +290,7 @@ test('errors when infrastructure projects API is not found', async () => {
   await program.parseAsync([
     'node',
     'catalyst',
+    'project',
     'link',
     '--store-hash',
     storeHash,
@@ -304,7 +309,7 @@ test('errors when infrastructure projects API is not found', async () => {
 });
 
 test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
-  await program.parseAsync(['node', 'catalyst', 'link', '--root-dir', tmpDir]);
+  await program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]);
 
   expect(consola.start).not.toHaveBeenCalled();
   expect(consola.success).not.toHaveBeenCalled();
