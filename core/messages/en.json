@@ -463,7 +463,7 @@
       "additionalInformation": "Additional information",
       "currentStock": "{quantity, number} in stock",
       "backorderQuantity": "{quantity, number} will be on backorder",
-      "loadMoreImages": "Load more images",
+      "loadingMoreImages": "Loading more images...",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",

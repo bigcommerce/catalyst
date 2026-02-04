@@ -33,7 +33,6 @@ interface PaginatedImages {
   pageInfo?: unknown;
   productId?: unknown;
   loadMoreAction?: unknown;
-  loadMoreLabel?: unknown;
 }
 
 interface Props {

@@ -26,7 +26,6 @@ interface ProductImagesPaginated {
   pageInfo?: { hasNextPage: boolean; endCursor: string | null };
   productId?: number;
   loadMoreAction?: ProductGalleryLoadMoreAction;
-  loadMoreLabel?: string;
 }
 
 type ProductImages = Array<{ src: string; alt: string }> | ProductImagesPaginated;

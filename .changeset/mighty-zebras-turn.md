@@ -25,15 +25,5 @@ Add pagination support for the product gallery. When a product has more images t
    - `pageInfo?: { hasNextPage: boolean; endCursor: string | null }`
    - `productId?: number`
    - `loadMoreAction?: ProductGalleryLoadMoreAction`
-   - `loadMoreLabel?: string`
-
-5. Add the `Product.Gallery.loadMore` translation key to `core/messages/en.json`:
-   ```json
-   "Product": {
-     "Gallery": {
-       "loadMore": "Load more images"
-     }
-   }
-   ```
 
 Due to the number of changes, it is recommended to use the PR as a reference for migration.

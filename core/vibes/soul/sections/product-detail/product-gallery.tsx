@@ -3,6 +3,7 @@
 import { clsx } from 'clsx';
 import { EmblaCarouselType, EngineType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
+import { useTranslations } from 'next-intl';
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 
 import { Image } from '~/components/image';
@@ -63,6 +64,8 @@ export function ProductGallery({
   productId,
   loadMoreAction,
 }: ProductGalleryProps) {
+  const t = useTranslations('Product.ProductDetails');
+
   const [images, setImages] = useState(initialImages);
   const [pageInfo, setPageInfo] = useState(initialPageInfo);
   const [hasMoreToLoad, setHasMoreToLoad] = useState(initialPageInfo?.hasNextPage ?? false);
@@ -300,7 +303,7 @@ export function ProductGallery({
             ))}
             {hasMoreToLoad && (
               <div
-                aria-label="Loading more images"
+                aria-label={t('loadingMoreImages')}
                 className={clsx(
                   'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
                   'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',

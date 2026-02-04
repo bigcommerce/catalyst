@@ -197,7 +197,6 @@ export default async function Product({ params, searchParams }: Props) {
       pageInfo: product.images.pageInfo,
       productId: product.entityId,
       loadMoreAction: getMoreProductImages,
-      loadMoreLabel: t('ProductDetails.loadMoreImages'),
     };
   });
 
