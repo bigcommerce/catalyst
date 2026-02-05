@@ -3,9 +3,9 @@
 import { clsx } from 'clsx';
 import { EmblaCarouselType, EngineType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useTranslations } from 'next-intl';
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 
 export type ProductGalleryLoadMoreAction = (
@@ -64,8 +64,6 @@ export function ProductGallery({
   productId,
   loadMoreAction,
 }: ProductGalleryProps) {
-  const t = useTranslations('Product.ProductDetails');
-
   const [images, setImages] = useState(initialImages);
   const [pageInfo, setPageInfo] = useState(initialPageInfo);
   const [hasMoreToLoad, setHasMoreToLoad] = useState(initialPageInfo?.hasNextPage ?? false);
@@ -302,16 +300,12 @@ export function ProductGallery({
               </button>
             ))}
             {hasMoreToLoad && (
-              <div
-                aria-label={t('loadingMoreImages')}
-                className={clsx(
-                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
-                  'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
-                  'text-[var(--product-gallery-load-more,hsl(var(--foreground)))]',
-                  '@md:h-16 @md:w-16',
-                )}
-              >
-                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              <div className="flex animate-pulse gap-2">
+                <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" />
+                <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" />
+                <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" />
+                <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" />
+                <Skeleton.Box className="h-12 w-12 shrink-0 rounded-lg @md:h-16 @md:w-16" />
               </div>
             )}
           </div>
