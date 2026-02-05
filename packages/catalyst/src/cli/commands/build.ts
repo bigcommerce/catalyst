@@ -21,7 +21,7 @@ export const build = new Command('build')
   .addOption(
     new Option(
       '--project-uuid <uuid>',
-      'Project UUID to be included in the deployment configuration.',
+      'Project UUID to be included in the deployment configuration. Can also be set via the CATALYST_PROJECT_UUID environment variable.',
     ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(

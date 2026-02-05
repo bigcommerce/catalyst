@@ -290,7 +290,7 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
+      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable.',
     )
       .env('CATALYST_ACCESS_TOKEN')
       .makeOptionMandatory(),
@@ -303,7 +303,7 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--project-uuid <uuid>',
-      'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
+      'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Can also be set via the CATALYST_PROJECT_UUID environment variable.',
     ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
@@ -324,7 +324,7 @@ export const deploy = new Command('deploy')
 
       if (!projectUuid) {
         throw new Error(
-          'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
+          'Project UUID is required. Please run either `catalyst link` or provide --project-uuid (or set the CATALYST_PROJECT_UUID environment variable).',
         );
       }
 
