@@ -210,7 +210,7 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site;
 });
 
-const StreamableProductVariantBySkuQuery = graphql(`
+const StreamableProductVariantInventoryBySkuQuery = graphql(`
   query ProductVariantBySkuQuery($productId: Int!, $sku: String!) {
     site {
       product(entityId: $productId) {
@@ -246,15 +246,15 @@ const StreamableProductVariantBySkuQuery = graphql(`
   }
 `);
 
-type VariantVariables = VariablesOf<typeof StreamableProductVariantBySkuQuery>;
+type VariantInventoryVariables = VariablesOf<typeof StreamableProductVariantInventoryBySkuQuery>;
 
-export const getStreamableProductVariant = cache(
-  async (variables: VariantVariables, customerAccessToken?: string) => {
+export const getStreamableProductVariantInventory = cache(
+  async (variables: VariantInventoryVariables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: StreamableProductVariantBySkuQuery,
+      document: StreamableProductVariantInventoryBySkuQuery,
       variables,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product?.variants;
@@ -370,7 +370,7 @@ export const getStreamableProductInventory = cache(
       document: StreamableProductInventoryQuery,
       variables,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product;

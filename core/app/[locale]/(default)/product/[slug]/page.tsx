@@ -29,7 +29,7 @@ import {
   getStreamableInventorySettingsQuery,
   getStreamableProduct,
   getStreamableProductInventory,
-  getStreamableProductVariant,
+  getStreamableProductVariantInventory,
 } from './page-data';
 
 interface Props {
@@ -133,7 +133,7 @@ export default async function Product({ params, searchParams }: Props) {
     return product;
   });
 
-  const streamableProductVariant = Streamable.from(async () => {
+  const streamableProductVariantInventory = Streamable.from(async () => {
     const product = await streamableProductInventory;
 
     if (!product.inventory.hasVariantInventory) {
@@ -145,7 +145,7 @@ export default async function Product({ params, searchParams }: Props) {
       sku: product.sku,
     };
 
-    const variants = await getStreamableProductVariant(variables, customerAccessToken);
+    const variants = await getStreamableProductVariantInventory(variables, customerAccessToken);
 
     if (!variants) {
       return undefined;
@@ -273,7 +273,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableStockDisplayData = Streamable.from(async () => {
     const [product, variant, inventorySetting] = await Streamable.all([
       streamableProductInventory,
-      streamableProductVariant,
+      streamableProductVariantInventory,
       streamableInventorySettings,
     ]);
 
@@ -363,7 +363,7 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableBackorderDisplayData = Streamable.from(async () => {
     const [product, variant, inventorySetting] = await Streamable.all([
       streamableProductInventory,
-      streamableProductVariant,
+      streamableProductVariantInventory,
       streamableInventorySettings,
     ]);
 
