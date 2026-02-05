@@ -34,7 +34,10 @@ interface Props {
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
 }
@@ -212,7 +215,10 @@ export function ReviewsEmptyState({
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
 }) {

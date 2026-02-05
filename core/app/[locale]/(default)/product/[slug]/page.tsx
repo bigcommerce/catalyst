@@ -183,20 +183,11 @@ export default async function Product({ params, searchParams }: Props) {
         alt: image.altText,
       }));
 
-    return product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
-      : images;
-  });
-
-  const streamableImagesPaginated = Streamable.from(async () => {
-    const product = await streamableProduct;
-    const images = await streamableImages;
-
     return {
-      images,
+      images: product.defaultImage
+        ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+        : images,
       pageInfo: product.images.pageInfo,
-      productId: product.entityId,
-      loadMoreAction: getMoreProductImages,
     };
   });
 
@@ -559,13 +550,14 @@ export default async function Product({ params, searchParams }: Props) {
           emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
           fields={productOptionsTransformer(baseProduct.productOptions)}
           incrementLabel={t('ProductDetails.increaseQuantity')}
+          loadMoreImagesAction={getMoreProductImages}
           prefetch={true}
           product={{
             id: baseProduct.entityId.toString(),
             title: baseProduct.name,
             description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
             href: baseProduct.path,
-            images: streamableImagesPaginated,
+            images: streamableImages,
             price: streamablePrices,
             reviewsEnabled,
             showRating,

@@ -21,20 +21,14 @@ import {
 import { RatingLink } from './rating-link';
 import { Field } from './schema';
 
-interface ProductImagesPaginated {
-  images: Array<{ src: string; alt: string }>;
-  pageInfo?: { hasNextPage: boolean; endCursor: string | null };
-  productId?: number;
-  loadMoreAction?: ProductGalleryLoadMoreAction;
-}
-
-type ProductImages = Array<{ src: string; alt: string }> | ProductImagesPaginated;
-
 interface ProductDetailProduct {
   id: string;
   title: string;
   href: string;
-  images: Streamable<ProductImages>;
+  images: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   price?: Streamable<Price | null>;
   subtitle?: string;
   badge?: string;
@@ -80,6 +74,7 @@ export interface ProductDetailProps<F extends Field> {
   reviewFormTitleLabel?: string;
   reviewFormAction: SubmitReviewAction;
   user: Streamable<{ email: string; name: string }>;
+  loadMoreImagesAction?: ProductGalleryLoadMoreAction;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -121,6 +116,7 @@ export function ProductDetail<F extends Field>({
   reviewFormTitleLabel,
   reviewFormAction,
   user,
+  loadMoreImagesAction,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -136,22 +132,14 @@ export function ProductDetail<F extends Field>({
               <div className="grid grid-cols-1 items-stretch gap-x-8 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
                 <div className="group/product-gallery hidden @2xl:block">
                   <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                    {(imagesData) => {
-                      const isArray = Array.isArray(imagesData);
-                      const images = isArray ? imagesData : imagesData.images;
-                      const pageInfo = isArray ? undefined : imagesData.pageInfo;
-                      const productId = isArray ? undefined : imagesData.productId;
-                      const loadMoreAction = isArray ? undefined : imagesData.loadMoreAction;
-
-                      return (
-                        <ProductGallery
-                          images={images}
-                          loadMoreAction={loadMoreAction}
-                          pageInfo={pageInfo}
-                          productId={productId}
-                        />
-                      );
-                    }}
+                    {(imagesData) => (
+                      <ProductGallery
+                        images={imagesData.images}
+                        loadMoreAction={loadMoreImagesAction}
+                        pageInfo={imagesData.pageInfo}
+                        productId={Number(product.id)}
+                      />
+                    )}
                   </Stream>
                 </div>
                 {/* Product Details */}
@@ -212,23 +200,15 @@ export function ProductDetail<F extends Field>({
                   </div>
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                      {(imagesData) => {
-                        const isArray = Array.isArray(imagesData);
-                        const images = isArray ? imagesData : imagesData.images;
-                        const pageInfo = isArray ? undefined : imagesData.pageInfo;
-                        const productId = isArray ? undefined : imagesData.productId;
-                        const loadMoreAction = isArray ? undefined : imagesData.loadMoreAction;
-
-                        return (
-                          <ProductGallery
-                            images={images}
-                            loadMoreAction={loadMoreAction}
-                            pageInfo={pageInfo}
-                            productId={productId}
-                            thumbnailLabel={thumbnailLabel}
-                          />
-                        );
-                      }}
+                      {(imagesData) => (
+                        <ProductGallery
+                          images={imagesData.images}
+                          loadMoreAction={loadMoreImagesAction}
+                          pageInfo={imagesData.pageInfo}
+                          productId={Number(product.id)}
+                          thumbnailLabel={thumbnailLabel}
+                        />
+                      )}
                     </Stream>
                   </div>
                   <div className="group/product-summary">
