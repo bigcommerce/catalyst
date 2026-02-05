@@ -3,6 +3,7 @@
 import { clsx } from 'clsx';
 import { EmblaCarouselType, EngineType } from 'embla-carousel';
 import useEmblaCarousel from 'embla-carousel-react';
+import { useTranslations } from 'next-intl';
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react';
 
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
@@ -64,10 +65,14 @@ export function ProductGallery({
   productId,
   loadMoreAction,
 }: ProductGalleryProps) {
+  const t = useTranslations('Product.ProductDetails');
+
   const [images, setImages] = useState(initialImages);
   const [pageInfo, setPageInfo] = useState(initialPageInfo);
   const [hasMoreToLoad, setHasMoreToLoad] = useState(initialPageInfo?.hasNextPage ?? false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingStatus, setLoadingStatus] = useState('');
 
   const scrollListenerRef = useRef<() => void>(() => undefined);
   const listenForScrollRef = useRef(true);
@@ -159,9 +164,11 @@ export function ProductGallery({
 
   const loadMore = useCallback(
     (thumbsApi: EmblaCarouselType) => {
-      if (!loadMoreAction || !productId || !pageInfo?.endCursor) return;
+      if (!loadMoreAction || !productId || !pageInfo?.endCursor || isLoading) return;
 
       listenForScrollRef.current = false;
+      setIsLoading(true);
+      setLoadingStatus(t('loadingMoreImages'));
 
       startTransition(async () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -174,9 +181,11 @@ export function ProductGallery({
 
         setImages((prev) => [...prev, ...result.images]);
         setPageInfo(result.pageInfo);
+        setIsLoading(false);
+        setLoadingStatus(t('imagesLoaded', { count: result.images.length }));
       });
     },
-    [loadMoreAction, productId, pageInfo?.endCursor],
+    [loadMoreAction, productId, pageInfo?.endCursor, isLoading, t],
   );
 
   const onThumbsScroll = useCallback(
@@ -226,6 +235,9 @@ export function ProductGallery({
 
   return (
     <div className={clsx('sticky top-4 flex flex-col gap-2', className)}>
+      <div aria-live="polite" className="sr-only" role="status">
+        {loadingStatus}
+      </div>
       <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl" ref={emblaRef}>
         <div className="flex">
           {images.map((image, idx) => (
