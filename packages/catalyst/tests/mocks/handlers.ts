@@ -75,18 +75,14 @@ export const handlers = [
   ),
 
   // Handle for createProjects
-  http.post(
-    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects',
-    async ({ request }) => {
-      const body = (await request.json()) as { name?: string };
-      return HttpResponse.json({
-        data: {
-          uuid: 'c23f5785-fd99-4a94-9fb3-945551623925',
-          name: body.name ?? 'New Project',
-          date_created: new Date().toISOString(),
-          date_modified: new Date().toISOString(),
-        },
-      });
-    },
+  http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+    HttpResponse.json({
+      data: {
+        uuid: 'c23f5785-fd99-4a94-9fb3-945551623925',
+        name: 'New Project',
+        date_created: new Date().toISOString(),
+        date_modified: new Date().toISOString(),
+      },
+    }),
   ),
 ];

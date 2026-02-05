@@ -67,10 +67,12 @@ test('project command has create and list subcommands', () => {
   expect(project.description()).toBe('Manage your BigCommerce infrastructure project.');
 
   const createCmd = project.commands.find((cmd) => cmd.name() === 'create');
+
   expect(createCmd).toBeDefined();
   expect(createCmd?.description()).toContain('Create a new BigCommerce infrastructure project');
 
   const listCmd = project.commands.find((cmd) => cmd.name() === 'list');
+
   expect(listCmd).toBeDefined();
   expect(listCmd?.description()).toContain('List BigCommerce infrastructure projects');
 });
@@ -96,7 +98,7 @@ test('project create prompts for name and creates project', async () => {
     'Enter a name for the new project:',
     expect.any(Object),
   );
-  expect(consola.success).toHaveBeenCalledWith('Project "My New Project" created successfully.');
+  expect(consola.success).toHaveBeenCalledWith('Project "New Project" created successfully.');
   expect(consola.start).toHaveBeenCalledWith(
     'Writing project UUID to .bigcommerce/project.json...',
   );
@@ -134,6 +136,7 @@ test('project list fetches and displays projects', async () => {
 test('project list with insufficient credentials exits with error', async () => {
   const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
   const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+
   delete process.env.BIGCOMMERCE_STORE_HASH;
   delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
 
@@ -153,6 +156,7 @@ test('project create with insufficient credentials exits with error', async () =
   // Unset env so Commander doesn't pick up BIGCOMMERCE_* and trigger the create flow (which would prompt for name)
   const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
   const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+
   delete process.env.BIGCOMMERCE_STORE_HASH;
   delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
 

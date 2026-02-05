@@ -34,6 +34,7 @@ const list = new Command('list')
           'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
         );
         process.exit(1);
+
         return;
       }
 
@@ -48,12 +49,13 @@ const list = new Command('list')
       if (projects.length === 0) {
         consola.info('No projects found.');
         process.exit(0);
+
         return;
       }
 
-      for (const p of projects) {
+      projects.forEach((p) => {
         consola.log(`${p.name} (${p.uuid})`);
-      }
+      });
 
       process.exit(0);
     } catch (error) {
@@ -96,6 +98,7 @@ const create = new Command('create')
           'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
         );
         process.exit(1);
+
         return;
       }
 
@@ -115,6 +118,7 @@ const create = new Command('create')
       consola.success(`Project "${data.name}" created successfully.`);
 
       const config = getProjectConfig(options.rootDir);
+
       consola.start('Writing project UUID to .bigcommerce/project.json...');
       config.set('projectUuid', data.uuid);
       config.set('framework', 'catalyst');
