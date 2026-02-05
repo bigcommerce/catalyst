@@ -26,7 +26,9 @@ describe('CLI program', () => {
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
     expect(commands).toContain('project');
+
     const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
+
     expect(projectCmd?.commands.map((c) => c.name())).toEqual(
       expect.arrayContaining(['create', 'list', 'link']),
     );
