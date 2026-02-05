@@ -306,19 +306,19 @@ test('--dry-run skips upload and deployment', async () => {
 
 test('reads from env options', () => {
   const envVariables = parseEnvironmentVariables([
-    'BIGCOMMERCE_STORE_HASH=123',
-    'BIGCOMMERCE_STOREFRONT_TOKEN=456',
+    'CATALYST_STORE_HASH=123',
+    'CATALYST_ACCESS_TOKEN=456',
   ]);
 
   expect(envVariables).toEqual([
     {
       type: 'secret',
-      key: 'BIGCOMMERCE_STORE_HASH',
+      key: 'CATALYST_STORE_HASH',
       value: '123',
     },
     {
       type: 'secret',
-      key: 'BIGCOMMERCE_STOREFRONT_TOKEN',
+      key: 'CATALYST_ACCESS_TOKEN',
       value: '456',
     },
   ]);

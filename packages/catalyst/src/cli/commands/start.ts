@@ -15,10 +15,9 @@ export const start = new Command('start')
     'Pass additional options to the start command. If framework is Next.js, see https://nextjs.org/docs/api-reference/cli#start for available options.',
   )
   .addOption(
-    new Option('--framework <framework>', 'The framework to use for the preview').choices([
-      'catalyst',
-      'nextjs',
-    ]),
+    new Option('--framework <framework>', 'The framework to use for the preview')
+      .env('CATALYST_FRAMEWORK')
+      .choices(['catalyst', 'nextjs']),
   )
   .action(async (startOptions, options) => {
     try {

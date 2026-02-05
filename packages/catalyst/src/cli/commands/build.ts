@@ -22,13 +22,12 @@ export const build = new Command('build')
     new Option(
       '--project-uuid <uuid>',
       'Project UUID to be included in the deployment configuration.',
-    ).env('BIGCOMMERCE_PROJECT_UUID'),
+    ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
-    new Option('--framework <framework>', 'The framework to use for the build.').choices([
-      'nextjs',
-      'catalyst',
-    ]),
+    new Option('--framework <framework>', 'The framework to use for the build.')
+      .env('CATALYST_FRAMEWORK')
+      .choices(['nextjs', 'catalyst']),
   )
   .action(async (nextBuildOptions, options) => {
     const coreDir = process.cwd();
