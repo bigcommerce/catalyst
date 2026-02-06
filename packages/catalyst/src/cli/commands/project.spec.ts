@@ -78,7 +78,9 @@ describe('project', () => {
     const linkCmd = project.commands.find((cmd) => cmd.name() === 'link');
 
     expect(linkCmd).toBeDefined();
-    expect(linkCmd?.description()).toContain('Link your local Catalyst project to a BigCommerce infrastructure project');
+    expect(linkCmd?.description()).toContain(
+      'Link your local Catalyst project to a BigCommerce infrastructure project',
+    );
 
     const listCmd = project.commands.find((cmd) => cmd.name() === 'list');
 
@@ -148,7 +150,7 @@ describe('project create', () => {
     server.use(
       http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
         HttpResponse.json({}, { status: 502 }),
-    ),
+      ),
     );
 
     const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('Duplicate');
@@ -227,7 +229,10 @@ describe('project link', () => {
       expect.arrayContaining([
         expect.objectContaining({ flags: '--store-hash <hash>' }),
         expect.objectContaining({ flags: '--access-token <token>' }),
-        expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
+        expect.objectContaining({
+          flags: '--api-host <host>',
+          defaultValue: 'api.bigcommerce.com',
+        }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
         expect.objectContaining({ flags: '--root-dir <path>', defaultValue: process.cwd() }),
       ]),
@@ -236,15 +241,15 @@ describe('project link', () => {
 
   test('sets projectUuid when called with --project-uuid', async () => {
     await program.parseAsync([
-    'node',
-    'catalyst',
-    'project',
-    'link',
-    '--project-uuid',
-    projectUuid1,
-    '--root-dir',
-    tmpDir,
-  ]);
+      'node',
+      'catalyst',
+      'project',
+      'link',
+      '--project-uuid',
+      projectUuid1,
+      '--root-dir',
+      tmpDir,
+    ]);
 
     expect(consola.start).toHaveBeenCalledWith(
       'Writing project UUID to .bigcommerce/project.json...',
