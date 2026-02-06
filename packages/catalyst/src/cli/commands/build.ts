@@ -59,7 +59,7 @@ export const build = new Command('build')
 
         if (!projectUuid) {
           throw new Error(
-            'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+            'Project UUID is required. This can be set via the --project-uuid flag, the CATALYST_PROJECT_UUID environment variable, or the projectUuid property in the .bigcommerce/project.json file.',
           );
         }
 

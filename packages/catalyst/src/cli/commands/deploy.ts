@@ -282,18 +282,14 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    )
-      .env('CATALYST_STORE_HASH')
-      .makeOptionMandatory(),
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Can also be set via the CATALYST_STORE_HASH environment variable or the storeHash property in the .bigcommerce/project.json file.',
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable.',
-    )
-      .env('CATALYST_ACCESS_TOKEN')
-      .makeOptionMandatory(),
+      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable or the accessToken property in the .bigcommerce/project.json file.',
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -303,7 +299,7 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--project-uuid <uuid>',
-      'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Can also be set via the CATALYST_PROJECT_UUID environment variable.',
+      'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Can also be set via the CATALYST_PROJECT_UUID environment variable or the projectUuid property in the .bigcommerce/project.json file.',
     ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
@@ -318,15 +314,23 @@ export const deploy = new Command('deploy')
     try {
       const config = getProjectConfig();
 
-      await telemetry.identify(options.storeHash);
-
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
       const projectUuid = options.projectUuid ?? config.get('projectUuid');
+
+      if (!storeHash || !accessToken) {
+        throw new Error(
+          'Store hash and access token are required. Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
+        );
+      }
 
       if (!projectUuid) {
         throw new Error(
-          'Project UUID is required. Please run either `catalyst link` or provide --project-uuid (or set the CATALYST_PROJECT_UUID environment variable).',
+          'Project UUID is required. This can be set via the --project-uuid flag, the CATALYST_PROJECT_UUID environment variable, or the projectUuid property in the .bigcommerce/project.json file.',
         );
       }
+
+      await telemetry.identify(storeHash);
 
       await generateBundleZip();
 
@@ -341,8 +345,8 @@ export const deploy = new Command('deploy')
       }
 
       const uploadSignature = await generateUploadSignature(
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
       );
 
@@ -353,16 +357,16 @@ export const deploy = new Command('deploy')
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
         environmentVariables,
       );
 
       await getDeploymentStatus(
         deploymentUuid,
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
       );
     } catch (error) {

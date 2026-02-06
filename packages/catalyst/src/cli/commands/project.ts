@@ -28,22 +28,26 @@ const list = new Command('list')
   )
   .action(async (options) => {
     try {
-      if (!options.storeHash || !options.accessToken) {
+      const config = getProjectConfig();
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
+
+      if (!storeHash || !accessToken) {
         consola.error('Insufficient information to list projects.');
         consola.info('This command requires a combination of store hash and access token.');
         consola.info(
-          'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+          'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
         );
         process.exit(1);
 
         return;
       }
 
-      await telemetry.identify(options.storeHash);
+      await telemetry.identify(storeHash);
 
       consola.start('Fetching projects...');
 
-      const projects = await fetchProjects(options.storeHash, options.accessToken, options.apiHost);
+      const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
 
       consola.success('Projects fetched.');
 
@@ -93,18 +97,22 @@ const create = new Command('create')
   )
   .action(async (options) => {
     try {
-      if (!options.storeHash || !options.accessToken) {
+      const config = getProjectConfig(options.rootDir);
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
+
+      if (!storeHash || !accessToken) {
         consola.error('Insufficient information to create a project.');
         consola.info('This command requires a combination of store hash and access token.');
         consola.info(
-          'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+          'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
         );
         process.exit(1);
 
         return;
       }
 
-      await telemetry.identify(options.storeHash);
+      await telemetry.identify(storeHash);
 
       const newProjectName = await consola.prompt('Enter a name for the new project:', {
         type: 'text',
@@ -112,20 +120,18 @@ const create = new Command('create')
 
       const data = await createProject(
         newProjectName,
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
       );
 
       consola.success(`Project "${data.name}" created successfully.`);
 
-      const config = getProjectConfig(options.rootDir);
-
       consola.start('Writing project UUID to .bigcommerce/project.json...');
       config.set('projectUuid', data.uuid);
       config.set('framework', 'catalyst');
-      config.set('storeHash', options.storeHash);
-      config.set('accessToken', options.accessToken);
+      config.set('storeHash', storeHash);
+      config.set('accessToken', accessToken);
       consola.success('Project UUID written to .bigcommerce/project.json.');
 
       process.exit(0);
@@ -185,22 +191,21 @@ export const link = new Command('link')
         consola.success('Project UUID written to .bigcommerce/project.json.');
       };
 
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
+
       if (options.projectUuid) {
         writeProjectConfig(options.projectUuid);
 
         process.exit(0);
       }
 
-      if (options.storeHash && options.accessToken) {
-        await telemetry.identify(options.storeHash);
+      if (storeHash && accessToken) {
+        await telemetry.identify(storeHash);
 
         consola.start('Fetching projects...');
 
-        const projects = await fetchProjects(
-          options.storeHash,
-          options.accessToken,
-          options.apiHost,
-        );
+        const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
 
         consola.success('Projects fetched.');
 
@@ -233,8 +238,8 @@ export const link = new Command('link')
 
           const data = await createProject(
             newProjectName,
-            options.storeHash,
-            options.accessToken,
+            storeHash,
+            accessToken,
             options.apiHost,
           );
 
@@ -244,8 +249,8 @@ export const link = new Command('link')
         }
 
         writeProjectConfig(projectUuid, {
-          storeHash: options.storeHash,
-          accessToken: options.accessToken,
+          storeHash,
+          accessToken,
         });
 
         process.exit(0);
@@ -256,10 +261,10 @@ export const link = new Command('link')
         'This command requires either a project UUID or a combination of store hash and access token.',
       );
       consola.info(
-        'Project UUID: use the --project-uuid flag or the CATALYST_PROJECT_UUID environment variable.',
+        'Project UUID: This can be set via the --project-uuid flag, the CATALYST_PROJECT_UUID environment variable, or the projectUuid property in the .bigcommerce/project.json file.',
       );
       consola.info(
-        'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+        'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
       );
       process.exit(1);
     } catch (error) {

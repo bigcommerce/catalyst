@@ -127,24 +127,29 @@ describe('project create', () => {
   });
 
   test('with insufficient credentials exits with error', async () => {
-    // Unset env so Commander doesn't pick up BIGCOMMERCE_* and trigger the create flow (which would prompt for name)
-    const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
-    const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    // Unset env and project.json so the command takes the insufficient-credentials path
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
-    delete process.env.BIGCOMMERCE_STORE_HASH;
-    delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    const projectConfig = getProjectConfig(tmpDir);
+    projectConfig.delete('storeHash');
+    projectConfig.delete('accessToken');
 
     await program.parseAsync(['node', 'catalyst', 'project', 'create', '--root-dir', tmpDir]);
 
-    if (savedStoreHash !== undefined) process.env.BIGCOMMERCE_STORE_HASH = savedStoreHash;
-    if (savedAccessToken !== undefined) process.env.BIGCOMMERCE_ACCESS_TOKEN = savedAccessToken;
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined)
+      process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to create a project.');
     expect(consola.info).toHaveBeenCalledWith(
       'This command requires a combination of store hash and access token.',
     );
     expect(consola.info).toHaveBeenCalledWith(
-      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+      'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -202,23 +207,28 @@ describe('project list', () => {
   });
 
   test('with insufficient credentials exits with error', async () => {
-    const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
-    const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
-    delete process.env.BIGCOMMERCE_STORE_HASH;
-    delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    const projectConfig = getProjectConfig(tmpDir);
+    projectConfig.delete('storeHash');
+    projectConfig.delete('accessToken');
 
     await program.parseAsync(['node', 'catalyst', 'project', 'list']);
 
-    if (savedStoreHash !== undefined) process.env.BIGCOMMERCE_STORE_HASH = savedStoreHash;
-    if (savedAccessToken !== undefined) process.env.BIGCOMMERCE_ACCESS_TOKEN = savedAccessToken;
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined)
+      process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to list projects.');
     expect(consola.info).toHaveBeenCalledWith(
       'This command requires a combination of store hash and access token.',
     );
     expect(consola.info).toHaveBeenCalledWith(
-      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+      'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -467,7 +477,25 @@ describe('project link', () => {
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+    const savedCatalystProjectUuid = process.env.CATALYST_PROJECT_UUID;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+    delete process.env.CATALYST_PROJECT_UUID;
+
+    const projectConfig = getProjectConfig(tmpDir);
+    projectConfig.delete('storeHash');
+    projectConfig.delete('accessToken');
+    projectConfig.delete('projectUuid');
+
     await program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]);
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined)
+      process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+    if (savedCatalystProjectUuid !== undefined)
+      process.env.CATALYST_PROJECT_UUID = savedCatalystProjectUuid;
 
     expect(consola.start).not.toHaveBeenCalled();
     expect(consola.success).not.toHaveBeenCalled();
@@ -476,10 +504,10 @@ describe('project link', () => {
       'This command requires either a project UUID or a combination of store hash and access token.',
     );
     expect(consola.info).toHaveBeenCalledWith(
-      'Project UUID: use the --project-uuid flag or the CATALYST_PROJECT_UUID environment variable.',
+      'Project UUID: This can be set via the --project-uuid flag, the CATALYST_PROJECT_UUID environment variable, or the projectUuid property in the .bigcommerce/project.json file.',
     );
     expect(consola.info).toHaveBeenCalledWith(
-      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+      'Store hash and access token: Can be set via the --store-hash and --access-token flags, the CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or the storeHash and accessToken properties in the .bigcommerce/project.json file.',
     );
 
     expect(exitMock).toHaveBeenCalledWith(1);
