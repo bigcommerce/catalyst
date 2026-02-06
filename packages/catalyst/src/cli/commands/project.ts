@@ -12,14 +12,14 @@ const list = new Command('list')
   .addOption(
     new Option(
       '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Can also be set via the CATALYST_STORE_HASH environment variable.',
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable.',
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -30,8 +30,9 @@ const list = new Command('list')
     try {
       if (!options.storeHash || !options.accessToken) {
         consola.error('Insufficient information to list projects.');
+        consola.info('This command requires a combination of store hash and access token.');
         consola.info(
-          'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+          'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
         );
         process.exit(1);
 
@@ -71,14 +72,14 @@ const create = new Command('create')
   .addOption(
     new Option(
       '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Can also be set via the CATALYST_STORE_HASH environment variable.',
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable.',
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -94,8 +95,9 @@ const create = new Command('create')
     try {
       if (!options.storeHash || !options.accessToken) {
         consola.error('Insufficient information to create a project.');
+        consola.info('This command requires a combination of store hash and access token.');
         consola.info(
-          'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+          'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
         );
         process.exit(1);
 
@@ -122,6 +124,8 @@ const create = new Command('create')
       consola.start('Writing project UUID to .bigcommerce/project.json...');
       config.set('projectUuid', data.uuid);
       config.set('framework', 'catalyst');
+      config.set('storeHash', options.storeHash);
+      config.set('accessToken', options.accessToken);
       consola.success('Project UUID written to .bigcommerce/project.json.');
 
       process.exit(0);
@@ -138,14 +142,14 @@ export const link = new Command('link')
   .addOption(
     new Option(
       '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Can also be set via the CATALYST_STORE_HASH environment variable.',
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+      'BigCommerce access token. Can be found after creating a store-level API account. Can also be set via the CATALYST_ACCESS_TOKEN environment variable.',
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -154,7 +158,7 @@ export const link = new Command('link')
   )
   .option(
     '--project-uuid <uuid>',
-    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
+    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects. Can also be set via the CATALYST_PROJECT_UUID environment variable.',
   )
   .option(
     '--root-dir <path>',
@@ -165,10 +169,19 @@ export const link = new Command('link')
     try {
       const config = getProjectConfig(options.rootDir);
 
-      const writeProjectConfig = (uuid: string) => {
+      const writeProjectConfig = (
+        uuid: string,
+        opts?: { storeHash?: string; accessToken?: string },
+      ) => {
         consola.start('Writing project UUID to .bigcommerce/project.json...');
         config.set('projectUuid', uuid);
         config.set('framework', 'catalyst');
+        if (opts?.storeHash !== undefined) {
+          config.set('storeHash', opts.storeHash);
+        }
+        if (opts?.accessToken !== undefined) {
+          config.set('accessToken', opts.accessToken);
+        }
         consola.success('Project UUID written to .bigcommerce/project.json.');
       };
 
@@ -230,14 +243,24 @@ export const link = new Command('link')
           consola.success(`Project "${data.name}" created successfully.`);
         }
 
-        writeProjectConfig(projectUuid);
+        writeProjectConfig(projectUuid, {
+          storeHash: options.storeHash,
+          accessToken: options.accessToken,
+        });
 
         process.exit(0);
       }
 
       consola.error('Insufficient information to link a project.');
-      consola.info('Provide a project UUID with --project-uuid, or');
-      consola.info('Provide both --store-hash and --access-token to fetch and select a project.');
+      consola.info(
+        'This command requires either a project UUID or a combination of store hash and access token.',
+      );
+      consola.info(
+        'Project UUID: use the --project-uuid flag or the CATALYST_PROJECT_UUID environment variable.',
+      );
+      consola.info(
+        'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
+      );
       process.exit(1);
     } catch (error) {
       consola.error(error instanceof Error ? error.message : error);
