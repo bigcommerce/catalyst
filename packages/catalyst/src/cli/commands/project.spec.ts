@@ -141,7 +141,10 @@ describe('project create', () => {
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to create a project.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+      'This command requires a combination of store hash and access token.',
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -212,7 +215,10 @@ describe('project list', () => {
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to list projects.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+      'This command requires a combination of store hash and access token.',
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -466,9 +472,14 @@ describe('project link', () => {
     expect(consola.start).not.toHaveBeenCalled();
     expect(consola.success).not.toHaveBeenCalled();
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to link a project.');
-    expect(consola.info).toHaveBeenCalledWith('Provide a project UUID with --project-uuid, or');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token to fetch and select a project.',
+      'This command requires either a project UUID or a combination of store hash and access token.',
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      'Project UUID: use the --project-uuid flag or the CATALYST_PROJECT_UUID environment variable.',
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      'Store hash and access token: each can be set via its flag (--store-hash, --access-token) or the corresponding environment variable (CATALYST_STORE_HASH, CATALYST_ACCESS_TOKEN).',
     );
 
     expect(exitMock).toHaveBeenCalledWith(1);
