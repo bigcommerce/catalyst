@@ -144,8 +144,7 @@ export function ProductGallery({
     };
 
     const reloadAfterPointerUp = (): void => {
-      // @ts-expect-error - Embla types expect callback params but work without them
-      carouselApi.off('pointerUp', reloadAfterPointerUp);
+      carouselApi.off('pointerup', reloadAfterPointerUp);
       reloadEmbla();
     };
 
@@ -155,8 +154,7 @@ export function ProductGallery({
       const boundsActive = engine.limit.pastMaxBound(engine.target.get());
 
       engine.scrollBounds.toggleActive(boundsActive);
-      // @ts-expect-error - Embla types expect callback params but work without them
-      carouselApi.on('pointerUp', reloadAfterPointerUp);
+      carouselApi.on('pointerup', reloadAfterPointerUp);
     } else {
       reloadEmbla();
     }
@@ -171,7 +169,6 @@ export function ProductGallery({
       setLoadingStatus(t('loadingMoreImages'));
 
       startTransition(async () => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const result = await loadMoreAction(productId, pageInfo.endCursor!);
 
         if (!result.pageInfo.hasNextPage) {
