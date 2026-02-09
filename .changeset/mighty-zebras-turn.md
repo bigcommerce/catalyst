@@ -1,8 +1,8 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor
 ---
 
-Add pagination support for the product gallery. When a product has more images than the initial page load, new images will load as batches once the user reaches the end of the existing thumbnails.
+Add pagination support for the product gallery. When a product has more images than the initial page load, new images will load as batches once the user reaches the end of the existing thumbnails. Thumbnail images now will display in horizontal direction in all viewport sizes.
 
 ## Migration
 
