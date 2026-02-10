@@ -95,7 +95,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--secret <secrets...>' }),
+      expect.objectContaining({ flags: '--secret <value>' }),
       expect.objectContaining({ flags: '--dry-run' }),
     ]),
   );

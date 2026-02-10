@@ -357,9 +357,11 @@ export const deploy = new Command('deploy')
   )
   .addOption(
     new Option(
-      '--secret <secrets...>',
-      'Secrets to set for the deployment. Format: SECRET_1=FOO SECRET_2=BAR',
-    ),
+      '--secret <value>',
+      'Secret to set for the deployment (repeatable). Format: --secret KEY=VALUE',
+    ).argParser((value: string, previous: string[] = []) => {
+      return previous.concat([value]);
+    }),
   )
   .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
 
