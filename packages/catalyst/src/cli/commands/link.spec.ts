@@ -312,18 +312,21 @@ test('errors when no projectUuid, storeHash, or accessToken are provided', async
   const savedCatalystStoreHash = process.env.CATALYST_STORE_HASH;
   const savedCatalystAccessToken = process.env.CATALYST_ACCESS_TOKEN;
   const savedCatalystProjectUuid = process.env.CATALYST_PROJECT_UUID;
+
   delete process.env.CATALYST_STORE_HASH;
   delete process.env.CATALYST_ACCESS_TOKEN;
   delete process.env.CATALYST_PROJECT_UUID;
 
   const projectConfig = getProjectConfig(tmpDir);
+
   projectConfig.delete('storeHash');
   projectConfig.delete('accessToken');
   projectConfig.delete('projectUuid');
 
   await program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]);
 
-  if (savedCatalystStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedCatalystStoreHash;
+  if (savedCatalystStoreHash !== undefined)
+    process.env.CATALYST_STORE_HASH = savedCatalystStoreHash;
   if (savedCatalystAccessToken !== undefined)
     process.env.CATALYST_ACCESS_TOKEN = savedCatalystAccessToken;
   if (savedCatalystProjectUuid !== undefined)

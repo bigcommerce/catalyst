@@ -118,12 +118,7 @@ const create = new Command('create')
         type: 'text',
       });
 
-      const data = await createProject(
-        newProjectName,
-        storeHash,
-        accessToken,
-        options.apiHost,
-      );
+      const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
 
       consola.success(`Project "${data.name}" created successfully.`);
 
@@ -182,12 +177,15 @@ export const link = new Command('link')
         consola.start('Writing project UUID to .bigcommerce/project.json...');
         config.set('projectUuid', uuid);
         config.set('framework', 'catalyst');
+
         if (opts?.storeHash !== undefined) {
           config.set('storeHash', opts.storeHash);
         }
+
         if (opts?.accessToken !== undefined) {
           config.set('accessToken', opts.accessToken);
         }
+
         consola.success('Project UUID written to .bigcommerce/project.json.');
       };
 
@@ -236,12 +234,7 @@ export const link = new Command('link')
             type: 'text',
           });
 
-          const data = await createProject(
-            newProjectName,
-            storeHash,
-            accessToken,
-            options.apiHost,
-          );
+          const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
 
           projectUuid = data.uuid;
 

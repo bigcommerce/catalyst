@@ -9,10 +9,12 @@ import { program } from './program';
 const envFileIndex = process.argv.findIndex(
   (arg) => arg === '--env-file' || arg.startsWith('--env-file='),
 );
+
 if (envFileIndex !== -1) {
   const arg = process.argv[envFileIndex];
   const path =
     arg === '--env-file' ? process.argv[envFileIndex + 1] : arg.slice('--env-file='.length);
+
   if (path) {
     config({ path: resolve(process.cwd(), path), override: true });
   }

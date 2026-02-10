@@ -1,11 +1,22 @@
 import { http, HttpResponse } from 'msw';
 import { mkdir, realpath, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockInstance, test, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  MockInstance,
+  test,
+  vi,
+} from 'vitest';
 
 import { handlers } from '../../tests/mocks/handlers';
 import { server } from '../../tests/mocks/node';
 import { textHistory } from '../../tests/mocks/spinner';
+
 import { consola } from './lib/logger';
 import { mkTempDir } from './lib/mk-temp-dir';
 import { program } from './program';
@@ -53,7 +64,9 @@ async function writeProjectJson(overrides: {
   accessToken?: string;
 }) {
   const path = join(tmpDir, '.bigcommerce', 'project.json');
+
   await mkdir(dirname(path), { recursive: true });
+
   const defaults = {
     projectUuid: projectUuidFromProjectJson,
     framework: 'catalyst' as const,
@@ -61,6 +74,7 @@ async function writeProjectJson(overrides: {
     accessToken: accessTokenFromProjectJson,
     telemetry: { enabled: true, anonymousId: 'test-id' },
   };
+
   await writeFile(path, JSON.stringify({ ...defaults, ...overrides }));
 }
 
@@ -74,7 +88,9 @@ function useCaptureHandlers(captured: {
       'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/uploads',
       ({ request, params }) => {
         captured.storeHash = params.storeHash as string;
-        captured.accessToken = request.headers.get('X-Auth-Token') ?? request.headers.get('x-auth-token') ?? '';
+        captured.accessToken =
+          request.headers.get('X-Auth-Token') ?? request.headers.get('x-auth-token') ?? '';
+
         return HttpResponse.json({
           data: {
             upload_url: 'https://mock-upload-url.com',
@@ -88,10 +104,15 @@ function useCaptureHandlers(captured: {
     http.post(
       'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
       async ({ request, params }) => {
-        captured.storeHash = (params.storeHash as string) || new URL(request.url).pathname.split('/')[2] || '';
+        captured.storeHash =
+          (params.storeHash as string) || new URL(request.url).pathname.split('/')[2] || '';
+
         const body = (await request.json()) as { project_uuid?: string };
+
         captured.projectUuid = body.project_uuid ?? '';
-        captured.accessToken = request.headers.get('X-Auth-Token') ?? request.headers.get('x-auth-token') ?? '';
+        captured.accessToken =
+          request.headers.get('X-Auth-Token') ?? request.headers.get('x-auth-token') ?? '';
+
         return deploymentResponse();
       },
     ),
@@ -108,6 +129,7 @@ beforeAll(async () => {
 
   // Minimal dist so deploy's generateBundleZip() passes; we only assert on config → request values.
   const distDir = join(tmpDir, '.bigcommerce', 'dist');
+
   await mkdir(distDir, { recursive: true });
   await writeFile(join(distDir, 'worker.js'), '');
   await mkdir(join(distDir, 'assets'), { recursive: true });
@@ -142,6 +164,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_PROJECT_UUID = projectUuidFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync([
@@ -164,6 +187,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_PROJECT_UUID = projectUuidFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -179,6 +203,7 @@ describe('config resolution priority', () => {
       });
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -193,6 +218,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_STORE_HASH = storeHashFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync([
@@ -220,6 +246,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_PROJECT_UUID = projectUuidFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -235,6 +262,7 @@ describe('config resolution priority', () => {
       });
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -251,6 +279,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_PROJECT_UUID = projectUuidFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync([
@@ -279,6 +308,7 @@ describe('config resolution priority', () => {
       process.env.CATALYST_PROJECT_UUID = projectUuidFromEnv;
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -294,6 +324,7 @@ describe('config resolution priority', () => {
       });
 
       const captured = { storeHash: '', projectUuid: '', accessToken: '' };
+
       useCaptureHandlers(captured);
 
       await program.parseAsync(['node', 'catalyst', 'deploy']);

@@ -135,6 +135,7 @@ describe('project create', () => {
     delete process.env.CATALYST_ACCESS_TOKEN;
 
     const projectConfig = getProjectConfig(tmpDir);
+
     projectConfig.delete('storeHash');
     projectConfig.delete('accessToken');
 
@@ -213,6 +214,7 @@ describe('project list', () => {
     delete process.env.CATALYST_ACCESS_TOKEN;
 
     const projectConfig = getProjectConfig(tmpDir);
+
     projectConfig.delete('storeHash');
     projectConfig.delete('accessToken');
 
@@ -478,11 +480,13 @@ describe('project link', () => {
     const savedStoreHash = process.env.CATALYST_STORE_HASH;
     const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
     const savedCatalystProjectUuid = process.env.CATALYST_PROJECT_UUID;
+
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
     delete process.env.CATALYST_PROJECT_UUID;
 
     const projectConfig = getProjectConfig(tmpDir);
+
     projectConfig.delete('storeHash');
     projectConfig.delete('accessToken');
     projectConfig.delete('projectUuid');
@@ -510,4 +514,3 @@ describe('project link', () => {
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 });
-
