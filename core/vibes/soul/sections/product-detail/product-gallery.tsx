@@ -162,14 +162,16 @@ export function ProductGallery({
 
   const loadMore = useCallback(
     (thumbsApi: EmblaCarouselType) => {
-      if (!loadMoreAction || !productId || !pageInfo?.endCursor || isLoading) return;
+      const endCursor = pageInfo?.endCursor;
+
+      if (!loadMoreAction || !productId || !endCursor || isLoading) return;
 
       listenForScrollRef.current = false;
       setIsLoading(true);
       setLoadingStatus(t('loadingMoreImages'));
 
       startTransition(async () => {
-        const result = await loadMoreAction(productId, pageInfo.endCursor!);
+        const result = await loadMoreAction(productId, endCursor);
 
         if (!result.pageInfo.hasNextPage) {
           setHasMoreToLoad(false);
