@@ -87,6 +87,7 @@ function useCaptureHandlers(captured: {
     http.post(
       'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/uploads',
       ({ request, params }) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         captured.storeHash = params.storeHash as string;
         captured.accessToken =
           request.headers.get('X-Auth-Token') ?? request.headers.get('x-auth-token') ?? '';
@@ -105,8 +106,10 @@ function useCaptureHandlers(captured: {
       'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
       async ({ request, params }) => {
         captured.storeHash =
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           (params.storeHash as string) || new URL(request.url).pathname.split('/')[2] || '';
 
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         const body = (await request.json()) as { project_uuid?: string };
 
         captured.projectUuid = body.project_uuid ?? '';
