@@ -127,21 +127,21 @@ describe('project create', () => {
   });
 
   test('with insufficient credentials exits with error', async () => {
-    // Unset env so Commander doesn't pick up BIGCOMMERCE_* and trigger the create flow (which would prompt for name)
-    const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
-    const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    // Unset env so Commander doesn't pick up CATALYST_* and trigger the create flow (which would prompt for name)
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
-    delete process.env.BIGCOMMERCE_STORE_HASH;
-    delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
 
     await program.parseAsync(['node', 'catalyst', 'project', 'create', '--root-dir', tmpDir]);
 
-    if (savedStoreHash !== undefined) process.env.BIGCOMMERCE_STORE_HASH = savedStoreHash;
-    if (savedAccessToken !== undefined) process.env.BIGCOMMERCE_ACCESS_TOKEN = savedAccessToken;
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to create a project.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -199,20 +199,20 @@ describe('project list', () => {
   });
 
   test('with insufficient credentials exits with error', async () => {
-    const savedStoreHash = process.env.BIGCOMMERCE_STORE_HASH;
-    const savedAccessToken = process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
-    delete process.env.BIGCOMMERCE_STORE_HASH;
-    delete process.env.BIGCOMMERCE_ACCESS_TOKEN;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
 
     await program.parseAsync(['node', 'catalyst', 'project', 'list']);
 
-    if (savedStoreHash !== undefined) process.env.BIGCOMMERCE_STORE_HASH = savedStoreHash;
-    if (savedAccessToken !== undefined) process.env.BIGCOMMERCE_ACCESS_TOKEN = savedAccessToken;
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to list projects.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
