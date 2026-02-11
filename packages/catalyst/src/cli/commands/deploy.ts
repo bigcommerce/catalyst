@@ -452,12 +452,7 @@ export const deploy = new Command('deploy')
         environmentVariables,
       );
 
-      await getDeploymentStatus(
-        deploymentUuid,
-        storeHash,
-        accessToken,
-        options.apiHost,
-      );
+      await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
     } catch (error) {
       consola.error(error);
       process.exit(1);
