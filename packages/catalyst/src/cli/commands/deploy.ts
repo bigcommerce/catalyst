@@ -364,7 +364,10 @@ export const deploy = new Command('deploy')
     ),
   )
   .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
-
+  .option(
+    '--prebuilt',
+    'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
+  )
   .action(async (options) => {
     try {
       const config = getProjectConfig();
@@ -379,7 +382,30 @@ export const deploy = new Command('deploy')
         );
       }
 
-      await buildCatalystProject(projectUuid);
+      if (options.prebuilt) {
+        const distDir = join(process.cwd(), '.bigcommerce', 'dist');
+
+        try {
+          await access(distDir);
+        } catch {
+          throw new Error(
+            'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+          );
+        }
+
+        const contents = await readdir(distDir);
+
+        if (contents.length === 0) {
+          throw new Error(
+            'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+          );
+        }
+
+        consola.info('Using existing build output (--prebuilt).');
+      } else {
+        await buildCatalystProject(projectUuid);
+      }
+
       await generateBundleZip();
 
       if (options.dryRun) {
