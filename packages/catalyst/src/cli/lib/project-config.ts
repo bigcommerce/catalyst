@@ -4,6 +4,8 @@ import { join } from 'path';
 export interface ProjectConfigSchema {
   projectUuid: string;
   framework: 'catalyst' | 'nextjs';
+  storeHash?: string;
+  accessToken?: string;
   telemetry: {
     enabled: boolean;
     anonymousId: string;
@@ -22,6 +24,8 @@ export function getProjectConfig(rootDir = process.cwd()) {
         enum: ['catalyst', 'nextjs'],
         default: 'nextjs',
       },
+      storeHash: { type: 'string' },
+      accessToken: { type: 'string' },
       telemetry: {
         type: 'object',
         properties: {
