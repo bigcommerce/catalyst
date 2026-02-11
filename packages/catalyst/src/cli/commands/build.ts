@@ -22,7 +22,7 @@ export const build = new Command('build')
     new Option(
       '--project-uuid <uuid>',
       'Project UUID to be included in the deployment configuration.',
-    ).env('BIGCOMMERCE_PROJECT_UUID'),
+    ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
     new Option('--framework <framework>', 'The framework to use for the build.').choices([
