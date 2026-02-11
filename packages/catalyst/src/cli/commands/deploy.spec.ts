@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
-import { mkdir, realpath, stat, writeFile } from 'node:fs/promises';
+import { mkdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
   afterAll,
@@ -21,6 +21,7 @@ import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { program } from '../program';
 
+import { buildCatalystProject } from './build';
 import {
   createDeployment,
   deploy,
@@ -102,6 +103,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
       expect.objectContaining({ flags: '--secret <secrets...>' }),
       expect.objectContaining({ flags: '--dry-run' }),
+      expect.objectContaining({ flags: '--prebuilt' }),
     ]),
   );
 });
@@ -332,4 +334,97 @@ test('reads from env options', () => {
   expect(() => parseEnvironmentVariables(['foo_bar'])).toThrow(
     'Invalid secret format: foo_bar. Expected format: KEY=VALUE',
   );
+});
+
+describe('--prebuilt flag', () => {
+  test('skips build step when --prebuilt is passed', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(buildCatalystProject).not.toHaveBeenCalled();
+    expect(consola.info).toHaveBeenCalledWith('Using existing build output (--prebuilt).');
+    expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
+  });
+
+  test('fails when dist directory is missing', async () => {
+    const [missingDistDir, missingDistCleanup] = await mkTempDir();
+    const resolvedDir = await realpath(missingDistDir);
+
+    process.chdir(resolvedDir);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+    ]);
+
+    expect(consola.error).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+      }),
+    );
+    expect(exitMock).toHaveBeenCalledWith(1);
+
+    process.chdir(tmpDir);
+    await missingDistCleanup();
+  });
+
+  test('fails when dist directory is empty', async () => {
+    const [emptyDistDir, emptyDistCleanup] = await mkTempDir();
+    const resolvedDir = await realpath(emptyDistDir);
+
+    await mkdir(join(resolvedDir, '.bigcommerce', 'dist'), { recursive: true });
+
+    process.chdir(resolvedDir);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+    ]);
+
+    expect(consola.error).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message:
+          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+      }),
+    );
+    expect(exitMock).toHaveBeenCalledWith(1);
+
+    process.chdir(tmpDir);
+    await rm(join(resolvedDir, '.bigcommerce'), { recursive: true });
+    await emptyDistCleanup();
+  });
 });
