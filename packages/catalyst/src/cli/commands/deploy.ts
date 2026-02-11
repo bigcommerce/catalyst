@@ -9,6 +9,8 @@ import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
 
+import { buildCatalystProject } from './build';
+
 const telemetry = new Telemetry();
 
 const stepsEnum = z.enum([
@@ -377,24 +379,7 @@ export const deploy = new Command('deploy')
         );
       }
 
-      const project = await fetchProject(
-        projectUuid,
-        options.storeHash,
-        options.accessToken,
-        options.apiHost,
-      );
-
-      if (!project) {
-        throw new Error(`Project with UUID ${projectUuid} not found.`);
-      }
-
-      if (process.env.CI !== 'true') {
-        await consola.prompt(`Are you sure you want to deploy to the project: ${project.name}?`, {
-          type: 'confirm',
-          cancel: 'reject',
-        });
-      }
-
+      await buildCatalystProject(projectUuid);
       await generateBundleZip();
 
       if (options.dryRun) {
