@@ -336,18 +336,14 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    )
-      .env('CATALYST_STORE_HASH')
-      .makeOptionMandatory(),
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json when not provided.',
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    )
-      .env('CATALYST_ACCESS_TOKEN')
-      .makeOptionMandatory(),
+      'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json when not provided.',
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -376,8 +372,10 @@ export const deploy = new Command('deploy')
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
 
-      await telemetry.identify(options.storeHash);
+      await telemetry.identify(storeHash);
 
       const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
@@ -423,9 +421,21 @@ export const deploy = new Command('deploy')
         process.exit(0);
       }
 
+      if (!storeHash) {
+        throw new Error(
+          'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
+        );
+      }
+
+      if (!accessToken) {
+        throw new Error(
+          'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
+        );
+      }
+
       const uploadSignature = await generateUploadSignature(
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
       );
 
@@ -436,16 +446,16 @@ export const deploy = new Command('deploy')
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
         environmentVariables,
       );
 
       await getDeploymentStatus(
         deploymentUuid,
-        options.storeHash,
-        options.accessToken,
+        storeHash,
+        accessToken,
         options.apiHost,
       );
     } catch (error) {
