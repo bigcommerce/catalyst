@@ -307,16 +307,12 @@ test('--dry-run skips upload and deployment', async () => {
 
 test('--dry-run uses storeHash and accessToken from .bigcommerce/project.json when not provided', async () => {
   const config = getProjectConfig();
+
   config.set('projectUuid', projectUuid);
   config.set('storeHash', storeHash);
   config.set('accessToken', accessToken);
 
-  await program.parseAsync([
-    'node',
-    'catalyst',
-    'deploy',
-    '--dry-run',
-  ]);
+  await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
 
   expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
   expect(consola.success).toHaveBeenCalledWith(`Bundle created at: ${outputZip}`);
@@ -325,11 +321,13 @@ test('--dry-run uses storeHash and accessToken from .bigcommerce/project.json wh
 
 test('errors when store hash is missing and not in .bigcommerce/project.json', async () => {
   const config = getProjectConfig();
+
   config.set('projectUuid', projectUuid);
   config.set('accessToken', accessToken);
   config.delete('storeHash');
 
   const savedStoreHash = process.env.CATALYST_STORE_HASH;
+
   delete process.env.CATALYST_STORE_HASH;
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
@@ -346,11 +344,13 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
 
 test('errors when access token is missing and not in .bigcommerce/project.json', async () => {
   const config = getProjectConfig();
+
   config.set('projectUuid', projectUuid);
   config.set('storeHash', storeHash);
   config.delete('accessToken');
 
   const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
   delete process.env.CATALYST_ACCESS_TOKEN;
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
