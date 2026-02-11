@@ -333,7 +333,7 @@ export const deploy = new Command('deploy')
       '--store-hash <hash>',
       'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
     )
-      .env('BIGCOMMERCE_STORE_HASH')
+      .env('CATALYST_STORE_HASH')
       .makeOptionMandatory(),
   )
   .addOption(
@@ -341,7 +341,7 @@ export const deploy = new Command('deploy')
       '--access-token <token>',
       'BigCommerce access token. Can be found after creating a store-level API account.',
     )
-      .env('BIGCOMMERCE_ACCESS_TOKEN')
+      .env('CATALYST_ACCESS_TOKEN')
       .makeOptionMandatory(),
   )
   .addOption(
@@ -353,7 +353,7 @@ export const deploy = new Command('deploy')
     new Option(
       '--project-uuid <uuid>',
       'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
-    ).env('BIGCOMMERCE_PROJECT_UUID'),
+    ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
     new Option(
