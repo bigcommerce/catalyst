@@ -11,6 +11,71 @@ import { getWranglerConfig } from '../lib/wrangler-config';
 
 const WRANGLER_VERSION = '4.24.3';
 
+export async function buildCatalystProject(projectUuid: string): Promise<void> {
+  const coreDir = process.cwd();
+  const openNextOutDir = join(coreDir, '.open-next');
+  const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
+
+  const wranglerConfig = getWranglerConfig(projectUuid);
+
+  consola.start('Copying templates...');
+
+  await copyFile(
+    join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
+    join(coreDir, '.bigcommerce', 'open-next.config.ts'),
+  );
+  await writeFile(
+    join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+    JSON.stringify(wranglerConfig, null, 2),
+  );
+
+  consola.success('Templates copied');
+
+  consola.start('Building project...');
+
+  await execa(
+    'pnpm',
+    [
+      'exec',
+      'opennextjs-cloudflare',
+      'build',
+      '--skipWranglerConfigCheck',
+      '--openNextConfigPath',
+      join(coreDir, '.bigcommerce', 'open-next.config.ts'),
+    ],
+    {
+      stdout: ['pipe', 'inherit'],
+      cwd: coreDir,
+    },
+  );
+
+  await execa(
+    'pnpm',
+    [
+      'dlx',
+      `wrangler@${WRANGLER_VERSION}`,
+      'deploy',
+      '--config',
+      join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+      '--keep-vars',
+      '--outdir',
+      bigcommerceDistDir,
+      '--dry-run',
+    ],
+    {
+      stdout: ['pipe', 'inherit'],
+      cwd: coreDir,
+    },
+  );
+
+  consola.success('Project built');
+
+  await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
+    recursive: true,
+    force: true,
+  });
+}
+
 export const build = new Command('build')
   .allowUnknownOption()
   // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
@@ -53,9 +118,6 @@ export const build = new Command('build')
       }
 
       if (framework === 'catalyst') {
-        const openNextOutDir = join(coreDir, '.open-next');
-        const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
-
         const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
         if (!projectUuid) {
@@ -64,69 +126,7 @@ export const build = new Command('build')
           );
         }
 
-        const wranglerConfig = getWranglerConfig(projectUuid);
-
-        consola.start('Copying templates...');
-
-        await copyFile(
-          join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
-          join(coreDir, '.bigcommerce', 'open-next.config.ts'),
-        );
-        await writeFile(
-          join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
-          JSON.stringify(wranglerConfig, null, 2),
-        );
-
-        consola.success('Templates copied');
-
-        consola.start('Building project...');
-
-        await execa(
-          'pnpm',
-          [
-            'exec',
-            'opennextjs-cloudflare',
-            'build',
-            '--skipWranglerConfigCheck',
-            '--openNextConfigPath',
-            join(coreDir, '.bigcommerce', 'open-next.config.ts'),
-          ],
-          {
-            stdout: ['pipe', 'inherit'],
-            cwd: coreDir,
-          },
-        );
-
-        await execa(
-          'pnpm',
-          [
-            'dlx',
-            `wrangler@${WRANGLER_VERSION}`,
-            'deploy',
-            '--config',
-            join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
-            '--keep-vars',
-            '--outdir',
-            bigcommerceDistDir,
-            '--dry-run',
-          ],
-          {
-            stdout: ['pipe', 'inherit'],
-            cwd: coreDir,
-          },
-        );
-
-        consola.success('Project built');
-
-        await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
-          recursive: true,
-          force: true,
-        });
-
-        await copyFile(
-          join(getModuleCliPath(), 'templates', 'public_headers'),
-          join(coreDir, '.bigcommerce', 'dist', 'assets', '_headers'),
-        );
+        await buildCatalystProject(projectUuid);
       }
     } catch (error) {
       consola.error(error);
