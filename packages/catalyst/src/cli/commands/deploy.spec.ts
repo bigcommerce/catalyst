@@ -33,6 +33,11 @@ import {
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
+vi.mock('./build', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('./build')>();
+
+  return { ...actual, buildCatalystProject: vi.fn() };
+});
 
 let exitMock: MockInstance;
 
