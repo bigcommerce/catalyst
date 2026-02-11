@@ -178,10 +178,12 @@ export const link = new Command('link')
         consola.start('Writing project UUID to .bigcommerce/project.json...');
         config.set('projectUuid', uuid);
         config.set('framework', 'catalyst');
+
         if (credentials) {
           config.set('storeHash', credentials.storeHash);
           config.set('accessToken', credentials.accessToken);
         }
+
         consola.success('Project UUID written to .bigcommerce/project.json.');
       };
 
