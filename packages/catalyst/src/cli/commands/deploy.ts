@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { getIgnitionErrorMessage } from '../lib/ignition-errors';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
@@ -276,7 +277,9 @@ export const getDeploymentStatus = async (
         const data = DeploymentStatusSchema.parse(json);
 
         if (data.error) {
-          throw new Error(`Deployment failed with error code: ${data.error.code}`);
+          throw new Error(
+            `Deployment failed (error code ${data.error.code}): ${getIgnitionErrorMessage(data.error.code)}`,
+          );
         }
 
         if (data.event && STEPS[data.event.step] !== spinner.text) {
