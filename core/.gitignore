@@ -54,3 +54,5 @@ build-config.json
 # OpenNext
 .open-next
 .wrangler
+
+.bigcommerce
