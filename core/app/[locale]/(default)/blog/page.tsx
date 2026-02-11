@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       blog?.description && blog.description.length > 150
         ? `${blog.description.substring(0, 150)}...`
         : blog?.description,
-    ...(blog?.path && { alternates: getMetadataAlternates({ path: blog.path, locale }) }),
+    ...(blog?.path && { alternates: await getMetadataAlternates({ path: blog.path, locale }) }),
   };
 }
 

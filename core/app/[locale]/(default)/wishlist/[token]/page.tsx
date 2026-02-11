@@ -74,7 +74,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
   return {
     title: wishlist?.name ?? t('title'),
-    alternates: getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
+    alternates: await getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
   };
 }
 

@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title') || 'Gift certificates',
-    alternates: getMetadataAlternates({ path: '/gift-certificates', locale }),
+    alternates: await getMetadataAlternates({ path: '/gift-certificates', locale }),
   };
 }
 

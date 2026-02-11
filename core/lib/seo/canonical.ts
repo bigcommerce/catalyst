@@ -1,4 +1,8 @@
-import { buildConfig } from '~/build-config/reader';
+import { cache } from 'react';
+
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { defaultLocale, locales } from '~/i18n/locales';
 
 interface CanonicalUrlOptions {
@@ -29,10 +33,37 @@ interface CanonicalUrlOptions {
  * @param {CanonicalUrlOptions} options - The options for generating canonical URLs
  * @returns {object} The metadata alternates object with canonical URL and optional language alternates
  */
-export function getMetadataAlternates(options: CanonicalUrlOptions) {
+const VanityUrlQuery = graphql(`
+  query VanityUrlQuery {
+    site {
+      settings {
+        url {
+          vanityUrl
+        }
+      }
+    }
+  }
+`);
+
+const getVanityUrl = cache(async (): Promise<string> => {
+  const { data } = await client.fetch({
+    document: VanityUrlQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  const vanityUrl = data.site.settings?.url.vanityUrl;
+
+  if (!vanityUrl) {
+    throw new Error('Vanity URL not found in site settings');
+  }
+
+  return vanityUrl.replace(/\/$/, '');
+});
+
+export async function getMetadataAlternates(options: CanonicalUrlOptions) {
   const { path, locale, includeAlternates = true } = options;
 
-  const vanityUrl = buildConfig.get('urls').vanityUrl.replace(/\/$/, '');
+  const vanityUrl = await getVanityUrl();
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
 
   const canonical = buildLocalizedUrl(vanityUrl, normalizedPath, locale);

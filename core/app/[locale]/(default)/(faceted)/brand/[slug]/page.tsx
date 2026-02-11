@@ -85,7 +85,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || brand.name,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    alternates: getMetadataAlternates({ path: brand.path, locale }),
+    alternates: await getMetadataAlternates({ path: brand.path, locale }),
   };
 }
 

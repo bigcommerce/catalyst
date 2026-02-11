@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   return {
-    alternates: getMetadataAlternates({ path: '/', locale }),
+    alternates: await getMetadataAlternates({ path: '/', locale }),
   };
 }
 

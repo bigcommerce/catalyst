@@ -36,7 +36,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: pageTitle || blogPost.name,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    ...(blogPost.path && { alternates: getMetadataAlternates({ path: blogPost.path, locale }) }),
+    ...(blogPost.path && {
+      alternates: await getMetadataAlternates({ path: blogPost.path, locale }),
+    }),
   };
 }
 

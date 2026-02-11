@@ -13,7 +13,6 @@ import '../../globals.css';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
-import { buildConfig } from '~/build-config/reader';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -31,6 +30,9 @@ const RootLayoutMetadataQuery = graphql(
     query RootLayoutMetadataQuery {
       site {
         settings {
+          url {
+            vanityUrl
+          }
           privacy {
             cookieConsentEnabled
             privacyPolicyUrl
@@ -69,8 +71,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { pageTitle, metaDescription, metaKeywords } = data.site.settings?.seo || {};
 
+  const vanityUrl = data.site.settings?.url.vanityUrl;
+
   return {
-    metadataBase: new URL(buildConfig.get('urls').vanityUrl),
+    metadataBase: vanityUrl ? new URL(vanityUrl) : undefined,
     title: {
       template: `%s - ${storeName}`,
       default: pageTitle || storeName,

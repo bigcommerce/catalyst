@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: t('title'),
-    alternates: getMetadataAlternates({ path: '/compare', locale }),
+    alternates: await getMetadataAlternates({ path: '/compare', locale }),
   };
 }
 
