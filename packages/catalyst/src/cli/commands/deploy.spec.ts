@@ -19,6 +19,7 @@ import { server } from '../../../tests/mocks/node';
 import { textHistory } from '../../../tests/mocks/spinner';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
+import { getProjectConfig } from '../lib/project-config';
 import { program } from '../program';
 
 import { buildCatalystProject } from './build';
@@ -312,6 +313,66 @@ test('--dry-run skips upload and deployment', async () => {
   expect(consola.info).toHaveBeenCalledWith('- Upload bundle.zip');
   expect(consola.info).toHaveBeenCalledWith('- Create deployment');
   expect(exitMock).toHaveBeenCalledWith(0);
+});
+
+test('--dry-run uses storeHash and accessToken from .bigcommerce/project.json when not provided', async () => {
+  const config = getProjectConfig();
+  config.set('projectUuid', projectUuid);
+  config.set('storeHash', storeHash);
+  config.set('accessToken', accessToken);
+
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'deploy',
+    '--dry-run',
+  ]);
+
+  expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
+  expect(consola.success).toHaveBeenCalledWith(`Bundle created at: ${outputZip}`);
+  expect(exitMock).toHaveBeenCalledWith(0);
+});
+
+test('errors when store hash is missing and not in .bigcommerce/project.json', async () => {
+  const config = getProjectConfig();
+  config.set('projectUuid', projectUuid);
+  config.set('accessToken', accessToken);
+  config.delete('storeHash');
+
+  const savedStoreHash = process.env.CATALYST_STORE_HASH;
+  delete process.env.CATALYST_STORE_HASH;
+
+  await program.parseAsync(['node', 'catalyst', 'deploy']);
+
+  if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+
+  expect(consola.error).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: expect.stringContaining('Store hash is required'),
+    }),
+  );
+  expect(exitMock).toHaveBeenCalledWith(1);
+});
+
+test('errors when access token is missing and not in .bigcommerce/project.json', async () => {
+  const config = getProjectConfig();
+  config.set('projectUuid', projectUuid);
+  config.set('storeHash', storeHash);
+  config.delete('accessToken');
+
+  const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+  delete process.env.CATALYST_ACCESS_TOKEN;
+
+  await program.parseAsync(['node', 'catalyst', 'deploy']);
+
+  if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+  expect(consola.error).toHaveBeenCalledWith(
+    expect.objectContaining({
+      message: expect.stringContaining('Access token is required'),
+    }),
+  );
+  expect(exitMock).toHaveBeenCalledWith(1);
 });
 
 test('reads from env options', () => {
