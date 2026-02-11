@@ -122,6 +122,8 @@ describe('project create', () => {
 
     expect(config.get('projectUuid')).toBe('c23f5785-fd99-4a94-9fb3-945551623925');
     expect(config.get('framework')).toBe('catalyst');
+    expect(config.get('storeHash')).toBe(storeHash);
+    expect(config.get('accessToken')).toBe(accessToken);
 
     consolaPromptMock.mockRestore();
   });
@@ -212,7 +214,7 @@ describe('project list', () => {
 
     expect(consola.error).toHaveBeenCalledWith('Insufficient information to list projects.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
+      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN), or run from a project that has been linked with credentials.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -313,6 +315,8 @@ describe('project link', () => {
 
     expect(config.get('projectUuid')).toBe(projectUuid2);
     expect(config.get('framework')).toBe('catalyst');
+    expect(config.get('storeHash')).toBe(storeHash);
+    expect(config.get('accessToken')).toBe(accessToken);
 
     consolaPromptMock.mockRestore();
   });
@@ -368,6 +372,8 @@ describe('project link', () => {
 
     expect(config.get('projectUuid')).toBe(projectUuid3);
     expect(config.get('framework')).toBe('catalyst');
+    expect(config.get('storeHash')).toBe(storeHash);
+    expect(config.get('accessToken')).toBe(accessToken);
 
     consolaPromptMock.mockRestore();
   });

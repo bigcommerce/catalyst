@@ -40,10 +40,12 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   await writeFile(projectJsonPath, JSON.stringify({}));
 
   config.set('projectUuid', projectUuid);
+  config.set('storeHash', 'abc123');
+  config.set('accessToken', 'secret-token');
 
-  const modifiedProjectUuid = config.get('projectUuid');
-
-  expect(modifiedProjectUuid).toBe(projectUuid);
+  expect(config.get('projectUuid')).toBe(projectUuid);
+  expect(config.get('storeHash')).toBe('abc123');
+  expect(config.get('accessToken')).toBe('secret-token');
 });
 
 test('sets default framework to nextjs', async () => {
