@@ -346,6 +346,7 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
 
   expect(consola.error).toHaveBeenCalledWith(
     expect.objectContaining({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
       message: expect.stringContaining('Store hash is required'),
     }),
   );
@@ -369,6 +370,7 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
 
   expect(consola.error).toHaveBeenCalledWith(
     expect.objectContaining({
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
       message: expect.stringContaining('Access token is required'),
     }),
   );
