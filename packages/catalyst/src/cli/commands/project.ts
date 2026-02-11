@@ -13,13 +13,13 @@ const list = new Command('list')
     new Option(
       '--store-hash <hash>',
       'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
       'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -31,7 +31,7 @@ const list = new Command('list')
       if (!options.storeHash || !options.accessToken) {
         consola.error('Insufficient information to list projects.');
         consola.info(
-          'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+          'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
         );
         process.exit(1);
 
@@ -72,13 +72,13 @@ const create = new Command('create')
     new Option(
       '--store-hash <hash>',
       'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
       'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -95,7 +95,7 @@ const create = new Command('create')
       if (!options.storeHash || !options.accessToken) {
         consola.error('Insufficient information to create a project.');
         consola.info(
-          'Provide both --store-hash and --access-token (or set BIGCOMMERCE_STORE_HASH and BIGCOMMERCE_ACCESS_TOKEN).',
+          'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
         );
         process.exit(1);
 
@@ -139,13 +139,13 @@ export const link = new Command('link')
     new Option(
       '--store-hash <hash>',
       'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+    ).env('CATALYST_STORE_HASH'),
   )
   .addOption(
     new Option(
       '--access-token <token>',
       'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+    ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
