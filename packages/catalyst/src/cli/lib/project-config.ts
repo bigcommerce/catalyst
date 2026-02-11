@@ -1,6 +1,10 @@
 import Conf from 'conf';
 import { join } from 'path';
 
+/**
+ * Project config stored in .bigcommerce/project.json.
+ * This is the lowest-priority source; see program.ts for full resolution order.
+ */
 export interface ProjectConfigSchema {
   projectUuid: string;
   framework: 'catalyst' | 'nextjs';

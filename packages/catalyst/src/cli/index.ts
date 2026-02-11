@@ -1,4 +1,5 @@
 #!/usr/bin/env node
-import { program } from './program';
+import { loadEnvFileFromArgv, program } from './program';
 
+loadEnvFileFromArgv(process.argv);
 program.parse(process.argv);
