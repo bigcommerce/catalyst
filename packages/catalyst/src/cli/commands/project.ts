@@ -28,21 +28,25 @@ const list = new Command('list')
   )
   .action(async (options) => {
     try {
-      if (!options.storeHash || !options.accessToken) {
+      const config = getProjectConfig();
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
+
+      if (!storeHash || !accessToken) {
         consola.error('Insufficient information to list projects.');
         consola.info(
-          'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
+          'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN), or run from a project that has been linked with credentials.',
         );
         process.exit(1);
 
         return;
       }
 
-      await telemetry.identify(options.storeHash);
+      await telemetry.identify(storeHash);
 
       consola.start('Fetching projects...');
 
-      const projects = await fetchProjects(options.storeHash, options.accessToken, options.apiHost);
+      const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
 
       consola.success('Projects fetched.');
 
@@ -122,6 +126,8 @@ const create = new Command('create')
       consola.start('Writing project UUID to .bigcommerce/project.json...');
       config.set('projectUuid', data.uuid);
       config.set('framework', 'catalyst');
+      config.set('storeHash', options.storeHash);
+      config.set('accessToken', options.accessToken);
       consola.success('Project UUID written to .bigcommerce/project.json.');
 
       process.exit(0);
@@ -165,10 +171,17 @@ export const link = new Command('link')
     try {
       const config = getProjectConfig(options.rootDir);
 
-      const writeProjectConfig = (uuid: string) => {
+      const writeProjectConfig = (
+        uuid: string,
+        credentials?: { storeHash: string; accessToken: string },
+      ) => {
         consola.start('Writing project UUID to .bigcommerce/project.json...');
         config.set('projectUuid', uuid);
         config.set('framework', 'catalyst');
+        if (credentials) {
+          config.set('storeHash', credentials.storeHash);
+          config.set('accessToken', credentials.accessToken);
+        }
         consola.success('Project UUID written to .bigcommerce/project.json.');
       };
 
@@ -230,7 +243,10 @@ export const link = new Command('link')
           consola.success(`Project "${data.name}" created successfully.`);
         }
 
-        writeProjectConfig(projectUuid);
+        writeProjectConfig(projectUuid, {
+          storeHash: options.storeHash,
+          accessToken: options.accessToken,
+        });
 
         process.exit(0);
       }
