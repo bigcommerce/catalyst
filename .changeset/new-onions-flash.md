@@ -2,23 +2,21 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Add canonical URLs and hreflang alternates for SEO. Pages now set `alternates.canonical` and `alternates.languages` in `generateMetadata` via the new `getMetadataAlternates` helper in `core/lib/seo/canonical.ts`. The default locale uses no path prefix; other locales use `/{locale}/path`. The root locale layout sets `metadataBase` to the configured vanity URL so canonical URLs resolve correctly.
+Add canonical URLs and hreflang alternates for SEO. Pages now set `alternates.canonical` and `alternates.languages` in `generateMetadata` via the new `getMetadataAlternates` helper in `core/lib/seo/canonical.ts`. The helper fetches the vanity URL via GraphQL (`site.settings.url.vanityUrl`) and is cached per request. The default locale uses no path prefix; other locales use `/{locale}/path`. The root locale layout sets `metadataBase` to the configured vanity URL so canonical URLs resolve correctly.
 
 ## Migration steps
 
 ### Step 1: Root layout metadata base
 
-Set `metadataBase` in the root locale layout so canonical URLs resolve to your vanity URL.
+The root locale layout now sets `metadataBase` from the vanity URL fetched via GraphQL. This is already included in the `RootLayoutMetadataQuery`.
 
 Update `core/app/[locale]/layout.tsx`:
 
 ```diff
-  import { Providers } from '~/app/providers';
-+ import { buildConfig } from '~/build-config/reader';
-  import { client } from '~/client';
-  ...
++ const vanityUrl = data.site.settings?.url.vanityUrl;
++
   return {
-+   metadataBase: new URL(buildConfig.get('urls').vanityUrl),
++   metadataBase: vanityUrl ? new URL(vanityUrl) : undefined,
     title: {
 ```
 
@@ -58,7 +56,7 @@ Update `core/app/[locale]/(default)/product/[slug]/page-data.ts` (in the metadat
 
 ### Step 3: Page metadata alternates
 
-Add the `getMetadataAlternates` import and set `alternates` in `generateMetadata` for each page. Ensure `core/lib/seo/canonical.ts` exists (it is included in this release).
+Add the `getMetadataAlternates` import and set `alternates` in `generateMetadata` for each page. The function is async and must be awaited. Ensure `core/lib/seo/canonical.ts` exists (it is included in this release).
 
 Update `core/app/[locale]/(default)/page.tsx` (home):
 
@@ -71,7 +69,7 @@ Update `core/app/[locale]/(default)/page.tsx` (home):
 + export async function generateMetadata({ params }: Props): Promise<Metadata> {
 +   const { locale } = await params;
 +   return {
-+     alternates: getMetadataAlternates({ path: '/', locale }),
++     alternates: await getMetadataAlternates({ path: '/', locale }),
 +   };
 + }
 +
@@ -91,7 +89,7 @@ For entity pages (product, category, brand, blog, blog post, webpage), add the i
       title: pageTitle || brand.name,
       description: metaDescription,
       keywords: metaKeywords ? metaKeywords.split(',') : null,
-+     alternates: getMetadataAlternates({ path: brand.path, locale }),
++     alternates: await getMetadataAlternates({ path: brand.path, locale }),
     };
   }
 ```
@@ -109,7 +107,7 @@ Update `core/app/[locale]/(default)/gift-certificates/page.tsx`:
 
     return {
       title: t('title') || 'Gift certificates',
-+     alternates: getMetadataAlternates({ path: '/gift-certificates', locale }),
++     alternates: await getMetadataAlternates({ path: '/gift-certificates', locale }),
     };
   }
 ```
@@ -121,7 +119,7 @@ Update `core/app/[locale]/(default)/gift-certificates/balance/page.tsx`:
   ...
     return {
       title: t('title') || 'Gift certificates - Check balance',
-+     alternates: getMetadataAlternates({ path: '/gift-certificates/balance', locale }),
++     alternates: await getMetadataAlternates({ path: '/gift-certificates/balance', locale }),
     };
 ```
 
@@ -139,7 +137,7 @@ Add `generateMetadata` to `core/app/[locale]/(default)/gift-certificates/purchas
 +
 +   return {
 +     title: t('Purchase.title'),
-+     alternates: getMetadataAlternates({ path: '/gift-certificates/purchase', locale }),
++     alternates: await getMetadataAlternates({ path: '/gift-certificates/purchase', locale }),
 +   };
 + }
 ```
@@ -161,7 +159,7 @@ Update `core/app/[locale]/(default)/webpages/[id]/contact/page.tsx`:
       title: pageTitle || webpage.title,
       description: metaDescription,
       keywords: metaKeywords ? metaKeywords.split(',') : null,
-+     alternates: getMetadataAlternates({ path: webpage.path, locale }),
++     alternates: await getMetadataAlternates({ path: webpage.path, locale }),
     };
   }
 ```
@@ -178,7 +176,7 @@ Update `core/app/[locale]/(default)/wishlist/[token]/page.tsx`:
     ...
     return {
       title: wishlist?.name ?? t('title'),
-+     alternates: getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
++     alternates: await getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
     };
   }
 ```
@@ -196,7 +194,7 @@ Update `core/app/[locale]/(default)/compare/page.tsx`:
 
     return {
       title: t('title'),
-+     alternates: getMetadataAlternates({ path: '/compare', locale }),
++     alternates: await getMetadataAlternates({ path: '/compare', locale }),
     };
   }
 ```
