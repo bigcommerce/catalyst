@@ -45,7 +45,7 @@ const VanityUrlQuery = graphql(`
   }
 `);
 
-const getVanityUrl = cache(async (): Promise<string> => {
+const getVanityUrl = cache(async () => {
   const { data } = await client.fetch({
     document: VanityUrlQuery,
     fetchOptions: { next: { revalidate } },
@@ -57,43 +57,43 @@ const getVanityUrl = cache(async (): Promise<string> => {
     throw new Error('Vanity URL not found in site settings');
   }
 
-  return vanityUrl.replace(/\/$/, '');
+  return vanityUrl;
 });
 
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {
   const { path, locale, includeAlternates = true } = options;
 
-  const vanityUrl = await getVanityUrl();
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const baseUrl = await getVanityUrl();
 
-  const canonical = buildLocalizedUrl(vanityUrl, normalizedPath, locale);
+  const canonical = buildLocalizedUrl(baseUrl, path, locale);
 
   if (!includeAlternates) {
     return { canonical };
   }
 
   const languages = locales.reduce<Record<string, string>>((acc, loc) => {
-    acc[loc] = buildLocalizedUrl(vanityUrl, normalizedPath, loc);
+    acc[loc] = buildLocalizedUrl(baseUrl, path, loc);
 
     return acc;
   }, {});
 
-  languages['x-default'] = buildLocalizedUrl(vanityUrl, normalizedPath, defaultLocale);
+  languages['x-default'] = buildLocalizedUrl(baseUrl, path, defaultLocale);
 
   return { canonical, languages };
 }
 
-function buildLocalizedUrl(baseUrl: string, path: string, locale: string): string {
-  const isDefault = locale === defaultLocale;
+function buildLocalizedUrl(baseUrl: string, pathname: string, locale: string): string {
   const trailingSlash = process.env.TRAILING_SLASH !== 'false';
 
-  let localizedPath = isDefault ? path : `/${locale}${path}`;
+  const url = new URL(pathname, baseUrl);
 
-  if (trailingSlash && !localizedPath.endsWith('/')) {
-    localizedPath = `${localizedPath}/`;
-  } else if (!trailingSlash && localizedPath.endsWith('/') && localizedPath !== '/') {
-    localizedPath = localizedPath.slice(0, -1);
+  url.pathname = locale === defaultLocale ? url.pathname : `/${locale}${url.pathname}`;
+
+  if (trailingSlash && !url.pathname.endsWith('/')) {
+    url.pathname += '/';
+  } else if (!trailingSlash && url.pathname.endsWith('/') && url.pathname !== '/') {
+    url.pathname = url.pathname.slice(0, -1);
   }
 
-  return `${baseUrl}${localizedPath}`;
+  return url.href;
 }
