@@ -276,7 +276,9 @@ describe('deployment and event streaming', () => {
 
     await expect(
       getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost),
-    ).rejects.toThrow('Deployment failed with error code: 30');
+    ).rejects.toThrow(
+      'Deployment failed (error code 30): Your bundle could not be extracted. This may mean your build output is too large (max 64 MB compressed / 512 MB uncompressed) or the archive is corrupted. Try reducing your build size or rebuilding your project and deploying again.',
+    );
 
     expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
 
