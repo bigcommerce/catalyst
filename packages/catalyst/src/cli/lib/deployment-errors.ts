@@ -10,7 +10,7 @@ const ERROR_MESSAGES: Record<number, string> = {
   60: "Your code was deployed, but we couldn't determine your deployment URL. Please try deploying again. If the issue persists, contact support.",
 };
 
-export function getIgnitionErrorMessage(code: number): string {
+export function getDeploymentErrorMessage(code: number): string {
   return (
     ERROR_MESSAGES[code] ??
     `Deployment failed with an unexpected error (code: ${code}). Please try again. If the issue persists, contact support.`
