@@ -3,7 +3,7 @@ import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { consola } from '../lib/logger';
+import { withErrorHandler } from '../lib/error-handler';
 import { getProjectConfig } from '../lib/project-config';
 
 export const start = new Command('start')
@@ -20,8 +20,8 @@ export const start = new Command('start')
       'nextjs',
     ]),
   )
-  .action(async (startOptions, options) => {
-    try {
+  .action(
+    withErrorHandler('start', async (startOptions, options) => {
       const config = getProjectConfig();
       const framework = options.framework ?? config.get('framework');
 
@@ -55,7 +55,5 @@ export const start = new Command('start')
           cwd: process.cwd(),
         },
       );
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
-    }
-  });
+    }),
+  );

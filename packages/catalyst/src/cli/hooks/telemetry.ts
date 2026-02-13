@@ -1,8 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 
-import { Telemetry } from '../lib/telemetry';
-
-const telemetry = new Telemetry();
+import { getTelemetry } from '../lib/telemetry';
 
 const allowlistArguments = ['--keep-temp-dir', '--api-host', '--project-uuid'];
 
@@ -36,6 +34,7 @@ function parseArguments(args: string[]) {
 }
 
 export const telemetryPreHook = async (command: Command) => {
+  const telemetry = getTelemetry();
   const [commandName, ...args] = command.args;
 
   // Return the await to get a proper stack trace.
@@ -46,5 +45,8 @@ export const telemetryPreHook = async (command: Command) => {
 };
 
 export const telemetryPostHook = async () => {
+  const telemetry = getTelemetry();
+
+  await telemetry.track('command_completed', { durationMs: telemetry.durationMs() });
   await telemetry.analytics.closeAndFlush();
 };

@@ -6,13 +6,12 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
+import { withErrorHandler } from '../lib/error-handler';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
-import { Telemetry } from '../lib/telemetry';
+import { getTelemetry } from '../lib/telemetry';
 
 import { buildCatalystProject } from './build';
-
-const telemetry = new Telemetry();
 
 const stepsEnum = z.enum([
   'initializing',
@@ -119,6 +118,7 @@ export const generateUploadSignature = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
       body: JSON.stringify({}),
     },
@@ -195,6 +195,7 @@ export const createDeployment = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
       body: JSON.stringify({
         project_uuid: projectUuid,
@@ -234,6 +235,7 @@ export const getDeploymentStatus = async (
         'X-Auth-Token': accessToken,
         Accept: 'text/event-stream',
         Connection: 'keep-alive',
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
     },
   );
@@ -317,6 +319,7 @@ export const fetchProject = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
     },
   );
@@ -369,11 +372,12 @@ export const deploy = new Command('deploy')
     '--prebuilt',
     'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
   )
-  .action(async (options) => {
-    try {
+  .action(
+    withErrorHandler('deploy', async (options) => {
       const config = getProjectConfig();
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
+      const telemetry = getTelemetry();
       const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
       if (!projectUuid) {
@@ -452,8 +456,5 @@ export const deploy = new Command('deploy')
       );
 
       await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
-    } catch (error) {
-      consola.error(error);
-      process.exit(1);
-    }
-  });
+    }),
+  );

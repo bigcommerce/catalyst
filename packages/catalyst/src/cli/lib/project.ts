@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { getTelemetry } from './telemetry';
+
 const fetchProjectsSchema = z.object({
   data: z.array(
     z.object({
@@ -25,6 +27,7 @@ export async function fetchProjects(
       method: 'GET',
       headers: {
         'X-Auth-Token': accessToken,
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
     },
   );
@@ -76,6 +79,7 @@ export async function createProject(
         'X-Auth-Token': accessToken,
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        'X-Correlation-Id': getTelemetry().traceId(),
       },
       body: JSON.stringify({ name }),
     },

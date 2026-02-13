@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { copyFile, cp, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { withErrorHandler } from '../lib/error-handler';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
@@ -95,10 +96,9 @@ export const build = new Command('build')
       'catalyst',
     ]),
   )
-  .action(async (nextBuildOptions, options) => {
-    const coreDir = process.cwd();
-
-    try {
+  .action(
+    withErrorHandler('build', async (nextBuildOptions, options) => {
+      const coreDir = process.cwd();
       const config = getProjectConfig();
       const framework = options.framework ?? config.get('framework');
 
@@ -128,8 +128,5 @@ export const build = new Command('build')
 
         await buildCatalystProject(projectUuid);
       }
-    } catch (error) {
-      consola.error(error);
-      process.exit(1);
-    }
-  });
+    }),
+  );

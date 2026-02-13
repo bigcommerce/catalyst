@@ -1,11 +1,10 @@
 import { Command, Option } from 'commander';
 
+import { withErrorHandler } from '../lib/error-handler';
 import { consola } from '../lib/logger';
 import { createProject, fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
-import { Telemetry } from '../lib/telemetry';
-
-const telemetry = new Telemetry();
+import { getTelemetry } from '../lib/telemetry';
 
 const list = new Command('list')
   .description('List BigCommerce infrastructure projects for your store.')
@@ -26,8 +25,8 @@ const list = new Command('list')
       .env('BIGCOMMERCE_API_HOST')
       .default('api.bigcommerce.com'),
   )
-  .action(async (options) => {
-    try {
+  .action(
+    withErrorHandler('project list', async (options) => {
       const config = getProjectConfig();
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
@@ -42,7 +41,7 @@ const list = new Command('list')
         return;
       }
 
-      await telemetry.identify(storeHash);
+      await getTelemetry().identify(storeHash);
 
       consola.start('Fetching projects...');
 
@@ -62,11 +61,8 @@ const list = new Command('list')
       });
 
       process.exit(0);
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
-      process.exit(1);
-    }
-  });
+    }),
+  );
 
 const create = new Command('create')
   .description(
@@ -94,8 +90,8 @@ const create = new Command('create')
     'Path to the root directory of your Catalyst project (default: current working directory).',
     process.cwd(),
   )
-  .action(async (options) => {
-    try {
+  .action(
+    withErrorHandler('project create', async (options) => {
       if (!options.storeHash || !options.accessToken) {
         consola.error('Insufficient information to create a project.');
         consola.info(
@@ -106,7 +102,7 @@ const create = new Command('create')
         return;
       }
 
-      await telemetry.identify(options.storeHash);
+      await getTelemetry().identify(options.storeHash);
 
       const newProjectName = await consola.prompt('Enter a name for the new project:', {
         type: 'text',
@@ -131,11 +127,8 @@ const create = new Command('create')
       consola.success('Project UUID written to .bigcommerce/project.json.');
 
       process.exit(0);
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
-      process.exit(1);
-    }
-  });
+    }),
+  );
 
 export const link = new Command('link')
   .description(
@@ -167,8 +160,8 @@ export const link = new Command('link')
     'Path to the root directory of your Catalyst project (default: current working directory).',
     process.cwd(),
   )
-  .action(async (options) => {
-    try {
+  .action(
+    withErrorHandler('project link', async (options) => {
       const config = getProjectConfig(options.rootDir);
 
       const writeProjectConfig = (
@@ -194,7 +187,7 @@ export const link = new Command('link')
       }
 
       if (options.storeHash && options.accessToken) {
-        await telemetry.identify(options.storeHash);
+        await getTelemetry().identify(options.storeHash);
 
         consola.start('Fetching projects...');
 
@@ -257,11 +250,8 @@ export const link = new Command('link')
       consola.info('Provide a project UUID with --project-uuid, or');
       consola.info('Provide both --store-hash and --access-token to fetch and select a project.');
       process.exit(1);
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
-      process.exit(1);
-    }
-  });
+    }),
+  );
 
 export const project = new Command('project')
   .description('Manage your BigCommerce infrastructure project.')

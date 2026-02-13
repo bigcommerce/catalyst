@@ -442,10 +442,7 @@ describe('--prebuilt flag', () => {
     ]);
 
     expect(consola.error).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message:
-          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-      }),
+      'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
 
@@ -477,10 +474,7 @@ describe('--prebuilt flag', () => {
     ]);
 
     expect(consola.error).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message:
-          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-      }),
+      'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
 

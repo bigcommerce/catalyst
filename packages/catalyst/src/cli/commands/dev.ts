@@ -3,7 +3,7 @@ import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { consola } from '../lib/logger';
+import { withErrorHandler } from '../lib/error-handler';
 
 export const dev = new Command('dev')
   .description('Start the Catalyst development server.')
@@ -15,8 +15,8 @@ export const dev = new Command('dev')
     '[options...]',
     'Next.js `dev` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-dev-options)',
   )
-  .action(async (options) => {
-    try {
+  .action(
+    withErrorHandler('dev', async (options) => {
       const nextBin = join('node_modules', '.bin', 'next');
 
       if (!existsSync(nextBin)) {
@@ -29,8 +29,5 @@ export const dev = new Command('dev')
         stdio: 'inherit',
         cwd: process.cwd(),
       });
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
-      process.exit(1);
-    }
-  });
+    }),
+  );

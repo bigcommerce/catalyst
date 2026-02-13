@@ -31,17 +31,22 @@ beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
 
   vi.mock('../lib/telemetry', () => {
+    const instance = {
+      identify: mockIdentify,
+      isEnabled: vi.fn(() => true),
+      track: vi.fn(),
+      trackError: vi.fn().mockResolvedValue(undefined),
+      traceId: vi.fn().mockReturnValue('test-session-uuid'),
+      durationMs: vi.fn().mockReturnValue(0),
+      analytics: {
+        closeAndFlush: vi.fn().mockResolvedValue(undefined),
+      },
+    };
+
     return {
-      Telemetry: vi.fn().mockImplementation(() => {
-        return {
-          identify: mockIdentify,
-          isEnabled: vi.fn(() => true),
-          track: vi.fn(),
-          analytics: {
-            closeAndFlush: vi.fn(),
-          },
-        };
-      }),
+      Telemetry: vi.fn().mockImplementation(() => instance),
+      getTelemetry: vi.fn(() => instance),
+      resetTelemetry: vi.fn(),
     };
   });
 
