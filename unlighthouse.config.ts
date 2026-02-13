@@ -15,14 +15,7 @@ export default {
     // outliers across all discovered pages (no explicit warm-up step needed).
     samples: 3,
   },
-  puppeteerClusterOptions: {
-    // Limit to one concurrent Lighthouse instance to mitigate hardware-throttling
-    // false positives that previously caused us to disable the performance category.
-    maxConcurrency: 1,
-  },
   lighthouseOptions: {
-    // Performance re-enabled — hardware throttling concerns are mitigated by
-    // maxConcurrency: 1 (no concurrent runs) and samples: 3 (median smoothing).
     onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
     skipAudits: [
       // Disabling `is-crawlable` as it's more relevant for production sites.
