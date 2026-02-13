@@ -4,17 +4,27 @@ import type { UserConfig } from 'unlighthouse';
 export default {
   ci: {
     buildStatic: true,
-    // Disabling the budget so we can audit and fix the issues first
     budget: {
       // "best-practices": 100,
       // "accessibility": 100,
       // "seo": 100,
+      performance: 80,
     },
-  }, 
+  },
+  scanner: {
+    // Run each page multiple times and use the median to absorb cold start
+    // outliers across all discovered pages (no explicit warm-up step needed).
+    samples: 5,
+  },
+  puppeteerClusterOptions: {
+    // Limit to one concurrent Lighthouse instance to mitigate hardware-throttling
+    // false positives that previously caused us to disable the performance category.
+    maxConcurrency: 1,
+  },
   lighthouseOptions: {
-    // Disabling performance tests because lighthouse utilizes hardware throttling. This affects concurrently running tests which might lead to false positives.
-    // The best way to truly measure performance is to use real user metrics – Vercel's Speed Insights is a great tool for that.
-    onlyCategories: ['best-practices', 'accessibility', 'seo'],
+    // Performance re-enabled — hardware throttling concerns are mitigated by
+    // maxConcurrency: 1 (no concurrent runs) and samples: 3 (median smoothing).
+    onlyCategories: ['best-practices', 'accessibility', 'seo', 'performance'],
     skipAudits: [
       // Disabling `is-crawlable` as it's more relevant for production sites.
       'is-crawlable',
@@ -22,6 +32,6 @@ export default {
       'third-party-cookies',
       // Disabling inspector issues as it's only providing third-party cookie issues, which are not relevant for our audits.
       'inspector-issues',
-    ]
-  }
+    ],
+  },
 } satisfies UserConfig;
