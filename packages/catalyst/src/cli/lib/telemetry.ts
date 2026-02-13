@@ -32,10 +32,6 @@ export class Telemetry {
     });
   }
 
-  traceId(): string {
-    return this.sessionId;
-  }
-
   durationMs(): number {
     return Date.now() - this.startTime;
   }
@@ -51,7 +47,6 @@ export class Telemetry {
       properties: {
         ...payload,
         sessionId: this.sessionId,
-        traceId: this.traceId(),
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
@@ -63,18 +58,6 @@ export class Telemetry {
           version: this.projectVersion,
         },
       },
-    });
-  }
-
-  async trackError(commandName: string, error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
-
-    await this.track('error', {
-      commandName,
-      errorMessage,
-      errorStack,
-      durationMs: this.durationMs(),
     });
   }
 
@@ -129,6 +112,8 @@ export class Telemetry {
 
 let telemetryInstance: Telemetry | undefined;
 
+// Singleton so the pre-hook, post-hook, error handler, and command bodies all
+// share one sessionId for correlation. resetTelemetry() is for test isolation.
 export function getTelemetry(): Telemetry {
   telemetryInstance ??= new Telemetry();
 

@@ -35,8 +35,7 @@ beforeAll(async () => {
       identify: mockIdentify,
       isEnabled: vi.fn(() => true),
       track: vi.fn(),
-      trackError: vi.fn().mockResolvedValue(undefined),
-      traceId: vi.fn().mockReturnValue('test-session-uuid'),
+      sessionId: 'test-session-uuid',
       durationMs: vi.fn().mockReturnValue(0),
       analytics: {
         closeAndFlush: vi.fn().mockResolvedValue(undefined),

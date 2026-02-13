@@ -27,7 +27,7 @@ export async function fetchProjects(
       method: 'GET',
       headers: {
         'X-Auth-Token': accessToken,
-        'X-Correlation-Id': getTelemetry().traceId(),
+        'X-Correlation-Id': getTelemetry().sessionId,
       },
     },
   );
@@ -79,7 +79,7 @@ export async function createProject(
         'X-Auth-Token': accessToken,
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-Correlation-Id': getTelemetry().traceId(),
+        'X-Correlation-Id': getTelemetry().sessionId,
       },
       body: JSON.stringify({ name }),
     },

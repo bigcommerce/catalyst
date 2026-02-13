@@ -1,8 +1,9 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, MockInstance, test, vi } from 'vitest';
 
 const mockTelemetryInstance = {
-  trackError: vi.fn().mockResolvedValue(undefined),
-  traceId: vi.fn().mockReturnValue('test-trace-uuid'),
+  track: vi.fn().mockResolvedValue(undefined),
+  sessionId: 'test-trace-uuid',
+  durationMs: vi.fn().mockReturnValue(0),
   isEnabled: vi.fn().mockReturnValue(false),
   analytics: {
     closeAndFlush: vi.fn().mockResolvedValue(undefined),
@@ -40,7 +41,7 @@ describe('withErrorHandler', () => {
     await wrapped('arg1', 'arg2');
 
     expect(action).toHaveBeenCalledWith('arg1', 'arg2');
-    expect(mockTelemetryInstance.trackError).not.toHaveBeenCalled();
+    expect(mockTelemetryInstance.track).not.toHaveBeenCalled();
     expect(mockTelemetryInstance.analytics.closeAndFlush).not.toHaveBeenCalled();
     expect(exitMock).not.toHaveBeenCalled();
   });
@@ -52,7 +53,13 @@ describe('withErrorHandler', () => {
 
     await wrapped();
 
-    expect(mockTelemetryInstance.trackError).toHaveBeenCalledWith('deploy', error);
+    expect(mockTelemetryInstance.track).toHaveBeenCalledWith(
+      'error',
+      expect.objectContaining({
+        commandName: 'deploy',
+        errorMessage: 'Something went wrong',
+      }),
+    );
     expect(mockTelemetryInstance.analytics.closeAndFlush).toHaveBeenCalled();
     expect(consola.error).toHaveBeenCalledWith('Something went wrong');
     expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('Trace ID: test-trace-uuid'));
@@ -97,8 +104,8 @@ describe('withErrorHandler', () => {
     );
   });
 
-  test('still exits when trackError throws', async () => {
-    mockTelemetryInstance.trackError.mockRejectedValueOnce(new Error('telemetry down'));
+  test('still exits when track throws', async () => {
+    mockTelemetryInstance.track.mockRejectedValueOnce(new Error('telemetry down'));
 
     const action = vi.fn().mockRejectedValue(new Error('original error'));
     const wrapped = withErrorHandler('deploy', action);

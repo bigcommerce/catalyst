@@ -21,12 +21,6 @@ describe('Telemetry', () => {
     expect(telemetry.sessionId).toMatch(uuidRegex);
   });
 
-  test('traceId returns sessionId', () => {
-    const telemetry = new Telemetry();
-
-    expect(telemetry.traceId()).toBe(telemetry.sessionId);
-  });
-
   test('durationMs returns elapsed time', async () => {
     const telemetry = new Telemetry();
 
@@ -35,40 +29,6 @@ describe('Telemetry', () => {
     });
 
     expect(telemetry.durationMs()).toBeGreaterThanOrEqual(40);
-  });
-
-  test('trackError sends error event when enabled', async () => {
-    const telemetry = new Telemetry();
-    const trackSpy = vi.spyOn(telemetry, 'track');
-
-    vi.spyOn(telemetry, 'isEnabled').mockReturnValue(true);
-
-    const error = new Error('test error');
-
-    await telemetry.trackError('deploy', error);
-
-    expect(trackSpy).toHaveBeenCalledWith(
-      'error',
-      expect.objectContaining({
-        commandName: 'deploy',
-        errorMessage: 'test error',
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        errorStack: expect.stringContaining('test error'),
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        durationMs: expect.any(Number),
-      }),
-    );
-  });
-
-  test('trackError no-ops when disabled', async () => {
-    const telemetry = new Telemetry();
-    const analyticsSpy = vi.spyOn(telemetry.analytics, 'track');
-
-    vi.spyOn(telemetry, 'isEnabled').mockReturnValue(false);
-
-    await telemetry.trackError('deploy', new Error('test'));
-
-    expect(analyticsSpy).not.toHaveBeenCalled();
   });
 });
 
