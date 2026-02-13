@@ -1,0 +1,49 @@
+{
+  "commitSha": "18cfdc8ca",
+  "updatedAt": "2026-02-13",
+  "firstLoadJs": 1749.9,
+  "routes": {
+    "/[locale]/layout": {
+      "size": 780.7,
+      "firstLoadJs": 2530.6
+    },
+    "/[locale]/error": {
+      "size": 142.5,
+      "firstLoadJs": 1892.4
+    },
+    "/[locale]/not-found": {
+      "size": 986.8,
+      "firstLoadJs": 2736.8
+    },
+    "/[locale]/(default)/layout": {
+      "size": 983,
+      "firstLoadJs": 2733
+    },
+    "/[locale]/(default)/error": {
+      "size": 142.6,
+      "firstLoadJs": 1892.6
+    },
+    "/[locale]/(default)/page": {
+      "size": 688.5,
+      "firstLoadJs": 2438.4
+    },
+    "/favicon.ico/route": {
+      "size": 0.7,
+      "firstLoadJs": 1750.7
+    },
+    "/[locale]/(default)/[...rest]/page": {
+      "size": 0.7,
+      "firstLoadJs": 1750.7
+    },
+    "/[locale]/(default)/(faceted)/category/[slug]/page": {
+      "size": 916.4,
+      "firstLoadJs": 2666.3
+    },
+    "/[locale]/(default)/product/[slug]/page": {
+      "size": 1436.9,
+      "firstLoadJs": 3186.9
+    }
+  },
+  "totalJs": 7828.8,
+  "totalCss": 31.2
+}
