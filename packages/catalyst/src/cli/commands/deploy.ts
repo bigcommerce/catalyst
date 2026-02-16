@@ -374,9 +374,6 @@ export const deploy = new Command('deploy')
       const config = getProjectConfig();
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
-
-      await telemetry.identify(storeHash);
-
       const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
       if (!projectUuid) {
@@ -384,6 +381,20 @@ export const deploy = new Command('deploy')
           'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
         );
       }
+
+      if (!storeHash) {
+        throw new Error(
+          'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
+        );
+      }
+
+      if (!accessToken) {
+        throw new Error(
+          'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
+        );
+      }
+
+      await telemetry.identify(storeHash);
 
       if (options.prebuilt) {
         const distDir = join(process.cwd(), '.bigcommerce', 'dist');
@@ -419,18 +430,6 @@ export const deploy = new Command('deploy')
         consola.info('- Create deployment');
 
         process.exit(0);
-      }
-
-      if (!storeHash) {
-        throw new Error(
-          'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
-        );
-      }
-
-      if (!accessToken) {
-        throw new Error(
-          'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
-        );
       }
 
       const uploadSignature = await generateUploadSignature(
