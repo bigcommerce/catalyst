@@ -35,13 +35,12 @@ export function loadEnvFileFromArgv(argv: string[]): void {
           ? result.error.code
           : undefined;
 
-      console.log(result.error.message);
-      console.log(result.error.name);
-      consola.warn(
+      const message =
         errCode === 'ENOENT'
           ? `Env file not found: ${resolvedPath}`
-          : `Failed to load --env-file ${value}: ${result.error.message}`,
-      );
+          : `Failed to load --env-file ${value}: ${result.error.message}`;
+
+      throw new Error(message);
     }
   }
 }
