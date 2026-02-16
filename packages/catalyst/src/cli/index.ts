@@ -44,8 +44,10 @@ process.on('unhandledRejection', (reason) => {
   void handleFatalError(reason);
 });
 
-try {
-  await program.parseAsync(process.argv);
-} catch (error) {
-  await handleFatalError(error);
-}
+void (async () => {
+  try {
+    await program.parseAsync(process.argv);
+  } catch (error) {
+    await handleFatalError(error);
+  }
+})();
