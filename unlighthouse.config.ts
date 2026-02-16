@@ -25,11 +25,12 @@ export default {
     include: [
       "/",
       "/fog-linen-chambray-towel-beige-stripe", // PDP
-      "/shop-all", // PLP categories
+      "/bath", // PLP categories
       "/brands/ofs", // PLP brands
       "/search",
       "/cart",
       "/login",
+      "/login/forgot-password",
       "/register",
       "/blog",
       "/your-first-blog-post", // Blog post
