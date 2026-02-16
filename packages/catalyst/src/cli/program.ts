@@ -16,19 +16,14 @@ import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
 
-/**
- * Load env file from --env-file in argv before Commander parses.
- * Must run before program.parse() so process.env is populated when
- * Commander reads .env('VAR') for option defaults.
- */
 export function loadEnvFileFromArgv(argv: string[]): void {
   const envFileIdx = argv.findIndex((arg) => arg === '--env-file' || arg.startsWith('--env-file='));
 
   if (envFileIdx === -1) return;
 
-  const arg = argv[envFileIdx];
-  const value = arg.startsWith('--env-file=')
-    ? arg.slice('--env-file='.length)
+  const envFileArg = argv[envFileIdx];
+  const value = envFileArg.startsWith('--env-file=')
+    ? envFileArg.slice('--env-file='.length)
     : argv[envFileIdx + 1];
 
   if (value && !value.startsWith('-')) {
@@ -37,8 +32,9 @@ export function loadEnvFileFromArgv(argv: string[]): void {
 
     if (result.error) {
       const err = result.error as NodeJS.ErrnoException;
-      console.log(result.error?.message);
-      console.log(result.error?.name);
+
+      console.log(result.error.message);
+      console.log(result.error.name);
       consola.warn(
         err.code === 'ENOENT'
           ? `Env file not found: ${resolvedPath}`
