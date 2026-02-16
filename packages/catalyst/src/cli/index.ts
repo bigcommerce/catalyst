@@ -23,11 +23,15 @@ const handleFatalError = async (error: unknown) => {
 
   consola.error(errorMessage);
 
-  const traceMessage = telemetry.isEnabled()
-    ? 'Share this Trace ID with BigCommerce support.'
-    : 'Enable telemetry (`catalyst telemetry enable`) so this Trace ID can be looked up by support.';
-
-  consola.info(`\nTrace ID: ${telemetry.sessionId}\n${traceMessage}`);
+  if (telemetry.isEnabled()) {
+    consola.info(
+      `\nTrace ID: ${telemetry.sessionId}\nShare this Trace ID with BigCommerce support.`,
+    );
+  } else {
+    consola.info(
+      '\nEnable telemetry (`catalyst telemetry enable`) for improved troubleshooting with BigCommerce support.',
+    );
+  }
 
   process.exit(1);
 };
@@ -42,7 +46,6 @@ process.on('unhandledRejection', (reason) => {
 
 try {
   await program.parseAsync(process.argv);
-  await getTelemetry().analytics.closeAndFlush();
 } catch (error) {
   await handleFatalError(error);
 }
