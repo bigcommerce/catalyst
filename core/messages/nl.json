@@ -43,7 +43,17 @@
             "newPassword": "Nieuw wachtwoord",
             "confirmPassword": "Wachtwoord bevestigen",
             "passwordUpdated": "Wachtwoord is succesvol bijgewerkt!",
-            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
+            "FieldErrors": {
+                "passwordRequired": "Wachtwoord is vereist",
+                "passwordTooSmall": "Het wachtwoord moet minimaal {minLength, plural, =1 {1 teken} other {# tekens}} lang zijn",
+                "passwordLowercaseRequired": "Het wachtwoord moet minstens één kleine letter bevatten",
+                "passwordUppercaseRequired": "Het wachtwoord moet minimaal één hoofdletter bevatten",
+                "passwordNumberRequired": "Het wachtwoord moet minimaal {minNumbers, plural, =1 {één cijfer} other {# cijfers}} bevatten",
+                "passwordSpecialCharacterRequired": "Het wachtwoord moet minimaal één speciaal teken bevatten",
+                "passwordsMustMatch": "De wachtwoorden komen niet overeen",
+                "confirmPasswordRequired": "Bevestig je wachtwoord"
+            }
         },
         "Login": {
             "title": "Inloggen",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "passwordResetRequired": "Wachtwoord opnieuw instellen is vereist. Controleer uw e-mail voor instructies om uw wachtwoord opnieuw in te stellen.",
             "invalidToken": "Je aanmeldingslink is ongeldig of verlopen. Probeer opnieuw in te loggen.",
+            "FieldErrors": {
+                "emailRequired": "E-mailadres is vereist",
+                "emailInvalid": "Voer een geldig e-mailadres in",
+                "passwordRequired": "Wachtwoord is vereist",
+                "invalidInput": "Controleer uw invoer en probeer het opnieuw."
+            },
             "CreateAccount": {
                 "title": "Nieuwe klant?",
                 "accountBenefits": "Maak een account aan bij ons om:",
@@ -70,14 +86,36 @@
                 "title": "Wachtwoord vergeten",
                 "subtitle": "Voer hieronder het e-mailadres in dat aan je account is gekoppeld. We sturen je instructies om je wachtwoord opnieuw in te stellen.",
                 "confirmResetPassword": "Als het e-mailadres {email} is gekoppeld aan een account in onze winkel, hebben we je een e-mail gestuurd om je wachtwoord opnieuw in te stellen. Controleer je inbox en spammap als je de e-mail niet ziet.",
-                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
+                "FieldErrors": {
+                    "emailRequired": "E-mailadres is vereist",
+                    "emailInvalid": "Voer een geldig e-mailadres in"
+                }
             }
         },
         "Register": {
             "title": "Account registreren",
             "heading": "Nieuw account",
             "cta": "Account aanmaken",
-            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
+            "FieldErrors": {
+                "firstNameRequired": "Voornaam is vereist",
+                "lastNameRequired": "Achternaam is vereist",
+                "emailRequired": "E-mailadres is vereist",
+                "emailInvalid": "Voer een geldig e-mailadres in",
+                "passwordRequired": "Wachtwoord is vereist",
+                "passwordTooSmall": "Het wachtwoord moet minimaal {minLength, plural, =1 {1 teken} other {# tekens}} lang zijn",
+                "passwordLowercaseRequired": "Het wachtwoord moet minstens één kleine letter bevatten",
+                "passwordUppercaseRequired": "Het wachtwoord moet minimaal één hoofdletter bevatten",
+                "passwordNumberRequired": "Het wachtwoord moet minimaal {minNumbers, plural, =1 {één cijfer} other {# cijfers}} bevatten",
+                "passwordSpecialCharacterRequired": "Het wachtwoord moet minimaal één speciaal teken bevatten",
+                "passwordsMustMatch": "De wachtwoorden komen niet overeen",
+                "addressLine1Required": "Adresregel 1 is vereist",
+                "cityRequired": "Plaats is vereist",
+                "countryRequired": "Land is vereist",
+                "stateRequired": "Staat/provincie is vereist",
+                "postalCodeRequired": "Postcode is vereist"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "EmptyState": {
                 "title": "Je hebt geen adressen"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Voornaam is vereist",
+                "lastNameRequired": "Achternaam is vereist",
+                "addressLine1Required": "Adresregel 1 is vereist",
+                "cityRequired": "Plaats is vereist",
+                "countryRequired": "Land is vereist",
+                "stateRequired": "Staat/provincie is vereist",
+                "postalCodeRequired": "Postcode is vereist"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Meld u aan voor onze nieuwsbrief.",
                 "marketingPreferencesUpdated": "Marketingvoorkeuren zijn bijgewerkt!",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Voornaam is vereist",
+                "firstNameTooSmall": "De voornaam moet minimaal 2 tekens lang zijn",
+                "lastNameRequired": "Achternaam is vereist",
+                "lastNameTooSmall": "De achternaam moet minimaal 2 tekens lang zijn",
+                "emailRequired": "E-mailadres is vereist",
+                "emailInvalid": "Voer een geldig e-mailadres in",
+                "currentPasswordRequired": "Huidig wachtwoord is vereist",
+                "passwordRequired": "Wachtwoord is vereist",
+                "passwordTooSmall": "Het wachtwoord moet minimaal {minLength, plural, =1 {1 teken} other {# tekens}} lang zijn",
+                "passwordLowercaseRequired": "Het wachtwoord moet minstens één kleine letter bevatten",
+                "passwordUppercaseRequired": "Het wachtwoord moet minimaal één hoofdletter bevatten",
+                "passwordNumberRequired": "Het wachtwoord moet minimaal {minNumbers, plural, =1 {één cijfer} other {# cijfers}} bevatten",
+                "passwordSpecialCharacterRequired": "Het wachtwoord moet minimaal één speciaal teken bevatten",
+                "passwordsMustMatch": "De wachtwoorden komen niet overeen",
+                "confirmPasswordRequired": "Bevestig je wachtwoord"
             }
         }
     },
@@ -304,8 +368,11 @@
         "cartCombined": "We hebben gezien dat je artikelen in een eerder winkelmandje had opgeslagen, dus we hebben ze voor je aan je huidige winkelmandje toegevoegd.",
         "cartRestored": "Je bent een winkelmandje begonnen op een ander apparaat en we hebben het hier hersteld, zodat je verder kunt gaan waar je was gebleven.",
         "cartUpdateInProgress": "Je winkelwagentje wordt bijgewerkt. Weet je zeker dat je deze pagina wilt verlaten? Je wijzigingen kunnen verloren gaan.",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "De oorspronkelijke prijs was {price}.",
+        "currentPrice": "De huidige prijs is {price}.",
+        "quantityReadyToShip": "{quantity, number} klaar voor verzending",
+        "quantityOnBackorder": "{quantity, number} staat in backorder",
+        "partiallyAvailable": "Slechts {quantity, number} beschikbaar",
         "CheckoutSummary": {
             "title": "Overzicht",
             "subTotal": "Subtotaal",
@@ -335,7 +402,8 @@
                 "updateShipping": "Verzending bijwerken",
                 "addShipping": "Verzending toevoegen",
                 "cartNotFound": "Er is een fout opgetreden bij het ophalen van je winkelwagen",
-                "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres"
+                "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres",
+                "countryRequired": "Land is vereist"
             }
         },
         "GiftCertificate": {
@@ -395,6 +463,8 @@
             "additionalInformation": "Aanvullende informatie",
             "currentStock": "{quantity, number} op voorraad",
             "backorderQuantity": "{hoeveelheid, aantal} staat in backorder",
+            "loadingMoreImages": "Loading more images",
+            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
             "Submit": {
                 "addToCart": "Toevoegen aan winkelmandje",
                 "outOfStock": "Niet op voorraad",
@@ -427,13 +497,24 @@
                 "button": "Schrijf een beoordeling",
                 "title": "Schrijf een beoordeling",
                 "submit": "Verzenden",
+                "cancel": "Annuleren",
                 "ratingLabel": "Beoordeling",
                 "titleLabel": "Titel",
                 "reviewLabel": "Beoordelen",
                 "nameLabel": "Naam",
                 "emailLabel": "E-mailadres",
                 "successMessage": "Je beoordeling is succesvol ingediend!",
-                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
+                "FieldErrors": {
+                    "titleRequired": "Titel is vereist",
+                    "authorRequired": "Naam is verplicht",
+                    "emailRequired": "E-mailadres is vereist",
+                    "emailInvalid": "Voer een geldig e-mailadres in",
+                    "textRequired": "Beoordeling is vereist",
+                    "ratingRequired": "Beoordeling is vereist",
+                    "ratingTooSmall": "De beoordeling moet minimaal 1 zijn",
+                    "ratingTooLarge": "De beoordeling moet maximaal 5 zijn"
+                }
             }
         }
     },
@@ -515,7 +596,8 @@
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
             "subscribedToNewsletter": "Je bent nu geabonneerd op onze nieuwsbrief!",
             "Errors": {
-                "invalidEmail": "Voer een geldig e-mailadres in.",
+                "emailRequired": "E-mailadres is vereist",
+                "invalidEmail": "Voer een geldig e-mailadres in",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
             }
         },
@@ -559,9 +641,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "De oorspronkelijke prijs was {price}.",
+            "currentPrice": "De huidige prijs is {price}.",
+            "range": "Prijs van {minValue} tot {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -574,7 +656,7 @@
             "title": "Saldo controleren",
             "description": "Je kunt het saldo controleren en de informatie over je cadeaubon opvragen door de code in het vak hieronder in te voeren.",
             "inputLabel": "Code",
-            "inputPlaceholder": "xxx-xxx-xxx-xxx",
+            "inputPlaceholder": "XXX-XXX-XXX-XXX",
             "purchasedDateLabel": "Gekocht",
             "senderLabel": "Van",
             "Errors": {
@@ -607,15 +689,25 @@
                 "expiryCheckboxLabel": "Ik erken dat deze cadeaubon vervalt op {expiryDate}",
                 "ctaLabel": "Toevoegen aan winkelmandje",
                 "Errors": {
-                    "amountRequired": "Selecteer of voer een cadeaubonbedrag in.",
-                    "amountInvalid": "Selecteer een geldig cadeaubonbedrag.",
-                    "amountOutOfRange": "Voer een bedrag in tussen {minAmount} en {maxAmount}.",
-                    "unexpectedSettingsError": "Er is een onverwachte fout opgetreden bij het ophalen van de instellingen voor de cadeaubon. Probeer het later opnieuw."
+                    "amountRequired": "Selecteer of voer een cadeaubonbedrag in",
+                    "amountInvalid": "Selecteer een geldig cadeaubonbedrag",
+                    "amountOutOfRange": "Voer een bedrag in tussen {minAmount} en {maxAmount}",
+                    "unexpectedSettingsError": "Er is een onverwachte fout opgetreden bij het ophalen van de instellingen voor de cadeaubon. Probeer het later opnieuw.",
+                    "senderNameRequired": "Uw naam is verplicht",
+                    "senderEmailRequired": "Uw e-mailadres is vereist",
+                    "recipientNameRequired": "De naam van de ontvanger is vereist",
+                    "recipientEmailRequired": "Het e-mailadres van de ontvanger is vereist",
+                    "emailInvalid": "Voer een geldig e-mailadres in",
+                    "checkboxRequired": "U moet dit vakje aanvinken om door te gaan"
                 }
             }
         }
     },
     "Form": {
-        "optional": "optioneel"
+        "optional": "optioneel",
+        "Errors": {
+            "invalidInput": "Controleer uw invoer en probeer het opnieuw",
+            "invalidFormat": "De ingevoerde waarde komt niet overeen met het vereiste formaat"
+        }
     }
 }
