@@ -97,39 +97,33 @@ export const build = new Command('build')
   )
   .action(async (nextBuildOptions, options) => {
     const coreDir = process.cwd();
+    const config = getProjectConfig();
+    const framework = options.framework ?? config.get('framework');
 
-    try {
-      const config = getProjectConfig();
-      const framework = options.framework ?? config.get('framework');
+    if (framework === 'nextjs') {
+      const nextBin = join('node_modules', '.bin', 'next');
 
-      if (framework === 'nextjs') {
-        const nextBin = join('node_modules', '.bin', 'next');
-
-        if (!existsSync(nextBin)) {
-          throw new Error(
-            `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
-          );
-        }
-
-        await execa(nextBin, ['build', ...nextBuildOptions], {
-          stdio: 'inherit',
-          cwd: coreDir,
-        });
+      if (!existsSync(nextBin)) {
+        throw new Error(
+          `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
+        );
       }
 
-      if (framework === 'catalyst') {
-        const projectUuid = options.projectUuid ?? config.get('projectUuid');
+      await execa(nextBin, ['build', ...nextBuildOptions], {
+        stdio: 'inherit',
+        cwd: coreDir,
+      });
+    }
 
-        if (!projectUuid) {
-          throw new Error(
-            'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
-          );
-        }
+    if (framework === 'catalyst') {
+      const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
-        await buildCatalystProject(projectUuid);
+      if (!projectUuid) {
+        throw new Error(
+          'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+        );
       }
-    } catch (error) {
-      consola.error(error);
-      process.exit(1);
+
+      await buildCatalystProject(projectUuid);
     }
   });
