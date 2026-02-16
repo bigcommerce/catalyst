@@ -43,7 +43,17 @@
             "newPassword": "Nytt lösenord",
             "confirmPassword": "Bekräfta lösenord",
             "passwordUpdated": "Lösenordet har uppdaterats!",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+            "FieldErrors": {
+                "passwordRequired": "Lösenord krävs",
+                "passwordTooSmall": "Lösenordet måste vara minst {minLength, plural, =1 {1 tecken} other {# tecken}} långt",
+                "passwordLowercaseRequired": "Lösenordet måste innehålla minst en liten bokstav",
+                "passwordUppercaseRequired": "Lösenordet måste innehålla minst en stor bokstav",
+                "passwordNumberRequired": "Lösenordet måste innehålla minst {minNumbers, plural, =1 {ett nummer} other {# nummer}}",
+                "passwordSpecialCharacterRequired": "Lösenordet måste innehålla minst ett specialtecken",
+                "passwordsMustMatch": "Lösenorden stämmer inte överens",
+                "confirmPasswordRequired": "Bekräfta ditt lösenord"
+            }
         },
         "Login": {
             "title": "Logga in",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "passwordResetRequired": "Återställning av lösenord krävs. Kontrollera din e-post för instruktioner om hur du återställer ditt lösenord.",
             "invalidToken": "Din inloggningslänk är ogiltig eller har löpt ut. Försök logga in igen.",
+            "FieldErrors": {
+                "emailRequired": "E-postadress krävs",
+                "emailInvalid": "Ange en giltig e-postadress",
+                "passwordRequired": "Lösenord krävs",
+                "invalidInput": "Kontrollera din inmatning och försök igen."
+            },
             "CreateAccount": {
                 "title": "Nya kunder?",
                 "accountBenefits": "Skapa ett konto hos oss, så kan du:",
@@ -70,14 +86,36 @@
                 "title": "Glömt ditt lösenord",
                 "subtitle": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
                 "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
-                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+                "FieldErrors": {
+                    "emailRequired": "E-postadress krävs",
+                    "emailInvalid": "Ange en giltig e-postadress"
+                }
             }
         },
         "Register": {
             "title": "Registrera konto",
             "heading": "Nytt konto",
             "cta": "Skapa konto",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+            "FieldErrors": {
+                "firstNameRequired": "Förnamn krävs",
+                "lastNameRequired": "Efternamn krävs",
+                "emailRequired": "E-postadress krävs",
+                "emailInvalid": "Ange en giltig e-postadress",
+                "passwordRequired": "Lösenord krävs",
+                "passwordTooSmall": "Lösenordet måste vara minst {minLength, plural, =1 {1 tecken} other {# tecken}} långt",
+                "passwordLowercaseRequired": "Lösenordet måste innehålla minst en liten bokstav",
+                "passwordUppercaseRequired": "Lösenordet måste innehålla minst en stor bokstav",
+                "passwordNumberRequired": "Lösenordet måste innehålla minst {minNumbers, plural, =1 {ett nummer} other {# nummer}}",
+                "passwordSpecialCharacterRequired": "Lösenordet måste innehålla minst ett specialtecken",
+                "passwordsMustMatch": "Lösenorden stämmer inte överens",
+                "addressLine1Required": "Adresslinje 1 krävs",
+                "cityRequired": "Stad krävs",
+                "countryRequired": "Land krävs",
+                "stateRequired": "Stat/provins krävs",
+                "postalCodeRequired": "Postnummer krävs"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "EmptyState": {
                 "title": "Du har inga adresser"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Förnamn krävs",
+                "lastNameRequired": "Efternamn krävs",
+                "addressLine1Required": "Adresslinje 1 krävs",
+                "cityRequired": "Stad krävs",
+                "countryRequired": "Land krävs",
+                "stateRequired": "Stat/provins krävs",
+                "postalCodeRequired": "Postnummer krävs"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Prenumerera på vårt nyhetsbrev.",
                 "marketingPreferencesUpdated": "Marknadsföringsinställningarna har uppdaterats framgångsrikt!",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Förnamn krävs",
+                "firstNameTooSmall": "Förnamnet måste vara minst 2 tecken långt",
+                "lastNameRequired": "Efternamn krävs",
+                "lastNameTooSmall": "Efternamnet måste vara minst två tecken långt",
+                "emailRequired": "E-postadress krävs",
+                "emailInvalid": "Ange en giltig e-postadress",
+                "currentPasswordRequired": "Nuvarande lösenord krävs",
+                "passwordRequired": "Lösenord krävs",
+                "passwordTooSmall": "Lösenordet måste vara minst {minLength, plural, =1 {1 tecken} other {# tecken}} långt",
+                "passwordLowercaseRequired": "Lösenordet måste innehålla minst en liten bokstav",
+                "passwordUppercaseRequired": "Lösenordet måste innehålla minst en stor bokstav",
+                "passwordNumberRequired": "Lösenordet måste innehålla minst {minNumbers, plural, =1 {ett nummer} other {# nummer}}",
+                "passwordSpecialCharacterRequired": "Lösenordet måste innehålla minst ett specialtecken",
+                "passwordsMustMatch": "Lösenorden stämmer inte överens",
+                "confirmPasswordRequired": "Bekräfta ditt lösenord"
             }
         }
     },
@@ -304,8 +368,11 @@
         "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
         "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
         "cartUpdateInProgress": "Du har en pågående kundvagnsuppdatering. Är du säker på att du vill lämna den här sidan? Dina ändringar kan gå förlorade.",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "Ursprungligt pris var {price}.",
+        "currentPrice": "Nuvarande pris är {price}.",
+        "quantityReadyToShip": "{quantity, number} klara för leverans",
+        "quantityOnBackorder": "{quantity, number} kommer att vara restnoterade",
+        "partiallyAvailable": "Endast {quantity, number} tillgängligt",
         "CheckoutSummary": {
             "title": "Summering",
             "subTotal": "Delsumma",
@@ -335,7 +402,8 @@
                 "updateShipping": "Uppdatera frakt",
                 "addShipping": "Lägg till frakt",
                 "cartNotFound": "Ett fel uppstod när er varukorg hämtades",
-                "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
+                "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress",
+                "countryRequired": "Land krävs"
             }
         },
         "GiftCertificate": {
@@ -395,6 +463,8 @@
             "additionalInformation": "Ytterligare information",
             "currentStock": "{quantity, number} i lager",
             "backorderQuantity": "{quantity, number} kommer att vara restnoterade",
+            "loadingMoreImages": "Loading more images",
+            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
             "Submit": {
                 "addToCart": "Lägg till i kundvagn",
                 "outOfStock": "Ej i lager",
@@ -427,13 +497,24 @@
                 "button": "Skriva en recension",
                 "title": "Skriva en recension",
                 "submit": "Skicka in",
+                "cancel": "Annullera",
                 "ratingLabel": "Bedömning",
                 "titleLabel": "Rubrik",
                 "reviewLabel": "Recension",
                 "nameLabel": "Namn",
                 "emailLabel": "E-post",
                 "successMessage": "Din recension har skickats in!",
-                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+                "FieldErrors": {
+                    "titleRequired": "Rubrik krävs",
+                    "authorRequired": "Namn krävs",
+                    "emailRequired": "E-postadress krävs",
+                    "emailInvalid": "Ange en giltig e-postadress",
+                    "textRequired": "Granskning krävs",
+                    "ratingRequired": "Betyg krävs",
+                    "ratingTooSmall": "Betyget måste vara minst 1",
+                    "ratingTooLarge": "Betyget får vara högst 5"
+                }
             }
         }
     },
@@ -515,7 +596,8 @@
             "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
             "subscribedToNewsletter": "Du prenumererar nu på vårt nyhetsbrev!",
             "Errors": {
-                "invalidEmail": "Vänligen ange en giltig e-postadress",
+                "emailRequired": "E-postadress krävs",
+                "invalidEmail": "Ange en giltig e-postadress",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
             }
         },
@@ -559,9 +641,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "Ursprungligt pris var {price}.",
+            "currentPrice": "Nuvarande pris är {price}.",
+            "range": "Pris från {minValue} till {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -574,7 +656,7 @@
             "title": "Kontrollera saldot",
             "description": "Du kan kontrollera saldot och få information om ditt presentkort genom att skriva in koden i rutan nedan.",
             "inputLabel": "Kod",
-            "inputPlaceholder": "xxx-xxx-xxx-xxx",
+            "inputPlaceholder": "XXX-XXX-XXX-XXX",
             "purchasedDateLabel": "Köpt",
             "senderLabel": "Från",
             "Errors": {
@@ -607,15 +689,25 @@
                 "expiryCheckboxLabel": "Jag bekräftar att detta presentkort kommer att upphöra att gälla den {expiryDate}",
                 "ctaLabel": "Lägg till i kundvagn",
                 "Errors": {
-                    "amountRequired": "Var god välj eller ange ett presentkortsbelopp.",
-                    "amountInvalid": "Var god välj ett giltigt presentkortsbelopp.",
-                    "amountOutOfRange": "Ange ett belopp mellan {minAmount} och {maxAmount}.",
-                    "unexpectedSettingsError": "Ett oväntat fel inträffade när presentkortets inställningar hämtades. Försök igen senare."
+                    "amountRequired": "Var god välj eller ange ett presentkortsbelopp",
+                    "amountInvalid": "Välj ett giltigt presentkortsbelopp.",
+                    "amountOutOfRange": "Ange ett belopp mellan {minAmount} och {maxAmount}",
+                    "unexpectedSettingsError": "Ett oväntat fel inträffade när presentkortets inställningar hämtades. Försök igen senare.",
+                    "senderNameRequired": "Ditt namn krävs",
+                    "senderEmailRequired": "Din e-postadress krävs",
+                    "recipientNameRequired": "Mottagarens namn är obligatoriskt",
+                    "recipientEmailRequired": "Mottagarens e-postadress krävs",
+                    "emailInvalid": "Ange en giltig e-postadress",
+                    "checkboxRequired": "Du måste markera den här rutan för att fortsätta"
                 }
             }
         }
     },
     "Form": {
-        "optional": "frivillig"
+        "optional": "frivillig",
+        "Errors": {
+            "invalidInput": "Kontrollera det som angetts och försök igen",
+            "invalidFormat": "Det inmatade värdet stämmer inte överens med det format som krävs"
+        }
     }
 }
