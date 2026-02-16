@@ -2,9 +2,9 @@ import { Argument, Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
 import { consola } from '../lib/logger';
-import { Telemetry } from '../lib/telemetry';
+import { getTelemetry } from '../lib/telemetry';
 
-const telemetryService = new Telemetry();
+const telemetryService = getTelemetry();
 let isEnabled = telemetryService.isEnabled();
 
 export const telemetry = new Command('telemetry')

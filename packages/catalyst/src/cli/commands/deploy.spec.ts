@@ -338,15 +338,9 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
 
   vi.stubEnv('CATALYST_STORE_HASH', undefined);
 
-  await program.parseAsync(['node', 'catalyst', 'deploy']);
-
-  expect(consola.error).toHaveBeenCalledWith(
-    expect.objectContaining({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
-      message: expect.stringContaining('Store hash is required'),
-    }),
+  await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
+    'Store hash is required',
   );
-  expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
 });
@@ -360,15 +354,9 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
 
   vi.stubEnv('CATALYST_ACCESS_TOKEN', undefined);
 
-  await program.parseAsync(['node', 'catalyst', 'deploy']);
-
-  expect(consola.error).toHaveBeenCalledWith(
-    expect.objectContaining({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
-      message: expect.stringContaining('Access token is required'),
-    }),
+  await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
+    'Access token is required',
   );
-  expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
 });
@@ -426,28 +414,24 @@ describe('--prebuilt flag', () => {
 
     process.chdir(resolvedDir);
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'deploy',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--api-host',
-      apiHost,
-      '--project-uuid',
-      projectUuid,
-      '--prebuilt',
-    ]);
-
-    expect(consola.error).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message:
-          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-      }),
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'deploy',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--api-host',
+        apiHost,
+        '--project-uuid',
+        projectUuid,
+        '--prebuilt',
+      ]),
+    ).rejects.toThrow(
+      'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
-    expect(exitMock).toHaveBeenCalledWith(1);
 
     process.chdir(tmpDir);
     await missingDistCleanup();
@@ -461,28 +445,24 @@ describe('--prebuilt flag', () => {
 
     process.chdir(resolvedDir);
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'deploy',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--api-host',
-      apiHost,
-      '--project-uuid',
-      projectUuid,
-      '--prebuilt',
-    ]);
-
-    expect(consola.error).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message:
-          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-      }),
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'deploy',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--api-host',
+        apiHost,
+        '--project-uuid',
+        projectUuid,
+        '--prebuilt',
+      ]),
+    ).rejects.toThrow(
+      'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
-    expect(exitMock).toHaveBeenCalledWith(1);
 
     process.chdir(tmpDir);
     await rm(join(resolvedDir, '.bigcommerce'), { recursive: true });
