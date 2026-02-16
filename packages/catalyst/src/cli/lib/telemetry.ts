@@ -1,6 +1,6 @@
 import { Analytics } from '@segment/analytics-node';
 import Conf from 'conf';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 
 import PACKAGE_INFO from '../../../package.json';
 
@@ -12,6 +12,8 @@ const TELEMETRY_KEY_ID = `telemetry.anonymousId`;
 export class Telemetry {
   readonly sessionId: string;
   readonly analytics: Analytics;
+  readonly startTime: number;
+  commandName = 'unknown';
 
   private projectConfig: Conf<ProjectConfigSchema>;
   private CATALYST_TELEMETRY_DISABLED: string | undefined;
@@ -24,10 +26,15 @@ export class Telemetry {
 
     this.projectConfig = getProjectConfig();
 
-    this.sessionId = randomBytes(32).toString('hex');
+    this.sessionId = randomUUID();
+    this.startTime = Date.now();
     this.analytics = new Analytics({
       writeKey: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
     });
+  }
+
+  durationMs(): number {
+    return Date.now() - this.startTime;
   }
 
   async track(eventName: string, payload: Record<string, unknown>) {
@@ -41,6 +48,10 @@ export class Telemetry {
       properties: {
         ...payload,
         sessionId: this.sessionId,
+        nodeVersion: process.version,
+        platform: process.platform,
+        arch: process.arch,
+        cliVersion: PACKAGE_INFO.version,
       },
       context: {
         app: {
@@ -98,4 +109,18 @@ export class Telemetry {
 
     return generated;
   }
+}
+
+let telemetryInstance: Telemetry | undefined;
+
+// Singleton so the pre-hook, post-hook, error handler, and command bodies all
+// share one sessionId for correlation. resetTelemetry() is for test isolation.
+export function getTelemetry(): Telemetry {
+  telemetryInstance ??= new Telemetry();
+
+  return telemetryInstance;
+}
+
+export function resetTelemetry(): void {
+  telemetryInstance = undefined;
 }
