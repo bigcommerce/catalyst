@@ -55,4 +55,5 @@ build-config.json
 .open-next
 .wrangler
 
+# Catalyst CLI config
 .bigcommerce
