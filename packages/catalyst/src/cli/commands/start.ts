@@ -3,7 +3,6 @@ import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 
 export const start = new Command('start')
@@ -21,41 +20,37 @@ export const start = new Command('start')
     ]),
   )
   .action(async (startOptions, options) => {
-    try {
-      const config = getProjectConfig();
-      const framework = options.framework ?? config.get('framework');
+    const config = getProjectConfig();
+    const framework = options.framework ?? config.get('framework');
 
-      if (framework === 'nextjs') {
-        const nextBin = join('node_modules', '.bin', 'next');
+    if (framework === 'nextjs') {
+      const nextBin = join('node_modules', '.bin', 'next');
 
-        if (!existsSync(nextBin)) {
-          throw new Error(
-            `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
-          );
-        }
-
-        await execa(nextBin, ['start', ...startOptions], {
-          stdio: 'inherit',
-          cwd: process.cwd(),
-        });
+      if (!existsSync(nextBin)) {
+        throw new Error(
+          `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
+        );
       }
 
-      await execa(
-        'pnpm',
-        [
-          'exec',
-          'opennextjs-cloudflare',
-          'preview',
-          '--config',
-          join('.bigcommerce', 'wrangler.jsonc'),
-          ...startOptions,
-        ],
-        {
-          stdio: 'inherit',
-          cwd: process.cwd(),
-        },
-      );
-    } catch (error) {
-      consola.error(error instanceof Error ? error.message : error);
+      await execa(nextBin, ['start', ...startOptions], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
     }
+
+    await execa(
+      'pnpm',
+      [
+        'exec',
+        'opennextjs-cloudflare',
+        'preview',
+        '--config',
+        join('.bigcommerce', 'wrangler.jsonc'),
+        ...startOptions,
+      ],
+      {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      },
+    );
   });
