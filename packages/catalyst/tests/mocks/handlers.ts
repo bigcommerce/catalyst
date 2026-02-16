@@ -74,6 +74,15 @@ export const handlers = [
     },
   ),
 
+  // Handler for fetchStoreProfile (auth whoami)
+  http.get('https://:apiHost/stores/:storeHash/v3/settings/store/profile', () =>
+    HttpResponse.json({
+      data: {
+        store_name: 'Test Store',
+      },
+    }),
+  ),
+
   // Handle for createProjects
   http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
