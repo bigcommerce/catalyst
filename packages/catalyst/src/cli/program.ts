@@ -3,6 +3,7 @@ import { colorize } from 'consola/utils';
 
 import PACKAGE_INFO from '../../package.json';
 
+import { auth } from './commands/auth';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
 import { dev } from './commands/dev';
@@ -27,6 +28,7 @@ program
   .addCommand(build)
   .addCommand(deploy)
   .addCommand(project)
+  .addCommand(auth)
   .addCommand(telemetry)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);
