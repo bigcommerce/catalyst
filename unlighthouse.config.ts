@@ -3,6 +3,7 @@ import type { UserConfig } from "unlighthouse";
 export default {
   ci: {
     buildStatic: true,
+    reporter: "jsonExpanded",
     budget: {
       // "best-practices": 100,
       // "accessibility": 100,
