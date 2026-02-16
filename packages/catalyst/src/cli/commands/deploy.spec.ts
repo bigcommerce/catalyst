@@ -340,12 +340,7 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
 
-  expect(consola.error).toHaveBeenCalledWith(
-    expect.objectContaining({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
-      message: expect.stringContaining('Store hash is required'),
-    }),
-  );
+  expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Store hash is required'));
   expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
@@ -362,12 +357,7 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
 
-  expect(consola.error).toHaveBeenCalledWith(
-    expect.objectContaining({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Vitest matcher return type is any
-      message: expect.stringContaining('Access token is required'),
-    }),
-  );
+  expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Access token is required'));
   expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
