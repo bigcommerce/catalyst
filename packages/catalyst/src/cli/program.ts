@@ -31,12 +31,15 @@ export function loadEnvFileFromArgv(argv: string[]): void {
     const result = config({ path: resolvedPath, override: true });
 
     if (result.error) {
-      const err = result.error as NodeJS.ErrnoException;
+      const errCode =
+        'code' in result.error && typeof result.error.code === 'string'
+          ? result.error.code
+          : undefined;
 
       console.log(result.error.message);
       console.log(result.error.name);
       consola.warn(
-        err.code === 'ENOENT'
+        errCode === 'ENOENT'
           ? `Env file not found: ${resolvedPath}`
           : `Failed to load --env-file ${value}: ${result.error.message}`,
       );
