@@ -43,7 +43,17 @@
             "newPassword": "Nowe hasło",
             "confirmPassword": "Potwierdź hasło",
             "passwordUpdated": "Hasło zostało pomyślnie zaktualizowane!",
-            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+            "FieldErrors": {
+                "passwordRequired": "Hasło jest wymagane",
+                "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+                "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+                "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+                "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+                "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+                "passwordsMustMatch": "The passwords do not match",
+                "confirmPasswordRequired": "Please confirm your password"
+            }
         },
         "Login": {
             "title": "Zaloguj się",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
             "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
             "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
+            "FieldErrors": {
+                "emailRequired": "Email is required",
+                "emailInvalid": "Please enter a valid email address",
+                "passwordRequired": "Hasło jest wymagane",
+                "invalidInput": "Please check your input and try again."
+            },
             "CreateAccount": {
                 "title": "Nowy klient?",
                 "accountBenefits": "Załóż u nas konto, a będziesz mógł:",
@@ -70,14 +86,36 @@
                 "title": "Nie pamiętam hasła",
                 "subtitle": "Podaj poniżej adres e-mail powiązany z Twoim kontem. Wyślemy Ci instrukcje resetowania hasła.",
                 "confirmResetPassword": "Jeśli adres e-mail {email} jest powiązany z kontem w naszym sklepie, otrzymasz wiadomość e-mail umożliwiającą zresetowanie hasła. Jeśli jej nie widzisz, sprawdź skrzynkę odbiorczą i folder ze spamem.",
-                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+                "FieldErrors": {
+                    "emailRequired": "Email is required",
+                    "emailInvalid": "Please enter a valid email address"
+                }
             }
         },
         "Register": {
             "title": "Zarejestruj konto",
             "heading": "Nowe konto",
             "cta": "Utwórz konto",
-            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+            "FieldErrors": {
+                "firstNameRequired": "Imię jest wymagane",
+                "lastNameRequired": "Nazwisko jest wymagane",
+                "emailRequired": "Email is required",
+                "emailInvalid": "Please enter a valid email address",
+                "passwordRequired": "Hasło jest wymagane",
+                "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+                "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+                "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+                "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+                "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+                "passwordsMustMatch": "The passwords do not match",
+                "addressLine1Required": "Address line 1 is required",
+                "cityRequired": "Miasto jest wymagane",
+                "countryRequired": "Wymagany jest kraj",
+                "stateRequired": "Wymagany jest stan/prowincja",
+                "postalCodeRequired": "Kod pocztowy jest wymagany"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
             "EmptyState": {
                 "title": "You don't have any addresses"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Imię jest wymagane",
+                "lastNameRequired": "Nazwisko jest wymagane",
+                "addressLine1Required": "Address line 1 is required",
+                "cityRequired": "Miasto jest wymagane",
+                "countryRequired": "Wymagany jest kraj",
+                "stateRequired": "Wymagany jest stan/prowincja",
+                "postalCodeRequired": "Kod pocztowy jest wymagany"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Zapisz się do naszego newslettera.",
                 "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
                 "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Imię jest wymagane",
+                "firstNameTooSmall": "First name must be at least 2 characters long",
+                "lastNameRequired": "Nazwisko jest wymagane",
+                "lastNameTooSmall": "Last name must be at least 2 characters long",
+                "emailRequired": "Email is required",
+                "emailInvalid": "Please enter a valid email address",
+                "currentPasswordRequired": "Wymagane jest aktualne hasło",
+                "passwordRequired": "Hasło jest wymagane",
+                "passwordTooSmall": "Password must be at least {minLength, plural, =1 {1 character} other {# characters}} long",
+                "passwordLowercaseRequired": "Password must contain at least one lowercase letter",
+                "passwordUppercaseRequired": "Password must contain at least one uppercase letter",
+                "passwordNumberRequired": "Password must contain at least {minNumbers, plural, =1 {one number} other {# numbers}}",
+                "passwordSpecialCharacterRequired": "Password must contain at least one special character",
+                "passwordsMustMatch": "The passwords do not match",
+                "confirmPasswordRequired": "Please confirm your password"
             }
         }
     },
@@ -306,6 +370,9 @@
         "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
         "originalPrice": "Original price was {price}.",
         "currentPrice": "Current price is {price}.",
+        "quantityReadyToShip": "{quantity, number} ready to ship",
+        "quantityOnBackorder": "{quantity, number} will be backordered",
+        "partiallyAvailable": "Only {quantity, number} available",
         "CheckoutSummary": {
             "title": "Podsumowanie",
             "subTotal": "Suma cząstkowa",
@@ -335,7 +402,8 @@
                 "updateShipping": "Zaktualizuj wysyłkę",
                 "addShipping": "Dodaj wysyłkę",
                 "cartNotFound": "An error occurred when retrieving your cart",
-                "noShippingOptions": "Brak dostępnych opcji wysyłki dla Państwa adresu"
+                "noShippingOptions": "Brak dostępnych opcji wysyłki dla Państwa adresu",
+                "countryRequired": "Wymagany jest kraj"
             }
         },
         "GiftCertificate": {
@@ -395,6 +463,8 @@
             "additionalInformation": "Informacje dodatkowe",
             "currentStock": "{quantity, number} in stock",
             "backorderQuantity": "{quantity, number} will be on backorder",
+            "loadingMoreImages": "Loading more images",
+            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
             "Submit": {
                 "addToCart": "Dodaj do koszyka",
                 "outOfStock": "Brak w magazynie",
@@ -427,13 +497,24 @@
                 "button": "Write a review",
                 "title": "Write a review",
                 "submit": "Wyślij",
+                "cancel": "Anuluj",
                 "ratingLabel": "Ocena",
                 "titleLabel": "Tytuł",
                 "reviewLabel": "Przegląd",
                 "nameLabel": "Nazwa",
                 "emailLabel": "Email",
                 "successMessage": "Your review has been submitted successfully!",
-                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+                "FieldErrors": {
+                    "titleRequired": "Title is required",
+                    "authorRequired": "Nazwa jest wymagana",
+                    "emailRequired": "Email is required",
+                    "emailInvalid": "Please enter a valid email address",
+                    "textRequired": "Review is required",
+                    "ratingRequired": "Rating is required",
+                    "ratingTooSmall": "Rating must be at least 1",
+                    "ratingTooLarge": "Rating must be at most 5"
+                }
             }
         }
     },
@@ -515,7 +596,8 @@
             "description": "Bądź na bieżąco z najnowszymi informacjami i ofertami naszego sklepu.",
             "subscribedToNewsletter": "You have been subscribed to our newsletter!",
             "Errors": {
-                "invalidEmail": "Wpisz prawidłowy adres e-mail.",
+                "emailRequired": "Email is required",
+                "invalidEmail": "Please enter a valid email address",
                 "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
             }
         },
@@ -607,15 +689,25 @@
                 "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
                 "ctaLabel": "Dodaj do koszyka",
                 "Errors": {
-                    "amountRequired": "Please select or enter a gift certificate amount.",
-                    "amountInvalid": "Please select a valid gift certificate amount.",
-                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                    "amountRequired": "Please select or enter a gift certificate amount",
+                    "amountInvalid": "Please select a valid gift certificate amount",
+                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}",
+                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later.",
+                    "senderNameRequired": "Your name is required",
+                    "senderEmailRequired": "Your email is required",
+                    "recipientNameRequired": "Recipient's name is required",
+                    "recipientEmailRequired": "Recipient's email is required",
+                    "emailInvalid": "Please enter a valid email address",
+                    "checkboxRequired": "You must check this box to continue"
                 }
             }
         }
     },
     "Form": {
-        "optional": "opcjonalne"
+        "optional": "opcjonalne",
+        "Errors": {
+            "invalidInput": "Please check your input and try again",
+            "invalidFormat": "The value entered does not match the required format"
+        }
     }
 }
