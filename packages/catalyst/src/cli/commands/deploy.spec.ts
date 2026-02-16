@@ -336,13 +336,9 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
   config.set('accessToken', accessToken);
   config.delete('storeHash');
 
-  const savedStoreHash = process.env.CATALYST_STORE_HASH;
-
-  delete process.env.CATALYST_STORE_HASH;
+  vi.stubEnv('CATALYST_STORE_HASH', undefined);
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
-
-  if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
 
   expect(consola.error).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -351,6 +347,8 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
     }),
   );
   expect(exitMock).toHaveBeenCalledWith(1);
+
+  vi.unstubAllEnvs();
 });
 
 test('errors when access token is missing and not in .bigcommerce/project.json', async () => {
@@ -360,13 +358,9 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
   config.set('storeHash', storeHash);
   config.delete('accessToken');
 
-  const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
-
-  delete process.env.CATALYST_ACCESS_TOKEN;
+  vi.stubEnv('CATALYST_ACCESS_TOKEN', undefined);
 
   await program.parseAsync(['node', 'catalyst', 'deploy']);
-
-  if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
   expect(consola.error).toHaveBeenCalledWith(
     expect.objectContaining({
@@ -375,6 +369,8 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
     }),
   );
   expect(exitMock).toHaveBeenCalledWith(1);
+
+  vi.unstubAllEnvs();
 });
 
 test('reads from env options', () => {
