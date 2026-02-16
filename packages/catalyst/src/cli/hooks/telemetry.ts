@@ -1,4 +1,4 @@
-import { Command } from '@commander-js/extra-typings';
+import { Command, type CommandUnknownOpts } from '@commander-js/extra-typings';
 
 import { getTelemetry } from '../lib/telemetry';
 
@@ -33,14 +33,28 @@ function parseArguments(args: string[]) {
   }, {});
 }
 
-export const telemetryPreHook = async (command: Command) => {
+function getCommandPath(cmd: CommandUnknownOpts): string {
+  const parts: string[] = [];
+  let current: CommandUnknownOpts | null = cmd;
+
+  while (current.parent) {
+    parts.unshift(current.name());
+    current = current.parent;
+  }
+
+  return parts.join(' ');
+}
+
+export const telemetryPreHook = async (thisCommand: Command, actionCommand: CommandUnknownOpts) => {
   const telemetry = getTelemetry();
-  const [commandName, ...args] = command.args;
+  const commandName = getCommandPath(actionCommand);
+
+  telemetry.commandName = commandName;
 
   // Return the await to get a proper stack trace.
   // eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
   return await telemetry.track(commandName, {
-    ...parseArguments(args),
+    ...parseArguments(thisCommand.args),
   });
 };
 

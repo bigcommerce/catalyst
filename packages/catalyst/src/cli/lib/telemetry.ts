@@ -13,6 +13,7 @@ export class Telemetry {
   readonly sessionId: string;
   readonly analytics: Analytics;
   readonly startTime: number;
+  commandName = 'unknown';
 
   private projectConfig: Conf<ProjectConfigSchema>;
   private CATALYST_TELEMETRY_DISABLED: string | undefined;

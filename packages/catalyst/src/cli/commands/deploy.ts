@@ -6,7 +6,6 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
-import { withErrorHandler } from '../lib/error-handler';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getTelemetry } from '../lib/telemetry';
@@ -372,89 +371,83 @@ export const deploy = new Command('deploy')
     '--prebuilt',
     'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
   )
-  .action(
-    withErrorHandler('deploy', async (options) => {
-      const config = getProjectConfig();
-      const storeHash = options.storeHash ?? config.get('storeHash');
-      const accessToken = options.accessToken ?? config.get('accessToken');
-      const telemetry = getTelemetry();
-      const projectUuid = options.projectUuid ?? config.get('projectUuid');
+  .action(async (options) => {
+    const config = getProjectConfig();
+    const storeHash = options.storeHash ?? config.get('storeHash');
+    const accessToken = options.accessToken ?? config.get('accessToken');
+    const telemetry = getTelemetry();
+    const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
-      if (!projectUuid) {
-        throw new Error(
-          'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
-        );
-      }
-
-      if (!storeHash) {
-        throw new Error(
-          'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
-        );
-      }
-
-      if (!accessToken) {
-        throw new Error(
-          'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
-        );
-      }
-
-      await telemetry.identify(storeHash);
-
-      if (options.prebuilt) {
-        const distDir = join(process.cwd(), '.bigcommerce', 'dist');
-
-        try {
-          await access(distDir);
-        } catch {
-          throw new Error(
-            'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-          );
-        }
-
-        const contents = await readdir(distDir);
-
-        if (contents.length === 0) {
-          throw new Error(
-            'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
-          );
-        }
-
-        consola.info('Using existing build output (--prebuilt).');
-      } else {
-        await buildCatalystProject(projectUuid);
-      }
-
-      await generateBundleZip();
-
-      if (options.dryRun) {
-        consola.info('Dry run enabled — skipping upload and deployment steps.');
-        consola.info('Next steps (skipped):');
-        consola.info('- Generate upload signature');
-        consola.info('- Upload bundle.zip');
-        consola.info('- Create deployment');
-
-        process.exit(0);
-      }
-
-      const uploadSignature = await generateUploadSignature(
-        storeHash,
-        accessToken,
-        options.apiHost,
+    if (!projectUuid) {
+      throw new Error(
+        'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
       );
+    }
 
-      await uploadBundleZip(uploadSignature.upload_url);
-
-      const environmentVariables = parseEnvironmentVariables(options.secret);
-
-      const { deployment_uuid: deploymentUuid } = await createDeployment(
-        projectUuid,
-        uploadSignature.upload_uuid,
-        storeHash,
-        accessToken,
-        options.apiHost,
-        environmentVariables,
+    if (!storeHash) {
+      throw new Error(
+        'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
       );
+    }
 
-      await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
-    }),
-  );
+    if (!accessToken) {
+      throw new Error(
+        'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
+      );
+    }
+
+    await telemetry.identify(storeHash);
+
+    if (options.prebuilt) {
+      const distDir = join(process.cwd(), '.bigcommerce', 'dist');
+
+      try {
+        await access(distDir);
+      } catch {
+        throw new Error(
+          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+        );
+      }
+
+      const contents = await readdir(distDir);
+
+      if (contents.length === 0) {
+        throw new Error(
+          'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
+        );
+      }
+
+      consola.info('Using existing build output (--prebuilt).');
+    } else {
+      await buildCatalystProject(projectUuid);
+    }
+
+    await generateBundleZip();
+
+    if (options.dryRun) {
+      consola.info('Dry run enabled — skipping upload and deployment steps.');
+      consola.info('Next steps (skipped):');
+      consola.info('- Generate upload signature');
+      consola.info('- Upload bundle.zip');
+      consola.info('- Create deployment');
+
+      process.exit(0);
+    }
+
+    const uploadSignature = await generateUploadSignature(storeHash, accessToken, options.apiHost);
+
+    await uploadBundleZip(uploadSignature.upload_url);
+
+    const environmentVariables = parseEnvironmentVariables(options.secret);
+
+    const { deployment_uuid: deploymentUuid } = await createDeployment(
+      projectUuid,
+      uploadSignature.upload_uuid,
+      storeHash,
+      accessToken,
+      options.apiHost,
+      environmentVariables,
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
+  });

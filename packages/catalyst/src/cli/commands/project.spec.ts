@@ -36,6 +36,7 @@ beforeAll(async () => {
       isEnabled: vi.fn(() => true),
       track: vi.fn(),
       sessionId: 'test-session-uuid',
+      commandName: 'unknown',
       durationMs: vi.fn().mockReturnValue(0),
       analytics: {
         closeAndFlush: vi.fn().mockResolvedValue(undefined),
@@ -161,25 +162,22 @@ describe('project create', () => {
 
     const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('Duplicate');
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'create',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--root-dir',
-      tmpDir,
-    ]);
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'create',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--root-dir',
+        tmpDir,
+      ]),
+    ).rejects.toThrow('Failed to create project, is the name already in use?');
 
     promptMock.mockRestore();
-
-    expect(consola.error).toHaveBeenCalledWith(
-      'Failed to create project, is the name already in use?',
-    );
-    expect(exitMock).toHaveBeenCalledWith(1);
   });
 });
 
@@ -415,29 +413,25 @@ describe('project link', () => {
         return new Promise((resolve) => resolve('New Project'));
       });
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'link',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--root-dir',
-      tmpDir,
-    ]);
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--root-dir',
+        tmpDir,
+      ]),
+    ).rejects.toThrow('Failed to create project, is the name already in use?');
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
     expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
-
-    expect(consola.error).toHaveBeenCalledWith(
-      'Failed to create project, is the name already in use?',
-    );
-
-    expect(exitMock).toHaveBeenCalledWith(1);
 
     consolaPromptMock.mockRestore();
   });
@@ -449,25 +443,26 @@ describe('project link', () => {
       ),
     );
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'link',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--root-dir',
-      tmpDir,
-    ]);
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--root-dir',
+        tmpDir,
+      ]),
+    ).rejects.toThrow(
+      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
-    expect(consola.error).toHaveBeenCalledWith(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
-    );
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {

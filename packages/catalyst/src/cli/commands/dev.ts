@@ -3,8 +3,6 @@ import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { withErrorHandler } from '../lib/error-handler';
-
 export const dev = new Command('dev')
   .description('Start the Catalyst development server.')
   // Proxy `--help` to the underlying `next dev` command
@@ -15,19 +13,17 @@ export const dev = new Command('dev')
     '[options...]',
     'Next.js `dev` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-dev-options)',
   )
-  .action(
-    withErrorHandler('dev', async (options) => {
-      const nextBin = join('node_modules', '.bin', 'next');
+  .action(async (options) => {
+    const nextBin = join('node_modules', '.bin', 'next');
 
-      if (!existsSync(nextBin)) {
-        throw new Error(
-          `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
-        );
-      }
+    if (!existsSync(nextBin)) {
+      throw new Error(
+        `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
+      );
+    }
 
-      await execa(nextBin, ['dev', ...options], {
-        stdio: 'inherit',
-        cwd: process.cwd(),
-      });
-    }),
-  );
+    await execa(nextBin, ['dev', ...options], {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    });
+  });

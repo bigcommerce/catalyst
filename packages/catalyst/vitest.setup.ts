@@ -4,7 +4,7 @@ import { server } from './tests/mocks/node';
 
 const mockTelemetryInstance = {
   sessionId: 'test-session-uuid',
-  traceId: vi.fn().mockReturnValue('test-session-uuid'),
+  commandName: 'unknown',
   analytics: {
     track: vi.fn(),
     identify: vi.fn(),
@@ -12,7 +12,6 @@ const mockTelemetryInstance = {
   },
   track: vi.fn().mockResolvedValue(undefined),
   identify: vi.fn().mockResolvedValue(undefined),
-  trackError: vi.fn().mockResolvedValue(undefined),
   startTime: 0,
   durationMs: vi.fn().mockReturnValue(0),
   setEnabled: vi.fn(),

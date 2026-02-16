@@ -21,6 +21,12 @@ describe('Telemetry', () => {
     expect(telemetry.sessionId).toMatch(uuidRegex);
   });
 
+  test('commandName defaults to unknown', () => {
+    const telemetry = new Telemetry();
+
+    expect(telemetry.commandName).toBe('unknown');
+  });
+
   test('durationMs returns elapsed time', async () => {
     const telemetry = new Telemetry();
 

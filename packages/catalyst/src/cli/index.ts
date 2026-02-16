@@ -11,7 +11,7 @@ const handleFatalError = async (error: unknown) => {
 
   try {
     await telemetry.track('error', {
-      commandName: 'unknown',
+      commandName: telemetry.commandName,
       errorMessage,
       errorStack,
       durationMs: telemetry.durationMs(),
@@ -40,4 +40,9 @@ process.on('unhandledRejection', (reason) => {
   void handleFatalError(reason);
 });
 
-program.parse(process.argv);
+try {
+  await program.parseAsync(process.argv);
+  await getTelemetry().analytics.closeAndFlush();
+} catch (error) {
+  await handleFatalError(error);
+}
