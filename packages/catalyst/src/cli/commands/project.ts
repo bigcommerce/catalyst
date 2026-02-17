@@ -3,6 +3,7 @@ import { Command, Option } from 'commander';
 import { consola } from '../lib/logger';
 import { createProject, fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
+import { resolveCredentials } from '../lib/resolve-credentials';
 import { getTelemetry } from '../lib/telemetry';
 
 const list = new Command('list')
@@ -26,18 +27,7 @@ const list = new Command('list')
   )
   .action(async (options) => {
     const config = getProjectConfig();
-    const storeHash = options.storeHash ?? config.get('storeHash');
-    const accessToken = options.accessToken ?? config.get('accessToken');
-
-    if (!storeHash || !accessToken) {
-      consola.error('Insufficient information to list projects.');
-      consola.info(
-        'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN), or run from a project that has been linked with credentials.',
-      );
-      process.exit(1);
-
-      return;
-    }
+    const { storeHash, accessToken } = resolveCredentials(options, config);
 
     await getTelemetry().identify(storeHash);
 
@@ -88,38 +78,24 @@ const create = new Command('create')
     process.cwd(),
   )
   .action(async (options) => {
-    if (!options.storeHash || !options.accessToken) {
-      consola.error('Insufficient information to create a project.');
-      consola.info(
-        'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
-      );
-      process.exit(1);
+    const config = getProjectConfig(options.rootDir);
+    const { storeHash, accessToken } = resolveCredentials(options, config);
 
-      return;
-    }
-
-    await getTelemetry().identify(options.storeHash);
+    await getTelemetry().identify(storeHash);
 
     const newProjectName = await consola.prompt('Enter a name for the new project:', {
       type: 'text',
     });
 
-    const data = await createProject(
-      newProjectName,
-      options.storeHash,
-      options.accessToken,
-      options.apiHost,
-    );
+    const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
 
     consola.success(`Project "${data.name}" created successfully.`);
-
-    const config = getProjectConfig(options.rootDir);
 
     consola.start('Writing project UUID to .bigcommerce/project.json...');
     config.set('projectUuid', data.uuid);
     config.set('framework', 'catalyst');
-    config.set('storeHash', options.storeHash);
-    config.set('accessToken', options.accessToken);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
     consola.success('Project UUID written to .bigcommerce/project.json.');
 
     process.exit(0);
@@ -178,68 +154,57 @@ export const link = new Command('link')
       writeProjectConfig(options.projectUuid);
 
       process.exit(0);
+
+      return;
     }
 
-    if (options.storeHash && options.accessToken) {
-      await getTelemetry().identify(options.storeHash);
+    const { storeHash, accessToken } = resolveCredentials(options, config);
 
-      consola.start('Fetching projects...');
+    await getTelemetry().identify(storeHash);
 
-      const projects = await fetchProjects(options.storeHash, options.accessToken, options.apiHost);
+    consola.start('Fetching projects...');
 
-      consola.success('Projects fetched.');
+    const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
 
-      const promptOptions = [
-        ...projects.map((proj) => ({
-          label: proj.name,
-          value: proj.uuid,
-          hint: proj.uuid,
-        })),
-        {
-          label: 'Create a new project',
-          value: 'create',
-          hint: 'Create a new infrastructure project for this BigCommerce store.',
-        },
-      ];
+    consola.success('Projects fetched.');
 
-      let projectUuid = await consola.prompt(
-        'Select a project or create a new project (Press <enter> to select).',
-        {
-          type: 'select',
-          options: promptOptions,
-          cancel: 'reject',
-        },
-      );
+    const promptOptions = [
+      ...projects.map((proj) => ({
+        label: proj.name,
+        value: proj.uuid,
+        hint: proj.uuid,
+      })),
+      {
+        label: 'Create a new project',
+        value: 'create',
+        hint: 'Create a new infrastructure project for this BigCommerce store.',
+      },
+    ];
 
-      if (projectUuid === 'create') {
-        const newProjectName = await consola.prompt('Enter a name for the new project:', {
-          type: 'text',
-        });
+    let projectUuid = await consola.prompt(
+      'Select a project or create a new project (Press <enter> to select).',
+      {
+        type: 'select',
+        options: promptOptions,
+        cancel: 'reject',
+      },
+    );
 
-        const data = await createProject(
-          newProjectName,
-          options.storeHash,
-          options.accessToken,
-          options.apiHost,
-        );
-
-        projectUuid = data.uuid;
-
-        consola.success(`Project "${data.name}" created successfully.`);
-      }
-
-      writeProjectConfig(projectUuid, {
-        storeHash: options.storeHash,
-        accessToken: options.accessToken,
+    if (projectUuid === 'create') {
+      const newProjectName = await consola.prompt('Enter a name for the new project:', {
+        type: 'text',
       });
 
-      process.exit(0);
+      const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
+
+      projectUuid = data.uuid;
+
+      consola.success(`Project "${data.name}" created successfully.`);
     }
 
-    consola.error('Insufficient information to link a project.');
-    consola.info('Provide a project UUID with --project-uuid, or');
-    consola.info('Provide both --store-hash and --access-token to fetch and select a project.');
-    process.exit(1);
+    writeProjectConfig(projectUuid, { storeHash, accessToken });
+
+    process.exit(0);
   });
 
 export const project = new Command('project')
