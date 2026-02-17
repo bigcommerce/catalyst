@@ -46,6 +46,12 @@ const VanityUrlQuery = graphql(`
 `);
 
 const getVanityUrl = cache(async () => {
+  const isPreview = process.env.VERCEL_ENV === 'preview';
+
+  if (isPreview && process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
   const { data } = await client.fetch({
     document: VanityUrlQuery,
     fetchOptions: { next: { revalidate } },

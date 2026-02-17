@@ -73,8 +73,16 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const vanityUrl = data.site.settings?.url.vanityUrl;
 
+  const isPreview = process.env.VERCEL_ENV === 'preview';
+  const baseUrl =
+    isPreview && process.env.VERCEL_URL
+      ? new URL(`https://${process.env.VERCEL_URL}`)
+      : vanityUrl
+        ? new URL(vanityUrl)
+        : undefined;
+
   return {
-    metadataBase: vanityUrl ? new URL(vanityUrl) : undefined,
+    metadataBase: baseUrl,
     title: {
       template: `%s - ${storeName}`,
       default: pageTitle || storeName,
