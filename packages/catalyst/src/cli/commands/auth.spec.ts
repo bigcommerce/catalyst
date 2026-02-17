@@ -91,6 +91,9 @@ describe('whoami', () => {
     await program.parseAsync(['node', 'catalyst', 'auth', 'whoami']);
 
     expect(consola.info).toHaveBeenCalledWith('Not logged in: no credentials found.');
+    expect(consola.info).toHaveBeenCalledWith(
+      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
+    );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 
