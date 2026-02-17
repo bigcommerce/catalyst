@@ -1,27 +1,52 @@
-
-import type { UserConfig } from 'unlighthouse';
+import type { UserConfig } from "unlighthouse";
 
 export default {
   ci: {
     buildStatic: true,
-    // Disabling the budget so we can audit and fix the issues first
+    reporter: "jsonExpanded",
     budget: {
       // "best-practices": 100,
       // "accessibility": 100,
       // "seo": 100,
+      // performance: 80,
     },
-  }, 
+  },
+  scanner: {
+    // Run each page multiple times and use the median to absorb cold start
+    // outliers across all discovered pages.
+    samples: 3,
+    // Only audit one representative URL per unique page template. PLP/PDP and
+    // other dynamic routes share the same layout, so scanning more instances of
+    // the same template yields redundant data.
+    include: [
+      "/",
+      "/fog-linen-chambray-towel-beige-stripe", // PDP
+      "/bath", // PLP categories
+      "/brands/ofs", // PLP brands
+      "/search",
+      "/cart",
+      "/login",
+      "/login/forgot-password",
+      "/register",
+      "/blog",
+      "/your-first-blog-post", // Blog post
+      "/compare",
+      "/gift-certificates", // Gift certificates page
+      "/gift-certificates/balance", // Gift certificates balance page
+      "/gift-certificates/purchase", // Gift certificates purchase page
+      "/contact-us",
+      "/shipping-returns",
+    ],
+  },
   lighthouseOptions: {
-    // Disabling performance tests because lighthouse utilizes hardware throttling. This affects concurrently running tests which might lead to false positives.
-    // The best way to truly measure performance is to use real user metrics – Vercel's Speed Insights is a great tool for that.
-    onlyCategories: ['best-practices', 'accessibility', 'seo'],
+    onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
     skipAudits: [
       // Disabling `is-crawlable` as it's more relevant for production sites.
-      'is-crawlable',
+      "is-crawlable",
       // Disabling third-party cookies because the only third-party cookies we have is provided through Cloudflare for our CDN, which is not relevant for our audits.
-      'third-party-cookies',
+      "third-party-cookies",
       // Disabling inspector issues as it's only providing third-party cookie issues, which are not relevant for our audits.
-      'inspector-issues',
-    ]
-  }
+      "inspector-issues",
+    ],
+  },
 } satisfies UserConfig;
