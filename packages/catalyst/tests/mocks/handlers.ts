@@ -83,6 +83,31 @@ export const handlers = [
     }),
   ),
 
+  // Handler for device code OAuth flow (auth login)
+  http.post('https://login.bigcommerce.com/device/token', async ({ request }) => {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const body = (await request.json()) as Record<string, string>;
+
+    // Poll request (has device_code) — return credentials
+    if (body.device_code) {
+      return HttpResponse.json({
+        access_token: 'mock-access-token',
+        store_hash: 'mock-store-hash',
+        context: 'stores/mock-store-hash',
+        api_uri: 'https://api.bigcommerce.com',
+      });
+    }
+
+    // Initial request (has scopes) — return device code
+    return HttpResponse.json({
+      device_code: 'mock-device-code',
+      user_code: 'MOCK-CODE',
+      verification_uri: 'https://login.bigcommerce.com/device',
+      expires_in: 600,
+      interval: 5,
+    });
+  }),
+
   // Handle for createProjects
   http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({

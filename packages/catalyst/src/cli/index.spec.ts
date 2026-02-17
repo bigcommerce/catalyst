@@ -26,11 +26,18 @@ describe('CLI program', () => {
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
     expect(commands).toContain('project');
+    expect(commands).toContain('auth');
 
     const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
 
     expect(projectCmd?.commands.map((c) => c.name())).toEqual(
       expect.arrayContaining(['create', 'list', 'link']),
+    );
+
+    const authCmd = program.commands.find((cmd) => cmd.name() === 'auth');
+
+    expect(authCmd?.commands.map((c) => c.name())).toEqual(
+      expect.arrayContaining(['whoami', 'login', 'logout']),
     );
   });
 
