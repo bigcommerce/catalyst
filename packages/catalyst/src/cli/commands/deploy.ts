@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
+import { resolveCredentials } from '../lib/resolve-credentials';
 import { getTelemetry } from '../lib/telemetry';
 
 import { buildCatalystProject } from './build';
@@ -373,26 +374,13 @@ export const deploy = new Command('deploy')
   )
   .action(async (options) => {
     const config = getProjectConfig();
-    const storeHash = options.storeHash ?? config.get('storeHash');
-    const accessToken = options.accessToken ?? config.get('accessToken');
+    const { storeHash, accessToken } = resolveCredentials(options, config);
     const telemetry = getTelemetry();
     const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
     if (!projectUuid) {
       throw new Error(
         'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
-      );
-    }
-
-    if (!storeHash) {
-      throw new Error(
-        'Store hash is required. Provide --store-hash (or set CATALYST_STORE_HASH), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
-      );
-    }
-
-    if (!accessToken) {
-      throw new Error(
-        'Access token is required. Provide --access-token (or set CATALYST_ACCESS_TOKEN), or run `catalyst project create` or `catalyst project link` with credentials to save it to .bigcommerce/project.json.',
       );
     }
 
