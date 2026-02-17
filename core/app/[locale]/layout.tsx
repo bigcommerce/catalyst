@@ -74,7 +74,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const vanityUrl = data.site.settings?.url.vanityUrl;
 
   return {
-    metadataBase: vanityUrl ? new URL(vanityUrl) : undefined,
+    metadataBase:
+      process.env.NEXT_DISABLE_METADATA_BASE !== 'true' && vanityUrl
+        ? new URL(vanityUrl)
+        : undefined,
     title: {
       template: `%s - ${storeName}`,
       default: pageTitle || storeName,

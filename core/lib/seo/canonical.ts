@@ -61,6 +61,10 @@ const getVanityUrl = cache(async () => {
 });
 
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {
+  if (process.env.NEXT_DISABLE_METADATA_BASE === 'true') {
+    return undefined;
+  }
+
   const { path, locale, includeAlternates = true } = options;
 
   const baseUrl = await getVanityUrl();
