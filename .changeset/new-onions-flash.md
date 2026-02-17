@@ -15,13 +15,14 @@ Update `core/app/[locale]/layout.tsx`:
 ```diff
 + const vanityUrl = data.site.settings?.url.vanityUrl;
 +
-+ const isPreview = process.env.VERCEL_ENV === 'preview';
-+ const baseUrl =
-+   isPreview && process.env.VERCEL_URL
-+     ? new URL(`https://${process.env.VERCEL_URL}`)
-+     : vanityUrl
-+       ? new URL(vanityUrl)
-+       : undefined;
++ // Use preview deployment URL so metadataBase (canonical, og:url) points at the preview, not production.
++ let baseUrl: URL | undefined;
++
++ if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
++   baseUrl = new URL(`https://${process.env.VERCEL_URL}`);
++ } else if (vanityUrl) {
++   baseUrl = new URL(vanityUrl);
++ }
 +
   return {
 +   metadataBase: baseUrl,
