@@ -1,6 +1,10 @@
 import { Command, Option } from 'commander';
+import { colorize } from 'consola/utils';
+import open from 'open';
+import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { DEFAULT_LOGIN_URL, requestDeviceCode, waitForDeviceToken } from '../lib/auth';
 import { consola } from '../lib/logger';
 import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
@@ -25,9 +29,13 @@ async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost
   }
 
   const res: unknown = await response.json();
-  const { data } = StoreProfileSchema.parse(res);
+  const result = StoreProfileSchema.safeParse(res);
 
-  return data;
+  if (!result.success) {
+    throw new Error('Unexpected response from store profile API');
+  }
+
+  return result.data.data;
 }
 
 const whoami = new Command('whoami')
@@ -101,6 +109,109 @@ const whoami = new Command('whoami')
     }
   });
 
+const login = new Command('login')
+  .description('Authenticate via browser using the OAuth device code flow.')
+  .addOption(
+    new Option(
+      '--store-hash <hash>',
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
+    ).env('CATALYST_STORE_HASH'),
+  )
+  .addOption(
+    new Option(
+      '--access-token <token>',
+      'BigCommerce access token. Can be found after creating a store-level API account.',
+    ).env('CATALYST_ACCESS_TOKEN'),
+  )
+  .addOption(
+    new Option('--login-url <url>', 'BigCommerce login URL.')
+      .env('BIGCOMMERCE_LOGIN_URL')
+      .default(DEFAULT_LOGIN_URL),
+  )
+  .action(async (options) => {
+    try {
+      const config = getProjectConfig();
+
+      const storeHash = options.storeHash ?? config.get('storeHash');
+      const accessToken = options.accessToken ?? config.get('accessToken');
+
+      if (storeHash && accessToken) {
+        consola.info(`Already logged in to store ${storeHash}.`);
+        consola.info('Run `catalyst auth logout` first to re-authenticate.');
+        process.exit(0);
+
+        return;
+      }
+
+      const deviceCode = await requestDeviceCode(options.loginUrl);
+
+      consola.info(
+        `${colorize('yellow', 'Your one-time code:')} ${colorize('bold', deviceCode.user_code)}`,
+      );
+
+      try {
+        await open(deviceCode.verification_uri);
+        consola.info(`Opened ${deviceCode.verification_uri} in your browser.`);
+      } catch {
+        consola.info(
+          `Open ${deviceCode.verification_uri} in your browser and enter the code above.`,
+        );
+      }
+
+      const spinner = yoctoSpinner().start('Waiting for authentication...');
+
+      const credentials = await waitForDeviceToken(
+        options.loginUrl,
+        deviceCode.device_code,
+        deviceCode.interval,
+      );
+
+      spinner.success('Authentication complete.');
+
+      config.set('storeHash', credentials.store_hash);
+      config.set('accessToken', credentials.access_token);
+
+      consola.success(`Logged in to store ${credentials.store_hash}.`);
+      process.exit(0);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      consola.error(`Login failed: ${message}`);
+      process.exit(1);
+    }
+  });
+
+const logout = new Command('logout')
+  .description('Remove stored credentials for the current project.')
+  .action(() => {
+    try {
+      const config = getProjectConfig();
+
+      const storeHash = config.get('storeHash');
+      const accessToken = config.get('accessToken');
+
+      if (!storeHash && !accessToken) {
+        consola.info('Not logged in: no credentials found.');
+        process.exit(0);
+
+        return;
+      }
+
+      config.delete('storeHash');
+      config.delete('accessToken');
+
+      consola.success(`Logged out from store ${storeHash ?? 'unknown'}.`);
+      process.exit(0);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+
+      consola.error(`Logout failed: ${message}`);
+      process.exit(1);
+    }
+  });
+
 export const auth = new Command('auth')
   .description('Manage authentication for the BigCommerce CLI.')
-  .addCommand(whoami);
+  .addCommand(whoami)
+  .addCommand(login)
+  .addCommand(logout);
