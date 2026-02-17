@@ -11,6 +11,11 @@ export default {
       // performance: 80,
     },
   },
+  scanner: {
+    // Run each page multiple times and use the median to absorb cold start
+    // outliers across all discovered pages.
+    samples: 3,
+  },
   lighthouseOptions: {
     onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
     skipAudits: [
