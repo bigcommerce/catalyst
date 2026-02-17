@@ -16,24 +16,39 @@ import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
 
-export const program = new Command();
+/**
+ * Load env file from --env-file in argv before Commander parses.
+ * Must run before program.parse() so process.env is populated when
+ * Commander reads .env('VAR') for option defaults.
+ */
+export function loadEnvFileFromArgv(argv: string[]): void {
+  const envFileIdx = argv.findIndex((arg) => arg === '--env-file' || arg.startsWith('--env-file='));
 
-function loadEnvFilePreHook(thisCommand: Command) {
-  let root: typeof thisCommand | undefined = thisCommand;
+  if (envFileIdx === -1) return;
 
-  while (root.parent) {
-    root = root.parent as typeof thisCommand;
-  }
+  const arg = argv[envFileIdx];
+  const value = arg.startsWith('--env-file=')
+    ? arg.slice('--env-file='.length)
+    : argv[envFileIdx + 1];
 
-  const opts = root.opts() as { envFile?: string };
-  const envFile = opts.envFile;
+  if (value && !value.startsWith('-')) {
+    const resolvedPath = resolve(process.cwd(), value);
+    const result = config({ path: resolvedPath, override: true });
 
-  if (envFile) {
-    const resolvedPath = resolve(process.cwd(), envFile);
-
-    config({ path: resolvedPath, override: true });
+    if (result.error) {
+      const err = result.error as NodeJS.ErrnoException;
+      console.log(result.error?.message);
+      console.log(result.error?.name);
+      consola.warn(
+        err.code === 'ENOENT'
+          ? `Env file not found: ${resolvedPath}`
+          : `Failed to load --env-file ${value}: ${result.error.message}`,
+      );
+    }
   }
 }
+
+export const program = new Command();
 
 consola.log(colorize('cyanBright', `◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
 
@@ -53,6 +68,5 @@ program
   .addCommand(project)
   .addCommand(auth)
   .addCommand(telemetry)
-  .hook('preAction', loadEnvFilePreHook)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);
