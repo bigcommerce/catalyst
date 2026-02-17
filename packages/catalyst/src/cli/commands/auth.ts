@@ -67,7 +67,7 @@ const whoami = new Command('whoami')
       if (!storeHash || !accessToken) {
         consola.info('Not logged in: no credentials found.');
         consola.info(
-          'Provide --store-hash and --access-token flags, set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables, or run `catalyst project create` / `catalyst project link` with credentials.',
+          'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
         );
         process.exit(1);
 
