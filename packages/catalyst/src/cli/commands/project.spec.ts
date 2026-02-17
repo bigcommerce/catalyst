@@ -60,6 +60,9 @@ beforeAll(async () => {
 
 afterEach(() => {
   vi.clearAllMocks();
+  config.delete('storeHash');
+  config.delete('accessToken');
+  config.delete('projectUuid');
 });
 
 afterAll(async () => {
@@ -141,14 +144,16 @@ describe('project create', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await program.parseAsync(['node', 'catalyst', 'project', 'create', '--root-dir', tmpDir]);
+    await expect(
+      program.parseAsync(['node', 'catalyst', 'project', 'create', '--root-dir', tmpDir]),
+    ).rejects.toThrow('Missing credentials');
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
-    expect(consola.error).toHaveBeenCalledWith('Insufficient information to create a project.');
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN).',
+      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -209,14 +214,16 @@ describe('project list', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await program.parseAsync(['node', 'catalyst', 'project', 'list']);
+    await expect(program.parseAsync(['node', 'catalyst', 'project', 'list'])).rejects.toThrow(
+      'Missing credentials',
+    );
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
-    expect(consola.error).toHaveBeenCalledWith('Insufficient information to list projects.');
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN), or run from a project that has been linked with credentials.',
+      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -466,14 +473,15 @@ describe('project link', () => {
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
-    await program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]);
+    await expect(
+      program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]),
+    ).rejects.toThrow('Missing credentials');
 
     expect(consola.start).not.toHaveBeenCalled();
     expect(consola.success).not.toHaveBeenCalled();
-    expect(consola.error).toHaveBeenCalledWith('Insufficient information to link a project.');
-    expect(consola.info).toHaveBeenCalledWith('Provide a project UUID with --project-uuid, or');
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Provide both --store-hash and --access-token to fetch and select a project.',
+      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
     );
 
     expect(exitMock).toHaveBeenCalledWith(1);

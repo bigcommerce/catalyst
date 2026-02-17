@@ -339,8 +339,11 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
   vi.stubEnv('CATALYST_STORE_HASH', undefined);
 
   await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
-    'Store hash is required',
+    'Missing credentials',
   );
+
+  expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
+  expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
 });
@@ -355,8 +358,11 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
   vi.stubEnv('CATALYST_ACCESS_TOKEN', undefined);
 
   await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
-    'Access token is required',
+    'Missing credentials',
   );
+
+  expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
+  expect(exitMock).toHaveBeenCalledWith(1);
 
   vi.unstubAllEnvs();
 });
