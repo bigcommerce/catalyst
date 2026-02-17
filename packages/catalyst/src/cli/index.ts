@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { consola } from './lib/logger';
 import { getTelemetry } from './lib/telemetry';
-import { program } from './program';
+import { loadEnvFileFromArgv, program } from './program';
 
 const handleFatalError = async (error: unknown) => {
   const telemetry = getTelemetry();
@@ -46,6 +46,7 @@ process.on('unhandledRejection', (reason) => {
 
 void (async () => {
   try {
+    loadEnvFileFromArgv(process.argv);
     await program.parseAsync(process.argv);
   } catch (error) {
     await handleFatalError(error);
