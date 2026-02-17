@@ -15,6 +15,28 @@ export default {
     // Run each page multiple times and use the median to absorb cold start
     // outliers across all discovered pages.
     samples: 3,
+    // Only audit one representative URL per unique page template. PLP/PDP and
+    // other dynamic routes share the same layout, so scanning more instances of
+    // the same template yields redundant data.
+    include: [
+      "/",
+      "/fog-linen-chambray-towel-beige-stripe", // PDP
+      "/bath", // PLP categories
+      "/brands/ofs", // PLP brands
+      "/search",
+      "/cart",
+      "/login",
+      "/login/forgot-password",
+      "/register",
+      "/blog",
+      "/your-first-blog-post", // Blog post
+      "/compare",
+      "/gift-certificates", // Gift certificates page
+      "/gift-certificates/balance", // Gift certificates balance page
+      "/gift-certificates/purchase", // Gift certificates purchase page
+      "/contact-us",
+      "/shipping-returns",
+    ],
   },
   lighthouseOptions: {
     onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
