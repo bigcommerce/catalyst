@@ -31,9 +31,8 @@ export default {
       "/smith-journal-13/|/dustpan-brush/|/utility-caddy/|/canvas-laundry-cart/|/laundry-detergent/|/tiered-wire-basket/|/oak-cheese-grater/|/1-l-le-parfait-jar/|/chemex-coffeemaker-3-cup/|/sample-able-brewing-system/|/orbit-terrarium-small/|/orbit-terrarium-large/|/fog-linen-chambray-towel-beige-stripe/|/zz-plant/":
         { name: "PDP" },
       "/shop-all/|/bath/|/garden/|/kitchen/|/publications/|/early-access/": {
-        name: "Categories PLP",
+        name: "PLP",
       },
-      "/brands.*": { name: "Brands PLP" },
     },
     // Disable throttling to avoid issues with cold start and cold cache.
     throttle: false,
