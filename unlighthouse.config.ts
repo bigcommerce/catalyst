@@ -15,7 +15,7 @@ export default {
     // Run each page multiple times and use the median to absorb cold start
     // outliers across all discovered pages.
     samples: 3,
-    dynamicSampling: 5,
+    dynamicSampling: 6,
     exclude: [
       "/bundleb2b/",
       "/invoices/",
@@ -24,6 +24,8 @@ export default {
       "/kitchen/*/*",
       "/publications/*/*",
       "/early-access/*/*",
+      "/digital-test-product/",
+      "/blog/\\?tag=*",
     ],
     customSampling: {
       "/smith-journal-13/|/dustpan-brush/|/utility-caddy/|/canvas-laundry-cart/|/laundry-detergent/|/tiered-wire-basket/|/oak-cheese-grater/|/1-l-le-parfait-jar/|/chemex-coffeemaker-3-cup/|/sample-able-brewing-system/|/orbit-terrarium-small/|/orbit-terrarium-large/|/fog-linen-chambray-towel-beige-stripe/|/zz-plant/":
