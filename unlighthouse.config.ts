@@ -11,6 +11,11 @@ export default {
       // performance: 80,
     },
   },
+  puppeteerClusterOptions: {
+    // Limit to one concurrent Lighthouse instance to mitigate hardware-throttling
+    // false positives that previously caused us to disable the performance category.
+    maxConcurrency: 1,
+  },
   scanner: {
     // Run each page multiple times and use the median to absorb cold start
     // outliers across all discovered pages.
