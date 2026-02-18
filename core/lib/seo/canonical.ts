@@ -46,12 +46,6 @@ const VanityUrlQuery = graphql(`
 `);
 
 const getVanityUrl = cache(async () => {
-  const isPreview = process.env.VERCEL_ENV === 'preview';
-
-  if (isPreview && process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-
   const { data } = await client.fetch({
     document: VanityUrlQuery,
     fetchOptions: { next: { revalidate } },
@@ -69,7 +63,10 @@ const getVanityUrl = cache(async () => {
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {
   const { path, locale, includeAlternates = true } = options;
 
-  const baseUrl = await getVanityUrl();
+  // Use preview deployment URL so canonical/hreflang URLs point at the preview, not production.
+  const previewUrl =
+    process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
+  const baseUrl = previewUrl && URL.canParse(previewUrl) ? previewUrl : await getVanityUrl();
 
   const canonical = buildLocalizedUrl(baseUrl, path, locale);
 
