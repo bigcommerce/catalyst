@@ -17,8 +17,8 @@ export default {
     samples: 3,
     dynamicSampling: 5,
     exclude: [
-      "/bundleb2b.*",
-      "/invoices.*",
+      "/bundleb2b/",
+      "/invoices/",
       "/bath/*/*",
       "/garden/*/*",
       "/kitchen/*/*",
