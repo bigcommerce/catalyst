@@ -8,7 +8,7 @@ Add canonical URLs and hreflang alternates for SEO. Pages now set `alternates.ca
 
 ### Step 1: Root layout metadata base
 
-The root locale layout now sets `metadataBase` from the vanity URL fetched via GraphQL. On Vercel preview deployments, `VERCEL_URL` is used instead so preview environments don't point to production.
+The root locale layout now sets `metadataBase` from the vanity URL fetched via GraphQL. On Vercel preview deployments, `VERCEL_URL` is used instead so preview environments don't point to production. `URL.canParse` guards against malformed URLs.
 
 Update `core/app/[locale]/layout.tsx`:
 
@@ -17,10 +17,12 @@ Update `core/app/[locale]/layout.tsx`:
 +
 + // Use preview deployment URL so metadataBase (canonical, og:url) points at the preview, not production.
 + let baseUrl: URL | undefined;
++ const previewUrl =
++   process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
 +
-+ if (process.env.VERCEL_ENV === 'preview' && process.env.VERCEL_URL) {
-+   baseUrl = new URL(`https://${process.env.VERCEL_URL}`);
-+ } else if (vanityUrl) {
++ if (previewUrl && URL.canParse(previewUrl)) {
++   baseUrl = new URL(previewUrl);
++ } else if (vanityUrl && URL.canParse(vanityUrl)) {
 +   baseUrl = new URL(vanityUrl);
 + }
 +
@@ -31,19 +33,19 @@ Update `core/app/[locale]/layout.tsx`:
 
 ### Step 2: Canonical/hreflang base URL for preview environments
 
-The `getVanityUrl` helper in `core/lib/seo/canonical.ts` now returns `VERCEL_URL` on preview deployments, skipping the GraphQL query.
+The `getMetadataAlternates` function in `core/lib/seo/canonical.ts` now checks for a Vercel preview URL before falling back to the GraphQL vanity URL. `URL.canParse` guards against malformed URLs.
 
 Update `core/lib/seo/canonical.ts`:
 
 ```diff
- const getVanityUrl = cache(async () => {
-+  const isPreview = process.env.VERCEL_ENV === 'preview';
-+
-+  if (isPreview && process.env.VERCEL_URL) {
-+    return `https://${process.env.VERCEL_URL}`;
-+  }
-+
-   const { data } = await client.fetch({
+ export async function getMetadataAlternates(options: CanonicalUrlOptions) {
+   const { path, locale, includeAlternates = true } = options;
+
+-  const baseUrl = await getVanityUrl();
++  // Use preview deployment URL so canonical/hreflang URLs point at the preview, not production.
++  const previewUrl =
++    process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
++  const baseUrl = previewUrl && URL.canParse(previewUrl) ? previewUrl : await getVanityUrl();
 ```
 
 ### Step 3: GraphQL fragment updates
