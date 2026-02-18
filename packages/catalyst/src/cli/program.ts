@@ -1,8 +1,8 @@
+import { Option } from '@commander-js/extra-typings';
 import { Command } from 'commander';
 import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
 import { resolve } from 'node:path';
-import { Option } from '@commander-js/extra-typings';
 
 import PACKAGE_INFO from '../../package.json';
 
@@ -46,6 +46,7 @@ program
             errCode === 'ENOENT'
               ? `Env file not found: ${envFilePath}`
               : `Failed to load --env-path ${value}: ${result.error.message}`;
+
           throw new Error(message);
         }
 
