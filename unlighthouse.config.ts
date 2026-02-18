@@ -35,6 +35,8 @@ export default {
       },
       "/brands.*": { name: "Brands PLP" },
     },
+    // Disable throttling to avoid issues with cold start and cold cache.
+    throttle: false,
   },
   lighthouseOptions: {
     onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
