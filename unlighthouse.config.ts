@@ -15,7 +15,7 @@ export default {
     // Run each page multiple times and use the median to absorb cold start
     // outliers across all discovered pages.
     samples: 3,
-    dynamicSampling: 6,
+    dynamicSampling: 5,
     exclude: [
       "/bundleb2b/",
       "/invoices/",
