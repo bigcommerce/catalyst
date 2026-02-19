@@ -72,13 +72,8 @@ const create = new Command('create')
       .env('BIGCOMMERCE_API_HOST')
       .default('api.bigcommerce.com'),
   )
-  .option(
-    '--root-dir <path>',
-    'Path to the root directory of your Catalyst project (default: current working directory).',
-    process.cwd(),
-  )
   .action(async (options) => {
-    const config = getProjectConfig(options.rootDir);
+    const config = getProjectConfig();
     const { storeHash, accessToken } = resolveCredentials(options, config);
 
     await getTelemetry().identify(storeHash);
@@ -126,13 +121,8 @@ export const link = new Command('link')
     '--project-uuid <uuid>',
     'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
   )
-  .option(
-    '--root-dir <path>',
-    'Path to the root directory of your Catalyst project (default: current working directory).',
-    process.cwd(),
-  )
   .action(async (options) => {
-    const config = getProjectConfig(options.rootDir);
+    const config = getProjectConfig();
 
     const writeProjectConfig = (
       uuid: string,
