@@ -17,7 +17,8 @@ beforeAll(async () => {
   exitMock = vi.spyOn(process, 'exit').mockImplementation(() => null as never);
 
   [tmpDir, cleanup] = await mkTempDir();
-  config = getProjectConfig(tmpDir);
+  vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+  config = getProjectConfig();
 });
 
 afterEach(() => {
