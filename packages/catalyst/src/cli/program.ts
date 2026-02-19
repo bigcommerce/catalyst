@@ -6,7 +6,6 @@ import PACKAGE_INFO from '../../package.json';
 import { auth } from './commands/auth';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
-import { dev } from './commands/dev';
 import { project } from './commands/project';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
@@ -23,7 +22,6 @@ program
   .version(PACKAGE_INFO.version)
   .description('CLI tool for Catalyst development')
   .addCommand(version)
-  .addCommand(dev)
   .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
