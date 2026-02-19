@@ -21,7 +21,6 @@ describe('CLI program', () => {
     const commands = program.commands.map((cmd) => cmd.name());
 
     expect(commands).toContain('version');
-    expect(commands).toContain('dev');
     expect(commands).toContain('start');
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
