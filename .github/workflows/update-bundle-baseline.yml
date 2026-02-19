@@ -1,0 +1,41 @@
+name: Update Bundle Baseline
+
+on:
+  push:
+    branches: [canary]
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+  BIGCOMMERCE_STORE_HASH: ${{ vars.BIGCOMMERCE_STORE_HASH }}
+  BIGCOMMERCE_CHANNEL_ID: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
+  BIGCOMMERCE_CLIENT_ID: ${{ secrets.BIGCOMMERCE_CLIENT_ID }}
+  BIGCOMMERCE_CLIENT_SECRET: ${{ secrets.BIGCOMMERCE_CLIENT_SECRET }}
+  BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+  BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+
+jobs:
+  update-baseline:
+    name: Update Bundle Baseline
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: node .github/scripts/bundle-size.mjs generate --output .github/bundle-baseline.json
+      - name: Commit updated baseline
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/bundle-baseline.json
+          git diff --staged --quiet || git commit -m "chore: update bundle size baseline [skip ci]"
+          git push
