@@ -259,13 +259,19 @@ function compare() {
   const baseline = JSON.parse(readFileSync(baselinePath, 'utf-8'));
   const current = JSON.parse(readFileSync(currentPath, 'utf-8'));
 
+  function hasChanged(base, curr) {
+    return round1(curr - base) !== 0;
+  }
+
   function formatDelta(base, curr) {
     const delta = curr - base;
+    const rounded = round1(delta);
     const sign = delta >= 0 ? '+' : '';
     const pct = base > 0 ? (delta / base) * 100 : 0;
     const pctStr = base > 0 ? ` (${sign}${round1(pct)}%)` : '';
+    const indicator = rounded > 0 ? '🔴' : '🟢';
 
-    return `${sign}${round1(delta)} kB${pctStr}`;
+    return `${indicator} ${sign}${rounded} kB${pctStr}`;
   }
 
   function isWarning(base, curr) {
@@ -286,27 +292,28 @@ function compare() {
   lines.push(`Comparing against baseline from \`${baseline.commitSha}\` (${baseline.updatedAt}).`);
   lines.push('');
 
-  lines.push('| Metric | Baseline | Current | Delta | |');
-  lines.push('|:-------|:---------|:--------|:------|:-|');
-
-  const metrics = [
+  const changedMetrics = [
     { name: 'First Load JS', base: baseline.firstLoadJs, curr: current.firstLoadJs },
     { name: 'Total JS', base: baseline.totalJs, curr: current.totalJs },
     { name: 'Total CSS', base: baseline.totalCss, curr: current.totalCss },
-  ];
+  ].filter((m) => hasChanged(m.base, m.curr));
 
-  for (const m of metrics) {
-    const d = formatDelta(m.base, m.curr);
-    const warn = isWarning(m.base, m.curr) ? ' ⚠️' : '';
+  if (changedMetrics.length > 0) {
+    lines.push('| Metric | Baseline | Current | Delta | |');
+    lines.push('|:-------|:---------|:--------|:------|:-|');
 
-    lines.push(`| ${m.name} | ${round1(m.base)} kB | ${round1(m.curr)} kB | ${d} |${warn} |`);
+    for (const m of changedMetrics) {
+      const d = formatDelta(m.base, m.curr);
+      const warn = isWarning(m.base, m.curr) ? ' ⚠️' : '';
+
+      lines.push(`| ${m.name} | ${round1(m.base)} kB | ${round1(m.curr)} kB | ${d} |${warn} |`);
+    }
+
+    lines.push('');
   }
 
-  lines.push('');
   lines.push('### Per-Route First Load JS');
   lines.push('');
-  lines.push('| Route | Baseline | Current | Delta | |');
-  lines.push('|:------|:---------|:--------|:------|:-|');
 
   const allRoutes = new Set([
     ...Object.keys(baseline.routes || {}),
@@ -315,23 +322,33 @@ function compare() {
 
   const sortedRoutes = [...allRoutes].sort();
 
+  const routeLines = [];
+
   for (const route of sortedRoutes) {
     const display = displayRoute(route);
     const base = baseline.routes?.[route];
     const curr = current.routes?.[route];
 
     if (!base && curr) {
-      lines.push(`| ${display} | -- | ${round1(curr.firstLoadJs)} kB | NEW | ✨ |`);
+      routeLines.push(`| ${display} | -- | ${round1(curr.firstLoadJs)} kB | ✨ NEW | |`);
     } else if (base && !curr) {
-      lines.push(`| ${display} | ${round1(base.firstLoadJs)} kB | -- | REMOVED | |`);
-    } else if (base && curr) {
+      routeLines.push(`| ${display} | ${round1(base.firstLoadJs)} kB | -- | REMOVED | |`);
+    } else if (base && curr && hasChanged(base.firstLoadJs, curr.firstLoadJs)) {
       const d = formatDelta(base.firstLoadJs, curr.firstLoadJs);
       const warn = isWarning(base.firstLoadJs, curr.firstLoadJs) ? ' ⚠️' : '';
 
-      lines.push(
+      routeLines.push(
         `| ${display} | ${round1(base.firstLoadJs)} kB | ${round1(curr.firstLoadJs)} kB | ${d} |${warn} |`,
       );
     }
+  }
+
+  if (routeLines.length > 0) {
+    lines.push('| Route | Baseline | Current | Delta | |');
+    lines.push('|:------|:---------|:--------|:------|:-|');
+    lines.push(...routeLines);
+  } else {
+    lines.push('_No route changes detected._');
   }
 
   lines.push('');
