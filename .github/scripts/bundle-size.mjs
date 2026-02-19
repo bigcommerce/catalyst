@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /* eslint-disable no-console, no-restricted-syntax, no-plusplus, no-continue */
 
-import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
 import { gzipSync } from 'node:zlib';
 
 // eslint-disable-next-line no-underscore-dangle
@@ -12,16 +12,17 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const CORE_DIR = resolve(__dirname, '../../core');
 const NEXT_DIR = join(CORE_DIR, '.next');
 
-const args = process.argv.slice(2);
-const command = args[0];
-
-function getFlag(name, defaultValue) {
-  const idx = args.indexOf(`--${name}`);
-
-  if (idx === -1 || idx + 1 >= args.length) return defaultValue;
-
-  return args[idx + 1];
-}
+const { values, positionals } = parseArgs({
+  allowPositionals: true,
+  options: {
+    output:    { type: 'string' },
+    baseline:  { type: 'string' },
+    current:   { type: 'string' },
+    threshold: { type: 'string' },
+    sha:       { type: 'string' },
+  },
+});
+const command = positionals[0];
 
 function round1(n) {
   return Math.round(n * 10) / 10;
@@ -45,17 +46,6 @@ function getGzipSize(filePath) {
   sizeCache.set(filePath, sizeKb);
 
   return sizeKb;
-}
-
-function getCommitSha() {
-  try {
-    return execSync('git rev-parse --short HEAD', {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    }).trim();
-  } catch {
-    return 'unknown';
-  }
 }
 
 function sumChunkSizes(chunks, dir) {
@@ -221,7 +211,7 @@ function generate() {
   );
 
   const result = {
-    commitSha: getCommitSha(),
+    commitSha: values.sha ?? 'unknown',
     updatedAt: new Date().toISOString().split('T')[0],
     firstLoadJs,
     shared: { js: sharedJs, css: sharedCss },
@@ -230,7 +220,7 @@ function generate() {
     totalCss,
   };
 
-  const output = getFlag('output', null);
+  const output = values.output ?? null;
   const json = `${JSON.stringify(result, null, 2)}\n`;
 
   if (output) {
@@ -242,9 +232,9 @@ function generate() {
 }
 
 function compare() {
-  const baselinePath = resolve(getFlag('baseline', join(CORE_DIR, 'bundle-baseline.json')));
-  const currentPath = resolve(getFlag('current', ''));
-  const threshold = Number(getFlag('threshold', '5'));
+  const baselinePath = resolve(values.baseline ?? join(CORE_DIR, 'bundle-baseline.json'));
+  const currentPath = resolve(values.current ?? '');
+  const threshold = Number(values.threshold ?? '5');
 
   if (!currentPath || !existsSync(currentPath)) {
     console.error('Error: --current <path> is required and must exist');

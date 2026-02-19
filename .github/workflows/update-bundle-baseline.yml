@@ -40,7 +40,7 @@ jobs:
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: node .github/scripts/bundle-size.mjs generate --output .github/bundle-baseline.json
+      - run: node .github/scripts/bundle-size.mjs generate --output .github/bundle-baseline.json --sha ${{ github.sha }}
       - name: Commit updated baseline
         run: |
           git config user.name "github-actions[bot]"
