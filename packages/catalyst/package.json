@@ -22,12 +22,16 @@
     "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
   },
   "dependencies": {
+    "@effect/cli": "^0.73.2",
+    "@effect/platform": "^0.94.5",
+    "@effect/platform-node": "^0.104.1",
     "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
     "commander": "^14.0.0",
     "conf": "^13.1.0",
     "consola": "^3.4.2",
     "dotenv": "^16.5.0",
+    "effect": "^3.19.18",
     "execa": "^9.6.0",
     "open": "^10.1.0",
     "yocto-spinner": "^1.0.0",
