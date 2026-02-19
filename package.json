@@ -18,7 +18,8 @@
     "build": "dotenv -e .env.local -- turbo run build",
     "lint": "dotenv -e .env.local -- turbo lint",
     "test": "turbo run test",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "update-bundle-baseline": "pnpm --filter @bigcommerce/catalyst-core run build && node .github/scripts/bundle-size.mjs generate --output .github/bundle-baseline.json"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
