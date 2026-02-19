@@ -1,14 +1,14 @@
-import { Command } from 'commander';
-import { execa } from 'execa';
+import { Effect, Layer } from 'effect';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
 import { program } from '../program';
+import { ProcessRunner } from '../providers/services/ProcessRunner';
 
-import { start } from './start';
+import { startEffect } from './start';
 
 vi.mock('execa', () => ({
-  execa: vi.fn(() => Promise.resolve({})),
+  execa: vi.fn(() => Promise.resolve({ stdout: '', stderr: '', exitCode: 0 })),
   __esModule: true,
 }));
 
@@ -24,15 +24,9 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
-test('properly configured Command instance', () => {
-  expect(start).toBeInstanceOf(Command);
-  expect(start.name()).toBe('start');
-  expect(start.description()).toBe(
-    'Start a local preview of your Catalyst storefront using the OpenNext Cloudflare adapter.',
-  );
-});
-
 test('calls execa with OpenNext production optimized server', async () => {
+  const { execa } = await import('execa');
+
   await program.parseAsync(['node', 'catalyst', 'start']);
 
   expect(execa).toHaveBeenCalledWith(
@@ -43,4 +37,33 @@ test('calls execa with OpenNext production optimized server', async () => {
       cwd: process.cwd(),
     }),
   );
+});
+
+test('startEffect uses ProcessRunner service', async () => {
+  const calls: Array<{ bin: string; args: string[] }> = [];
+
+  const TestProcessRunner = Layer.succeed(ProcessRunner, {
+    exec: (bin, args) => {
+      calls.push({ bin, args });
+
+      return Effect.succeed({ stdout: '', stderr: '', exitCode: 0 });
+    },
+  });
+
+  await Effect.runPromise(
+    startEffect.pipe(Effect.provide(TestProcessRunner)),
+  );
+
+  expect(calls).toEqual([
+    {
+      bin: 'pnpm',
+      args: [
+        'exec',
+        'opennextjs-cloudflare',
+        'preview',
+        '--config',
+        '.bigcommerce/wrangler.jsonc',
+      ],
+    },
+  ]);
 });

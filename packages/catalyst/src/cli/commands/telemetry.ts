@@ -1,43 +1,68 @@
 import { Argument, Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
+import { Effect, Layer } from 'effect';
 
-import { consola } from '../lib/logger';
-import { getTelemetry } from '../lib/telemetry';
+import { Logger } from '../presentation/services/Logger';
+import { Telemetry } from '../providers/services/Telemetry';
+import { PresentationLive } from '../presentation/layers';
+import { TelemetryLive } from '../providers/services/Telemetry';
 
-const telemetryService = getTelemetry();
-let isEnabled = telemetryService.isEnabled();
+const TelemetryCommandLayer = Layer.merge(PresentationLive, TelemetryLive);
 
-export const telemetry = new Command('telemetry')
-  .addArgument(new Argument('[arg]').choices(['disable', 'enable', 'status']))
-  .addOption(new Option('--enable', `Enables CLI telemetry collection.`).conflicts('disable'))
-  .option('--disable', `Disables CLI telemetry collection.`)
-  .action((arg, options) => {
+export const telemetryEffect = (
+  arg: string | undefined,
+  options: { enable?: boolean; disable?: boolean },
+) =>
+  Effect.gen(function* () {
+    const logger = yield* Logger;
+    const telemetryService = yield* Telemetry;
+
+    let isEnabled = yield* telemetryService.isEnabled();
+
     if (options.enable || arg === 'enable') {
-      telemetryService.setEnabled(true);
+      yield* telemetryService.setEnabled(true);
       isEnabled = true;
 
-      consola.success('Success!\n');
+      yield* logger.success('Success!\n');
     } else if (options.disable || arg === 'disable') {
-      telemetryService.setEnabled(false);
+      yield* telemetryService.setEnabled(false);
 
       if (isEnabled) {
-        consola.success('Your preference has been saved to .bigcommerce/project.json');
+        yield* logger.success(
+          'Your preference has been saved to .bigcommerce/project.json',
+        );
       } else {
-        consola.info(`Catalyst CLI telemetry collection is already disabled.`);
+        yield* logger.info(
+          'Catalyst CLI telemetry collection is already disabled.',
+        );
       }
 
       isEnabled = false;
     } else {
-      consola.info('Catalyst CLI Telemetry\n');
+      yield* logger.info('Catalyst CLI Telemetry\n');
     }
 
-    consola.info(
+    yield* logger.info(
       `Status: ${colorize('bold', isEnabled ? colorize('green', 'Enabled') : colorize('red', 'Disabled'))}`,
     );
 
     if (!isEnabled) {
-      consola.info(
-        `You have opted-out of Catalyst CLI telemetry. No data will be collected from your machine.`,
+      yield* logger.info(
+        'You have opted-out of Catalyst CLI telemetry. No data will be collected from your machine.',
       );
     }
   });
+
+export const telemetry = new Command('telemetry')
+  .addArgument(new Argument('[arg]').choices(['disable', 'enable', 'status']))
+  .addOption(
+    new Option('--enable', 'Enables CLI telemetry collection.').conflicts(
+      'disable',
+    ),
+  )
+  .option('--disable', 'Disables CLI telemetry collection.')
+  .action((arg, options) =>
+    Effect.runPromise(
+      telemetryEffect(arg, options).pipe(Effect.provide(TelemetryCommandLayer)),
+    ),
+  );
