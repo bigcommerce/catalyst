@@ -259,9 +259,7 @@ function compare() {
     const sign = delta >= 0 ? '+' : '';
     const pct = base > 0 ? (delta / base) * 100 : 0;
     const pctStr = base > 0 ? ` (${sign}${round1(pct)}%)` : '';
-    const indicator = rounded > 0 ? '🔴' : '🟢';
-
-    return `${indicator} ${sign}${rounded} kB${pctStr}`;
+    return `${sign}${rounded} kB${pctStr}`;
   }
 
   function isWarning(base, curr) {
