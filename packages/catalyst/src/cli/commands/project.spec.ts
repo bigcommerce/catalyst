@@ -55,7 +55,9 @@ beforeAll(async () => {
 
   [tmpDir, cleanup] = await mkTempDir();
 
-  config = getProjectConfig(tmpDir);
+  vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+
+  config = getProjectConfig();
 });
 
 afterEach(() => {
@@ -110,8 +112,6 @@ describe('project create', () => {
       storeHash,
       '--access-token',
       accessToken,
-      '--root-dir',
-      tmpDir,
     ]);
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
@@ -144,9 +144,9 @@ describe('project create', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(
-      program.parseAsync(['node', 'catalyst', 'project', 'create', '--root-dir', tmpDir]),
-    ).rejects.toThrow('Missing credentials');
+    await expect(program.parseAsync(['node', 'catalyst', 'project', 'create'])).rejects.toThrow(
+      'Missing credentials',
+    );
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
@@ -177,8 +177,6 @@ describe('project create', () => {
         storeHash,
         '--access-token',
         accessToken,
-        '--root-dir',
-        tmpDir,
       ]),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
 
@@ -245,7 +243,6 @@ describe('project link', () => {
           defaultValue: 'api.bigcommerce.com',
         }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-        expect.objectContaining({ flags: '--root-dir <path>', defaultValue: process.cwd() }),
       ]),
     );
   });
@@ -258,8 +255,6 @@ describe('project link', () => {
       'link',
       '--project-uuid',
       projectUuid1,
-      '--root-dir',
-      tmpDir,
     ]);
 
     expect(consola.start).toHaveBeenCalledWith(
@@ -304,8 +299,6 @@ describe('project link', () => {
       storeHash,
       '--access-token',
       accessToken,
-      '--root-dir',
-      tmpDir,
     ]);
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
@@ -366,8 +359,6 @@ describe('project link', () => {
       storeHash,
       '--access-token',
       accessToken,
-      '--root-dir',
-      tmpDir,
     ]);
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
@@ -430,8 +421,6 @@ describe('project link', () => {
         storeHash,
         '--access-token',
         accessToken,
-        '--root-dir',
-        tmpDir,
       ]),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
 
@@ -460,8 +449,6 @@ describe('project link', () => {
         storeHash,
         '--access-token',
         accessToken,
-        '--root-dir',
-        tmpDir,
       ]),
     ).rejects.toThrow(
       'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
@@ -473,9 +460,9 @@ describe('project link', () => {
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
-    await expect(
-      program.parseAsync(['node', 'catalyst', 'project', 'link', '--root-dir', tmpDir]),
-    ).rejects.toThrow('Missing credentials');
+    await expect(program.parseAsync(['node', 'catalyst', 'project', 'link'])).rejects.toThrow(
+      'Missing credentials',
+    );
 
     expect(consola.start).not.toHaveBeenCalled();
     expect(consola.success).not.toHaveBeenCalled();
