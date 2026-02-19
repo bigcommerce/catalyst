@@ -1,6 +1,6 @@
+import { Command } from '@commander-js/extra-typings';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Command } from '@commander-js/extra-typings';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 
 vi.mock('./hooks/telemetry', () => ({
@@ -58,13 +58,14 @@ describe('CLI program', () => {
 
 describe('--env-path option', () => {
   afterEach(() => {
-    delete process.env['CATALYST_STORE_HASH'];
-    delete process.env['CATALYST_ACCESS_TOKEN'];
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
   });
 
   test('loads environment variables from file when --env-path points to existing file', async () => {
     const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
     const envPath = join(tmpDir, '.env');
+
     await writeFile(
       envPath,
       'CATALYST_STORE_HASH=test-store-hash\nCATALYST_ACCESS_TOKEN=test-access-token',
@@ -74,8 +75,8 @@ describe('--env-path option', () => {
     try {
       await program.parseAsync(['--env-path', envPath, 'version'], { from: 'user' });
 
-      expect(process.env['CATALYST_STORE_HASH']).toBe('test-store-hash');
-      expect(process.env['CATALYST_ACCESS_TOKEN']).toBe('test-access-token');
+      expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
+      expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
     } finally {
       await cleanup();
     }
@@ -85,6 +86,7 @@ describe('--env-path option', () => {
     const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
     const envFileName = '.env.catalyst-test';
     const envPath = join(tmpDir, envFileName);
+
     await writeFile(
       envPath,
       'CATALYST_STORE_HASH=test-store-hash\nCATALYST_ACCESS_TOKEN=test-access-token',
@@ -92,13 +94,14 @@ describe('--env-path option', () => {
     );
 
     const originalCwd = process.cwd();
+
     process.chdir(tmpDir);
 
     try {
       await program.parseAsync(['--env-path', envFileName, 'version'], { from: 'user' });
 
-      expect(process.env['CATALYST_STORE_HASH']).toBe('test-store-hash');
-      expect(process.env['CATALYST_ACCESS_TOKEN']).toBe('test-access-token');
+      expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
+      expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
     } finally {
       process.chdir(originalCwd);
       await cleanup();
