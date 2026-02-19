@@ -1,4 +1,11 @@
 name: Bundle Size
+# Reports the bundle size impact of a PR by comparing the current build against
+# the baseline snapshot stored in .github/bundle-baseline.json.
+#
+# The baseline is automatically kept up to date by update-bundle-baseline.yml,
+# which runs on every merge to canary and integrations/makeswift.
+#
+# Results are posted as a PR comment and written to the job summary.
 
 on:
   pull_request:

@@ -1,4 +1,13 @@
 name: Update Bundle Baseline
+# Automatically regenerates .github/bundle-baseline.json after every merge to
+# canary or integrations/makeswift and commits it back to the same branch.
+#
+# This keeps the baseline in sync so that PR bundle-size comparisons (bundle-size.yml)
+# always diff against the current state of the branch rather than a stale snapshot.
+#
+# No infinite loop risk: GitHub does not re-trigger workflows on commits pushed
+# by GITHUB_TOKEN. The [skip ci] tag in the commit message is an extra safeguard.
+# No-op when unchanged: the commit step is skipped if the baseline is identical.
 
 on:
   push:
