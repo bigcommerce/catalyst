@@ -12,9 +12,9 @@ export interface ProjectConfigSchema {
   };
 }
 
-export function getProjectConfig(rootDir = process.cwd()) {
+export function getProjectConfig() {
   return new Conf<ProjectConfigSchema>({
-    cwd: join(rootDir, '.bigcommerce'),
+    cwd: join(process.cwd(), '.bigcommerce'),
     projectSuffix: '',
     configName: 'project',
     schema: {
