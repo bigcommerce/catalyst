@@ -2,7 +2,7 @@ name: Update Bundle Baseline
 
 on:
   push:
-    branches: [canary]
+    branches: [canary, integrations/makeswift]
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
