@@ -1,7 +1,7 @@
 import Conf from 'conf';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 
 import { mkTempDir } from './mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from './project-config';
@@ -15,10 +15,13 @@ const projectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
 beforeAll(async () => {
   [tmpDir, cleanup] = await mkTempDir();
 
-  config = getProjectConfig(tmpDir);
+  vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+
+  config = getProjectConfig();
 });
 
 afterAll(async () => {
+  vi.restoreAllMocks();
   await cleanup();
 });
 
