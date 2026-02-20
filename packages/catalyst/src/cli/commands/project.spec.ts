@@ -18,7 +18,7 @@ let cleanup: () => Promise<void>;
 let config: Conf<ProjectConfigSchema>;
 
 const { mockIdentify } = vi.hoisted(() => ({
-  mockIdentify: vi.fn(),
+  mockIdentify: vi.fn().mockResolvedValue(undefined),
 }));
 
 const projectUuid1 = 'a23f5785-fd99-4a94-9fb3-945551623923';
@@ -36,7 +36,7 @@ beforeAll(async () => {
     const instance = {
       identify: mockIdentify,
       isEnabled: vi.fn(() => true),
-      track: vi.fn(),
+      track: vi.fn().mockResolvedValue(undefined),
       sessionId: 'test-session-uuid',
       commandName: 'unknown',
       durationMs: vi.fn().mockReturnValue(0),

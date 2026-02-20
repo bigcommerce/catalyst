@@ -24,7 +24,7 @@ vi.mock('../../lib/project-config', async (importOriginal) => {
 
   return {
     ...actual,
-    getProjectConfig: (rootDir?: string) => actual.getProjectConfig(rootDir),
+    getProjectConfig: () => actual.getProjectConfig(),
   };
 });
 
