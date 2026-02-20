@@ -1,42 +1,192 @@
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
-import open from 'open';
-import yoctoSpinner from 'yocto-spinner';
-import { z } from 'zod';
+import { Effect } from 'effect';
 
-import { DEFAULT_LOGIN_URL, requestDeviceCode, waitForDeviceToken } from '../lib/auth';
-import { consola } from '../lib/logger';
-import { fetchProjects } from '../lib/project';
-import { getProjectConfig } from '../lib/project-config';
+import { DEFAULT_LOGIN_URL } from '../lib/auth';
+import { AuthService } from '../core/services/AuthService';
+import { ProjectService } from '../core/services/ProjectService';
+import { BrowserOpen } from '../providers/services/BrowserOpen';
+import { ProjectConfig } from '../providers/services/ProjectConfig';
+import { Telemetry } from '../providers/services/Telemetry';
+import { Logger } from '../presentation/services/Logger';
+import { Spinner } from '../presentation/services/Spinner';
+import { LiveLayer } from '../layers';
 
-const StoreProfileSchema = z.object({
-  data: z.object({
-    store_name: z.string(),
-  }),
-});
+export const whoamiEffect = (options: {
+  storeHash?: string;
+  accessToken?: string;
+  apiHost: string;
+}) =>
+  Effect.gen(function* () {
+    const logger = yield* Logger;
+    const project = yield* ProjectService;
+    const config = yield* ProjectConfig;
 
-async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost: string) {
-  const response = await fetch(`https://${apiHost}/stores/${storeHash}/v3/settings/store/profile`, {
-    method: 'GET',
-    headers: {
-      'X-Auth-Token': accessToken,
-      Accept: 'application/json',
-    },
+    const storeHash = options.storeHash ?? (yield* config.get('storeHash'));
+    const accessToken =
+      options.accessToken ?? (yield* config.get('accessToken'));
+
+    if (!storeHash || !accessToken) {
+      yield* logger.info('Not logged in: no credentials found.');
+      yield* logger.info(
+        'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
+      );
+      process.exit(1);
+
+      return;
+    }
+
+    const store = yield* project
+      .fetchStoreProfile(storeHash, accessToken, options.apiHost)
+      .pipe(
+        Effect.catchTag('HttpApiError', (e) =>
+          Effect.gen(function* () {
+            if (
+              e.message.includes('401') ||
+              e.message.includes('403')
+            ) {
+              yield* logger.error(
+                `Not logged in: invalid credentials (${e.message})`,
+              );
+            } else {
+              yield* logger.error(
+                `Failed to verify credentials: ${e.message}`,
+              );
+            }
+
+            process.exit(1);
+
+            return yield* Effect.fail(e);
+          }),
+        ),
+      );
+
+    const projectUuid = yield* config.get('projectUuid');
+
+    if (projectUuid) {
+      const projects = yield* project
+        .fetchProjects(storeHash, accessToken, options.apiHost)
+        .pipe(Effect.catchTag('HttpApiError', () => Effect.succeed([])));
+
+      const linkedProject = projects.find((p) => p.uuid === projectUuid);
+
+      if (linkedProject) {
+        yield* logger.info(
+          `Logged in to ${store.store_name} (${storeHash}), connected to project ${linkedProject.name} (${projectUuid})`,
+        );
+      } else {
+        yield* logger.info(
+          `Logged in to ${store.store_name} (${storeHash}), project ${projectUuid} not found`,
+        );
+      }
+    } else {
+      yield* logger.info(
+        `Logged in to ${store.store_name} (${storeHash})`,
+      );
+    }
+
+    process.exit(0);
   });
 
-  if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`);
+export const loginEffect = (options: {
+  storeHash?: string;
+  accessToken?: string;
+  loginUrl: string;
+}) =>
+  Effect.gen(function* () {
+    const logger = yield* Logger;
+    const spinner = yield* Spinner;
+    const authService = yield* AuthService;
+    const browser = yield* BrowserOpen;
+    const config = yield* ProjectConfig;
+
+    const storeHash = options.storeHash ?? (yield* config.get('storeHash'));
+    const accessToken =
+      options.accessToken ?? (yield* config.get('accessToken'));
+
+    if (storeHash && accessToken) {
+      yield* logger.info(`Already logged in to store ${storeHash}.`);
+      yield* logger.info('Run `catalyst auth logout` first to re-authenticate.');
+      process.exit(0);
+
+      return;
+    }
+
+    const deviceCode = yield* authService
+      .requestDeviceCode(options.loginUrl)
+      .pipe(
+        Effect.catchTag('AuthError', (e) =>
+          Effect.gen(function* () {
+            yield* logger.error(`Login failed: ${e.message}`);
+            process.exit(1);
+
+            return yield* Effect.fail(e);
+          }),
+        ),
+      );
+
+    yield* logger.info(
+      `${colorize('yellow', 'Your one-time code:')} ${colorize('bold', deviceCode.user_code)}`,
+    );
+
+    yield* browser.open(deviceCode.verification_uri).pipe(
+      Effect.tap(() => logger.info(`Opened ${deviceCode.verification_uri} in your browser.`)),
+      Effect.catchTag('BrowserOpenError', () =>
+        logger.info(
+          `Open ${deviceCode.verification_uri} in your browser and enter the code above.`,
+        ),
+      ),
+    );
+
+    yield* spinner.start('Waiting for authentication...');
+
+    const credentials = yield* authService
+      .waitForDeviceToken(
+        options.loginUrl,
+        deviceCode.device_code,
+        deviceCode.interval,
+      )
+      .pipe(
+        Effect.catchTag('AuthError', (e) =>
+          Effect.gen(function* () {
+            yield* spinner.error('Authentication failed.');
+            yield* logger.error(`Login failed: ${e.message}`);
+            process.exit(1);
+
+            return yield* Effect.fail(e);
+          }),
+        ),
+      );
+
+    yield* spinner.success('Authentication complete.');
+
+    yield* config.set('storeHash', credentials.store_hash);
+    yield* config.set('accessToken', credentials.access_token);
+
+    yield* logger.success(`Logged in to store ${credentials.store_hash}.`);
+    process.exit(0);
+  });
+
+export const logoutEffect = Effect.gen(function* () {
+  const logger = yield* Logger;
+  const config = yield* ProjectConfig;
+
+  const storeHash = yield* config.get('storeHash');
+  const accessToken = yield* config.get('accessToken');
+
+  if (!storeHash && !accessToken) {
+    yield* logger.info('Not logged in: no credentials found.');
+    process.exit(0);
+
+    return;
   }
 
-  const res: unknown = await response.json();
-  const result = StoreProfileSchema.safeParse(res);
+  yield* config.delete('storeHash');
+  yield* config.delete('accessToken');
 
-  if (!result.success) {
-    throw new Error('Unexpected response from store profile API');
-  }
-
-  return result.data.data;
-}
+  yield* logger.success(`Logged out from store ${storeHash ?? 'unknown'}.`);
+  process.exit(0);
+});
 
 const whoami = new Command('whoami')
   .description('Verify stored credentials and display store/project info.')
@@ -53,61 +203,16 @@ const whoami = new Command('whoami')
     ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
+    new Option(
+      '--api-host <host>',
+      'BigCommerce API host. The default is api.bigcommerce.com.',
+    )
       .env('BIGCOMMERCE_API_HOST')
       .default('api.bigcommerce.com'),
   )
-  .action(async (options) => {
-    try {
-      const config = getProjectConfig();
-
-      const storeHash = options.storeHash ?? config.get('storeHash');
-      const accessToken = options.accessToken ?? config.get('accessToken');
-
-      if (!storeHash || !accessToken) {
-        consola.info('Not logged in: no credentials found.');
-        consola.info(
-          'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
-        );
-        process.exit(1);
-
-        return;
-      }
-
-      const store = await fetchStoreProfile(storeHash, accessToken, options.apiHost);
-
-      const projectUuid = config.get('projectUuid');
-
-      if (projectUuid) {
-        const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
-        const linkedProject = projects.find((p) => p.uuid === projectUuid);
-
-        if (linkedProject) {
-          consola.info(
-            `Logged in to ${store.store_name} (${storeHash}), connected to project ${linkedProject.name} (${projectUuid})`,
-          );
-        } else {
-          consola.info(
-            `Logged in to ${store.store_name} (${storeHash}), project ${projectUuid} not found`,
-          );
-        }
-      } else {
-        consola.info(`Logged in to ${store.store_name} (${storeHash})`);
-      }
-
-      process.exit(0);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-
-      if (message.includes('401') || message.includes('403')) {
-        consola.error(`Not logged in: invalid credentials (${message})`);
-      } else {
-        consola.error(`Failed to verify credentials: ${message}`);
-      }
-
-      process.exit(1);
-    }
-  });
+  .action(async (options) =>
+    Effect.runPromise(whoamiEffect(options).pipe(Effect.provide(LiveLayer))),
+  );
 
 const login = new Command('login')
   .description('Authenticate via browser using the OAuth device code flow.')
@@ -128,87 +233,15 @@ const login = new Command('login')
       .env('BIGCOMMERCE_LOGIN_URL')
       .default(DEFAULT_LOGIN_URL),
   )
-  .action(async (options) => {
-    try {
-      const config = getProjectConfig();
-
-      const storeHash = options.storeHash ?? config.get('storeHash');
-      const accessToken = options.accessToken ?? config.get('accessToken');
-
-      if (storeHash && accessToken) {
-        consola.info(`Already logged in to store ${storeHash}.`);
-        consola.info('Run `catalyst auth logout` first to re-authenticate.');
-        process.exit(0);
-
-        return;
-      }
-
-      const deviceCode = await requestDeviceCode(options.loginUrl);
-
-      consola.info(
-        `${colorize('yellow', 'Your one-time code:')} ${colorize('bold', deviceCode.user_code)}`,
-      );
-
-      try {
-        await open(deviceCode.verification_uri);
-        consola.info(`Opened ${deviceCode.verification_uri} in your browser.`);
-      } catch {
-        consola.info(
-          `Open ${deviceCode.verification_uri} in your browser and enter the code above.`,
-        );
-      }
-
-      const spinner = yoctoSpinner().start('Waiting for authentication...');
-
-      const credentials = await waitForDeviceToken(
-        options.loginUrl,
-        deviceCode.device_code,
-        deviceCode.interval,
-      );
-
-      spinner.success('Authentication complete.');
-
-      config.set('storeHash', credentials.store_hash);
-      config.set('accessToken', credentials.access_token);
-
-      consola.success(`Logged in to store ${credentials.store_hash}.`);
-      process.exit(0);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-
-      consola.error(`Login failed: ${message}`);
-      process.exit(1);
-    }
-  });
+  .action(async (options) =>
+    Effect.runPromise(loginEffect(options).pipe(Effect.provide(LiveLayer))),
+  );
 
 const logout = new Command('logout')
   .description('Remove stored credentials for the current project.')
-  .action(() => {
-    try {
-      const config = getProjectConfig();
-
-      const storeHash = config.get('storeHash');
-      const accessToken = config.get('accessToken');
-
-      if (!storeHash && !accessToken) {
-        consola.info('Not logged in: no credentials found.');
-        process.exit(0);
-
-        return;
-      }
-
-      config.delete('storeHash');
-      config.delete('accessToken');
-
-      consola.success(`Logged out from store ${storeHash ?? 'unknown'}.`);
-      process.exit(0);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-
-      consola.error(`Logout failed: ${message}`);
-      process.exit(1);
-    }
-  });
+  .action(async () =>
+    Effect.runPromise(logoutEffect.pipe(Effect.provide(LiveLayer))),
+  );
 
 export const auth = new Command('auth')
   .description('Manage authentication for the BigCommerce CLI.')

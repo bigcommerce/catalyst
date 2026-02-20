@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
-import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 import { consola } from '../lib/logger';
@@ -460,9 +460,18 @@ describe('project link', () => {
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
     await expect(program.parseAsync(['node', 'catalyst', 'project', 'link'])).rejects.toThrow(
       'Missing credentials',
     );
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.start).not.toHaveBeenCalled();
     expect(consola.success).not.toHaveBeenCalled();

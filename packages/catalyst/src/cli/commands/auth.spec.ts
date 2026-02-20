@@ -110,7 +110,9 @@ describe('whoami', () => {
       ),
     );
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'whoami']);
+    await expect(
+      program.parseAsync(['node', 'catalyst', 'auth', 'whoami']),
+    ).rejects.toThrow();
 
     expect(consola.error).toHaveBeenCalledWith(
       expect.stringContaining('Not logged in: invalid credentials'),
@@ -157,7 +159,9 @@ describe('login', () => {
       ),
     );
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+    await expect(
+      program.parseAsync(['node', 'catalyst', 'auth', 'login']),
+    ).rejects.toThrow();
 
     expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Login failed'));
     expect(exitMock).toHaveBeenCalledWith(1);
