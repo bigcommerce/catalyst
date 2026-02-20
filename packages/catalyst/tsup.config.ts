@@ -11,6 +11,6 @@ export default defineConfig((options: Options) => ({
     CLI_SEGMENT_WRITE_KEY: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
     CONSOLA_LEVEL: process.env.NODE_ENV === 'production' ? '2' : '3',
   },
-  external: ['commander', '@commander-js/extra-typings'],
+
   ...options,
 }));

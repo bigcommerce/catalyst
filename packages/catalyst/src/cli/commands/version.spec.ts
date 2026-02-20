@@ -1,32 +1,32 @@
-import { Command } from '@commander-js/extra-typings';
+import { NodeContext } from '@effect/platform-node';
 import { Effect, Layer } from 'effect';
 import { beforeAll, expect, test, vi } from 'vitest';
 
+import PACKAGE_INFO from '../../../package.json';
 import { consola } from '../lib/logger';
 import { Logger } from '../presentation/services/Logger';
-import { program } from '../program';
+import { LiveLayer } from '../layers';
+import { cli } from './root';
 
-import { version, versionEffect } from './version';
+import { versionEffect } from './version';
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 beforeAll(() => {
   consola.mockTypes(() => vi.fn());
 });
 
-test('properly configured Command instance', () => {
-  expect(version).toBeInstanceOf(Command);
-  expect(version.name()).toBe('version');
-  expect(version.description()).toBe('Display detailed version information.');
-});
-
 test('displays version information when executed', async () => {
-  await program.parseAsync(['node', 'catalyst', 'version']);
+  await Effect.runPromise(
+    cli(['node', 'catalyst', 'version']).pipe(Effect.provide(AppLayer)),
+  );
 
   expect(consola.log).toHaveBeenCalledWith(
     expect.stringContaining('Version Information:'),
   );
 
   expect(consola.log).toHaveBeenCalledWith(
-    expect.stringContaining(`CLI Version: ${process.env.npm_package_version}`),
+    expect.stringContaining(`CLI Version: ${PACKAGE_INFO.version}`),
   );
 
   expect(consola.log).toHaveBeenCalledWith(

@@ -1,15 +1,15 @@
-import { Command } from 'commander';
+import { NodeContext } from '@effect/platform-node';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, MockInstance, test, vi } from 'vitest';
+import { Effect, Layer } from 'effect';
 
 import { server } from '../../../tests/mocks/node';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
-import { program } from '../program';
-
-import { link, project } from './project';
+import { LiveLayer } from '../layers';
+import { cli } from './root';
 
 let exitMock: MockInstance;
 
@@ -26,6 +26,8 @@ const projectUuid2 = 'b23f5785-fd99-4a94-9fb3-945551623924';
 const projectUuid3 = 'c23f5785-fd99-4a94-9fb3-945551623925';
 const storeHash = 'test-store';
 const accessToken = 'test-token';
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
@@ -74,45 +76,22 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('project', () => {
-  test('has create, link, and list subcommands', () => {
-    expect(project).toBeInstanceOf(Command);
-    expect(project.name()).toBe('project');
-    expect(project.description()).toBe('Manage your BigCommerce infrastructure project.');
-
-    const createCmd = project.commands.find((cmd) => cmd.name() === 'create');
-
-    expect(createCmd).toBeDefined();
-    expect(createCmd?.description()).toContain('Create a new BigCommerce infrastructure project');
-
-    const linkCmd = project.commands.find((cmd) => cmd.name() === 'link');
-
-    expect(linkCmd).toBeDefined();
-    expect(linkCmd?.description()).toContain(
-      'Link your local Catalyst project to a BigCommerce infrastructure project',
-    );
-
-    const listCmd = project.commands.find((cmd) => cmd.name() === 'list');
-
-    expect(listCmd).toBeDefined();
-    expect(listCmd?.description()).toContain('List BigCommerce infrastructure projects');
-  });
-});
-
 describe('project create', () => {
   test('prompts for name and creates project', async () => {
     const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('My New Project');
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'create',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'project',
+        'create',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
     expect(consolaPromptMock).toHaveBeenCalledWith(
@@ -137,16 +116,17 @@ describe('project create', () => {
   });
 
   test('with insufficient credentials exits with error', async () => {
-    // Unset env so Commander doesn't pick up CATALYST_* and trigger the create flow (which would prompt for name)
     const savedStoreHash = process.env.CATALYST_STORE_HASH;
     const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'create'])).rejects.toThrow(
-      'Missing credentials',
-    );
+    await expect(
+      Effect.runPromise(
+        cli(['node', 'catalyst', 'project', 'create']).pipe(Effect.provide(AppLayer)),
+      ),
+    ).rejects.toThrow('Missing credentials');
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
@@ -168,16 +148,18 @@ describe('project create', () => {
     const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('Duplicate');
 
     await expect(
-      program.parseAsync([
-        'node',
-        'catalyst',
-        'project',
-        'create',
-        '--store-hash',
-        storeHash,
-        '--access-token',
-        accessToken,
-      ]),
+      Effect.runPromise(
+        cli([
+          'node',
+          'catalyst',
+          'project',
+          'create',
+          '--store-hash',
+          storeHash,
+          '--access-token',
+          accessToken,
+        ]).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
 
     promptMock.mockRestore();
@@ -186,16 +168,18 @@ describe('project create', () => {
 
 describe('project list', () => {
   test('fetches and displays projects', async () => {
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'list',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'project',
+        'list',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
@@ -212,9 +196,11 @@ describe('project list', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'list'])).rejects.toThrow(
-      'Missing credentials',
-    );
+    await expect(
+      Effect.runPromise(
+        cli(['node', 'catalyst', 'project', 'list']).pipe(Effect.provide(AppLayer)),
+      ),
+    ).rejects.toThrow('Missing credentials');
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
@@ -228,34 +214,17 @@ describe('project list', () => {
 });
 
 describe('project link', () => {
-  test('properly configured Command instance', () => {
-    expect(link).toBeInstanceOf(Command);
-    expect(link.name()).toBe('link');
-    expect(link.description()).toBe(
-      'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
-    );
-    expect(link.options).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ flags: '--store-hash <hash>' }),
-        expect.objectContaining({ flags: '--access-token <token>' }),
-        expect.objectContaining({
-          flags: '--api-host <host>',
-          defaultValue: 'api.bigcommerce.com',
-        }),
-        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      ]),
-    );
-  });
-
   test('sets projectUuid when called with --project-uuid', async () => {
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'link',
-      '--project-uuid',
-      projectUuid1,
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--project-uuid',
+        projectUuid1,
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.start).toHaveBeenCalledWith(
       'Writing project UUID to .bigcommerce/project.json...',
@@ -290,16 +259,18 @@ describe('project link', () => {
         return new Promise((resolve) => resolve(projectUuid2));
       });
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'link',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
@@ -350,16 +321,18 @@ describe('project link', () => {
         return new Promise((resolve) => resolve('New Project'));
       });
 
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'project',
-      'link',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
@@ -412,16 +385,18 @@ describe('project link', () => {
       });
 
     await expect(
-      program.parseAsync([
-        'node',
-        'catalyst',
-        'project',
-        'link',
-        '--store-hash',
-        storeHash,
-        '--access-token',
-        accessToken,
-      ]),
+      Effect.runPromise(
+        cli([
+          'node',
+          'catalyst',
+          'project',
+          'link',
+          '--store-hash',
+          storeHash,
+          '--access-token',
+          accessToken,
+        ]).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
@@ -440,16 +415,18 @@ describe('project link', () => {
     );
 
     await expect(
-      program.parseAsync([
-        'node',
-        'catalyst',
-        'project',
-        'link',
-        '--store-hash',
-        storeHash,
-        '--access-token',
-        accessToken,
-      ]),
+      Effect.runPromise(
+        cli([
+          'node',
+          'catalyst',
+          'project',
+          'link',
+          '--store-hash',
+          storeHash,
+          '--access-token',
+          accessToken,
+        ]).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow(
       'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
     );
@@ -466,9 +443,11 @@ describe('project link', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'link'])).rejects.toThrow(
-      'Missing credentials',
-    );
+    await expect(
+      Effect.runPromise(
+        cli(['node', 'catalyst', 'project', 'link']).pipe(Effect.provide(AppLayer)),
+      ),
+    ).rejects.toThrow('Missing credentials');
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;

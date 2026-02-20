@@ -1,17 +1,27 @@
-import { Argument, Command, Option } from 'commander';
+import { Args, Command, Options } from '@effect/cli';
 import { colorize } from 'consola/utils';
-import { Effect, Layer } from 'effect';
+import { Effect, Option } from 'effect';
 
 import { Logger } from '../presentation/services/Logger';
 import { Telemetry } from '../providers/services/Telemetry';
-import { PresentationLive } from '../presentation/layers';
-import { TelemetryLive } from '../providers/services/Telemetry';
 
-const TelemetryCommandLayer = Layer.merge(PresentationLive, TelemetryLive);
+const telemetryArg = Args.choice([
+  ['disable', 'disable'] as const,
+  ['enable', 'enable'] as const,
+  ['status', 'status'] as const,
+]).pipe(Args.optional);
+
+const enableOption = Options.boolean('enable').pipe(
+  Options.withDescription('Enables CLI telemetry collection.'),
+);
+
+const disableOption = Options.boolean('disable').pipe(
+  Options.withDescription('Disables CLI telemetry collection.'),
+);
 
 export const telemetryEffect = (
   arg: string | undefined,
-  options: { enable?: boolean; disable?: boolean },
+  options: { enable: boolean; disable: boolean },
 ) =>
   Effect.gen(function* () {
     const logger = yield* Logger;
@@ -53,16 +63,9 @@ export const telemetryEffect = (
     }
   });
 
-export const telemetry = new Command('telemetry')
-  .addArgument(new Argument('[arg]').choices(['disable', 'enable', 'status']))
-  .addOption(
-    new Option('--enable', 'Enables CLI telemetry collection.').conflicts(
-      'disable',
-    ),
-  )
-  .option('--disable', 'Disables CLI telemetry collection.')
-  .action((arg, options) =>
-    Effect.runPromise(
-      telemetryEffect(arg, options).pipe(Effect.provide(TelemetryCommandLayer)),
-    ),
-  );
+export const telemetryCommand = Command.make(
+  'telemetry',
+  { arg: telemetryArg, enable: enableOption, disable: disableOption },
+  ({ arg, enable, disable }) =>
+    telemetryEffect(Option.getOrUndefined(arg), { enable, disable }),
+);

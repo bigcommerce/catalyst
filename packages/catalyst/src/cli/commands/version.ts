@@ -1,9 +1,8 @@
-import { Command } from 'commander';
+import { Command } from '@effect/cli';
 import { Effect } from 'effect';
 
 import PACKAGE_INFO from '../../../package.json';
 import { Logger } from '../presentation/services/Logger';
-import { PresentationLive } from '../presentation/layers';
 
 export const versionEffect = Effect.gen(function* () {
   const logger = yield* Logger;
@@ -14,6 +13,6 @@ export const versionEffect = Effect.gen(function* () {
   yield* logger.log(`Platform: ${process.platform} (${process.arch})`);
 });
 
-export const version = new Command('version')
-  .description('Display detailed version information.')
-  .action(() => Effect.runPromise(versionEffect.pipe(Effect.provide(PresentationLive))));
+export const versionCommand = Command.make('version', {}, () =>
+  versionEffect,
+).pipe(Command.withDescription('Display detailed version information.'));

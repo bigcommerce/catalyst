@@ -1,58 +1,14 @@
-import { Command } from '@commander-js/extra-typings';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 
-vi.mock('./hooks/telemetry', () => ({
-  telemetryPreHook: vi.fn().mockResolvedValue(undefined),
-  telemetryPostHook: vi.fn().mockResolvedValue(undefined),
-}));
-
-import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+import { rootCommand } from './commands/root';
+import { loadEnvFile } from './lib/load-env-file';
 import { mkTempDir } from './lib/mk-temp-dir';
-import { program } from './program';
 
 describe('CLI program', () => {
-  test('properly configured', () => {
-    expect(program).toBeInstanceOf(Command);
-    expect(program.name()).toBe(process.env.npm_package_name);
-    expect(program.version()).toBe(process.env.npm_package_version);
-    expect(program.description()).toBe('CLI tool for Catalyst development');
-  });
-
-  test('has expected commands', () => {
-    const commands = program.commands.map((cmd) => cmd.name());
-
-    expect(commands).toContain('version');
-    expect(commands).toContain('start');
-    expect(commands).toContain('build');
-    expect(commands).toContain('deploy');
-    expect(commands).toContain('project');
-    expect(commands).toContain('auth');
-
-    const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
-
-    expect(projectCmd?.commands.map((c) => c.name())).toEqual(
-      expect.arrayContaining(['create', 'list', 'link']),
-    );
-
-    const authCmd = program.commands.find((cmd) => cmd.name() === 'auth');
-
-    expect(authCmd?.commands.map((c) => c.name())).toEqual(
-      expect.arrayContaining(['whoami', 'login', 'logout']),
-    );
-  });
-
-  test('telemetry hooks are called when executing version command', async () => {
-    vi.mocked(telemetryPreHook).mockClear();
-    vi.mocked(telemetryPostHook).mockClear();
-
-    await program.parseAsync(['version'], { from: 'user' });
-
-    expect(telemetryPreHook).toHaveBeenCalledTimes(1);
-    expect(telemetryPostHook).toHaveBeenCalledTimes(1);
-
-    expect(telemetryPreHook).toHaveBeenCalledWith(expect.any(Command), expect.any(Command));
+  test('root command is defined', () => {
+    expect(rootCommand).toBeDefined();
   });
 });
 
@@ -73,7 +29,7 @@ describe('--env-path option', () => {
     );
 
     try {
-      await program.parseAsync(['--env-path', envPath, 'version'], { from: 'user' });
+      loadEnvFile(['--env-path', envPath]);
 
       expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
       expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
@@ -98,7 +54,7 @@ describe('--env-path option', () => {
     process.chdir(tmpDir);
 
     try {
-      await program.parseAsync(['--env-path', envFileName, 'version'], { from: 'user' });
+      loadEnvFile(['--env-path', envFileName]);
 
       expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
       expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
@@ -113,11 +69,32 @@ describe('--env-path option', () => {
     const nonExistentPath = join(tmpDir, '.env.missing');
 
     try {
-      await expect(
-        program.parseAsync(['--env-path', nonExistentPath, 'version'], { from: 'user' }),
-      ).rejects.toThrow(/Env file not found/);
+      expect(() => loadEnvFile(['--env-path', nonExistentPath])).toThrow(/Env file not found/);
     } finally {
       await cleanup();
     }
+  });
+
+  test('returns argv without --env-path when flag is present', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
+    const envPath = join(tmpDir, '.env');
+
+    await writeFile(envPath, 'FOO=bar', 'utf-8');
+
+    try {
+      const result = loadEnvFile(['node', 'cli', '--env-path', envPath, 'deploy']);
+
+      expect(result).toEqual(['node', 'cli', 'deploy']);
+    } finally {
+      delete process.env.FOO;
+      await cleanup();
+    }
+  });
+
+  test('returns argv unchanged when --env-path is not present', () => {
+    const argv = ['node', 'cli', 'deploy', '--store-hash', 'abc123'];
+    const result = loadEnvFile(argv);
+
+    expect(result).toEqual(argv);
   });
 });

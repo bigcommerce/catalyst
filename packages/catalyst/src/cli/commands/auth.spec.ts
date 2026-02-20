@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { NodeContext } from '@effect/platform-node';
 import { http, HttpResponse } from 'msw';
 import { realpath } from 'node:fs/promises';
 import {
@@ -18,13 +18,15 @@ import { textHistory } from '../../../tests/mocks/spinner';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig } from '../lib/project-config';
-import { program } from '../program';
-
-import { auth } from './auth';
+import { LiveLayer } from '../layers';
+import { Effect, Layer } from 'effect';
+import { cli } from './root';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 let exitMock: MockInstance;
 let tmpDir: string;
@@ -62,18 +64,6 @@ afterAll(async () => {
   await cleanup();
 });
 
-test('auth is a properly configured Command instance', () => {
-  expect(auth).toBeInstanceOf(Command);
-  expect(auth.name()).toBe('auth');
-  expect(auth.description()).toBe('Manage authentication for the BigCommerce CLI.');
-
-  const subcommands = auth.commands.map((cmd) => cmd.name());
-
-  expect(subcommands).toContain('whoami');
-  expect(subcommands).toContain('login');
-  expect(subcommands).toContain('logout');
-});
-
 describe('whoami', () => {
   test('displays store info when credentials are valid', async () => {
     const config = getProjectConfig();
@@ -81,14 +71,18 @@ describe('whoami', () => {
     config.set('storeHash', 'test-store');
     config.set('accessToken', 'test-token');
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'whoami']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'whoami']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith('Logged in to Test Store (test-store)');
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
   test('reports no credentials found', async () => {
-    await program.parseAsync(['node', 'catalyst', 'auth', 'whoami']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'whoami']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith('Not logged in: no credentials found.');
     expect(consola.info).toHaveBeenCalledWith(
@@ -111,7 +105,9 @@ describe('whoami', () => {
     );
 
     await expect(
-      program.parseAsync(['node', 'catalyst', 'auth', 'whoami']),
+      Effect.runPromise(
+        cli(['node', 'catalyst', 'auth', 'whoami']).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow();
 
     expect(consola.error).toHaveBeenCalledWith(
@@ -123,7 +119,9 @@ describe('whoami', () => {
 
 describe('login', () => {
   test('completes OAuth device flow and stores credentials', async () => {
-    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'login']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('MOCK-CODE'));
     expect(consola.success).toHaveBeenCalledWith('Logged in to store mock-store-hash.');
@@ -142,7 +140,9 @@ describe('login', () => {
     config.set('storeHash', 'existing-store');
     config.set('accessToken', 'existing-token');
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'login']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith('Already logged in to store existing-store.');
     expect(consola.info).toHaveBeenCalledWith(
@@ -160,7 +160,9 @@ describe('login', () => {
     );
 
     await expect(
-      program.parseAsync(['node', 'catalyst', 'auth', 'login']),
+      Effect.runPromise(
+        cli(['node', 'catalyst', 'auth', 'login']).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow();
 
     expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Login failed'));
@@ -173,7 +175,9 @@ describe('login', () => {
 
     vi.mocked(openMock.default).mockRejectedValueOnce(new Error('No browser'));
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'login']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith(
       expect.stringContaining('Open https://login.bigcommerce.com/device in your browser'),
@@ -183,7 +187,9 @@ describe('login', () => {
   });
 
   test('shows spinner during authentication polling', async () => {
-    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'login']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(textHistory).toContain('Waiting for authentication...');
     expect(textHistory).toContain('Authentication complete.');
@@ -197,7 +203,9 @@ describe('logout', () => {
     config.set('storeHash', 'test-store');
     config.set('accessToken', 'test-token');
 
-    await program.parseAsync(['node', 'catalyst', 'auth', 'logout']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'logout']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.success).toHaveBeenCalledWith('Logged out from store test-store.');
     expect(exitMock).toHaveBeenCalledWith(0);
@@ -207,7 +215,9 @@ describe('logout', () => {
   });
 
   test('reports not logged in when no credentials exist', async () => {
-    await program.parseAsync(['node', 'catalyst', 'auth', 'logout']);
+    await Effect.runPromise(
+      cli(['node', 'catalyst', 'auth', 'logout']).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(consola.info).toHaveBeenCalledWith('Not logged in: no credentials found.');
     expect(exitMock).toHaveBeenCalledWith(0);

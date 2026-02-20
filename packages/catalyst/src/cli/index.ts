@@ -1,7 +1,21 @@
 #!/usr/bin/env node
+import { NodeContext } from '@effect/platform-node';
+import { colorize } from 'consola/utils';
+import { Effect, Layer } from 'effect';
+
+import PACKAGE_INFO from '../../package.json';
+
+import { cli } from './commands/root';
+import { LiveLayer } from './layers';
+import { loadEnvFile } from './lib/load-env-file';
 import { consola } from './lib/logger';
 import { getTelemetry } from './lib/telemetry';
-import { program } from './program';
+
+consola.log(colorize('cyanBright', `◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
+
+const processedArgv = loadEnvFile(process.argv);
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 const handleFatalError = async (error: unknown) => {
   const telemetry = getTelemetry();
@@ -46,7 +60,11 @@ process.on('unhandledRejection', (reason) => {
 
 void (async () => {
   try {
-    await program.parseAsync(process.argv);
+    await Effect.runPromise(
+      Effect.suspend(() => cli(processedArgv)).pipe(
+        Effect.provide(AppLayer),
+      ),
+    );
   } catch (error) {
     await handleFatalError(error);
   }

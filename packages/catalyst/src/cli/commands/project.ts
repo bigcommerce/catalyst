@@ -1,11 +1,41 @@
-import { Command, Option } from 'commander';
-import { Effect } from 'effect';
+import { Command, Options } from '@effect/cli';
+import { Config, Effect, Option } from 'effect';
 
 import { ProjectService } from '../core/services/ProjectService';
 import { ProjectConfig } from '../providers/services/ProjectConfig';
 import { Telemetry } from '../providers/services/Telemetry';
 import { Logger } from '../presentation/services/Logger';
-import { LiveLayer } from '../layers';
+
+const storeHashOption = Options.text('store-hash').pipe(
+  Options.withDescription(
+    'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_STORE_HASH')),
+  Options.optional,
+);
+
+const accessTokenOption = Options.text('access-token').pipe(
+  Options.withDescription(
+    'BigCommerce access token. Can be found after creating a store-level API account.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_ACCESS_TOKEN')),
+  Options.optional,
+);
+
+const apiHostOption = Options.text('api-host').pipe(
+  Options.withDescription(
+    'BigCommerce API host. The default is api.bigcommerce.com.',
+  ),
+  Options.withFallbackConfig(Config.string('BIGCOMMERCE_API_HOST')),
+  Options.withDefault('api.bigcommerce.com'),
+);
+
+const projectUuidOption = Options.text('project-uuid').pipe(
+  Options.withDescription(
+    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
+  ),
+  Options.optional,
+);
 
 export const listEffect = (options: {
   storeHash?: string;
@@ -225,100 +255,62 @@ export const linkEffect = (options: {
     process.exit(0);
   });
 
-const list = new Command('list')
-  .description(
+const listCommand = Command.make(
+  'list',
+  { storeHash: storeHashOption, accessToken: accessTokenOption, apiHost: apiHostOption },
+  (opts) =>
+    listEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      apiHost: opts.apiHost,
+    }),
+).pipe(
+  Command.withDescription(
     'List BigCommerce infrastructure projects for your store.',
-  )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option(
-      '--api-host <host>',
-      'BigCommerce API host. The default is api.bigcommerce.com.',
-    )
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
-  )
-  .action(async (options) =>
-    Effect.runPromise(listEffect(options).pipe(Effect.provide(LiveLayer))),
-  );
+  ),
+);
 
-const create = new Command('create')
-  .description(
+const createCommand = Command.make(
+  'create',
+  {
+    storeHash: storeHashOption,
+    accessToken: accessTokenOption,
+    apiHost: apiHostOption,
+  },
+  (opts) =>
+    createEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      apiHost: opts.apiHost,
+    }),
+).pipe(
+  Command.withDescription(
     'Create a new BigCommerce infrastructure project and link it to your local Catalyst project.',
-  )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option(
-      '--api-host <host>',
-      'BigCommerce API host. The default is api.bigcommerce.com.',
-    )
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
-  )
-  .action(async (options) =>
-    Effect.runPromise(
-      createEffect(options).pipe(Effect.provide(LiveLayer)),
-    ),
-  );
+  ),
+);
 
-export const link = new Command('link')
-  .description(
+export const linkCommand = Command.make(
+  'link',
+  {
+    storeHash: storeHashOption,
+    accessToken: accessTokenOption,
+    apiHost: apiHostOption,
+    projectUuid: projectUuidOption,
+  },
+  (opts) =>
+    linkEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      apiHost: opts.apiHost,
+      projectUuid: Option.getOrUndefined(opts.projectUuid),
+    }),
+).pipe(
+  Command.withDescription(
     'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
-  )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option(
-      '--api-host <host>',
-      'BigCommerce API host. The default is api.bigcommerce.com.',
-    )
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
-  )
-  .option(
-    '--project-uuid <uuid>',
-    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
-  )
-  .action(async (options) =>
-    Effect.runPromise(
-      linkEffect(options).pipe(Effect.provide(LiveLayer)),
-    ),
-  );
+  ),
+);
 
-export const project = new Command('project')
-  .description('Manage your BigCommerce infrastructure project.')
-  .addCommand(create)
-  .addCommand(list)
-  .addCommand(link);
+export const projectCommand = Command.make('project').pipe(
+  Command.withDescription('Manage your BigCommerce infrastructure project.'),
+  Command.withSubcommands([createCommand, listCommand, linkCommand]),
+);

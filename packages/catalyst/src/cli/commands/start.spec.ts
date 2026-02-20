@@ -1,9 +1,11 @@
+import { NodeContext } from '@effect/platform-node';
 import { Effect, Layer } from 'effect';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
-import { program } from '../program';
+import { LiveLayer } from '../layers';
 import { ProcessRunner } from '../providers/services/ProcessRunner';
+import { cli } from './root';
 
 import { startEffect } from './start';
 
@@ -11,6 +13,8 @@ vi.mock('execa', () => ({
   execa: vi.fn(() => Promise.resolve({ stdout: '', stderr: '', exitCode: 0 })),
   __esModule: true,
 }));
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 beforeAll(() => {
   consola.wrapAll();
@@ -27,7 +31,9 @@ afterEach(() => {
 test('calls execa with OpenNext production optimized server', async () => {
   const { execa } = await import('execa');
 
-  await program.parseAsync(['node', 'catalyst', 'start']);
+  await Effect.runPromise(
+    cli(['node', 'catalyst', 'start']).pipe(Effect.provide(AppLayer)),
+  );
 
   expect(execa).toHaveBeenCalledWith(
     'pnpm',

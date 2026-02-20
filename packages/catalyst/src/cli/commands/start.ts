@@ -1,9 +1,8 @@
-import { Command } from 'commander';
+import { Command } from '@effect/cli';
 import { Effect } from 'effect';
 import { join } from 'node:path';
 
 import { ProcessRunner } from '../providers/services/ProcessRunner';
-import { ProvidersLive } from '../providers/layers';
 
 export const startEffect = Effect.gen(function* () {
   const runner = yield* ProcessRunner;
@@ -24,10 +23,8 @@ export const startEffect = Effect.gen(function* () {
   );
 });
 
-export const start = new Command('start')
-  .description(
+export const startCommand = Command.make('start', {}, () => startEffect).pipe(
+  Command.withDescription(
     'Start a local preview of your Catalyst storefront using the OpenNext Cloudflare adapter.',
-  )
-  .action(async () =>
-    Effect.runPromise(startEffect.pipe(Effect.provide(ProvidersLive))),
-  );
+  ),
+);

@@ -315,9 +315,6 @@ importers:
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
-      commander:
-        specifier: ^14.0.0
-        version: 14.0.0
       conf:
         specifier: ^13.1.0
         version: 13.1.0
@@ -349,9 +346,6 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
-      '@commander-js/extra-typings':
-        specifier: ^14.0.0
-        version: 14.0.0(commander@14.0.0)
       '@types/adm-zip':
         specifier: ^0.5.7
         version: 0.5.7

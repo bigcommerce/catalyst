@@ -1,16 +1,44 @@
-import { Command, Option } from 'commander';
+import { Command, Options } from '@effect/cli';
 import { colorize } from 'consola/utils';
-import { Effect } from 'effect';
+import { Config, Effect, Option } from 'effect';
 
 import { DEFAULT_LOGIN_URL } from '../lib/auth';
 import { AuthService } from '../core/services/AuthService';
 import { ProjectService } from '../core/services/ProjectService';
 import { BrowserOpen } from '../providers/services/BrowserOpen';
 import { ProjectConfig } from '../providers/services/ProjectConfig';
-import { Telemetry } from '../providers/services/Telemetry';
 import { Logger } from '../presentation/services/Logger';
 import { Spinner } from '../presentation/services/Spinner';
-import { LiveLayer } from '../layers';
+
+const storeHashOption = Options.text('store-hash').pipe(
+  Options.withDescription(
+    'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_STORE_HASH')),
+  Options.optional,
+);
+
+const accessTokenOption = Options.text('access-token').pipe(
+  Options.withDescription(
+    'BigCommerce access token. Can be found after creating a store-level API account.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_ACCESS_TOKEN')),
+  Options.optional,
+);
+
+const apiHostOption = Options.text('api-host').pipe(
+  Options.withDescription(
+    'BigCommerce API host. The default is api.bigcommerce.com.',
+  ),
+  Options.withFallbackConfig(Config.string('BIGCOMMERCE_API_HOST')),
+  Options.withDefault('api.bigcommerce.com'),
+);
+
+const loginUrlOption = Options.text('login-url').pipe(
+  Options.withDescription('BigCommerce login URL.'),
+  Options.withFallbackConfig(Config.string('BIGCOMMERCE_LOGIN_URL')),
+  Options.withDefault(DEFAULT_LOGIN_URL),
+);
 
 export const whoamiEffect = (options: {
   storeHash?: string;
@@ -188,63 +216,41 @@ export const logoutEffect = Effect.gen(function* () {
   process.exit(0);
 });
 
-const whoami = new Command('whoami')
-  .description('Verify stored credentials and display store/project info.')
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option(
-      '--api-host <host>',
-      'BigCommerce API host. The default is api.bigcommerce.com.',
-    )
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
-  )
-  .action(async (options) =>
-    Effect.runPromise(whoamiEffect(options).pipe(Effect.provide(LiveLayer))),
-  );
+const whoamiCommand = Command.make(
+  'whoami',
+  { storeHash: storeHashOption, accessToken: accessTokenOption, apiHost: apiHostOption },
+  (opts) =>
+    whoamiEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      apiHost: opts.apiHost,
+    }),
+).pipe(
+  Command.withDescription(
+    'Verify stored credentials and display store/project info.',
+  ),
+);
 
-const login = new Command('login')
-  .description('Authenticate via browser using the OAuth device code flow.')
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--login-url <url>', 'BigCommerce login URL.')
-      .env('BIGCOMMERCE_LOGIN_URL')
-      .default(DEFAULT_LOGIN_URL),
-  )
-  .action(async (options) =>
-    Effect.runPromise(loginEffect(options).pipe(Effect.provide(LiveLayer))),
-  );
+const loginCommand = Command.make(
+  'login',
+  { storeHash: storeHashOption, accessToken: accessTokenOption, loginUrl: loginUrlOption },
+  (opts) =>
+    loginEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      loginUrl: opts.loginUrl,
+    }),
+).pipe(
+  Command.withDescription(
+    'Authenticate via browser using the OAuth device code flow.',
+  ),
+);
 
-const logout = new Command('logout')
-  .description('Remove stored credentials for the current project.')
-  .action(async () =>
-    Effect.runPromise(logoutEffect.pipe(Effect.provide(LiveLayer))),
-  );
+const logoutCommand = Command.make('logout', {}, () => logoutEffect).pipe(
+  Command.withDescription('Remove stored credentials for the current project.'),
+);
 
-export const auth = new Command('auth')
-  .description('Manage authentication for the BigCommerce CLI.')
-  .addCommand(whoami)
-  .addCommand(login)
-  .addCommand(logout);
+export const authCommand = Command.make('auth').pipe(
+  Command.withDescription('Manage authentication for the BigCommerce CLI.'),
+  Command.withSubcommands([whoamiCommand, loginCommand, logoutCommand]),
+);

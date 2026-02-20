@@ -1,7 +1,7 @@
-import { Command, Option } from 'commander';
+import { Command, Options } from '@effect/cli';
 import { access, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { Effect } from 'effect';
+import { Config, Effect, Option } from 'effect';
 
 import { DeployService } from '../core/services/DeployService';
 import { ProjectService } from '../core/services/ProjectService';
@@ -9,11 +9,61 @@ import { ProjectConfig } from '../providers/services/ProjectConfig';
 import { Telemetry } from '../providers/services/Telemetry';
 import { Logger } from '../presentation/services/Logger';
 import { Spinner } from '../presentation/services/Spinner';
-import { LiveLayer } from '../layers';
 
 import { buildCatalystProject } from './build';
 
 export { parseEnvironmentVariables } from '../lib/deploy-helpers';
+
+const storeHashOption = Options.text('store-hash').pipe(
+  Options.withDescription(
+    'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json when not provided.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_STORE_HASH')),
+  Options.optional,
+);
+
+const accessTokenOption = Options.text('access-token').pipe(
+  Options.withDescription(
+    'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json when not provided.',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_ACCESS_TOKEN')),
+  Options.optional,
+);
+
+const apiHostOption = Options.text('api-host').pipe(
+  Options.withDescription(
+    'BigCommerce API host. The default is api.bigcommerce.com.',
+  ),
+  Options.withFallbackConfig(Config.string('BIGCOMMERCE_API_HOST')),
+  Options.withDefault('api.bigcommerce.com'),
+);
+
+const projectUuidOption = Options.text('project-uuid').pipe(
+  Options.withDescription(
+    'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
+  ),
+  Options.withFallbackConfig(Config.string('CATALYST_PROJECT_UUID')),
+  Options.optional,
+);
+
+const secretOption = Options.text('secret').pipe(
+  Options.withDescription(
+    'Secret to set for the deployment (repeatable). Format: --secret KEY=VALUE',
+  ),
+  Options.repeated,
+);
+
+const dryRunOption = Options.boolean('dry-run').pipe(
+  Options.withDescription(
+    'Run the command to generate the bundle without uploading or deploying.',
+  ),
+);
+
+const prebuiltOption = Options.boolean('prebuilt').pipe(
+  Options.withDescription(
+    'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
+  ),
+);
 
 export const deployEffect = (options: {
   storeHash?: string;
@@ -165,52 +215,25 @@ export const deployEffect = (options: {
     }
   });
 
-export const deploy = new Command('deploy')
-  .description('Deploy your application to Cloudflare.')
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json when not provided.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json when not provided.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option(
-      '--api-host <host>',
-      'BigCommerce API host. The default is api.bigcommerce.com.',
-    )
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
-  )
-  .addOption(
-    new Option(
-      '--project-uuid <uuid>',
-      'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
-    ).env('CATALYST_PROJECT_UUID'),
-  )
-  .addOption(
-    new Option(
-      '--secret <value>',
-      'Secret to set for the deployment (repeatable). Format: --secret KEY=VALUE',
-    ).argParser((value: string, previous: string[] = []) => {
-      return previous.concat([value]);
+export const deployCommand = Command.make(
+  'deploy',
+  {
+    storeHash: storeHashOption,
+    accessToken: accessTokenOption,
+    apiHost: apiHostOption,
+    projectUuid: projectUuidOption,
+    secret: secretOption,
+    dryRun: dryRunOption,
+    prebuilt: prebuiltOption,
+  },
+  (opts) =>
+    deployEffect({
+      storeHash: Option.getOrUndefined(opts.storeHash),
+      accessToken: Option.getOrUndefined(opts.accessToken),
+      apiHost: opts.apiHost,
+      projectUuid: Option.getOrUndefined(opts.projectUuid),
+      secret: opts.secret.length > 0 ? opts.secret : undefined,
+      dryRun: opts.dryRun || undefined,
+      prebuilt: opts.prebuilt || undefined,
     }),
-  )
-  .option(
-    '--dry-run',
-    'Run the command to generate the bundle without uploading or deploying.',
-  )
-  .option(
-    '--prebuilt',
-    'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
-  )
-  .action(async (options) =>
-    Effect.runPromise(
-      deployEffect(options).pipe(Effect.provide(LiveLayer)),
-    ),
-  );
+).pipe(Command.withDescription('Deploy your application to Cloudflare.'));

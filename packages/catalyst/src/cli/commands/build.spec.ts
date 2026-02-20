@@ -1,10 +1,10 @@
-import { Command } from 'commander';
+import { NodeContext } from '@effect/platform-node';
 import { execa } from 'execa';
+import { Effect, Layer } from 'effect';
 import { expect, test, vi } from 'vitest';
 
-import { program } from '../program';
-
-import { build } from './build';
+import { LiveLayer } from '../layers';
+import { cli } from './root';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 vi.spyOn(process, 'exit').mockImplementation(() => null as never);
@@ -18,19 +18,20 @@ vi.mock('execa', () => ({
   __esModule: true,
 }));
 
-test('properly configured Command instance', () => {
-  expect(build).toBeInstanceOf(Command);
-  expect(build.name()).toBe('build');
-  expect(build.options).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({ long: '--framework' }),
-      expect.objectContaining({ long: '--project-uuid' }),
-    ]),
-  );
-});
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 test('calls execa with Next.js build if framework is nextjs', async () => {
-  await program.parseAsync(['node', 'catalyst', 'build', '--framework', 'nextjs', '--debug']);
+  await Effect.runPromise(
+    cli([
+      'node',
+      'catalyst',
+      'build',
+      '--framework',
+      'nextjs',
+      '--',
+      '--debug',
+    ]).pipe(Effect.provide(AppLayer)),
+  );
 
   expect(execa).toHaveBeenCalledWith(
     'node_modules/.bin/next',

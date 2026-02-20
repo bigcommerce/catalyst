@@ -1,5 +1,5 @@
-import { Command } from 'commander';
-import { Effect } from 'effect';
+import { NodeContext } from '@effect/platform-node';
+import { Effect, Layer } from 'effect';
 import { mkdir, realpath, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
@@ -18,13 +18,11 @@ import { textHistory } from '../../../tests/mocks/spinner';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig } from '../lib/project-config';
-import { program } from '../program';
+import { LiveLayer } from '../layers';
+import { cli } from './root';
 
 import { buildCatalystProject } from './build';
-import {
-  deploy,
-  parseEnvironmentVariables,
-} from './deploy';
+import { parseEnvironmentVariables } from './deploy';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
@@ -33,6 +31,8 @@ vi.mock('./build', async (importOriginal) => {
 
   return { ...actual, buildCatalystProject: vi.fn(() => Effect.void) };
 });
+
+const AppLayer = Layer.mergeAll(LiveLayer, NodeContext.layer);
 
 let exitMock: MockInstance;
 
@@ -79,38 +79,23 @@ afterAll(async () => {
   await cleanup();
 });
 
-test('properly configured Command instance', () => {
-  expect(deploy).toBeInstanceOf(Command);
-  expect(deploy.name()).toBe('deploy');
-  expect(deploy.description()).toBe('Deploy your application to Cloudflare.');
-  expect(deploy.options).toEqual(
-    expect.arrayContaining([
-      expect.objectContaining({ flags: '--store-hash <hash>' }),
-      expect.objectContaining({ flags: '--access-token <token>' }),
-      expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
-      expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--secret <value>' }),
-      expect.objectContaining({ flags: '--dry-run' }),
-      expect.objectContaining({ flags: '--prebuilt' }),
-    ]),
-  );
-});
-
 test('--dry-run skips upload and deployment', async () => {
-  await program.parseAsync([
-    'node',
-    'catalyst',
-    'deploy',
-    '--store-hash',
-    storeHash,
-    '--access-token',
-    accessToken,
-    '--api-host',
-    apiHost,
-    '--project-uuid',
-    projectUuid,
-    '--dry-run',
-  ]);
+  await Effect.runPromise(
+    cli([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--dry-run',
+    ]).pipe(Effect.provide(AppLayer)),
+  );
 
   expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
   expect(consola.success).toHaveBeenCalledWith('Bundle created.');
@@ -131,7 +116,9 @@ test('--dry-run uses storeHash and accessToken from .bigcommerce/project.json wh
   config.set('storeHash', storeHash);
   config.set('accessToken', accessToken);
 
-  await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
+  await Effect.runPromise(
+    cli(['node', 'catalyst', 'deploy', '--dry-run']).pipe(Effect.provide(AppLayer)),
+  );
 
   expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
   expect(consola.success).toHaveBeenCalledWith('Bundle created.');
@@ -147,9 +134,11 @@ test('errors when store hash is missing and not in .bigcommerce/project.json', a
 
   vi.stubEnv('CATALYST_STORE_HASH', undefined);
 
-  await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
-    'Missing credentials',
-  );
+  await expect(
+    Effect.runPromise(
+      cli(['node', 'catalyst', 'deploy']).pipe(Effect.provide(AppLayer)),
+    ),
+  ).rejects.toThrow('Missing credentials');
 
   expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
   expect(exitMock).toHaveBeenCalledWith(1);
@@ -166,9 +155,11 @@ test('errors when access token is missing and not in .bigcommerce/project.json',
 
   vi.stubEnv('CATALYST_ACCESS_TOKEN', undefined);
 
-  await expect(program.parseAsync(['node', 'catalyst', 'deploy'])).rejects.toThrow(
-    'Missing credentials',
-  );
+  await expect(
+    Effect.runPromise(
+      cli(['node', 'catalyst', 'deploy']).pipe(Effect.provide(AppLayer)),
+    ),
+  ).rejects.toThrow('Missing credentials');
 
   expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
   expect(exitMock).toHaveBeenCalledWith(1);
@@ -202,21 +193,23 @@ test('reads from env options', () => {
 
 describe('--prebuilt flag', () => {
   test('skips build step when --prebuilt is passed', async () => {
-    await program.parseAsync([
-      'node',
-      'catalyst',
-      'deploy',
-      '--store-hash',
-      storeHash,
-      '--access-token',
-      accessToken,
-      '--api-host',
-      apiHost,
-      '--project-uuid',
-      projectUuid,
-      '--prebuilt',
-      '--dry-run',
-    ]);
+    await Effect.runPromise(
+      cli([
+        'node',
+        'catalyst',
+        'deploy',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+        '--api-host',
+        apiHost,
+        '--project-uuid',
+        projectUuid,
+        '--prebuilt',
+        '--dry-run',
+      ]).pipe(Effect.provide(AppLayer)),
+    );
 
     expect(buildCatalystProject).not.toHaveBeenCalled();
     expect(consola.info).toHaveBeenCalledWith('Using existing build output (--prebuilt).');
@@ -230,20 +223,22 @@ describe('--prebuilt flag', () => {
     process.chdir(resolvedDir);
 
     await expect(
-      program.parseAsync([
-        'node',
-        'catalyst',
-        'deploy',
-        '--store-hash',
-        storeHash,
-        '--access-token',
-        accessToken,
-        '--api-host',
-        apiHost,
-        '--project-uuid',
-        projectUuid,
-        '--prebuilt',
-      ]),
+      Effect.runPromise(
+        cli([
+          'node',
+          'catalyst',
+          'deploy',
+          '--store-hash',
+          storeHash,
+          '--access-token',
+          accessToken,
+          '--api-host',
+          apiHost,
+          '--project-uuid',
+          projectUuid,
+          '--prebuilt',
+        ]).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow(
       'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
@@ -261,20 +256,22 @@ describe('--prebuilt flag', () => {
     process.chdir(resolvedDir);
 
     await expect(
-      program.parseAsync([
-        'node',
-        'catalyst',
-        'deploy',
-        '--store-hash',
-        storeHash,
-        '--access-token',
-        accessToken,
-        '--api-host',
-        apiHost,
-        '--project-uuid',
-        projectUuid,
-        '--prebuilt',
-      ]),
+      Effect.runPromise(
+        cli([
+          'node',
+          'catalyst',
+          'deploy',
+          '--store-hash',
+          storeHash,
+          '--access-token',
+          accessToken,
+          '--api-host',
+          apiHost,
+          '--project-uuid',
+          projectUuid,
+          '--prebuilt',
+        ]).pipe(Effect.provide(AppLayer)),
+      ),
     ).rejects.toThrow(
       'No build output found at .bigcommerce/dist/. Run `catalyst build` first or remove `--prebuilt` to build automatically.',
     );
