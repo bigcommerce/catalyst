@@ -8,6 +8,7 @@ import {
   formFieldTransformer,
   injectCountryCodeOptions,
 } from '~/data-transformers/form-field-transformer';
+import { getReCaptchaSettings } from '~/lib/recaptcha';
 import {
   CUSTOMER_FIELDS_TO_EXCLUDE,
   REGISTER_CUSTOMER_FORM_LAYOUT,
@@ -63,6 +64,11 @@ export default async function Register({ params }: Props) {
   const { addressFields, customerFields, countries, passwordComplexitySettings } =
     registerCustomerData;
 
+  const reCaptchaSettings = await getReCaptchaSettings();
+  const recaptchaEnabled =
+    (reCaptchaSettings?.isEnabledOnStorefront === true && Boolean(reCaptchaSettings?.siteKey)) ??
+    false;
+
   const fields = transformFieldsToLayout(
     [
       ...addressFields.map((field) => {
@@ -109,6 +115,7 @@ export default async function Register({ params }: Props) {
   return (
     <DynamicFormSection
       action={registerCustomer}
+      recaptchaEnabled={recaptchaEnabled}
       errorTranslations={{
         firstName: {
           invalid_type: t('FieldErrors.firstNameRequired'),

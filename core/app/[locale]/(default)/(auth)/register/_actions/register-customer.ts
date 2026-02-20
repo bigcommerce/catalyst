@@ -14,13 +14,14 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
 import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './prefixes';
 
 const RegisterCustomerMutation = graphql(`
-  mutation RegisterCustomerMutation($input: RegisterCustomerInput!) {
+  mutation RegisterCustomerMutation($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
     customer {
-      registerCustomer(input: $input) {
+      registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
         customer {
           firstName
           lastName
@@ -358,10 +359,15 @@ export async function registerCustomer<F extends Field>(
 
   try {
     const input = parseRegisterCustomerInput(submission.value, fields);
+    const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
     const response = await client.fetch({
       document: RegisterCustomerMutation,
       variables: {
         input,
+        reCaptchaV2:
+          typeof recaptchaToken === 'string' && recaptchaToken
+            ? { token: recaptchaToken }
+            : undefined,
       },
       fetchOptions: { cache: 'no-store' },
     });

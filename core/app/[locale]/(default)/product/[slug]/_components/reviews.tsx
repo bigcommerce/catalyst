@@ -11,6 +11,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
+import { getReCaptchaSettings } from '~/lib/recaptcha';
 
 import { submitReview } from '../_actions/submit-review';
 import { getStreamableProduct } from '../page-data';
@@ -171,6 +172,11 @@ export const Reviews = async ({
     return product?.reviewSummary.numberOfReviews ?? 0;
   });
 
+  const reCaptchaSettings = await getReCaptchaSettings();
+  const recaptchaEnabled =
+    (reCaptchaSettings?.isEnabledOnStorefront === true && Boolean(reCaptchaSettings?.siteKey)) ??
+    false;
+
   return (
     <>
       <ReviewsSection
@@ -189,6 +195,7 @@ export const Reviews = async ({
         paginationInfo={streamablePaginationInfo}
         previousLabel={t('previous')}
         productId={productId}
+        recaptchaEnabled={recaptchaEnabled}
         reviews={streamableReviews}
         reviewsLabel={t('title')}
         streamableImages={streamableImages}

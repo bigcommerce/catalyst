@@ -68,6 +68,7 @@
     "react": "19.1.5",
     "react-day-picker": "^9.7.0",
     "react-dom": "19.1.5",
+    "react-google-recaptcha-v3": "^1.10.1",
     "react-headroom": "^3.2.1",
     "schema-dts": "^1.1.5",
     "server-only": "^0.0.1",

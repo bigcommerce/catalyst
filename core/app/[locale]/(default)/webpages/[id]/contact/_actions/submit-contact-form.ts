@@ -11,6 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({
@@ -26,8 +27,8 @@ const inputSchema = z.object({
 });
 
 const SubmitContactUsMutation = graphql(`
-  mutation SubmitContactUsMutation($input: SubmitContactUsInput!) {
-    submitContactUs(input: $input) {
+  mutation SubmitContactUsMutation($input: SubmitContactUsInput!, $reCaptchaV2: ReCaptchaV2Input) {
+    submitContactUs(input: $input, reCaptchaV2: $reCaptchaV2) {
       __typename
       errors {
         __typename
@@ -76,10 +77,15 @@ export async function submitContactForm<F extends Field>(
 
   try {
     const input = parseContactFormInput(submission.value);
+    const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
     const response = await client.fetch({
       document: SubmitContactUsMutation,
       variables: {
         input,
+        reCaptchaV2:
+          typeof recaptchaToken === 'string' && recaptchaToken
+            ? { token: recaptchaToken }
+            : undefined,
       },
       fetchOptions: { cache: 'no-store' },
     });

@@ -21,7 +21,10 @@ import {
   useEffect,
 } from 'react';
 import { useFormStatus } from 'react-dom';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { z } from 'zod';
+
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
@@ -77,9 +80,31 @@ export interface DynamicFormProps<F extends Field> {
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
+  /** When true, a reCAPTCHA v3 token is obtained and sent with the form (requires ReCaptchaProvider with storefront enabled). */
+  recaptchaEnabled?: boolean;
 }
 
-export function DynamicForm<F extends Field>({
+export function DynamicForm<F extends Field>(props: DynamicFormProps<F>) {
+  const { recaptchaEnabled = false } = props;
+
+  if (recaptchaEnabled) {
+    return <DynamicFormWithRecaptcha {...props} />;
+  }
+
+  return <DynamicFormInner {...props} />;
+}
+
+function DynamicFormWithRecaptcha<F extends Field>(props: DynamicFormProps<F>) {
+  const { executeRecaptcha } = useGoogleReCaptcha();
+  return (
+    <DynamicFormInner
+      {...props}
+      recaptchaExecute={executeRecaptcha ?? undefined}
+    />
+  );
+}
+
+function DynamicFormInner<F extends Field>({
   action,
   fields,
   buttonSize = 'medium',
@@ -92,7 +117,8 @@ export function DynamicForm<F extends Field>({
   onSuccess,
   passwordComplexity,
   errorTranslations,
-}: DynamicFormProps<F>) {
+  recaptchaExecute,
+}: DynamicFormProps<F> & { recaptchaExecute?: (action: string) => Promise<string> }) {
   const t = useTranslations('Form');
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
@@ -145,11 +171,22 @@ export function DynamicForm<F extends Field>({
     defaultValue,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
-    onSubmit(event, { formData }) {
+    async onSubmit(event, { formData }) {
       event.preventDefault();
 
+      let payload: FormData = formData;
+      if (recaptchaExecute) {
+        try {
+          const token = await recaptchaExecute('submit');
+          payload = new FormData(event.currentTarget);
+          payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+        } catch {
+          // Proceed without token
+        }
+      }
+
       startTransition(() => {
-        formAction(formData);
+        formAction(payload);
       });
     },
   });

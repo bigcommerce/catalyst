@@ -40,6 +40,7 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaEnabled?: boolean;
 }
 
 export function Reviews({
@@ -65,6 +66,7 @@ export function Reviews({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaEnabled = false,
 }: Readonly<Props>) {
   return (
     <Stream fallback={<ReviewsSkeleton reviewsLabel={reviewsLabel} />} value={streamableReviews}>
@@ -84,6 +86,7 @@ export function Reviews({
               formTitleLabel={formTitleLabel}
               message={emptyStateMessage}
               productId={productId}
+              recaptchaEnabled={recaptchaEnabled}
               reviewsLabel={reviewsLabel}
               streamableImages={streamableImages}
               streamableProduct={streamableProduct}
@@ -137,6 +140,7 @@ export function Reviews({
                   formRatingLabel={formRatingLabel}
                   formReviewLabel={formReviewLabel}
                   formSubmitLabel={formSubmitLabel}
+                  recaptchaEnabled={recaptchaEnabled}
                   formTitleLabel={formTitleLabel}
                   productId={productId}
                   streamableImages={streamableImages}
@@ -201,6 +205,7 @@ export function ReviewsEmptyState({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaEnabled = false,
 }: {
   message?: string;
   reviewsLabel?: string;
@@ -221,6 +226,7 @@ export function ReviewsEmptyState({
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaEnabled?: boolean;
 }) {
   return (
     <StickySidebarLayout
@@ -250,6 +256,7 @@ export function ReviewsEmptyState({
           formSubmitLabel={formSubmitLabel}
           formTitleLabel={formTitleLabel}
           productId={productId}
+          recaptchaEnabled={recaptchaEnabled}
           streamableImages={streamableImages}
           streamableProduct={streamableProduct}
           streamableUser={streamableUser}

@@ -9,11 +9,12 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
-  mutation AddProductReviewMutation($input: AddProductReviewInput!) {
+  mutation AddProductReviewMutation($input: AddProductReviewInput!, $reCaptchaV2: ReCaptchaV2Input) {
     catalog {
-      addProductReview(input: $input) {
+      addProductReview(input: $input, reCaptchaV2: $reCaptchaV2) {
         __typename
         errors {
           __typename
@@ -39,6 +40,7 @@ export async function submitReview(
   }
 
   const { productEntityId, ...input } = submission.value;
+  const recaptchaToken = payload.get(RECAPTCHA_TOKEN_FORM_KEY);
 
   try {
     const response = await client.fetch({
@@ -52,6 +54,10 @@ export async function submitReview(
           },
           productEntityId,
         },
+        reCaptchaV2:
+          typeof recaptchaToken === 'string' && recaptchaToken
+            ? { token: recaptchaToken }
+            : undefined,
       },
     });
 
