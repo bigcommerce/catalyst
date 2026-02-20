@@ -10,8 +10,6 @@ import { gzipSync } from 'node:zlib';
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CORE_DIR = resolve(__dirname, '../../core');
-const NEXT_DIR = join(CORE_DIR, '.next');
-
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
@@ -20,8 +18,11 @@ const { values, positionals } = parseArgs({
     current:   { type: 'string' },
     threshold: { type: 'string' },
     sha:       { type: 'string' },
+    dir:       { type: 'string' },
   },
 });
+
+const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, '.next');
 const command = positionals[0];
 
 function round1(n) {

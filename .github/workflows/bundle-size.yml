@@ -85,9 +85,9 @@ jobs:
 
       - name: Generate baseline bundle size
         run: |
-          SHA=$(git rev-parse --short HEAD)
-          node .github/scripts/bundle-size.mjs generate --output /tmp/bundle-baseline.json --sha $SHA
-        working-directory: baseline
+          SHA=$(git -C $GITHUB_WORKSPACE/baseline rev-parse --short HEAD)
+          node .github/scripts/bundle-size.mjs generate --dir $GITHUB_WORKSPACE/baseline/core/.next --output /tmp/bundle-baseline.json --sha $SHA
+        working-directory: pr
 
       - name: Compare against baseline
         run: node .github/scripts/bundle-size.mjs compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
