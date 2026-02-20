@@ -88,7 +88,6 @@ const create = new Command('create')
 
     consola.start('Writing project UUID to .bigcommerce/project.json...');
     config.set('projectUuid', data.uuid);
-    config.set('framework', 'catalyst');
     config.set('storeHash', storeHash);
     config.set('accessToken', accessToken);
     consola.success('Project UUID written to .bigcommerce/project.json.');
@@ -130,7 +129,6 @@ export const link = new Command('link')
     ) => {
       consola.start('Writing project UUID to .bigcommerce/project.json...');
       config.set('projectUuid', uuid);
-      config.set('framework', 'catalyst');
 
       if (credentials) {
         config.set('storeHash', credentials.storeHash);
