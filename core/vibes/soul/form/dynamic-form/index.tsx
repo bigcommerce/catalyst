@@ -20,11 +20,13 @@ import {
   useActionState,
   useEffect,
 } from 'react';
+import { useRef } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { z } from 'zod';
 
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
@@ -80,28 +82,10 @@ export interface DynamicFormProps<F extends Field> {
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
-  /** When true, a reCAPTCHA v3 token is obtained and sent with the form (requires ReCaptchaProvider with storefront enabled). */
-  recaptchaEnabled?: boolean;
 }
 
 export function DynamicForm<F extends Field>(props: DynamicFormProps<F>) {
-  const { recaptchaEnabled = false } = props;
-
-  if (recaptchaEnabled) {
-    return <DynamicFormWithRecaptcha {...props} />;
-  }
-
   return <DynamicFormInner {...props} />;
-}
-
-function DynamicFormWithRecaptcha<F extends Field>(props: DynamicFormProps<F>) {
-  const { executeRecaptcha } = useGoogleReCaptcha();
-  return (
-    <DynamicFormInner
-      {...props}
-      recaptchaExecute={executeRecaptcha ?? undefined}
-    />
-  );
 }
 
 function DynamicFormInner<F extends Field>({
@@ -117,9 +101,9 @@ function DynamicFormInner<F extends Field>({
   onSuccess,
   passwordComplexity,
   errorTranslations,
-  recaptchaExecute,
-}: DynamicFormProps<F> & { recaptchaExecute?: (action: string) => Promise<string> }) {
+}: DynamicFormProps<F>) {
   const t = useTranslations('Form');
+  const recaptchaSiteKey = useReCaptchaSiteKey();
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -129,6 +113,8 @@ function DynamicFormInner<F extends Field>({
   const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
     lastResult: null,
   });
+
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
@@ -175,11 +161,14 @@ function DynamicFormInner<F extends Field>({
       event.preventDefault();
 
       let payload: FormData = formData;
-      if (recaptchaExecute) {
+      if (recaptchaSiteKey && recaptchaRef.current) {
         try {
-          const token = await recaptchaExecute('submit');
-          payload = new FormData(event.currentTarget);
-          payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+          const token = await recaptchaRef.current.executeAsync();
+          if (token) {
+            payload = new FormData(event.currentTarget);
+            payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+          }
+          recaptchaRef.current.reset();
         } catch {
           // Proceed without token
         }
@@ -228,6 +217,7 @@ function DynamicFormInner<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
+          {recaptchaSiteKey && <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} />}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button

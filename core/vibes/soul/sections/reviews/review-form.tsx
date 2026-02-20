@@ -5,7 +5,7 @@ import { getZodConstraint } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
@@ -16,8 +16,9 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Modal } from '@/vibes/soul/primitives/modal';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { Image } from '~/components/image';
+import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
 import { parseWithZodTranslatedErrors } from '~/i18n/utils';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import { reviewFormErrorTranslations, schema } from './schema';
 
@@ -46,31 +47,9 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
-  /** When true, a reCAPTCHA v3 token is obtained and sent with the form. */
-  recaptchaEnabled?: boolean;
 }
 
-export const ReviewForm = (props: Props) => {
-  const { recaptchaEnabled = false } = props;
-
-  if (recaptchaEnabled) {
-    return <ReviewFormWithRecaptcha {...props} />;
-  }
-
-  return <ReviewFormContent {...props} />;
-};
-
-function ReviewFormWithRecaptcha(props: Props) {
-  const { executeRecaptcha } = useGoogleReCaptcha();
-  return (
-    <ReviewFormContent
-      {...props}
-      recaptchaExecute={executeRecaptcha ?? undefined}
-    />
-  );
-}
-
-function ReviewFormContent({
+export const ReviewForm = ({
   productId,
   action,
   trigger,
@@ -85,15 +64,16 @@ function ReviewFormContent({
   streamableProduct,
   streamableImages,
   streamableUser,
-  recaptchaExecute,
-}: Props & { recaptchaExecute?: (action: string) => Promise<string> }) {
+}: Props) => {
   const t = useTranslations('Product.Reviews.Form');
+  const recaptchaSiteKey = useReCaptchaSiteKey();
   const errorTranslations = reviewFormErrorTranslations(t);
   const [isOpen, setIsOpen] = useState(false);
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
     lastResult: null,
   });
   const formRef = useRef<HTMLFormElement>(null);
+  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
 
   const user = useStreamable(streamableUser);
 
@@ -113,14 +93,15 @@ function ReviewFormContent({
       event.preventDefault();
 
       let payload: FormData = formData;
-      if (recaptchaExecute) {
+      if (recaptchaSiteKey && recaptchaRef.current) {
         try {
-          const token = await recaptchaExecute('submit');
-          payload = new FormData(event.currentTarget);
-          payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
-        } catch {
-          // Proceed without token
-        }
+          const token = await recaptchaRef.current.execute();
+          if (token) {
+            payload = new FormData(event.currentTarget);
+            payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+          }
+          recaptchaRef.current.reset();
+        } catch {}
       }
 
       startTransition(() => {
@@ -256,6 +237,11 @@ function ReviewFormContent({
                 {error}
               </FormStatus>
             ))}
+            {recaptchaSiteKey && (
+              <div>
+                <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} />
+              </div>
+            )}
             <div className="mt-auto flex justify-end gap-3">
               <Button onClick={() => setIsOpen(false)} size="small" type="button" variant="ghost">
                 {formCancelLabel}

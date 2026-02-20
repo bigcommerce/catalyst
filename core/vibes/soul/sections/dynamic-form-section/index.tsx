@@ -18,7 +18,6 @@ interface Props<F extends Field> {
   className?: string;
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
-  recaptchaEnabled?: boolean;
 }
 
 export function DynamicFormSection<F extends Field>({
@@ -30,7 +29,6 @@ export function DynamicFormSection<F extends Field>({
   action,
   passwordComplexity,
   errorTranslations,
-  recaptchaEnabled = false,
 }: Props<F>) {
   return (
     <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)} containerSize="lg">
@@ -49,7 +47,6 @@ export function DynamicFormSection<F extends Field>({
         errorTranslations={errorTranslations}
         fields={fields}
         passwordComplexity={passwordComplexity}
-        recaptchaEnabled={recaptchaEnabled}
         submitLabel={submitLabel}
       />
     </SectionLayout>

@@ -1,9 +1,8 @@
 'use client';
 
-import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 import { createContext, useContext, type PropsWithChildren } from 'react';
 
-import type { ReCaptchaSettings } from '~/lib/recaptcha';
+import type { ReCaptchaSettings } from '~/lib/recaptcha/constants';
 
 const ReCaptchaContext = createContext<ReCaptchaSettings | null>(null);
 
@@ -11,10 +10,12 @@ export function useReCaptchaSettings(): ReCaptchaSettings | null {
   return useContext(ReCaptchaContext);
 }
 
-/** Whether reCAPTCHA is enabled on the storefront (signup, contact, reviews). */
-export function useReCaptchaEnabledOnStorefront(): boolean {
+/** Site key when reCAPTCHA is enabled on the storefront; undefined otherwise. */
+export function useReCaptchaSiteKey(): string | undefined {
   const settings = useReCaptchaSettings();
-  return settings?.isEnabledOnStorefront === true && Boolean(settings?.siteKey);
+  return settings?.isEnabledOnStorefront === true && settings?.siteKey
+    ? settings.siteKey
+    : undefined;
 }
 
 interface ReCaptchaProviderProps extends PropsWithChildren {
@@ -22,21 +23,11 @@ interface ReCaptchaProviderProps extends PropsWithChildren {
 }
 
 /**
- * Wraps children with reCAPTCHA v3 provider when a site key is configured,
- * so useGoogleReCaptcha() is available. Token is only used when isEnabledOnStorefront is true.
+ * Provides reCAPTCHA settings (e.g. siteKey) via context.
+ * Forms use react-google-recaptcha (v2) and receive siteKey via props from server.
  */
 export function ReCaptchaProvider({ settings, children }: ReCaptchaProviderProps) {
-  const hasProvider = Boolean(settings?.siteKey);
-
   return (
-    <ReCaptchaContext.Provider value={settings}>
-      {hasProvider ? (
-        <GoogleReCaptchaProvider reCaptchaKey={settings.siteKey}>
-          {children}
-        </GoogleReCaptchaProvider>
-      ) : (
-        children
-      )}
-    </ReCaptchaContext.Provider>
+    <ReCaptchaContext.Provider value={settings}>{children}</ReCaptchaContext.Provider>
   );
 }
