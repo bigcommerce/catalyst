@@ -1,6 +1,5 @@
 import { Command, Option } from 'commander';
 import { execa } from 'execa';
-import { existsSync } from 'node:fs';
 import { copyFile, cp, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -77,53 +76,21 @@ export async function buildCatalystProject(projectUuid: string): Promise<void> {
 }
 
 export const build = new Command('build')
-  .allowUnknownOption()
-  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
-  .argument(
-    '[next-build-options...]',
-    'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',
-  )
   .addOption(
     new Option(
       '--project-uuid <uuid>',
       'Project UUID to be included in the deployment configuration.',
     ).env('CATALYST_PROJECT_UUID'),
   )
-  .addOption(
-    new Option('--framework <framework>', 'The framework to use for the build.').choices([
-      'nextjs',
-      'catalyst',
-    ]),
-  )
-  .action(async (nextBuildOptions, options) => {
-    const coreDir = process.cwd();
+  .action(async (options) => {
     const config = getProjectConfig();
-    const framework = options.framework ?? config.get('framework');
+    const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
-    if (framework === 'nextjs') {
-      const nextBin = join('node_modules', '.bin', 'next');
-
-      if (!existsSync(nextBin)) {
-        throw new Error(
-          `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
-        );
-      }
-
-      await execa(nextBin, ['build', ...nextBuildOptions], {
-        stdio: 'inherit',
-        cwd: coreDir,
-      });
+    if (!projectUuid) {
+      throw new Error(
+        'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+      );
     }
 
-    if (framework === 'catalyst') {
-      const projectUuid = options.projectUuid ?? config.get('projectUuid');
-
-      if (!projectUuid) {
-        throw new Error(
-          'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
-        );
-      }
-
-      await buildCatalystProject(projectUuid);
-    }
+    await buildCatalystProject(projectUuid);
   });
