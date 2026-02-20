@@ -1,9 +1,9 @@
 name: Bundle Size
 # Reports the bundle size impact of a PR by comparing the current build against
-# the baseline snapshot stored in .github/bundle-baseline.json.
+# a live build of the base branch (canary or integrations/makeswift).
 #
-# The baseline is automatically kept up to date by update-bundle-baseline.yml,
-# which runs on every merge to canary and integrations/makeswift.
+# Both branches are checked out side-by-side and built in the same job.
+# The base branch is determined at runtime from core/package.json in the PR checkout.
 #
 # Results are posted as a PR comment and written to the job summary.
 
@@ -31,30 +31,67 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout code
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          path: pr
 
-      - uses: pnpm/action-setup@v3
+      - name: Detect baseline branch
+        id: baseline
+        run: |
+          PKG_NAME=$(node -p "require('./pr/core/package.json').name")
+          if [ "$PKG_NAME" = "@bigcommerce/catalyst-makeswift" ]; then
+            echo "branch=integrations/makeswift" >> $GITHUB_OUTPUT
+          else
+            echo "branch=canary" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout baseline branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.baseline.outputs.branch }}
+          path: baseline
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pr/package.json
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: ".nvmrc"
-          cache: "pnpm"
+          node-version-file: pr/.nvmrc
+          cache: pnpm
+          cache-dependency-path: pr/pnpm-lock.yaml
 
-      - name: Install dependencies
+      - name: Install PR dependencies
         run: pnpm install --frozen-lockfile
+        working-directory: pr
 
-      - name: Build
+      - name: Build PR branch
         run: pnpm build
+        working-directory: pr
 
-      - name: Generate bundle size report
+      - name: Generate PR bundle size
         run: node .github/scripts/bundle-size.mjs generate --output /tmp/bundle-current.json --sha ${{ github.sha }}
+        working-directory: pr
+
+      - name: Install baseline dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: baseline
+
+      - name: Build baseline
+        run: pnpm build
+        working-directory: baseline
+
+      - name: Generate baseline bundle size
+        run: |
+          SHA=$(git rev-parse --short HEAD)
+          node .github/scripts/bundle-size.mjs generate --output /tmp/bundle-baseline.json --sha $SHA
+        working-directory: baseline
 
       - name: Compare against baseline
-        run: node .github/scripts/bundle-size.mjs compare --baseline .github/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
+        run: node .github/scripts/bundle-size.mjs compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
+        working-directory: pr
 
       - name: Write to job summary
         run: cat /tmp/bundle-report.md >> "$GITHUB_STEP_SUMMARY"
@@ -63,5 +100,5 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const postComment = require('./.github/scripts/post-bundle-comment.js')
+            const postComment = require('./pr/.github/scripts/post-bundle-comment.js')
             await postComment({ github, context })
