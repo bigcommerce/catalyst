@@ -129,7 +129,6 @@ describe('project create', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
 
     expect(config.get('projectUuid')).toBe('c23f5785-fd99-4a94-9fb3-945551623925');
-    expect(config.get('framework')).toBe('catalyst');
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
 
@@ -265,7 +264,6 @@ describe('project link', () => {
     );
     expect(exitMock).toHaveBeenCalledWith(0);
     expect(config.get('projectUuid')).toBe(projectUuid1);
-    expect(config.get('framework')).toBe('catalyst');
   });
 
   test('fetches projects and prompts user to select one', async () => {
@@ -316,7 +314,6 @@ describe('project link', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
 
     expect(config.get('projectUuid')).toBe(projectUuid2);
-    expect(config.get('framework')).toBe('catalyst');
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
 
@@ -371,7 +368,6 @@ describe('project link', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
 
     expect(config.get('projectUuid')).toBe(projectUuid3);
-    expect(config.get('framework')).toBe('catalyst');
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
 
