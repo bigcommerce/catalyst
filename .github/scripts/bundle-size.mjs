@@ -251,7 +251,10 @@ function compare() {
   const current = JSON.parse(readFileSync(currentPath, 'utf-8'));
 
   function hasChanged(base, curr) {
-    return round1(curr - base) !== 0;
+    if (round1(curr - base) === 0) return false;
+    const pct = base > 0 ? ((curr - base) / base) * 100 : null;
+    if (pct !== null && round1(pct) === 0) return false;
+    return true;
   }
 
   function formatDelta(base, curr) {
