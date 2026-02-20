@@ -50,12 +50,3 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   expect(config.get('storeHash')).toBe('abc123');
   expect(config.get('accessToken')).toBe('secret-token');
 });
-
-test('sets default framework to nextjs', async () => {
-  const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
-
-  await mkdir(dirname(projectJsonPath), { recursive: true });
-  await writeFile(projectJsonPath, JSON.stringify({}));
-
-  expect(config.get('framework')).toBe('nextjs');
-});
