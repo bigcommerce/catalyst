@@ -3,7 +3,8 @@ import { join } from 'path';
 
 export interface ProjectConfigSchema {
   projectUuid: string;
-  framework: 'catalyst' | 'nextjs';
+  // Reserved for future use
+  framework: 'catalyst';
   storeHash?: string;
   accessToken?: string;
   telemetry: {
@@ -21,8 +22,8 @@ export function getProjectConfig() {
       projectUuid: { type: 'string', format: 'uuid' },
       framework: {
         type: 'string',
-        enum: ['catalyst', 'nextjs'],
-        default: 'nextjs',
+        enum: ['catalyst'],
+        default: 'catalyst',
       },
       storeHash: { type: 'string' },
       accessToken: { type: 'string' },
