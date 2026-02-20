@@ -2,10 +2,8 @@ name: Bundle Size
 # Reports the bundle size impact of a PR by comparing the current build against
 # a live build of the base branch (canary or integrations/makeswift).
 #
-# Both branches are checked out side-by-side and built in the same job.
-# The base branch is determined at runtime from core/package.json in the PR checkout.
-#
-# Results are posted as a PR comment and written to the job summary.
+# build-pr and build-baseline run in parallel, each uploading a JSON artifact.
+# compare downloads both artifacts, runs the comparison, and posts the PR comment.
 
 on:
   pull_request:
@@ -23,16 +21,47 @@ env:
   BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
 
 jobs:
-  bundle-size:
-    name: Bundle Size Report
+  build-pr:
+    name: Build & Measure PR Bundle
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-
     steps:
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pr/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pr/.nvmrc
+          cache: pnpm
+          cache-dependency-path: pr/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: pr
+
+      - run: pnpm build
+        working-directory: pr
+
+      - run: node .github/scripts/bundle-size.mjs generate --output /tmp/bundle-current.json --sha ${{ github.sha }}
+        working-directory: pr
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-current
+          path: /tmp/bundle-current.json
+
+  build-baseline:
+    name: Build & Measure Baseline Bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
         with:
           path: pr
 
@@ -46,8 +75,7 @@ jobs:
             echo "branch=canary" >> $GITHUB_OUTPUT
           fi
 
-      - name: Checkout baseline branch
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           ref: ${{ steps.baseline.outputs.branch }}
           path: baseline
@@ -56,31 +84,16 @@ jobs:
         with:
           package_json_file: pr/package.json
 
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version-file: pr/.nvmrc
           cache: pnpm
-          cache-dependency-path: pr/pnpm-lock.yaml
+          cache-dependency-path: baseline/pnpm-lock.yaml
 
-      - name: Install PR dependencies
-        run: pnpm install --frozen-lockfile
-        working-directory: pr
-
-      - name: Build PR branch
-        run: pnpm build
-        working-directory: pr
-
-      - name: Generate PR bundle size
-        run: node .github/scripts/bundle-size.mjs generate --output /tmp/bundle-current.json --sha ${{ github.sha }}
-        working-directory: pr
-
-      - name: Install baseline dependencies
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
         working-directory: baseline
 
-      - name: Build baseline
-        run: pnpm build
+      - run: pnpm build
         working-directory: baseline
 
       - name: Generate baseline bundle size
@@ -89,15 +102,39 @@ jobs:
           node .github/scripts/bundle-size.mjs generate --dir $GITHUB_WORKSPACE/baseline/core/.next --output /tmp/bundle-baseline.json --sha $SHA
         working-directory: pr
 
-      - name: Compare against baseline
-        run: node .github/scripts/bundle-size.mjs compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-baseline
+          path: /tmp/bundle-baseline.json
+
+  compare:
+    name: Compare Bundles & Post Report
+    needs: [build-pr, build-baseline]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pr/.nvmrc
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bundle-*
+          path: /tmp
+          merge-multiple: true
+
+      - run: node .github/scripts/bundle-size.mjs compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
         working-directory: pr
 
-      - name: Write to job summary
-        run: cat /tmp/bundle-report.md >> "$GITHUB_STEP_SUMMARY"
+      - run: cat /tmp/bundle-report.md >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Post or update PR comment
-        uses: actions/github-script@v7
+      - uses: actions/github-script@v7
         with:
           script: |
             const postComment = require('./pr/.github/scripts/post-bundle-comment.js')
