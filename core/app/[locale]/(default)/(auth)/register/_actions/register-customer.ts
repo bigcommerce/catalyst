@@ -19,7 +19,10 @@ import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './prefixes';
 
 const RegisterCustomerMutation = graphql(`
-  mutation RegisterCustomerMutation($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+  mutation RegisterCustomerMutation(
+    $input: RegisterCustomerInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
     customer {
       registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
         customer {

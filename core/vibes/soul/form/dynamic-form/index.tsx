@@ -19,14 +19,11 @@ import {
   startTransition,
   useActionState,
   useEffect,
+  useRef,
 } from 'react';
-import { useRef } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
 import { z } from 'zod';
-
-import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
@@ -41,6 +38,8 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
+import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
+import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import {
   Field,
@@ -161,13 +160,16 @@ function DynamicFormInner<F extends Field>({
       event.preventDefault();
 
       let payload: FormData = formData;
+
       if (recaptchaSiteKey && recaptchaRef.current) {
         try {
           const token = await recaptchaRef.current.executeAsync();
+
           if (token) {
             payload = new FormData(event.currentTarget);
             payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
           }
+
           recaptchaRef.current.reset();
         } catch {
           // Proceed without token

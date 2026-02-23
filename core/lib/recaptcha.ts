@@ -5,6 +5,7 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+
 import type { ReCaptchaSettings } from './recaptcha/constants';
 
 export { RECAPTCHA_TOKEN_FORM_KEY } from './recaptcha/constants';

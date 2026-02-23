@@ -12,7 +12,10 @@ import { graphql } from '~/client/graphql';
 import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
-  mutation AddProductReviewMutation($input: AddProductReviewInput!, $reCaptchaV2: ReCaptchaV2Input) {
+  mutation AddProductReviewMutation(
+    $input: AddProductReviewInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
     catalog {
       addProductReview(input: $input, reCaptchaV2: $reCaptchaV2) {
         __typename

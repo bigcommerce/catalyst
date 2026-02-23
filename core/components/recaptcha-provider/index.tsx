@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, type PropsWithChildren } from 'react';
+import { createContext, type PropsWithChildren, useContext } from 'react';
 
 import type { ReCaptchaSettings } from '~/lib/recaptcha/constants';
 
@@ -13,7 +13,8 @@ export function useReCaptchaSettings(): ReCaptchaSettings | null {
 /** Site key when reCAPTCHA is enabled on the storefront; undefined otherwise. */
 export function useReCaptchaSiteKey(): string | undefined {
   const settings = useReCaptchaSettings();
-  return settings?.isEnabledOnStorefront === true && settings?.siteKey
+
+  return settings?.isEnabledOnStorefront === true && settings.siteKey
     ? settings.siteKey
     : undefined;
 }
@@ -27,7 +28,5 @@ interface ReCaptchaProviderProps extends PropsWithChildren {
  * Forms use react-google-recaptcha (v2) and receive siteKey via props from server.
  */
 export function ReCaptchaProvider({ settings, children }: ReCaptchaProviderProps) {
-  return (
-    <ReCaptchaContext.Provider value={settings}>{children}</ReCaptchaContext.Provider>
-  );
+  return <ReCaptchaContext.Provider value={settings}>{children}</ReCaptchaContext.Provider>;
 }

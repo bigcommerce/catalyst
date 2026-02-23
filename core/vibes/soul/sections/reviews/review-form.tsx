@@ -93,13 +93,16 @@ export const ReviewForm = ({
       event.preventDefault();
 
       let payload: FormData = formData;
+
       if (recaptchaSiteKey && recaptchaRef.current) {
         try {
           const token = await recaptchaRef.current.execute();
+
           if (token) {
             payload = new FormData(event.currentTarget);
             payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
           }
+
           recaptchaRef.current.reset();
         } catch {}
       }
