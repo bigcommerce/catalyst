@@ -5,5 +5,4 @@ export interface ReCaptchaSettings {
   siteKey: string;
 }
 
-/** FormData key used to pass the reCAPTCHA token from client to server actions */
 export const RECAPTCHA_TOKEN_FORM_KEY = 'recaptchaToken';
