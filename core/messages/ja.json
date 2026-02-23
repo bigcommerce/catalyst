@@ -463,8 +463,8 @@
             "additionalInformation": "追加情報",
             "currentStock": "{quantity, number} 個の在庫あり",
             "backorderQuantity": "{quantity, number} はバックオーダーになります",
-            "loadingMoreImages": "Loading more images",
-            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "loadingMoreImages": "さらに画像を読み込んでいます",
+            "imagesLoaded": "{count, plural, =1 {1 枚の画像が読み込まれました} other {#枚の画像が読み込まれました}}",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",
