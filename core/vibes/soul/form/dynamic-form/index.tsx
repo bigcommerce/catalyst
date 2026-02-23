@@ -38,7 +38,6 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
-import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
 import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import {
@@ -81,6 +80,7 @@ export interface DynamicFormProps<F extends Field> {
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
+  recaptchaSiteKey?: string;
 }
 
 export function DynamicForm<F extends Field>(props: DynamicFormProps<F>) {
@@ -100,9 +100,9 @@ function DynamicFormInner<F extends Field>({
   onSuccess,
   passwordComplexity,
   errorTranslations,
+  recaptchaSiteKey,
 }: DynamicFormProps<F>) {
   const t = useTranslations('Form');
-  const recaptchaSiteKey = useReCaptchaSiteKey();
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

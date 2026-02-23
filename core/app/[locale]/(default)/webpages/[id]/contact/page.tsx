@@ -12,6 +12,7 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { getRecaptchaSiteKey } from '~/lib/recaptcha';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { WebPage, WebPageContent } from '../_components/web-page';
@@ -195,6 +196,8 @@ export default async function ContactPage({ params, searchParams }: Props) {
     );
   }
 
+  const recaptchaSiteKey = await getRecaptchaSiteKey();
+
   return (
     <WebPageContent
       breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
@@ -204,6 +207,7 @@ export default async function ContactPage({ params, searchParams }: Props) {
         <DynamicForm
           action={submitContactForm}
           fields={await getContactFields(id)}
+          recaptchaSiteKey={recaptchaSiteKey}
           submitLabel={t('cta')}
         />
       </div>

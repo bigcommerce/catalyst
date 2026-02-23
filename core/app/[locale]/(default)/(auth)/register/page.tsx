@@ -14,6 +14,7 @@ import {
   transformFieldsToLayout,
 } from '~/data-transformers/form-field-transformer/utils';
 import { exists } from '~/lib/utils';
+import { getRecaptchaSiteKey } from '~/lib/recaptcha';
 
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './_actions/prefixes';
 import { registerCustomer } from './_actions/register-customer';
@@ -63,6 +64,8 @@ export default async function Register({ params }: Props) {
   const { addressFields, customerFields, countries, passwordComplexitySettings } =
     registerCustomerData;
 
+  const recaptchaSiteKey = await getRecaptchaSiteKey();
+
   const fields = transformFieldsToLayout(
     [
       ...addressFields.map((field) => {
@@ -109,6 +112,7 @@ export default async function Register({ params }: Props) {
   return (
     <DynamicFormSection
       action={registerCustomer}
+      recaptchaSiteKey={recaptchaSiteKey}
       errorTranslations={{
         firstName: {
           invalid_type: t('FieldErrors.firstNameRequired'),

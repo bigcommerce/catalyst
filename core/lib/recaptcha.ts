@@ -45,3 +45,10 @@ export const getReCaptchaSettings = cache(async (): Promise<ReCaptchaSettings | 
     siteKey: reCaptcha.siteKey,
   };
 });
+
+export const getRecaptchaSiteKey = cache(async (): Promise<string | undefined> => {
+  const settings = await getReCaptchaSettings();
+  return settings?.isEnabledOnStorefront === true && settings?.siteKey
+    ? settings.siteKey
+    : undefined;
+});

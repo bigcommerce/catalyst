@@ -16,7 +16,6 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Modal } from '@/vibes/soul/primitives/modal';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { Image } from '~/components/image';
-import { useReCaptchaSiteKey } from '~/components/recaptcha-provider';
 import { parseWithZodTranslatedErrors } from '~/i18n/utils';
 import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
@@ -47,6 +46,7 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }
 
 export const ReviewForm = ({
@@ -64,9 +64,9 @@ export const ReviewForm = ({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: Props) => {
   const t = useTranslations('Product.Reviews.Form');
-  const recaptchaSiteKey = useReCaptchaSiteKey();
   const errorTranslations = reviewFormErrorTranslations(t);
   const [isOpen, setIsOpen] = useState(false);
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
