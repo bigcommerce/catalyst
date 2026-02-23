@@ -463,8 +463,8 @@
             "additionalInformation": "Mer informasjon",
             "currentStock": "{antall, nummer} på lager",
             "backorderQuantity": "{antall, nummer} vil være restordre",
-            "loadingMoreImages": "Loading more images",
-            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "loadingMoreImages": "Laster inn flere bilder",
+            "imagesLoaded": "{antall, flertall, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",

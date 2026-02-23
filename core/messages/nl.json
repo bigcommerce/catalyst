@@ -463,8 +463,8 @@
             "additionalInformation": "Aanvullende informatie",
             "currentStock": "{quantity, number} op voorraad",
             "backorderQuantity": "{hoeveelheid, aantal} staat in backorder",
-            "loadingMoreImages": "Loading more images",
-            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "loadingMoreImages": "Meer afbeeldingen laden",
+            "imagesLoaded": "{count, plural, =1 {1 afbeelding geladen} other {# afbeeldingen geladen}}",
             "Submit": {
                 "addToCart": "Toevoegen aan winkelmandje",
                 "outOfStock": "Niet op voorraad",

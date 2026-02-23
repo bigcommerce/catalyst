@@ -463,8 +463,8 @@
             "additionalInformation": "Ytterligare information",
             "currentStock": "{quantity, number} i lager",
             "backorderQuantity": "{quantity, number} kommer att vara restnoterade",
-            "loadingMoreImages": "Loading more images",
-            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "loadingMoreImages": "Laddar fler bilder",
+            "imagesLoaded": "{count, plural, =1 {1 till bild har laddats} other {# till bilder har laddats}}",
             "Submit": {
                 "addToCart": "Lägg till i kundvagn",
                 "outOfStock": "Ej i lager",

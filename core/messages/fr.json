@@ -463,8 +463,8 @@
             "additionalInformation": "Informations supplémentaires",
             "currentStock": "{quantity, number} en stock",
             "backorderQuantity": "{quantité, nombre} en attente de réapprovisionnement",
-            "loadingMoreImages": "Loading more images",
-            "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "loadingMoreImages": "Chargement de plus d'images",
+            "imagesLoaded": "{count, plural, =1 {1 image supplémentaire chargée} other {# images supplémentaires chargées}}",
             "Submit": {
                 "addToCart": "Ajouter au panier",
                 "outOfStock": "En rupture de stock",
