@@ -31,12 +31,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'Blog' });
   const blog = await getBlog();
 
+  const description =
+    blog?.description && blog.description.length > 150
+      ? `${blog.description.substring(0, 150)}...`
+      : blog?.description;
+
   return {
     title: blog?.name ?? t('title'),
-    description:
-      blog?.description && blog.description.length > 150
-        ? `${blog.description.substring(0, 150)}...`
-        : blog?.description,
+    ...(description && { description }),
     ...(blog?.path && { alternates: await getMetadataAlternates({ path: blog.path, locale }) }),
   };
 }

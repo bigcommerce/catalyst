@@ -88,8 +88,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   return {
     title: pageTitle || category.name,
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    ...(metaDescription && { description: metaDescription }),
+    ...(metaKeywords && { keywords: metaKeywords.split(',') }),
     ...(categoryPath && {
       alternates: await getMetadataAlternates({ path: categoryPath, locale }),
     }),
