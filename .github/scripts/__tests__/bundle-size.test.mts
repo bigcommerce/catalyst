@@ -12,7 +12,7 @@ import {
   computeRouteMetrics,
   compareReport,
   clearSizeCache,
-} from '../bundle-size.mjs';
+} from '../bundle-size.mts';
 
 // ---------------------------------------------------------------------------
 // Shared temp directory with fixture chunk files.
@@ -25,13 +25,13 @@ const testDir = join(tmpdir(), `bundle-size-test-${Date.now()}`);
 mkdirSync(testDir, { recursive: true });
 
 // Each file gets unique, varied content so gzip produces a non-trivial size.
-const makeJs = (prefix) =>
+const makeJs = (prefix: string) =>
   Array.from(
     { length: 30 },
     (_, i) => `export const ${prefix}_${i} = ${JSON.stringify(`${prefix}_v${i}_pad${i * 37 + 13}`)};`,
   ).join('\n') + '\n';
 
-const makeCss = (prefix) =>
+const makeCss = (prefix: string) =>
   Array.from(
     { length: 20 },
     (_, i) => `.${prefix}-class-${i} { color: hsl(${i * 17}, 50%, 50%); margin: ${i}px; }`,
@@ -396,12 +396,24 @@ describe('compareReport', () => {
     };
   }
 
-  it('shows "No route changes detected." when routes are identical', () => {
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
+  it('shows "No bundle size changes detected." when nothing changed', () => {
+    const baseline = makeReport();
+    const current = makeReport();
+    const report = compareReport(baseline, current);
+
+    assert.ok(report.includes('No bundle size changes detected.'));
+    assert.ok(!report.includes('_No route changes detected._'));
+    assert.ok(!report.includes('### Per-Route First Load JS'));
+  });
+
+  it('shows "No route changes detected." when only global metrics changed', () => {
+    // Global metric differs (Case 2) but routes are identical → section shown, no threshold
+    const baseline = makeReport({ firstLoadJs: 100, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
+    const current = makeReport({ firstLoadJs: 110, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes('_No route changes detected._'));
+    assert.ok(!report.includes(`Threshold:`));
   });
 
   it('does not show global metrics table when global metrics are unchanged', () => {
@@ -518,6 +530,24 @@ describe('compareReport', () => {
     assert.ok(report.includes('Threshold: 5%'));
   });
 
+  it('shows threshold in footer only when route changes are present', () => {
+    // Route changed: threshold callout shown
+    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
+    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 110, js: 60, css: 5 } } });
+    const report = compareReport(baseline, current, { threshold: 7 });
+
+    assert.ok(report.includes('Threshold: 7%'));
+  });
+
+  it('omits threshold footer when there are no route changes', () => {
+    // Global metrics differ but routes are identical — no threshold callout
+    const baseline = makeReport({ firstLoadJs: 100 });
+    const current = makeReport({ firstLoadJs: 115 });
+    const report = compareReport(baseline, current);
+
+    assert.ok(!report.includes('Threshold:'));
+  });
+
   it('formats positive delta with + sign and percent', () => {
     const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
     const current = makeReport({ routes: { '/app/page': { firstLoadJs: 110, js: 60, css: 5 } } });
@@ -537,7 +567,7 @@ describe('compareReport', () => {
   });
 
   it('sorts routes alphabetically', () => {
-    const makeRoute = (v) => ({ firstLoadJs: v, js: v, css: 0 });
+    const makeRoute = (v: number) => ({ firstLoadJs: v, js: v, css: 0 });
     const baseline = makeReport({
       routes: {
         '/z/page': makeRoute(100),
@@ -586,23 +616,23 @@ describe('compareReport', () => {
     });
     const report = compareReport(baseline, current);
 
-    assert.ok(report.includes('_No route changes detected._'));
+    assert.ok(report.includes('No bundle size changes detected.'));
   });
 
-  it('always shows Per-Route First Load JS section', () => {
-    const baseline = makeReport();
-    const current = makeReport();
+  it('shows Per-Route First Load JS section when there are route changes', () => {
+    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 0 } } });
+    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 110, js: 60, css: 0 } } });
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes('### Per-Route First Load JS'));
   });
 
-  it('includes threshold value in footer', () => {
+  it('omits Per-Route First Load JS section when nothing changed', () => {
     const baseline = makeReport();
     const current = makeReport();
-    const report = compareReport(baseline, current, { threshold: 7 });
+    const report = compareReport(baseline, current);
 
-    assert.ok(report.includes('Threshold: 7%'));
+    assert.ok(!report.includes('### Per-Route First Load JS'));
   });
 
   it('shows header with baseline commitSha and updatedAt', () => {
@@ -614,12 +644,12 @@ describe('compareReport', () => {
     assert.ok(report.includes('2024-06-15'));
   });
 
-  it('handles empty routes in both baseline and current', () => {
+  it('shows "No bundle size changes detected." for empty routes in both reports', () => {
     const baseline = makeReport({ routes: {} });
     const current = makeReport({ routes: {} });
     const report = compareReport(baseline, current);
 
-    assert.ok(report.includes('_No route changes detected._'));
+    assert.ok(report.includes('No bundle size changes detected.'));
   });
 
   it('shows table header when routes have changes', () => {

@@ -2,7 +2,7 @@ name: Regression Tests
 
 on:
   deployment_status:
-    states: ['success']
+    states: ["success"]
 
 env:
   VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         device: [desktop, mobile]
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}-${{ matrix.device }}
       cancel-in-progress: true
 
@@ -39,5 +39,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unlighthouse-vercel-${{ matrix.device }}-report
-          path: './.unlighthouse/'
-          include-hidden-files: 'true'
+          path: "./.unlighthouse/"
+          include-hidden-files: "true"
