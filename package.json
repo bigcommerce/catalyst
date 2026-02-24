@@ -18,6 +18,7 @@
     "build": "dotenv -e .env.local -- turbo run build",
     "lint": "dotenv -e .env.local -- turbo lint",
     "test": "turbo run test",
+    "test:scripts": "node --test .github/scripts/__tests__/*.test.mjs",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {

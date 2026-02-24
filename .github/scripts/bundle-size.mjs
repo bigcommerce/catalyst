@@ -10,26 +10,16 @@ import { gzipSync } from 'node:zlib';
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CORE_DIR = resolve(__dirname, '..', '..', 'core');
-const { values, positionals } = parseArgs({
-  allowPositionals: true,
-  options: {
-    output:    { type: 'string' },
-    baseline:  { type: 'string' },
-    current:   { type: 'string' },
-    threshold: { type: 'string' },
-    sha:       { type: 'string' },
-    dir:       { type: 'string' },
-  },
-});
-
-const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, '.next');
-const command = positionals.at(0);
 
 function round1(n) {
   return Math.round(n * 10) / 10;
 }
 
 const sizeCache = new Map();
+
+function clearSizeCache() {
+  sizeCache.clear();
+}
 
 function getGzipSize(filePath) {
   if (sizeCache.has(filePath)) return sizeCache.get(filePath);
@@ -81,7 +71,7 @@ function parseManifestEntries(entries) {
   return { layouts, pages };
 }
 
-function computeRootLayout(layoutPaths, layouts, sharedChunks) {
+function computeRootLayout(layoutPaths, layouts, sharedChunks, nextDir) {
   const sorted = [...layoutPaths].sort((a, b) => a.split('/').length - b.split('/').length);
   const rootLayoutPath = sorted[0] || null;
   const rootLayoutChunks = new Set();
@@ -90,7 +80,7 @@ function computeRootLayout(layoutPaths, layouts, sharedChunks) {
 
   if (rootLayoutPath) {
     const uniqueChunks = layouts[rootLayoutPath].filter((c) => !sharedChunks.has(c));
-    const sizes = sumChunkSizes(uniqueChunks, NEXT_DIR);
+    const sizes = sumChunkSizes(uniqueChunks, nextDir);
 
     rootLayoutJs = sizes.js;
     rootLayoutCss = sizes.css;
@@ -107,6 +97,7 @@ function computeRouteMetrics(
   rootLayoutPath,
   rootLayoutChunks,
   firstLoadJs,
+  nextDir,
 ) {
   const routes = {};
 
@@ -143,7 +134,7 @@ function computeRouteMetrics(
       }
     }
 
-    const sizes = sumChunkSizes(routeChunks, NEXT_DIR);
+    const sizes = sumChunkSizes(routeChunks, nextDir);
 
     routes[route] = {
       js: round1(sizes.js),
@@ -155,101 +146,7 @@ function computeRouteMetrics(
   return routes;
 }
 
-function generate() {
-  const appManifestPath = join(NEXT_DIR, 'app-build-manifest.json');
-  const buildManifestPath = join(NEXT_DIR, 'build-manifest.json');
-
-  if (!existsSync(appManifestPath)) {
-    console.error('Error: .next/app-build-manifest.json not found. Run `next build` first.');
-    process.exit(1);
-  }
-
-  const appManifest = JSON.parse(readFileSync(appManifestPath, 'utf-8'));
-  const buildManifest = JSON.parse(readFileSync(buildManifestPath, 'utf-8'));
-
-  const rootMainFiles = new Set(buildManifest.rootMainFiles || []);
-  const polyfillFiles = new Set(buildManifest.polyfillFiles || []);
-  const sharedChunks = new Set([...rootMainFiles, ...polyfillFiles]);
-
-  const entries = appManifest.pages || {};
-  const { layouts, pages } = parseManifestEntries(entries);
-
-  // Shared JS = sum of rootMainFiles gzipped sizes
-  const sharedSizes = sumChunkSizes(rootMainFiles, NEXT_DIR);
-  const sharedJs = round1(sharedSizes.js);
-
-  // Root layout
-  const { rootLayoutPath, rootLayoutChunks, rootLayoutJs, rootLayoutCss } = computeRootLayout(
-    Object.keys(layouts),
-    layouts,
-    sharedChunks,
-  );
-
-  const sharedCss = round1(rootLayoutCss);
-  const firstLoadJs = round1(sharedJs + rootLayoutJs + rootLayoutCss);
-
-  // Total JS and CSS across all unique chunks
-  const allChunksSet = new Set();
-
-  for (const chunks of Object.values(entries)) {
-    for (const chunk of chunks) {
-      allChunksSet.add(chunk);
-    }
-  }
-
-  const totals = sumChunkSizes(allChunksSet, NEXT_DIR);
-  const totalJs = round1(totals.js);
-  const totalCss = round1(totals.css);
-
-  // Per-route metrics
-  const routes = computeRouteMetrics(
-    pages,
-    layouts,
-    sharedChunks,
-    rootLayoutPath,
-    rootLayoutChunks,
-    firstLoadJs,
-  );
-
-  const result = {
-    commitSha: values.sha ?? 'unknown',
-    updatedAt: new Date().toISOString().split('T')[0],
-    firstLoadJs,
-    shared: { js: sharedJs, css: sharedCss },
-    routes,
-    totalJs,
-    totalCss,
-  };
-
-  const output = values.output ?? null;
-  const json = `${JSON.stringify(result, null, 2)}\n`;
-
-  if (output) {
-    writeFileSync(resolve(output), json);
-    console.error(`Bundle size report written to ${output}`);
-  } else {
-    process.stdout.write(json);
-  }
-}
-
-function compare() {
-  const baselinePath = resolve(values.baseline ?? join(CORE_DIR, 'bundle-baseline.json'));
-  const currentPath = resolve(values.current ?? '');
-  const threshold = Number(values.threshold ?? '5');
-
-  if (!currentPath || !existsSync(currentPath)) {
-    console.error('Error: --current <path> is required and must exist');
-    process.exit(1);
-  }
-
-  if (!existsSync(baselinePath)) {
-    console.error(`Error: baseline not found at ${baselinePath}`);
-    process.exit(1);
-  }
-
-  const baseline = JSON.parse(readFileSync(baselinePath, 'utf-8'));
-  const current = JSON.parse(readFileSync(currentPath, 'utf-8'));
-
+function compareReport(baseline, current, { threshold = 5 } = {}) {
   function hasChanged(base, curr) {
     if (round1(curr - base) === 0) return false;
     const pct = base > 0 ? ((curr - base) / base) * 100 : null;
@@ -347,23 +244,153 @@ function compare() {
   lines.push(`> Threshold: ${threshold}% increase. Routes with ⚠️ exceed the threshold.`);
   lines.push('');
 
-  process.stdout.write(lines.join('\n'));
+  return lines.join('\n');
 }
 
-if (command === 'generate') {
-  generate();
-} else if (command === 'compare') {
-  compare();
-} else {
-  console.error('Usage: bundle-size.mjs <generate|compare> [options]');
-  console.error('');
-  console.error('Commands:');
-  console.error('  generate  Analyze .next/ build output and produce bundle size JSON');
-  console.error('    --output <path>  Write JSON to file instead of stdout');
-  console.error('');
-  console.error('  compare   Compare current bundle against a baseline');
-  console.error('    --baseline <path>  Path to baseline JSON (default: ./bundle-baseline.json)');
-  console.error('    --current <path>   Path to current bundle JSON (required)');
-  console.error('    --threshold <n>    Warning threshold percentage (default: 5)');
-  process.exit(1);
+function generate(nextDir, values) {
+  const appManifestPath = join(nextDir, 'app-build-manifest.json');
+  const buildManifestPath = join(nextDir, 'build-manifest.json');
+
+  if (!existsSync(appManifestPath)) {
+    console.error('Error: .next/app-build-manifest.json not found. Run `next build` first.');
+    process.exit(1);
+  }
+
+  const appManifest = JSON.parse(readFileSync(appManifestPath, 'utf-8'));
+  const buildManifest = JSON.parse(readFileSync(buildManifestPath, 'utf-8'));
+
+  const rootMainFiles = new Set(buildManifest.rootMainFiles || []);
+  const polyfillFiles = new Set(buildManifest.polyfillFiles || []);
+  const sharedChunks = new Set([...rootMainFiles, ...polyfillFiles]);
+
+  const entries = appManifest.pages || {};
+  const { layouts, pages } = parseManifestEntries(entries);
+
+  // Shared JS = sum of rootMainFiles gzipped sizes
+  const sharedSizes = sumChunkSizes(rootMainFiles, nextDir);
+  const sharedJs = round1(sharedSizes.js);
+
+  // Root layout
+  const { rootLayoutPath, rootLayoutChunks, rootLayoutJs, rootLayoutCss } = computeRootLayout(
+    Object.keys(layouts),
+    layouts,
+    sharedChunks,
+    nextDir,
+  );
+
+  const sharedCss = round1(rootLayoutCss);
+  const firstLoadJs = round1(sharedJs + rootLayoutJs + rootLayoutCss);
+
+  // Total JS and CSS across all unique chunks
+  const allChunksSet = new Set();
+
+  for (const chunks of Object.values(entries)) {
+    for (const chunk of chunks) {
+      allChunksSet.add(chunk);
+    }
+  }
+
+  const totals = sumChunkSizes(allChunksSet, nextDir);
+  const totalJs = round1(totals.js);
+  const totalCss = round1(totals.css);
+
+  // Per-route metrics
+  const routes = computeRouteMetrics(
+    pages,
+    layouts,
+    sharedChunks,
+    rootLayoutPath,
+    rootLayoutChunks,
+    firstLoadJs,
+    nextDir,
+  );
+
+  const result = {
+    commitSha: values.sha ?? 'unknown',
+    updatedAt: new Date().toISOString().split('T')[0],
+    firstLoadJs,
+    shared: { js: sharedJs, css: sharedCss },
+    routes,
+    totalJs,
+    totalCss,
+  };
+
+  const output = values.output ?? null;
+  const json = `${JSON.stringify(result, null, 2)}\n`;
+
+  if (output) {
+    writeFileSync(resolve(output), json);
+    console.error(`Bundle size report written to ${output}`);
+  } else {
+    process.stdout.write(json);
+  }
+}
+
+function compare(nextDir, values) {
+  const baselinePath = resolve(values.baseline ?? join(CORE_DIR, 'bundle-baseline.json'));
+  const currentPath = resolve(values.current ?? '');
+  const threshold = Number(values.threshold ?? '5');
+
+  if (!currentPath || !existsSync(currentPath)) {
+    console.error('Error: --current <path> is required and must exist');
+    process.exit(1);
+  }
+
+  if (!existsSync(baselinePath)) {
+    console.error(`Error: baseline not found at ${baselinePath}`);
+    process.exit(1);
+  }
+
+  const baseline = JSON.parse(readFileSync(baselinePath, 'utf-8'));
+  const current = JSON.parse(readFileSync(currentPath, 'utf-8'));
+
+  process.stdout.write(compareReport(baseline, current, { threshold }));
+}
+
+export {
+  round1,
+  getGzipSize,
+  sumChunkSizes,
+  parseManifestEntries,
+  computeRootLayout,
+  computeRouteMetrics,
+  compareReport,
+  clearSizeCache,
+};
+
+const isMain = process.argv[1] === fileURLToPath(import.meta.url);
+
+if (isMain) {
+  const { values, positionals } = parseArgs({
+    allowPositionals: true,
+    options: {
+      output:    { type: 'string' },
+      baseline:  { type: 'string' },
+      current:   { type: 'string' },
+      threshold: { type: 'string' },
+      sha:       { type: 'string' },
+      dir:       { type: 'string' },
+    },
+  });
+
+  const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, '.next');
+  const command = positionals.at(0);
+
+  if (command === 'generate') {
+    generate(NEXT_DIR, values);
+  } else if (command === 'compare') {
+    compare(NEXT_DIR, values);
+  } else {
+    console.error('Usage: bundle-size.mjs <generate|compare> [options]');
+    console.error('');
+    console.error('Commands:');
+    console.error('  generate  Analyze .next/ build output and produce bundle size JSON');
+    console.error('    --output <path>  Write JSON to file instead of stdout');
+    console.error('');
+    console.error('  compare   Compare current bundle against a baseline');
+    console.error('    --baseline <path>  Path to baseline JSON (default: ./bundle-baseline.json)');
+    console.error('    --current <path>   Path to current bundle JSON (required)');
+    console.error('    --threshold <n>    Warning threshold percentage (default: 5)');
+    process.exit(1);
+  }
 }
