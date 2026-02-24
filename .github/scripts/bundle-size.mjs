@@ -9,7 +9,7 @@ import { gzipSync } from 'node:zlib';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CORE_DIR = resolve(__dirname, '../../core');
+const CORE_DIR = resolve(__dirname, '..', '..', 'core');
 const { values, positionals } = parseArgs({
   allowPositionals: true,
   options: {
@@ -23,7 +23,7 @@ const { values, positionals } = parseArgs({
 });
 
 const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, '.next');
-const command = positionals[0];
+const command = positionals.at(0);
 
 function round1(n) {
   return Math.round(n * 10) / 10;
