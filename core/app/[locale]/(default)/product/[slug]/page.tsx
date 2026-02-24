@@ -55,7 +55,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: pageTitle || product.name,
-    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+    description:
+      metaDescription ||
+      `${product.plainTextDescription.replaceAll(/\s+/g, ' ').trim().slice(0, 150)}...`,
     ...(metaKeywords && { keywords: metaKeywords.split(',') }),
     alternates: await getMetadataAlternates({ path: product.path, locale }),
     ...(url && { openGraph: { images: [{ url, alt }] } }),
