@@ -225,52 +225,58 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                 resetAutoplay();
               }}
             >
-              <div className="relative overflow-hidden">
-                {/* White Bar - Current Index Indicator / Progress Bar */}
-                <div
-                  className={clsx(
-                    'absolute h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))]',
-                    'opacity-0 fill-mode-forwards',
-                    isPlaying ? 'running' : 'paused',
-                    index === selectedIndex
-                      ? 'opacity-100 ease-linear animate-in slide-in-from-left'
-                      : 'ease-out animate-out fade-out',
-                  )}
-                  key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
-                  style={{
-                    animationDuration: index === selectedIndex ? `${interval}ms` : '200ms',
-                    width: `${150 / slides.length}px`,
-                  }}
-                />
-                {/* Grey Bar BG */}
-                <div
-                  className="h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))] opacity-30"
-                  style={{ width: `${150 / slides.length}px` }}
-                />
-              </div>
+              {slides.length > 1 && (
+                <div className="relative overflow-hidden">
+                  {/* White Bar - Current Index Indicator / Progress Bar */}
+                  <div
+                    className={clsx(
+                      'absolute h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))]',
+                      'opacity-0 fill-mode-forwards',
+                      isPlaying ? 'running' : 'paused',
+                      index === selectedIndex
+                        ? 'opacity-100 ease-linear animate-in slide-in-from-left'
+                        : 'ease-out animate-out fade-out',
+                    )}
+                    key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
+                    style={{
+                      animationDuration: index === selectedIndex ? `${interval}ms` : '200ms',
+                      width: `${150 / slides.length}px`,
+                    }}
+                  />
+                  {/* Grey Bar BG */}
+                  <div
+                    className="h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))] opacity-30"
+                    style={{ width: `${150 / slides.length}px` }}
+                  />
+                </div>
+              )}
             </button>
           );
         })}
 
         {/* Carousel Count - "01/03" */}
-        <span className="ml-auto mr-3 mt-px font-[family-name:var(--slideshow-number-font-family,var(--font-family-mono))] text-sm text-[var(--slideshow-number,hsl(var(--background)))]">
-          {selectedIndex + 1 < 10 ? `0${selectedIndex + 1}` : selectedIndex + 1}/
-          {slides.length < 10 ? `0${slides.length}` : slides.length}
-        </span>
+        {slides.length > 1 && (
+          <span className="ml-auto mr-3 mt-px font-[family-name:var(--slideshow-number-font-family,var(--font-family-mono))] text-sm text-[var(--slideshow-number,hsl(var(--background)))]">
+            {selectedIndex + 1 < 10 ? `0${selectedIndex + 1}` : selectedIndex + 1}/
+            {slides.length < 10 ? `0${slides.length}` : slides.length}
+          </span>
+        )}
 
         {/* Stop / Start Button */}
-        <button
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-          className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border,hsl(var(--contrast-300)/50%))] text-[var(--slideshow-play-text,hsl(var(--background)))] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover,hsl(var(--contrast-300)/80%))] focus-visible:outline-0 focus-visible:ring-2"
-          onClick={toggleAutoplay}
-          type="button"
-        >
-          {isPlaying ? (
-            <Pause className="pointer-events-none" size={16} strokeWidth={1.5} />
-          ) : (
-            <Play className="pointer-events-none" size={16} strokeWidth={1.5} />
-          )}
-        </button>
+        {slides.length > 1 && (
+          <button
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+            className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border,hsl(var(--contrast-300)/50%))] text-[var(--slideshow-play-text,hsl(var(--background)))] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover,hsl(var(--contrast-300)/80%))] focus-visible:outline-0 focus-visible:ring-2"
+            onClick={toggleAutoplay}
+            type="button"
+          >
+            {isPlaying ? (
+              <Pause className="pointer-events-none" size={16} strokeWidth={1.5} />
+            ) : (
+              <Play className="pointer-events-none" size={16} strokeWidth={1.5} />
+            )}
+          </button>
+        )}
       </div>
     </section>
   );

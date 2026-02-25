@@ -115,6 +115,12 @@ export const DigitalItemFragment = graphql(`
       }
     }
     url
+    stockPosition {
+      backorderMessage
+      quantityOnHand
+      quantityBackordered
+      quantityOutOfStock
+    }
   }
 `);
 
