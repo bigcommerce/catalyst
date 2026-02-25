@@ -93,7 +93,7 @@ export function GiftCertificatePurchaseSection({
       return;
     }
 
-    if (e.target.name !== 'amount') {
+    if (e.target.name !== 'amount' && e.target.name !== 'amount_display') {
       return;
     }
 
