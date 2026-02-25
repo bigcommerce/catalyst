@@ -49,7 +49,7 @@ export const addShippingCost = async ({
 
   const result = response.data.checkout.selectCheckoutShippingOption?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, { expire: 0 });
 
   return result;
 };

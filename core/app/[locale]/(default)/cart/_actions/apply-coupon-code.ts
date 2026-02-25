@@ -45,7 +45,7 @@ export const applyCouponCode = async ({ checkoutEntityId, couponCode }: Props) =
 
   const checkout = response.data.checkout.applyCheckoutCoupon?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, { expire: 0 });
 
   return checkout;
 };

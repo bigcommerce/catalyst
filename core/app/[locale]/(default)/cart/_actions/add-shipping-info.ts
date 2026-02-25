@@ -68,7 +68,7 @@ export const addCheckoutShippingConsignments = async ({
     fetchOptions: { cache: 'no-store' },
   });
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, { expire: 0 });
 
   return response.data.checkout.addCheckoutShippingConsignments?.checkout;
 };
@@ -135,7 +135,7 @@ export const updateCheckoutShippingConsignment = async ({
     fetchOptions: { cache: 'no-store' },
   });
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, { expire: 0 });
 
   return response.data.checkout.updateCheckoutShippingConsignment?.checkout;
 };
