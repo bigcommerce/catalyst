@@ -1,6 +1,6 @@
 import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag as expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -234,7 +234,7 @@ export async function createAddress(
       };
     }
 
-    expireTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     return {
       addresses: [
