@@ -9,7 +9,7 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { getRecaptchaSiteKey, RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
   mutation AddProductReviewMutation(
@@ -40,6 +40,18 @@ export async function submitReview(
 
   if (submission.status !== 'success') {
     return { ...prevState, lastResult: submission.reply() };
+  }
+
+  const recaptchaSiteKey = await getRecaptchaSiteKey();
+  if (recaptchaSiteKey) {
+    const token = payload.get(RECAPTCHA_TOKEN_FORM_KEY);
+    const tokenValue = typeof token === 'string' ? token.trim() : '';
+    if (!tokenValue) {
+      return {
+        ...prevState,
+        lastResult: submission.reply({ formErrors: [t('recaptchaRequired')] }),
+      };
+    }
   }
 
   const { productEntityId, ...input } = submission.value;

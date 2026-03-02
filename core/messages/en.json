@@ -98,6 +98,7 @@
       "heading": "New account",
       "cta": "Create account",
       "somethingWentWrong": "Something went wrong. Please try again later.",
+      "recaptchaRequired": "Please complete the reCAPTCHA verification.",
       "FieldErrors": {
         "firstNameRequired": "First name is required",
         "lastNameRequired": "Last name is required",
@@ -505,6 +506,7 @@
         "emailLabel": "Email",
         "successMessage": "Your review has been submitted successfully!",
         "somethingWentWrong": "Something went wrong. Please try again later.",
+        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
         "FieldErrors": {
           "titleRequired": "Title is required",
           "authorRequired": "Name is required",
@@ -535,7 +537,8 @@
         "email": "Email",
         "comments": "Comments/questions",
         "cta": "Submit form",
-        "somethingWentWrong": "Something went wrong. Please try again later."
+        "somethingWentWrong": "Something went wrong. Please try again later.",
+        "recaptchaRequired": "Please complete the reCAPTCHA verification."
       }
     }
   },
@@ -705,6 +708,7 @@
   },
   "Form": {
     "optional": "optional",
+    "recaptchaRequired": "Please complete the reCAPTCHA verification.",
     "Errors": {
       "invalidInput": "Please check your input and try again",
       "invalidFormat": "The value entered does not match the required format"

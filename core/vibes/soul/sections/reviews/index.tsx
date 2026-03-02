@@ -40,6 +40,7 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }
 
 export function Reviews({
@@ -65,6 +66,7 @@ export function Reviews({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: Readonly<Props>) {
   return (
     <Stream fallback={<ReviewsSkeleton reviewsLabel={reviewsLabel} />} value={streamableReviews}>
@@ -78,6 +80,7 @@ export function Reviews({
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
+              recaptchaSiteKey={recaptchaSiteKey}
               formRatingLabel={formRatingLabel}
               formReviewLabel={formReviewLabel}
               formSubmitLabel={formSubmitLabel}
@@ -137,20 +140,21 @@ export function Reviews({
                   formRatingLabel={formRatingLabel}
                   formReviewLabel={formReviewLabel}
                   formSubmitLabel={formSubmitLabel}
-                  formTitleLabel={formTitleLabel}
-                  productId={productId}
-                  streamableImages={streamableImages}
-                  streamableProduct={streamableProduct}
-                  streamableUser={streamableUser}
-                  trigger={
-                    <Button className="mx-auto mt-8" size="small" variant="tertiary">
-                      {formButtonLabel}
-                    </Button>
-                  }
-                />
-              </>
-            }
-            sidebarSize="medium"
+              formTitleLabel={formTitleLabel}
+              productId={productId}
+              recaptchaSiteKey={recaptchaSiteKey}
+              streamableImages={streamableImages}
+              streamableProduct={streamableProduct}
+              streamableUser={streamableUser}
+              trigger={
+                <Button className="mx-auto mt-8" size="small" variant="tertiary">
+                  {formButtonLabel}
+                </Button>
+              }
+            />
+          </>
+        }
+        sidebarSize="medium"
           >
             <div className="flex-1 border-t border-contrast-100">
               {reviews.map(({ id, rating, review, name, date }) => {
@@ -201,6 +205,7 @@ export function ReviewsEmptyState({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: {
   message?: string;
   reviewsLabel?: string;
@@ -221,6 +226,7 @@ export function ReviewsEmptyState({
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }) {
   return (
     <StickySidebarLayout
@@ -250,6 +256,7 @@ export function ReviewsEmptyState({
           formSubmitLabel={formSubmitLabel}
           formTitleLabel={formTitleLabel}
           productId={productId}
+          recaptchaSiteKey={recaptchaSiteKey}
           streamableImages={streamableImages}
           streamableProduct={streamableProduct}
           streamableUser={streamableUser}

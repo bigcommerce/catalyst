@@ -11,7 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { getRecaptchaSiteKey, RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({
@@ -73,6 +73,16 @@ export async function submitContactForm<F extends Field>(
     return {
       lastResult: submission.reply(),
     };
+  }
+
+  const recaptchaSiteKey = await getRecaptchaSiteKey();
+  if (recaptchaSiteKey) {
+    const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
+    if (typeof recaptchaToken !== 'string' || !recaptchaToken.trim()) {
+      return {
+        lastResult: submission.reply({ formErrors: [t('recaptchaRequired')] }),
+      };
+    }
   }
 
   try {

@@ -20,6 +20,7 @@ import {
   useActionState,
   useEffect,
   useRef,
+  useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -114,6 +115,7 @@ function DynamicFormInner<F extends Field>({
   });
 
   const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
@@ -156,24 +158,24 @@ function DynamicFormInner<F extends Field>({
     defaultValue,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
-    async onSubmit(event, { formData }) {
+    onSubmit(event, { formData }) {
       event.preventDefault();
+
+      setRecaptchaError(null);
 
       let payload: FormData = formData;
 
       if (recaptchaSiteKey && recaptchaRef.current) {
-        try {
-          const token = await recaptchaRef.current.executeAsync();
+        const token = recaptchaRef.current.getValue();
 
-          if (token) {
-            payload = new FormData(event.currentTarget);
-            payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
-          }
-
-          recaptchaRef.current.reset();
-        } catch {
-          // Proceed without token
+        if (!token || typeof token !== 'string') {
+          setRecaptchaError(t('recaptchaRequired'));
+          return;
         }
+
+        payload = new FormData(event.currentTarget);
+        payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+        recaptchaRef.current.reset();
       }
 
       startTransition(() => {
@@ -235,6 +237,7 @@ function DynamicFormInner<F extends Field>({
               {submitLabel}
             </SubmitButton>
           </div>
+          {recaptchaError && <FormStatus type="error">{recaptchaError}</FormStatus>}
           {form.errors?.map((error, index) => (
             <FormStatus key={index} type="error">
               {error}

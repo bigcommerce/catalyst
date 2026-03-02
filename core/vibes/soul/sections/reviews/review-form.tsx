@@ -74,6 +74,7 @@ export const ReviewForm = ({
   });
   const formRef = useRef<HTMLFormElement>(null);
   const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const user = useStreamable(streamableUser);
 
@@ -89,22 +90,24 @@ export const ReviewForm = ({
     onValidate({ formData }) {
       return parseWithZodTranslatedErrors(formData, { schema, errorTranslations });
     },
-    async onSubmit(event, { formData }) {
+    onSubmit(event, { formData }) {
       event.preventDefault();
+
+      setRecaptchaError(null);
 
       let payload: FormData = formData;
 
       if (recaptchaSiteKey && recaptchaRef.current) {
-        try {
-          const token = await recaptchaRef.current.execute();
+        const token = recaptchaRef.current.getValue();
 
-          if (token) {
-            payload = new FormData(event.currentTarget);
-            payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
-          }
+        if (!token || typeof token !== 'string') {
+          setRecaptchaError(t('recaptchaRequired'));
+          return;
+        }
 
-          recaptchaRef.current.reset();
-        } catch {}
+        payload = new FormData(event.currentTarget);
+        payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
+        recaptchaRef.current.reset();
       }
 
       startTransition(() => {
@@ -235,6 +238,9 @@ export const ReviewForm = ({
               type="email"
               value={typeof emailControl.value === 'string' ? emailControl.value : ''}
             />
+            {recaptchaError && (
+              <FormStatus type="error">{recaptchaError}</FormStatus>
+            )}
             {form.errors?.map((error, index) => (
               <FormStatus key={index} type="error">
                 {error}
