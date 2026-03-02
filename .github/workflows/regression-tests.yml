@@ -12,8 +12,63 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unlighthouse-audit:
-    name: Unlighthouse Audit - ${{ matrix.device }}
+  detect-provider:
+    name: Detect Deployment Provider
+    runs-on: ubuntu-latest
+    outputs:
+      provider: ${{ steps.detect.outputs.provider }}
+      is-preview: ${{ steps.detect.outputs.is-preview }}
+      production-url: ${{ steps.detect.outputs.production-url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect provider and production URL
+        id: detect
+        run: |
+          CREATOR="${{ github.event.deployment_status.creator.login }}"
+          ENVIRONMENT="${{ github.event.deployment.environment }}"
+
+          if [[ "$CREATOR" == "vercel[bot]" ]]; then
+            echo "provider=vercel" >> $GITHUB_OUTPUT
+            if [[ "$ENVIRONMENT" == "Preview" ]]; then
+              echo "is-preview=true" >> $GITHUB_OUTPUT
+              PKG_NAME=$(node -p "require('./core/package.json').name")
+              case "$PKG_NAME" in
+                "@bigcommerce/catalyst-core")
+                  echo "production-url=https://canary.catalyst-demo.site/" >> $GITHUB_OUTPUT ;;
+                "@bigcommerce/catalyst-makeswift")
+                  echo "production-url=https://canary.makeswift.catalyst-demo.site" >> $GITHUB_OUTPUT ;;
+                *)
+                  echo "::warning::No production URL configured for package: $PKG_NAME. Skipping comparison."
+                  echo "production-url=" >> $GITHUB_OUTPUT ;;
+              esac
+            else
+              echo "is-preview=false" >> $GITHUB_OUTPUT
+              echo "production-url=" >> $GITHUB_OUTPUT
+            fi
+
+          elif [[ "$CREATOR" == "cloudflare-pages[bot]" ]]; then
+            echo "provider=cloudflare" >> $GITHUB_OUTPUT
+            if [[ "$ENVIRONMENT" == "Preview" ]]; then
+              echo "is-preview=true" >> $GITHUB_OUTPUT
+              echo "::warning::Cloudflare production URL not yet configured. Skipping comparison."
+              echo "production-url=" >> $GITHUB_OUTPUT
+            else
+              echo "is-preview=false" >> $GITHUB_OUTPUT
+              echo "production-url=" >> $GITHUB_OUTPUT
+            fi
+
+          else
+            echo "::warning::Unknown deployment provider: $CREATOR. Skipping audits."
+            echo "provider=unknown" >> $GITHUB_OUTPUT
+            echo "is-preview=false" >> $GITHUB_OUTPUT
+            echo "production-url=" >> $GITHUB_OUTPUT
+          fi
+
+  unlighthouse-audit-preview:
+    name: Unlighthouse Audit Preview (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
+    needs: [detect-provider]
+    if: needs.detect-provider.outputs.is-preview == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -23,21 +78,109 @@ jobs:
       cancel-in-progress: true
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Install Dependencies
         run: npm install @unlighthouse/cli puppeteer -g
 
-      - name: Unlighthouse audit on ${{ matrix.device }}
-        run: unlighthouse-ci --site ${{ github.event.deployment_status.target_url }} --${{ matrix.device }} --disable-robots-txt --extra-headers x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true
+      - name: Unlighthouse audit on ${{ matrix.device }} (preview)
+        env:
+          PROVIDER: ${{ needs.detect-provider.outputs.provider }}
+          PREVIEW_URL: ${{ github.event.deployment_status.target_url }}
+        run: |
+          if [[ "$PROVIDER" == "vercel" ]]; then
+            unlighthouse-ci --site "$PREVIEW_URL" --${{ matrix.device }} --disable-robots-txt \
+              --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true"
+          else
+            unlighthouse-ci --site "$PREVIEW_URL" --${{ matrix.device }} --disable-robots-txt
+          fi
 
-      - name: Upload ${{ matrix.device }} audit
+      - name: Upload ${{ matrix.device }} preview audit
         if: failure() || success()
         uses: actions/upload-artifact@v4
         with:
-          name: unlighthouse-vercel-${{ matrix.device }}-report
+          name: unlighthouse-preview-${{ matrix.device }}-report
           path: "./.unlighthouse/"
           include-hidden-files: "true"
+
+  unlighthouse-audit-production:
+    name: Unlighthouse Audit Production (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
+    needs: [detect-provider]
+    if: needs.detect-provider.outputs.is-preview == 'true' && needs.detect-provider.outputs.production-url != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        device: [desktop, mobile]
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-production-${{ matrix.device }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: npm install @unlighthouse/cli puppeteer -g
+
+      - name: Unlighthouse audit on ${{ matrix.device }} (production)
+        env:
+          PRODUCTION_URL: ${{ needs.detect-provider.outputs.production-url }}
+        run: unlighthouse-ci --site "$PRODUCTION_URL" --${{ matrix.device }} --disable-robots-txt
+
+      - name: Upload ${{ matrix.device }} production audit
+        if: failure() || success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unlighthouse-production-${{ matrix.device }}-report
+          path: "./.unlighthouse/"
+          include-hidden-files: "true"
+
+  unlighthouse-compare:
+    name: Unlighthouse Compare & Comment (${{ needs.detect-provider.outputs.provider }})
+    needs: [detect-provider, unlighthouse-audit-preview, unlighthouse-audit-production]
+    if: needs.detect-provider.outputs.is-preview == 'true' && needs.detect-provider.outputs.production-url != ''
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Download all Unlighthouse artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: unlighthouse-*-report
+          path: /tmp/unlighthouse-artifacts
+          merge-multiple: false
+
+      - name: Compare audits
+        env:
+          PROVIDER: ${{ needs.detect-provider.outputs.provider }}
+        run: |
+          node .github/scripts/compare-unlighthouse.mts \
+            --preview-desktop    /tmp/unlighthouse-artifacts/unlighthouse-preview-desktop-report/ci-result.json \
+            --preview-mobile     /tmp/unlighthouse-artifacts/unlighthouse-preview-mobile-report/ci-result.json \
+            --production-desktop /tmp/unlighthouse-artifacts/unlighthouse-production-desktop-report/ci-result.json \
+            --production-mobile  /tmp/unlighthouse-artifacts/unlighthouse-production-mobile-report/ci-result.json \
+            --output /tmp/unlighthouse-report.md \
+            --meta-output /tmp/unlighthouse-meta.json \
+            --provider "$PROVIDER"
+          cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Post PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const postComment = require('./.github/scripts/post-unlighthouse-comment.js')
+            await postComment({
+              github,
+              context,
+              provider: '${{ needs.detect-provider.outputs.provider }}',
+              reportPath: '/tmp/unlighthouse-report.md',
+              metaPath: '/tmp/unlighthouse-meta.json',
+            })
