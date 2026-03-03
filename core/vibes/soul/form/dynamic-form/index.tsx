@@ -12,6 +12,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
+import type { ComponentRef } from 'react';
 import {
   FormEvent,
   MouseEvent,
@@ -23,7 +24,7 @@ import {
   useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
-import ReCAPTCHA from 'react-google-recaptcha';
+import RecaptchaWidget from 'react-google-recaptcha';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -114,7 +115,7 @@ function DynamicFormInner<F extends Field>({
     lastResult: null,
   });
 
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const recaptchaRef = useRef<ComponentRef<typeof RecaptchaWidget> | null>(null);
   const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
@@ -222,7 +223,7 @@ function DynamicFormInner<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
-          {recaptchaSiteKey ? <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} /> : null}
+          {recaptchaSiteKey ? <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} /> : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button
