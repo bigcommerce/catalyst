@@ -6,6 +6,7 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
+import { unstable_cache } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
@@ -46,30 +47,55 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const getFooterSections = cache(
-  async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+const getCachedFooterSections = unstable_cache(
+  async (currencyCode?: CurrencyCode) => {
     const { data: response } = await client.fetch({
       document: GetLinksAndSectionsQuery,
-      customerAccessToken,
       variables: { currencyCode },
       // Since this query is needed on every page, it's a good idea not to validate the customer access token.
       // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
       validateCustomerAccessToken: false,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return readFragment(FooterSectionsFragment, response).site;
   },
+  ['get-footer-sections'],
+  { revalidate },
 );
 
-const getFooterData = cache(async () => {
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getFooterSections = cache(
+  async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+    if (customerAccessToken) {
+      const { data: response } = await client.fetch({
+        document: GetLinksAndSectionsQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        validateCustomerAccessToken: false,
+        fetchOptions: { cache: 'no-store' },
+      });
 
-  return readFragment(FooterFragment, response).site;
-});
+      return readFragment(FooterSectionsFragment, response).site;
+    }
+
+    return getCachedFooterSections(currencyCode);
+  },
+);
+
+const getCachedFooterData = unstable_cache(
+  async () => {
+    const { data: response } = await client.fetch({
+      document: LayoutQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return readFragment(FooterFragment, response).site;
+  },
+  ['get-footer-data'],
+  { revalidate },
+);
+
+const getFooterData = cache(async () => getCachedFooterData());
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');

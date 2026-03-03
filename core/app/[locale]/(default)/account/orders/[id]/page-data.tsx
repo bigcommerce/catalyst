@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -155,9 +154,7 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment, OrderGiftCertificateItemFragment],
 );
 
-export const getCustomerOrderDetails = cache(async (id: number) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
+export const getCustomerOrderDetails = cache(async (id: number, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: CustomerOrderDetails,
     variables: {

@@ -3,6 +3,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { OrderDetailsSection } from '@/vibes/soul/sections/order-details-section';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { orderDetailsTransformer } from '~/data-transformers/order-details-transformer';
 
 import { getCustomerOrderDetails } from './page-data';
@@ -23,7 +24,8 @@ export default async function OrderDetails(props: Props) {
   const format = await getFormatter();
 
   const streamableOrder = Streamable.from(async () => {
-    const order = await getCustomerOrderDetails(Number(id));
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const order = await getCustomerOrderDetails(Number(id), customerAccessToken);
 
     if (!order) {
       notFound();

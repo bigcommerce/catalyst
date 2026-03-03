@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -53,12 +54,18 @@ const RootLayoutMetadataQuery = graphql(
   [WebAnalyticsFragment, ScriptsFragment],
 );
 
-const fetchRootLayoutMetadata = cache(async () => {
-  return await client.fetch({
-    document: RootLayoutMetadataQuery,
-    fetchOptions: { next: { revalidate } },
-  });
-});
+const getCachedRootLayoutMetadata = unstable_cache(
+  async () => {
+    return await client.fetch({
+      document: RootLayoutMetadataQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
+  },
+  ['root-layout-metadata'],
+  { revalidate },
+);
+
+const fetchRootLayoutMetadata = cache(async () => getCachedRootLayoutMetadata());
 
 export async function generateMetadata(): Promise<Metadata> {
   const { data } = await fetchRootLayoutMetadata();

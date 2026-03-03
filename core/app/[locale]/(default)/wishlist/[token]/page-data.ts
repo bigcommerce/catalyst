@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -5,9 +6,9 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
+import type { CurrencyCode } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { WishlistItemFragment } from '~/components/wishlist/fragment';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const PublicWishlistQuery = graphql(
   `
@@ -50,22 +51,27 @@ interface Pagination {
   after?: string | null;
 }
 
-export const getPublicWishlist = cache(async (token: string, pagination: Pagination) => {
-  const { before, after, limit = 9 } = pagination;
-  const currencyCode = await getPreferredCurrencyCode();
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-  const response = await client.fetch({
-    document: PublicWishlistQuery,
-    variables: { ...paginationArgs, currencyCode, token },
-    // Since the wishlist is public, it's okay that we cache this request
-    fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
-  });
+const getCachedPublicWishlist = unstable_cache(
+  async (locale: string, token: string, pagination: Pagination, currencyCode?: CurrencyCode) => {
+    const { before, after, limit = 9 } = pagination;
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+    const response = await client.fetch({
+      document: PublicWishlistQuery,
+      variables: { ...paginationArgs, currencyCode, token },
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  const wishlist = response.data.site.publicWishlist;
+    const wishlist = response.data.site.publicWishlist;
 
-  if (!wishlist) {
-    return null;
-  }
+    return wishlist;
+  },
+  ['get-public-wishlist'],
+  { revalidate, tags: [TAGS.customer] },
+);
 
-  return wishlist;
-});
+export const getPublicWishlist = cache(
+  async (locale: string, token: string, pagination: Pagination, currencyCode?: CurrencyCode) => {
+    return getCachedPublicWishlist(locale, token, pagination, currencyCode);
+  },
+);

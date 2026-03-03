@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -47,28 +48,53 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 });
 
+const getCachedHeaderLinks = unstable_cache(
+  async (currencyCode?: CurrencyCode) => {
+    const { data: response } = await client.fetch({
+      document: GetLinksAndSectionsQuery,
+      variables: { currencyCode },
+      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+      validateCustomerAccessToken: false,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return readFragment(HeaderLinksFragment, response).site;
+  },
+  ['get-header-links'],
+  { revalidate },
+);
+
 const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
-  const { data: response } = await client.fetch({
-    document: GetLinksAndSectionsQuery,
-    customerAccessToken,
-    variables: { currencyCode },
-    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-    validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+  if (customerAccessToken) {
+    const { data: response } = await client.fetch({
+      document: GetLinksAndSectionsQuery,
+      customerAccessToken,
+      variables: { currencyCode },
+      validateCustomerAccessToken: false,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return readFragment(HeaderLinksFragment, response).site;
+    return readFragment(HeaderLinksFragment, response).site;
+  }
+
+  return getCachedHeaderLinks(currencyCode);
 });
 
-const getHeaderData = cache(async () => {
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedHeaderData = unstable_cache(
+  async () => {
+    const { data: response } = await client.fetch({
+      document: LayoutQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return readFragment(HeaderFragment, response).site;
-});
+    return readFragment(HeaderFragment, response).site;
+  },
+  ['get-header-data'],
+  { revalidate },
+);
+
+const getHeaderData = cache(async () => getCachedHeaderData());
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');

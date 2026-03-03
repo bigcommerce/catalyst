@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings';
+import { getSessionCustomerAccessToken } from '~/auth';
 
 import { changePassword } from './_actions/change-password';
 import { updateCustomer } from './_actions/update-customer';
@@ -30,8 +31,9 @@ export default async function Settings({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Account.Settings');
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const accountSettings = await getAccountSettingsQuery();
+  const accountSettings = await getAccountSettingsQuery({}, customerAccessToken);
 
   if (!accountSettings) {
     notFound();

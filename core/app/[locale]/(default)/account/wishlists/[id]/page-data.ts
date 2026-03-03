@@ -1,11 +1,10 @@
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import type { CurrencyCode } from '~/components/header/fragment';
 import { WishlistPaginatedItemsFragment } from '~/components/wishlist/fragment';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const WishlistDetailsQuery = graphql(
   `
@@ -37,23 +36,30 @@ interface Pagination {
   after: string | null;
 }
 
-export const getCustomerWishlist = cache(async (entityId: number, pagination: Pagination) => {
-  const { before, after, limit = 9 } = pagination;
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-  const response = await client.fetch({
-    document: WishlistDetailsQuery,
-    variables: { ...paginationArgs, currencyCode, entityId },
-    customerAccessToken,
-    fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
-  });
+export const getCustomerWishlist = cache(
+  async (
+    locale: string,
+    entityId: number,
+    pagination: Pagination,
+    customerAccessToken?: string,
+    currencyCode?: CurrencyCode,
+  ) => {
+    const { before, after, limit = 9 } = pagination;
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+    const response = await client.fetch({
+      document: WishlistDetailsQuery,
+      variables: { ...paginationArgs, currencyCode, entityId },
+      locale,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    });
 
-  const wishlist = response.data.customer?.wishlists.edges?.[0]?.node;
+    const wishlist = response.data.customer?.wishlists.edges?.[0]?.node;
 
-  if (!wishlist) {
-    return null;
-  }
+    if (!wishlist) {
+      return null;
+    }
 
-  return wishlist;
-});
+    return wishlist;
+  },
+);

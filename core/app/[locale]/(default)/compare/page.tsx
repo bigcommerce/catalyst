@@ -57,15 +57,21 @@ export default async function Compare(props: Props) {
   const t = await getTranslations('Compare');
 
   const streamableProducts = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
-
-    const searchParams = await props.searchParams;
+    const [customerAccessToken, currencyCode, searchParams, format] = await Promise.all([
+      getSessionCustomerAccessToken(),
+      getPreferredCurrencyCode(),
+      props.searchParams,
+      getFormatter(),
+    ]);
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
-    const format = await getFormatter();
+    const products = await getComparedProducts(
+      locale,
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
 
     return products.map((product) => ({
       id: product.entityId.toString(),
@@ -90,14 +96,20 @@ export default async function Compare(props: Props) {
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
-
-    const searchParams = await props.searchParams;
+    const [customerAccessToken, currencyCode, searchParams] = await Promise.all([
+      getSessionCustomerAccessToken(),
+      getPreferredCurrencyCode(),
+      props.searchParams,
+    ]);
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const products = await getComparedProducts(
+      locale,
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
 
     return products.map((product) => {
       return {

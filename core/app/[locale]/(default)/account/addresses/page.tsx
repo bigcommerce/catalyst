@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
+import { getSessionCustomerAccessToken } from '~/auth';
 import {
   formFieldTransformer,
   injectCountryCodeOptions,
@@ -41,13 +42,20 @@ export default async function Addresses({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Account.Addresses');
-  const { before, after } = await searchParams;
+  const [customerAccessToken, t, { before, after }] = await Promise.all([
+    getSessionCustomerAccessToken(),
+    getTranslations('Account.Addresses'),
+    searchParams,
+  ]);
 
-  const data = await getCustomerAddresses({
-    ...(after && { after }),
-    ...(before && { before }),
-  });
+  const data = await getCustomerAddresses(
+    locale,
+    {
+      ...(after && { after }),
+      ...(before && { before }),
+    },
+    customerAccessToken,
+  );
 
   if (!data) {
     notFound();

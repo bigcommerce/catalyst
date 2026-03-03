@@ -52,7 +52,7 @@ export default async function Register({ params }: Props) {
 
   const t = await getTranslations('Auth.Register');
 
-  const registerCustomerData = await getRegisterCustomerQuery({
+  const registerCustomerData = await getRegisterCustomerQuery(locale, {
     address: { sortBy: 'SORT_ORDER' },
     customer: { sortBy: 'SORT_ORDER' },
   });

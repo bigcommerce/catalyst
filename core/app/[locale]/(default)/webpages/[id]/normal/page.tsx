@@ -19,8 +19,8 @@ interface Props {
   params: Promise<{ locale: string; id: string }>;
 }
 
-const getWebPage = cache(async (id: string): Promise<WebPageData> => {
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+const getWebPage = cache(async (locale: string, id: string): Promise<WebPageData> => {
+  const data = await getWebpageData(locale, { id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 
   if (!webpage) {
@@ -37,10 +37,10 @@ const getWebPage = cache(async (id: string): Promise<WebPageData> => {
   };
 });
 
-async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+async function getWebPageBreadcrumbs(locale: string, id: string): Promise<Breadcrumb[]> {
   const t = await getTranslations('WebPages.Normal');
 
-  const webpage = await getWebPage(id);
+  const webpage = await getWebPage(locale, id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
@@ -59,7 +59,7 @@ async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
-  const webpage = await getWebPage(id);
+  const webpage = await getWebPage(locale, id);
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
   // Get the path from the last breadcrumb
@@ -80,8 +80,8 @@ export default async function WebPage({ params }: Props) {
 
   return (
     <WebPageContent
-      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
-      webPage={Streamable.from(() => getWebPage(id))}
+      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(locale, id))}
+      webPage={Streamable.from(() => getWebPage(locale, id))}
     />
   );
 }

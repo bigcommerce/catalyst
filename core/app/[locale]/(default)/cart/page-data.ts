@@ -1,6 +1,6 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -295,12 +295,15 @@ const CartPageQuery = graphql(
 
 type Variables = VariablesOf<typeof CartPageQuery>;
 
-export const getCart = async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
+export const getCart = async (
+  locale: string,
+  variables: Variables,
+  customerAccessToken?: string,
+) => {
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables,
+    locale,
     customerAccessToken,
     fetchOptions: {
       cache: 'no-store',
@@ -336,11 +339,20 @@ const SupportedShippingDestinationsQuery = graphql(`
   }
 `);
 
-export const getShippingCountries = cache(async () => {
-  const { data } = await client.fetch({
-    document: SupportedShippingDestinationsQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedShippingCountries = unstable_cache(
+  async (locale: string) => {
+    const { data } = await client.fetch({
+      document: SupportedShippingDestinationsQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+    return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+  },
+  ['get-shipping-countries'],
+  { revalidate },
+);
+
+export const getShippingCountries = cache(async (locale: string) => {
+  return getCachedShippingCountries(locale);
 });

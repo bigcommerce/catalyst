@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -29,11 +30,20 @@ const SearchPageQuery = graphql(`
   }
 `);
 
-export const getSearchPageData = cache(async () => {
-  const response = await client.fetch({
-    document: SearchPageQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedSearchPageData = unstable_cache(
+  async (locale: string) => {
+    const response = await client.fetch({
+      document: SearchPageQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return response.data.site;
+    return response.data.site;
+  },
+  ['get-search-page-data'],
+  { revalidate },
+);
+
+export const getSearchPageData = cache(async (locale: string) => {
+  return getCachedSearchPageData(locale);
 });

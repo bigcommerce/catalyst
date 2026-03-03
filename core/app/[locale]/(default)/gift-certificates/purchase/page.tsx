@@ -150,10 +150,12 @@ function getExpiryDate(
 export default async function GiftCertificatePurchasePage({ params }: Props) {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
-  const format = await getFormatter();
-  const currencyCode = await getPreferredCurrencyCode();
-  const data = await getGiftCertificatePurchaseData(currencyCode);
+  const [t, format, currencyCode] = await Promise.all([
+    getTranslations({ locale, namespace: 'GiftCertificates' }),
+    getFormatter(),
+    getPreferredCurrencyCode(),
+  ]);
+  const data = await getGiftCertificatePurchaseData(locale, currencyCode);
 
   if (!data.giftCertificateSettings?.isEnabled) {
     return redirect({ href: '/', locale });

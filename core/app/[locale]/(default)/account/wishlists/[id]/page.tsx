@@ -6,10 +6,13 @@ import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/ser
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-details';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { ExistingResultType } from '~/client/util';
+import type { CurrencyCode } from '~/components/header/fragment';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
 import { redirect } from '~/i18n/routing';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { removeWishlistItem } from '../_actions/remove-wishlist-item';
@@ -39,11 +42,19 @@ async function getWishlist(
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParamsPromise: Promise<SearchParams>,
   locale: string,
+  customerAccessToken?: string,
+  currencyCode?: CurrencyCode,
 ): Promise<Wishlist> {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const wishlist = await getCustomerWishlist(
+    locale,
+    entityId,
+    searchParamsParsed,
+    customerAccessToken,
+    currencyCode,
+  );
 
   if (!wishlist) {
     return redirect({ href: '/account/wishlists/', locale });
@@ -52,10 +63,22 @@ async function getWishlist(
   return wishlistDetailsTransformer(wishlist, t, pt, formatter);
 }
 
-const getAnalyticsData = async (id: string, searchParamsPromise: Promise<SearchParams>) => {
+const getAnalyticsData = async (
+  locale: string,
+  id: string,
+  searchParamsPromise: Promise<SearchParams>,
+  customerAccessToken?: string,
+  currencyCode?: CurrencyCode,
+) => {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const wishlist = await getCustomerWishlist(
+    locale,
+    entityId,
+    searchParamsParsed,
+    customerAccessToken,
+    currencyCode,
+  );
 
   if (!wishlist) {
     return [];
@@ -77,12 +100,21 @@ const getAnalyticsData = async (id: string, searchParamsPromise: Promise<SearchP
 };
 
 async function getPaginationInfo(
+  locale: string,
   id: string,
   searchParamsPromise: Promise<SearchParams>,
+  customerAccessToken?: string,
+  currencyCode?: CurrencyCode,
 ): Promise<CursorPaginationInfo> {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const wishlist = await getCustomerWishlist(
+    locale,
+    entityId,
+    searchParamsParsed,
+    customerAccessToken,
+    currencyCode,
+  );
 
   return pageInfoTransformer(wishlist?.items.pageInfo ?? defaultPageInfo);
 }
@@ -92,8 +124,12 @@ export default async function WishlistPage({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Wishlist');
-  const pt = await getTranslations('Product.ProductDetails');
+  const [t, pt, customerAccessToken, currencyCode] = await Promise.all([
+    getTranslations('Wishlist'),
+    getTranslations('Product.ProductDetails'),
+    getSessionCustomerAccessToken(),
+    getPreferredCurrencyCode(),
+  ]);
   const wishlistActions = (wishlist?: Wishlist) => {
     if (!wishlist) {
       return <WishlistActionsSkeleton />;
@@ -127,16 +163,24 @@ export default async function WishlistPage({ params, searchParams }: Props) {
   };
 
   return (
-    <WishlistAnalyticsProvider data={Streamable.from(() => getAnalyticsData(id, searchParams))}>
+    <WishlistAnalyticsProvider
+      data={Streamable.from(() =>
+        getAnalyticsData(locale, id, searchParams, customerAccessToken, currencyCode),
+      )}
+    >
       <WishlistDetails
         action={addWishlistItemToCart}
         emptyStateText={t('emptyWishlist')}
         headerActions={wishlistActions}
-        paginationInfo={Streamable.from(() => getPaginationInfo(id, searchParams))}
+        paginationInfo={Streamable.from(() =>
+          getPaginationInfo(locale, id, searchParams, customerAccessToken, currencyCode),
+        )}
         prevHref="/account/wishlists"
         removeAction={removeWishlistItem}
         removeButtonTitle={t('removeButtonTitle')}
-        wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams, locale))}
+        wishlist={Streamable.from(() =>
+          getWishlist(id, t, pt, searchParams, locale, customerAccessToken, currencyCode),
+        )}
       />
     </WishlistAnalyticsProvider>
   );

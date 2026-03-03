@@ -32,7 +32,7 @@ export default async function GiftCertificates(props: Props) {
 
   const t = await getTranslations('GiftCertificates');
   const currencyCode = await getPreferredCurrencyCode();
-  const data = await getGiftCertificatesData(currencyCode);
+  const data = await getGiftCertificatesData(locale, currencyCode);
 
   if (!data.giftCertificatesEnabled) {
     return redirect({ href: '/', locale });

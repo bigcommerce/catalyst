@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -178,11 +179,11 @@ interface ProductSearch {
   filters: SearchProductsFiltersInput;
 }
 
-const getProductSearchResults = cache(
+const getCachedProductSearchResults = unstable_cache(
   async (
+    locale: string,
     { limit = 9, after, before, sort, filters }: ProductSearch,
     currencyCode?: CurrencyCode,
-    customerAccessToken?: string,
   ) => {
     const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
@@ -190,12 +191,11 @@ const getProductSearchResults = cache(
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     const { site } = response.data;
-
     const searchResults = site.search.searchProducts;
 
     const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
@@ -241,6 +241,84 @@ const getProductSearchResults = cache(
         items,
       },
     };
+  },
+  ['get-product-search-results'],
+  { revalidate: 300 },
+);
+
+const getProductSearchResults = cache(
+  // We need to make sure the reference passed into this function is the same if we want it to be memoized.
+  async (
+    locale: string,
+    { limit = 9, after, before, sort, filters }: ProductSearch,
+    currencyCode?: CurrencyCode,
+    customerAccessToken?: string,
+  ) => {
+    if (customerAccessToken) {
+      const filterArgs = { filters, sort };
+      const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+      const response = await client.fetch({
+        document: GetProductSearchResultsQuery,
+        variables: { ...filterArgs, ...paginationArgs, currencyCode },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      const { site } = response.data;
+      const searchResults = site.search.searchProducts;
+
+      const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
+        ...product,
+      }));
+
+      return {
+        facets: {
+          items: removeEdgesAndNodes(searchResults.filters).map((node) => {
+            switch (node.__typename) {
+              case 'BrandSearchFilter':
+                return {
+                  ...node,
+                  brands: removeEdgesAndNodes(node.brands),
+                };
+
+              case 'CategorySearchFilter':
+                return {
+                  ...node,
+                  categories: removeEdgesAndNodes(node.categories),
+                };
+
+              case 'ProductAttributeSearchFilter':
+                return {
+                  ...node,
+                  attributes: removeEdgesAndNodes(node.attributes),
+                };
+
+              case 'RatingSearchFilter':
+                return {
+                  ...node,
+                  ratings: removeEdgesAndNodes(node.ratings),
+                };
+
+              default:
+                return node;
+            }
+          }),
+        },
+        products: {
+          collectionInfo: searchResults.products.collectionInfo,
+          pageInfo: searchResults.products.pageInfo,
+          items,
+        },
+      };
+    }
+
+    return getCachedProductSearchResults(
+      locale,
+      { limit, after, before, sort, filters },
+      currencyCode,
+    );
   },
 );
 
@@ -406,6 +484,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (
+    locale: string,
     params: z.input<typeof PublicSearchParamsSchema>,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
@@ -413,6 +492,7 @@ export const fetchFacetedSearch = cache(
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
     return getProductSearchResults(
+      locale,
       {
         after,
         before,

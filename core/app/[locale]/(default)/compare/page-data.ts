@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -55,8 +56,8 @@ const ComparedProductsQuery = graphql(
   [ProductCardFragment],
 );
 
-export const getComparedProducts = cache(
-  async (productIds: number[] = [], currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+const getCachedComparedProducts = unstable_cache(
+  async (locale: string, productIds: number[], currencyCode?: CurrencyCode) => {
     if (productIds.length === 0) {
       return [];
     }
@@ -68,10 +69,43 @@ export const getComparedProducts = cache(
         first: productIds.length ? MAX_COMPARE_LIMIT : 0,
         currencyCode,
       },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return removeEdgesAndNodes(data.site.products);
+  },
+  ['get-compared-products'],
+  { revalidate },
+);
+
+export const getComparedProducts = cache(
+  async (
+    locale: string,
+    productIds: number[] = [],
+    currencyCode?: CurrencyCode,
+    customerAccessToken?: string,
+  ) => {
+    if (customerAccessToken) {
+      if (productIds.length === 0) {
+        return [];
+      }
+
+      const { data } = await client.fetch({
+        document: ComparedProductsQuery,
+        variables: {
+          entityIds: productIds,
+          first: productIds.length ? MAX_COMPARE_LIMIT : 0,
+          currencyCode,
+        },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return removeEdgesAndNodes(data.site.products);
+    }
+
+    return getCachedComparedProducts(locale, productIds, currencyCode);
   },
 );
