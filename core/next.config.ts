@@ -3,7 +3,7 @@ import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
 import { writeBuildConfig } from './build-config/writer';
-import { client } from './client';
+import { baseClient } from './client/base';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
@@ -32,7 +32,7 @@ const SettingsQuery = graphql(`
 `);
 
 async function writeSettingsToBuildConfig() {
-  const { data } = await client.fetch({ document: SettingsQuery });
+  const { data } = await baseClient.fetch({ document: SettingsQuery });
 
   const cdnEnvHostnames = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME;
 

@@ -5,7 +5,8 @@ import { redirect } from 'next/navigation';
 import { getLocale as getServerLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '../channels.config';
-import { backendUserAgent } from '../user-agent';
+
+import { baseClientConfig } from './base';
 
 const getLocale = async () => {
   try {
@@ -26,13 +27,7 @@ const getLocale = async () => {
 };
 
 export const client = createClient({
-  storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
-  storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
-  channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
-  backendUserAgentExtensions: backendUserAgent,
-  logger:
-    (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
-    process.env.CLIENT_LOGGER === 'true',
+  ...baseClientConfig,
   getChannelId: async (defaultChannelId: string) => {
     const locale = await getLocale();
 
