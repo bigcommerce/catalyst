@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -50,22 +52,36 @@ interface Pagination {
   after?: string | null;
 }
 
+const getCachedPublicWishlist = unstable_cache(
+  async (
+    _locale: string,
+    token: string,
+    pagination: Pagination,
+    currencyCode: string | undefined,
+  ) => {
+    const { before, after, limit = 9 } = pagination;
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+    const response = await client.fetch({
+      document: PublicWishlistQuery,
+      variables: { ...paginationArgs, currencyCode, token },
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const wishlist = response.data.site.publicWishlist;
+
+    if (!wishlist) {
+      return null;
+    }
+
+    return wishlist;
+  },
+  ['get-public-wishlist'],
+  { revalidate, tags: [TAGS.customer] },
+);
+
 export const getPublicWishlist = cache(async (token: string, pagination: Pagination) => {
-  const { before, after, limit = 9 } = pagination;
   const currencyCode = await getPreferredCurrencyCode();
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-  const response = await client.fetch({
-    document: PublicWishlistQuery,
-    variables: { ...paginationArgs, currencyCode, token },
-    // Since the wishlist is public, it's okay that we cache this request
-    fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
-  });
+  const locale = await getLocale();
 
-  const wishlist = response.data.site.publicWishlist;
-
-  if (!wishlist) {
-    return null;
-  }
-
-  return wishlist;
+  return getCachedPublicWishlist(locale, token, pagination, currencyCode);
 });

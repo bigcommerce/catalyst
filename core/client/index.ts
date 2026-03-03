@@ -7,6 +7,8 @@ import { getLocale as getServerLocale } from 'next-intl/server';
 import { getChannelIdFromLocale } from '../channels.config';
 import { backendUserAgent } from '../user-agent';
 
+import { getCorrelationId } from './correlation-id';
+
 const getLocale = async () => {
   try {
     const locale = await getServerLocale();
@@ -56,6 +58,8 @@ export const client = createClient({
     if (locale) {
       requestHeaders['Accept-Language'] = locale;
     }
+
+    requestHeaders['X-Correlation-ID'] = getCorrelationId();
 
     return {
       headers: requestHeaders,

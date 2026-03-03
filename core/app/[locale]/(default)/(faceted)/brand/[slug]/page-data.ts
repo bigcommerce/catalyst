@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -38,13 +40,33 @@ const BrandPageQuery = graphql(`
   }
 `);
 
-export const getBrandPageData = cache(async (entityId: number, customerAccessToken?: string) => {
-  const response = await client.fetch({
-    document: BrandPageQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getCachedBrandPageData = unstable_cache(
+  async (_locale: string, entityId: number) => {
+    const response = await client.fetch({
+      document: BrandPageQuery,
+      variables: { entityId },
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return response.data.site;
+    return response.data.site;
+  },
+  ['get-brand-page-data'],
+  { revalidate },
+);
+
+export const getBrandPageData = cache(async (entityId: number, customerAccessToken?: string) => {
+  if (customerAccessToken) {
+    const response = await client.fetch({
+      document: BrandPageQuery,
+      variables: { entityId },
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return response.data.site;
+  }
+
+  const locale = await getLocale();
+
+  return getCachedBrandPageData(locale, entityId);
 });

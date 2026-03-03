@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -77,15 +79,35 @@ const HomePageQuery = graphql(
   [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
-export const getPageData = cache(
-  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+const getCachedPageData = unstable_cache(
+  async (_locale: string, currencyCode: CurrencyCode | undefined) => {
     const { data } = await client.fetch({
       document: HomePageQuery,
-      customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data;
+  },
+  ['get-page-data'],
+  { revalidate },
+);
+
+export const getPageData = cache(
+  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: HomePageQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data;
+    }
+
+    const locale = await getLocale();
+
+    return getCachedPageData(locale, currencyCode);
   },
 );

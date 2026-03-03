@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -38,18 +40,28 @@ const BlogPageQuery = graphql(`
 
 type Variables = VariablesOf<typeof BlogPageQuery>;
 
+const getCachedBlogPageData = unstable_cache(
+  async (_locale: string, variables: Variables) => {
+    const response = await client.fetch({
+      document: BlogPageQuery,
+      variables,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const { blog } = response.data.site.content;
+
+    if (!blog?.post) {
+      return null;
+    }
+
+    return blog;
+  },
+  ['get-blog-page-data'],
+  { revalidate },
+);
+
 export const getBlogPageData = cache(async (variables: Variables) => {
-  const response = await client.fetch({
-    document: BlogPageQuery,
-    variables,
-    fetchOptions: { next: { revalidate } },
-  });
+  const locale = await getLocale();
 
-  const { blog } = response.data.site.content;
-
-  if (!blog?.post) {
-    return null;
-  }
-
-  return blog;
+  return getCachedBlogPageData(locale, variables);
 });
