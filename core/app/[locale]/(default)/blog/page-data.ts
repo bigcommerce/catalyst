@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter } from 'next-intl/server';
+import { unstable_cache } from 'next/cache';
+import { getFormatter, getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -72,24 +73,38 @@ interface Pagination {
   after: string | null;
 }
 
-export const getBlog = cache(async () => {
-  const response = await client.fetch({
-    document: BlogQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedBlog = unstable_cache(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (_locale: string) => {
+    const response = await client.fetch({
+      document: BlogQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return response.data.site.content.blog;
+    return response.data.site.content.blog;
+  },
+  ['get-blog'],
+  { revalidate },
+);
+
+export const getBlog = cache(async () => {
+  const locale = await getLocale();
+
+  return getCachedBlog(locale);
 });
 
-export const getBlogPosts = cache(
-  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+const getCachedBlogPosts = unstable_cache(
+  async (
+    _locale: string,
+    { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination,
+  ) => {
     const filterArgs = tag ? { filters: { tags: [tag] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
-      fetchOptions: { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     const { blog } = response.data.site.content;
@@ -98,15 +113,13 @@ export const getBlogPosts = cache(
       return null;
     }
 
-    const format = await getFormatter();
-
     return {
       pageInfo: blog.posts.pageInfo,
       posts: removeEdgesAndNodes(blog.posts).map((post) => ({
         id: String(post.entityId),
         author: post.author,
         content: post.plainTextSummary,
-        date: format.dateTime(new Date(post.publishedDate.utc)),
+        dateUtc: post.publishedDate.utc,
         image: post.thumbnailImage
           ? {
               src: post.thumbnailImage.url,
@@ -115,6 +128,29 @@ export const getBlogPosts = cache(
           : undefined,
         href: post.path,
         title: post.name,
+      })),
+    };
+  },
+  ['get-blog-posts'],
+  { revalidate },
+);
+
+export const getBlogPosts = cache(
+  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+    const locale = await getLocale();
+    const raw = await getCachedBlogPosts(locale, { tag, limit, before, after });
+
+    if (!raw) {
+      return null;
+    }
+
+    const format = await getFormatter();
+
+    return {
+      pageInfo: raw.pageInfo,
+      posts: raw.posts.map(({ dateUtc, ...post }) => ({
+        ...post,
+        date: format.dateTime(new Date(dateUtc)),
       })),
     };
   },

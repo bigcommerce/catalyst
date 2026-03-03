@@ -13,6 +13,7 @@ import { backendUserAgent } from '../user-agent';
 // During config resolution, the dynamic import of next-intl/server succeeds but
 // getLocale() throws ("not supported in Client Components") — the try/catch
 // below absorbs this gracefully, and getChannelId falls back to defaultChannelId.
+import { getCorrelationId } from './correlation-id';
 
 const getLocale = async () => {
   try {
@@ -65,6 +66,8 @@ export const client = createClient({
     if (locale) {
       requestHeaders['Accept-Language'] = locale;
     }
+
+    requestHeaders['X-Correlation-ID'] = getCorrelationId();
 
     return {
       headers: requestHeaders,

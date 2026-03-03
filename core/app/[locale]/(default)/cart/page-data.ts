@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -336,11 +338,22 @@ const SupportedShippingDestinationsQuery = graphql(`
   }
 `);
 
-export const getShippingCountries = cache(async () => {
-  const { data } = await client.fetch({
-    document: SupportedShippingDestinationsQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedShippingCountries = unstable_cache(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async (_locale: string) => {
+    const { data } = await client.fetch({
+      document: SupportedShippingDestinationsQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+    return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+  },
+  ['get-shipping-countries'],
+  { revalidate },
+);
+
+export const getShippingCountries = cache(async () => {
+  const locale = await getLocale();
+
+  return getCachedShippingCountries(locale);
 });

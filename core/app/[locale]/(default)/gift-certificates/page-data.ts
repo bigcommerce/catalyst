@@ -1,3 +1,5 @@
+import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -26,16 +28,26 @@ const GiftCertificatesRootQuery = graphql(
   [StoreLogoFragment],
 );
 
-export const getGiftCertificatesData = cache(async (currencyCode?: CurrencyCode) => {
-  const response = await client.fetch({
-    document: GiftCertificatesRootQuery,
-    variables: { currencyCode },
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedGiftCertificatesData = unstable_cache(
+  async (_locale: string, currencyCode: CurrencyCode | undefined) => {
+    const response = await client.fetch({
+      document: GiftCertificatesRootQuery,
+      variables: { currencyCode },
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return {
-    giftCertificatesEnabled: response.data.site.settings?.giftCertificates?.isEnabled ?? false,
-    defaultCurrency: response.data.site.settings?.currency.defaultCurrency ?? undefined,
-    logo: response.data.site.settings ? logoTransformer(response.data.site.settings) : '',
-  };
+    return {
+      giftCertificatesEnabled: response.data.site.settings?.giftCertificates?.isEnabled ?? false,
+      defaultCurrency: response.data.site.settings?.currency.defaultCurrency ?? undefined,
+      logo: response.data.site.settings ? logoTransformer(response.data.site.settings) : '',
+    };
+  },
+  ['get-gift-certificates-data'],
+  { revalidate },
+);
+
+export const getGiftCertificatesData = cache(async (currencyCode?: CurrencyCode) => {
+  const locale = await getLocale();
+
+  return getCachedGiftCertificatesData(locale, currencyCode);
 });
