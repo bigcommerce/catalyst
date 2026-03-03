@@ -80,13 +80,13 @@ export function Reviews({
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
-              recaptchaSiteKey={recaptchaSiteKey}
               formRatingLabel={formRatingLabel}
               formReviewLabel={formReviewLabel}
               formSubmitLabel={formSubmitLabel}
               formTitleLabel={formTitleLabel}
               message={emptyStateMessage}
               productId={productId}
+              recaptchaSiteKey={recaptchaSiteKey}
               reviewsLabel={reviewsLabel}
               streamableImages={streamableImages}
               streamableProduct={streamableProduct}
@@ -140,21 +140,21 @@ export function Reviews({
                   formRatingLabel={formRatingLabel}
                   formReviewLabel={formReviewLabel}
                   formSubmitLabel={formSubmitLabel}
-              formTitleLabel={formTitleLabel}
-              productId={productId}
-              recaptchaSiteKey={recaptchaSiteKey}
-              streamableImages={streamableImages}
-              streamableProduct={streamableProduct}
-              streamableUser={streamableUser}
-              trigger={
-                <Button className="mx-auto mt-8" size="small" variant="tertiary">
-                  {formButtonLabel}
-                </Button>
-              }
-            />
-          </>
-        }
-        sidebarSize="medium"
+                  formTitleLabel={formTitleLabel}
+                  productId={productId}
+                  recaptchaSiteKey={recaptchaSiteKey}
+                  streamableImages={streamableImages}
+                  streamableProduct={streamableProduct}
+                  streamableUser={streamableUser}
+                  trigger={
+                    <Button className="mx-auto mt-8" size="small" variant="tertiary">
+                      {formButtonLabel}
+                    </Button>
+                  }
+                />
+              </>
+            }
+            sidebarSize="medium"
           >
             <div className="flex-1 border-t border-contrast-100">
               {reviews.map(({ id, rating, review, name, date }) => {

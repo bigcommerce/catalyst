@@ -13,8 +13,8 @@ import {
   REGISTER_CUSTOMER_FORM_LAYOUT,
   transformFieldsToLayout,
 } from '~/data-transformers/form-field-transformer/utils';
-import { exists } from '~/lib/utils';
 import { getRecaptchaSiteKey } from '~/lib/recaptcha';
+import { exists } from '~/lib/utils';
 
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './_actions/prefixes';
 import { registerCustomer } from './_actions/register-customer';
@@ -112,7 +112,6 @@ export default async function Register({ params }: Props) {
   return (
     <DynamicFormSection
       action={registerCustomer}
-      recaptchaSiteKey={recaptchaSiteKey}
       errorTranslations={{
         firstName: {
           invalid_type: t('FieldErrors.firstNameRequired'),
@@ -158,6 +157,7 @@ export default async function Register({ params }: Props) {
       }}
       fields={fields}
       passwordComplexity={passwordComplexitySettings}
+      recaptchaSiteKey={recaptchaSiteKey}
       submitLabel={t('cta')}
       title={t('heading')}
     />

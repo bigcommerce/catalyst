@@ -102,6 +102,7 @@ export const ReviewForm = ({
 
         if (!token || typeof token !== 'string') {
           setRecaptchaError(t('recaptchaRequired'));
+
           return;
         }
 
@@ -238,9 +239,7 @@ export const ReviewForm = ({
               type="email"
               value={typeof emailControl.value === 'string' ? emailControl.value : ''}
             />
-            {recaptchaError && (
-              <FormStatus type="error">{recaptchaError}</FormStatus>
-            )}
+            {recaptchaError && <FormStatus type="error">{recaptchaError}</FormStatus>}
             {form.errors?.map((error, index) => (
               <FormStatus key={index} type="error">
                 {error}

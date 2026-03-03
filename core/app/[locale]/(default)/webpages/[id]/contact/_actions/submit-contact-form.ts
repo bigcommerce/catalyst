@@ -76,8 +76,10 @@ export async function submitContactForm<F extends Field>(
   }
 
   const recaptchaSiteKey = await getRecaptchaSiteKey();
+
   if (recaptchaSiteKey) {
     const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
+
     if (typeof recaptchaToken !== 'string' || !recaptchaToken.trim()) {
       return {
         lastResult: submission.reply({ formErrors: [t('recaptchaRequired')] }),

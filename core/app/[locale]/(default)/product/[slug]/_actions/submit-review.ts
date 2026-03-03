@@ -43,9 +43,11 @@ export async function submitReview(
   }
 
   const recaptchaSiteKey = await getRecaptchaSiteKey();
+
   if (recaptchaSiteKey) {
     const token = payload.get(RECAPTCHA_TOKEN_FORM_KEY);
     const tokenValue = typeof token === 'string' ? token.trim() : '';
+
     if (!tokenValue) {
       return {
         ...prevState,

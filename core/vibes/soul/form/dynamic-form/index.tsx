@@ -170,6 +170,7 @@ function DynamicFormInner<F extends Field>({
 
         if (!token || typeof token !== 'string') {
           setRecaptchaError(t('recaptchaRequired'));
+
           return;
         }
 
