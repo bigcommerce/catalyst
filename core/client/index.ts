@@ -1,22 +1,30 @@
 import { BigCommerceAuthError, createClient } from '@bigcommerce/catalyst-client';
-import { headers } from 'next/headers';
-// eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { redirect } from 'next/navigation';
-import { getLocale as getServerLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '../channels.config';
 import { backendUserAgent } from '../user-agent';
 
+// next/headers, next/navigation, and next-intl/server are imported dynamically
+// (via `import()`) rather than statically. Static imports cause these modules to
+// be evaluated during module graph resolution when next.config.ts imports this
+// file, which poisons the process-wide AsyncLocalStorage context (pnpm symlinks
+// create two separate singleton instances of next/headers). Dynamic imports
+// defer module loading to call time, after Next.js has fully initialized.
+//
+// During config resolution, the dynamic import of next-intl/server succeeds but
+// getLocale() throws ("not supported in Client Components") — the try/catch
+// below absorbs this gracefully, and getChannelId falls back to defaultChannelId.
+
 const getLocale = async () => {
   try {
-    const locale = await getServerLocale();
+    const { getLocale: getServerLocale } = await import('next-intl/server');
 
-    return locale;
+    return await getServerLocale();
   } catch {
     /**
      * Next-intl `getLocale` only works on the server, and when middleware has run.
      *
      * Instances when `getLocale` will not work:
+     * - Requests during next.config.ts resolution
      * - Requests in middlewares
      * - Requests in `generateStaticParams`
      * - Request in api routes
@@ -45,6 +53,7 @@ export const client = createClient({
     const locale = await getLocale();
 
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
+      const { headers } = await import('next/headers');
       const ipAddress = (await headers()).get('X-Forwarded-For');
 
       if (ipAddress) {
@@ -61,8 +70,10 @@ export const client = createClient({
       headers: requestHeaders,
     };
   },
-  onError: (error, queryType) => {
+  onError: async (error, queryType) => {
     if (error instanceof BigCommerceAuthError && queryType === 'query') {
+      const { redirect } = await import('next/navigation');
+
       redirect('/api/auth/signout');
     }
   },
