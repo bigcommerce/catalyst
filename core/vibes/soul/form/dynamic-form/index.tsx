@@ -222,7 +222,7 @@ function DynamicFormInner<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
-          {recaptchaSiteKey && <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} />}
+          {recaptchaSiteKey ? <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} /> : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button
@@ -238,7 +238,7 @@ function DynamicFormInner<F extends Field>({
               {submitLabel}
             </SubmitButton>
           </div>
-          {recaptchaError && <FormStatus type="error">{recaptchaError}</FormStatus>}
+          {recaptchaError ? <FormStatus type="error">{recaptchaError}</FormStatus> : null}
           {form.errors?.map((error, index) => (
             <FormStatus key={index} type="error">
               {error}

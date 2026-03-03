@@ -3,9 +3,16 @@
 import { getFormProps, SubmissionResult, useForm, useInputControl } from '@conform-to/react';
 import { getZodConstraint } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
-import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
+import {
+  type ComponentRef,
+  startTransition,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useFormStatus } from 'react-dom';
-import ReCAPTCHA from 'react-google-recaptcha';
+import RecaptchaWidget from 'react-google-recaptcha';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
@@ -73,7 +80,7 @@ export const ReviewForm = ({
     lastResult: null,
   });
   const formRef = useRef<HTMLFormElement>(null);
-  const recaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const recaptchaRef = useRef<ComponentRef<typeof RecaptchaWidget> | null>(null);
   const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const user = useStreamable(streamableUser);
@@ -239,17 +246,17 @@ export const ReviewForm = ({
               type="email"
               value={typeof emailControl.value === 'string' ? emailControl.value : ''}
             />
-            {recaptchaError && <FormStatus type="error">{recaptchaError}</FormStatus>}
+            {recaptchaError ? <FormStatus type="error">{recaptchaError}</FormStatus> : null}
             {form.errors?.map((error, index) => (
               <FormStatus key={index} type="error">
                 {error}
               </FormStatus>
             ))}
-            {recaptchaSiteKey && (
+            {recaptchaSiteKey ? (
               <div>
-                <ReCAPTCHA ref={recaptchaRef} sitekey={recaptchaSiteKey} />
+                <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} />
               </div>
-            )}
+            ) : null}
             <div className="mt-auto flex justify-end gap-3">
               <Button onClick={() => setIsOpen(false)} size="small" type="button" variant="ghost">
                 {formCancelLabel}
