@@ -23,8 +23,8 @@ function loadCiResult(filePath: string): CiResult {
   return JSON.parse(readFileSync(filePath, "utf-8")) as CiResult;
 }
 
-function dec(value: number): string {
-  return value.toFixed(2);
+function score(value: number): string {
+  return String(Math.round(value * 100));
 }
 
 function row(
@@ -111,20 +111,25 @@ function compareResults(
     : "";
 
   lines.push(`## Unlighthouse Performance Comparison${providerLabel}`);
-  lines.push("Comparing PR preview against production.");
+  lines.push(
+    "Comparing PR preview deployment Unlighthouse scores vs production Unlighthouse scores.",
+  );
   lines.push("");
 
   lines.push("### Summary Score");
+  lines.push(
+    "_Aggregate score across all categories as reported by Unlighthouse._",
+  );
   lines.push("");
   lines.push(COL_HEADER);
   lines.push(COL_SEP);
   lines.push(
     row(
       "Score",
-      dec(productionDesktop.summary.score),
-      dec(productionMobile.summary.score),
-      dec(previewDesktop.summary.score),
-      dec(previewMobile.summary.score),
+      score(productionDesktop.summary.score),
+      score(productionMobile.summary.score),
+      score(previewDesktop.summary.score),
+      score(previewMobile.summary.score),
     ),
   );
   lines.push("");
@@ -142,10 +147,10 @@ function compareResults(
     lines.push(
       row(
         CATEGORY_LABELS[id] ?? id,
-        dec(productionDesktop.summary.categories[id]?.score ?? 0),
-        dec(productionMobile.summary.categories[id]?.score ?? 0),
-        dec(previewDesktop.summary.categories[id]?.score ?? 0),
-        dec(previewMobile.summary.categories[id]?.score ?? 0),
+        score(productionDesktop.summary.categories[id]?.score ?? 0),
+        score(productionMobile.summary.categories[id]?.score ?? 0),
+        score(previewDesktop.summary.categories[id]?.score ?? 0),
+        score(previewMobile.summary.categories[id]?.score ?? 0),
       ),
     );
   }
