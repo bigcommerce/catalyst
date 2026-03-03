@@ -369,7 +369,12 @@ export const withRoutes: MiddlewareFactory = () => {
       case 'Product': {
         url = `/${locale}/product/${node.entityId}`;
 
-        event.waitUntil(recordProductVisit(request, node.entityId));
+        const isPrefetch = request.headers.get('Next-Router-Prefetch') === '1';
+        const isRSC = request.headers.get('RSC') === '1';
+
+        if (!isPrefetch && !isRSC) {
+          event.waitUntil(recordProductVisit(request, node.entityId));
+        }
 
         break;
       }

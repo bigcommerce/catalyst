@@ -12,22 +12,30 @@ import { MiddlewareFactory } from './compose-middlewares';
 
 export const withAnalyticsCookies: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    let visitorId = await getVisitorIdCookie();
-    let visitId = await getVisitIdCookie();
+    const existingVisitorId = await getVisitorIdCookie();
+    const existingVisitId = await getVisitIdCookie();
 
-    if (!visitorId || !isUuid(visitorId)) {
-      visitorId = uuidv4();
-    }
+    const isPrefetch = request.headers.get('Next-Router-Prefetch') === '1';
+    const isRSC = request.headers.get('RSC') === '1';
 
-    // Update the visitorId cookie every time
+    const visitorId = existingVisitorId && isUuid(existingVisitorId) ? existingVisitorId : uuidv4();
+
     await setVisitorIdCookie(visitorId);
 
-    if (!visitId || !isUuid(visitId)) {
-      visitId = uuidv4();
-      await setVisitIdCookie(visitId);
+    const hasValidVisit = existingVisitId != null && isUuid(existingVisitId);
 
+    if (hasValidVisit) {
+      // Sliding window: refresh the TTL on every request
+      await setVisitIdCookie(existingVisitId);
+    } else if (!isPrefetch && !isRSC) {
+      // New visit on a real navigation: create cookie and fire event
+      const visitId = uuidv4();
+
+      await setVisitIdCookie(visitId);
       event.waitUntil(recordNewVisit(request, visitorId, visitId));
     }
+    // Prefetch/RSC with no valid visit: skip entirely so the
+    // subsequent real navigation properly detects a new visit.
 
     return next(request, event);
   };
