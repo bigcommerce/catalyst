@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -92,8 +91,8 @@ export const getCustomerOrders = cache(
   async (
     locale: string,
     { before = '', after = '', filterByStatus, filterByDateRange, limit = 5 }: CustomerOrdersArgs,
+    customerAccessToken?: string,
   ) => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
     const filtersArgs = {
       filters: {

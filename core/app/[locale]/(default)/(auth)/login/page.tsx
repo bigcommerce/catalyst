@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
@@ -27,13 +28,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Login({ params, searchParams }: Props) {
-  const { locale } = await params;
+async function LoginContent({
+  searchParams,
+  locale,
+}: {
+  searchParams: Props['searchParams'];
+  locale: string;
+}) {
   const { redirectTo = '/account/orders', error } = await searchParams;
 
-  setRequestLocale(locale);
-
-  const t = await getTranslations('Auth.Login');
+  const t = await getTranslations({ locale, namespace: 'Auth.Login' });
 
   const vanityUrl = buildConfig.get('urls').vanityUrl;
   const redirectUrl = new URL(redirectTo, vanityUrl);
@@ -73,5 +77,17 @@ export default async function Login({ params, searchParams }: Props) {
         </div>
       </SignInSection>
     </>
+  );
+}
+
+export default async function Login({ params, searchParams }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
+  return (
+    <Suspense>
+      <LoginContent locale={locale} searchParams={searchParams} />
+    </Suspense>
   );
 }

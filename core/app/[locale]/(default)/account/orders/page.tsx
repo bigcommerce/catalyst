@@ -1,6 +1,7 @@
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Order, OrderList } from '@/vibes/soul/sections/order-list';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { ordersTransformer } from '~/data-transformers/orders-transformer';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
@@ -16,11 +17,15 @@ interface Props {
 }
 
 async function getOrders(locale: string, after?: string, before?: string): Promise<Order[]> {
-  const format = await getFormatter();
-  const customerOrdersDetails = await getCustomerOrders(locale, {
-    ...(after && { after }),
-    ...(before && { before }),
-  });
+  const [format, customerAccessToken] = await Promise.all([
+    getFormatter(),
+    getSessionCustomerAccessToken(),
+  ]);
+  const customerOrdersDetails = await getCustomerOrders(
+    locale,
+    { ...(after && { after }), ...(before && { before }) },
+    customerAccessToken,
+  );
 
   if (!customerOrdersDetails) {
     return [];
@@ -32,10 +37,12 @@ async function getOrders(locale: string, after?: string, before?: string): Promi
 }
 
 async function getPaginationInfo(locale: string, after?: string, before?: string) {
-  const customerOrdersDetails = await getCustomerOrders(locale, {
-    ...(after && { after }),
-    ...(before && { before }),
-  });
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const customerOrdersDetails = await getCustomerOrders(
+    locale,
+    { ...(after && { after }), ...(before && { before }) },
+    customerAccessToken,
+  );
 
   return pageInfoTransformer(customerOrdersDetails?.pageInfo ?? defaultPageInfo);
 }
