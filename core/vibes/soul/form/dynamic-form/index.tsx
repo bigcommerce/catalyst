@@ -12,8 +12,8 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
-import type { ComponentRef } from 'react';
 import {
+  type ComponentRef,
   FormEvent,
   MouseEvent,
   ReactNode,
@@ -223,7 +223,9 @@ function DynamicFormInner<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
-          {recaptchaSiteKey ? <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} /> : null}
+          {recaptchaSiteKey ? (
+            <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} />
+          ) : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button
