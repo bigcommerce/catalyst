@@ -38,7 +38,7 @@ export default async function ChangePassword({ params, searchParams }: Props) {
     return redirect({ href: '/login', locale });
   }
 
-  const { passwordComplexitySettings } = await getChangePasswordQuery();
+  const { passwordComplexitySettings } = await getChangePasswordQuery(locale);
 
   return (
     <ResetPasswordSection

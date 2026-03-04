@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { VariablesOf } from 'gql.tada';
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -45,7 +44,7 @@ const CompareProductsQuery = graphql(`
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
 const getCachedCompareProducts = unstable_cache(
-  async (_locale: string, variables: Variables) => {
+  async (locale: string, variables: Variables) => {
     const parsedVariables = CompareProductsSchema.parse(variables);
 
     if (parsedVariables.entityIds.length === 0) {
@@ -55,6 +54,7 @@ const getCachedCompareProducts = unstable_cache(
     const response = await client.fetch({
       document: CompareProductsQuery,
       variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -65,7 +65,7 @@ const getCachedCompareProducts = unstable_cache(
 );
 
 export const getCompareProducts = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+  async (locale: string, variables: Variables, customerAccessToken?: string) => {
     if (customerAccessToken) {
       const parsedVariables = CompareProductsSchema.parse(variables);
 
@@ -77,13 +77,12 @@ export const getCompareProducts = cache(
         document: CompareProductsQuery,
         variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
         customerAccessToken,
+        locale,
         fetchOptions: { cache: 'no-store' },
       });
 
       return removeEdgesAndNodes(response.data.site.products);
     }
-
-    const locale = await getLocale();
 
     return getCachedCompareProducts(locale, variables);
   },

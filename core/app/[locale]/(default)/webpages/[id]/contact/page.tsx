@@ -40,8 +40,8 @@ const fieldMapping = {
 
 type ContactField = keyof typeof fieldMapping;
 
-const getWebPage = cache(async (id: string): Promise<ContactPage> => {
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+const getWebPage = cache(async (locale: string, id: string): Promise<ContactPage> => {
+  const data = await getWebpageData(locale, { id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 
   if (!webpage) {
@@ -61,10 +61,10 @@ const getWebPage = cache(async (id: string): Promise<ContactPage> => {
   };
 });
 
-async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+async function getWebPageBreadcrumbs(locale: string, id: string): Promise<Breadcrumb[]> {
   const t = await getTranslations('WebPages.ContactUs');
 
-  const webpage = await getWebPage(id);
+  const webpage = await getWebPage(locale, id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
@@ -81,8 +81,8 @@ async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   return truncateBreadcrumbs(breadcrumbs, 5);
 }
 
-async function getWebPageWithSuccessContent(id: string, message: string) {
-  const webpage = await getWebPage(id);
+async function getWebPageWithSuccessContent(locale: string, id: string, message: string) {
+  const webpage = await getWebPage(locale, id);
 
   return {
     ...webpage,
@@ -90,9 +90,9 @@ async function getWebPageWithSuccessContent(id: string, message: string) {
   };
 }
 
-async function getContactFields(id: string) {
+async function getContactFields(locale: string, id: string) {
   const t = await getTranslations('WebPages.ContactUs.Form');
-  const { entityId, path, contactFields } = await getWebPage(id);
+  const { entityId, path, contactFields } = await getWebPage(locale, id);
   const toGroupsOfTwo = (fields: Field[]) =>
     fields.reduce<Array<FieldGroup<Field>>>((acc, _, i) => {
       if (i % 2 === 0) {
@@ -155,7 +155,7 @@ async function getContactFields(id: string) {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
-  const webpage = await getWebPage(id);
+  const webpage = await getWebPage(locale, id);
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
   return {
@@ -179,8 +179,8 @@ export default async function ContactPage({ params, searchParams }: Props) {
   if (success === 'true') {
     return (
       <WebPageContent
-        breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
-        webPage={Streamable.from(() => getWebPageWithSuccessContent(id, t('success')))}
+        breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(locale, id))}
+        webPage={Streamable.from(() => getWebPageWithSuccessContent(locale, id, t('success')))}
       >
         <ButtonLink
           className="mt-8 @2xl:mt-12 @4xl:mt-16"
@@ -197,13 +197,13 @@ export default async function ContactPage({ params, searchParams }: Props) {
 
   return (
     <WebPageContent
-      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
-      webPage={Streamable.from(() => getWebPage(id))}
+      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(locale, id))}
+      webPage={Streamable.from(() => getWebPage(locale, id))}
     >
       <div className="mt-8 @2xl:mt-12 @4xl:mt-16">
         <DynamicForm
           action={submitContactForm}
-          fields={await getContactFields(id)}
+          fields={await getContactFields(locale, id)}
           submitLabel={t('cta')}
         />
       </div>

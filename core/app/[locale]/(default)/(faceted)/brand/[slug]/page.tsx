@@ -30,9 +30,14 @@ const getCachedBrand = cache((brandId: string) => {
 const compareLoader = createCompareLoader();
 
 const createBrandSearchParamsLoader = cache(
-  async (brandId: string, customerAccessToken?: string) => {
+  async (locale: string, brandId: string, customerAccessToken?: string) => {
     const cachedBrand = getCachedBrand(brandId);
-    const brandSearch = await fetchFacetedSearch(cachedBrand, undefined, customerAccessToken);
+    const brandSearch = await fetchFacetedSearch(
+      locale,
+      cachedBrand,
+      undefined,
+      customerAccessToken,
+    );
     const brandFacets = brandSearch.facets.items.filter(
       (facet) => facet.__typename !== 'BrandSearchFilter',
     );
@@ -73,7 +78,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const brandId = Number(slug);
 
-  const { brand } = await getBrandPageData(brandId, customerAccessToken);
+  const { brand } = await getBrandPageData(locale, brandId, customerAccessToken);
 
   if (!brand) {
     return notFound();
@@ -99,7 +104,7 @@ export default async function Brand(props: Props) {
 
   const brandId = Number(slug);
 
-  const { brand, settings } = await getBrandPageData(brandId, customerAccessToken);
+  const { brand, settings } = await getBrandPageData(locale, brandId, customerAccessToken);
 
   if (!brand) {
     return notFound();
@@ -114,10 +119,11 @@ export default async function Brand(props: Props) {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
 
-    const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
+    const loadSearchParams = await createBrandSearchParamsLoader(locale, slug, customerAccessToken);
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
+      locale,
       {
         ...searchParams,
         ...parsedSearchParams,
@@ -162,10 +168,15 @@ export default async function Brand(props: Props) {
 
   const streamableFilters = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
+    const loadSearchParams = await createBrandSearchParamsLoader(locale, slug, customerAccessToken);
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedBrand = getCachedBrand(slug);
-    const categorySearch = await fetchFacetedSearch(cachedBrand, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(
+      locale,
+      cachedBrand,
+      undefined,
+      customerAccessToken,
+    );
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
@@ -195,7 +206,7 @@ export default async function Brand(props: Props) {
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProductsData(compareIds, customerAccessToken);
+    const products = await getCompareProductsData(locale, compareIds, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),

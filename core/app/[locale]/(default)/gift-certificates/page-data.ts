@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -29,10 +28,11 @@ const GiftCertificatesRootQuery = graphql(
 );
 
 const getCachedGiftCertificatesData = unstable_cache(
-  async (_locale: string, currencyCode: CurrencyCode | undefined) => {
+  async (locale: string, currencyCode?: CurrencyCode) => {
     const response = await client.fetch({
       document: GiftCertificatesRootQuery,
       variables: { currencyCode },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -46,8 +46,8 @@ const getCachedGiftCertificatesData = unstable_cache(
   { revalidate },
 );
 
-export const getGiftCertificatesData = cache(async (currencyCode?: CurrencyCode) => {
-  const locale = await getLocale();
-
-  return getCachedGiftCertificatesData(locale, currencyCode);
-});
+export const getGiftCertificatesData = cache(
+  async (locale: string, currencyCode?: CurrencyCode) => {
+    return getCachedGiftCertificatesData(locale, currencyCode);
+  },
+);

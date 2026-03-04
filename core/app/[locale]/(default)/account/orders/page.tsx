@@ -15,9 +15,9 @@ interface Props {
   }>;
 }
 
-async function getOrders(after?: string, before?: string): Promise<Order[]> {
+async function getOrders(locale: string, after?: string, before?: string): Promise<Order[]> {
   const format = await getFormatter();
-  const customerOrdersDetails = await getCustomerOrders({
+  const customerOrdersDetails = await getCustomerOrders(locale, {
     ...(after && { after }),
     ...(before && { before }),
   });
@@ -31,8 +31,8 @@ async function getOrders(after?: string, before?: string): Promise<Order[]> {
   return ordersTransformer(orders, format);
 }
 
-async function getPaginationInfo(after?: string, before?: string) {
-  const customerOrdersDetails = await getCustomerOrders({
+async function getPaginationInfo(locale: string, after?: string, before?: string) {
+  const customerOrdersDetails = await getCustomerOrders(locale, {
     ...(after && { after }),
     ...(before && { before }),
   });
@@ -53,8 +53,8 @@ export default async function Orders({ params, searchParams }: Props) {
       emptyStateActionLabel={t('EmptyState.cta')}
       emptyStateTitle={t('EmptyState.title')}
       orderNumberLabel={t('orderNumber')}
-      orders={getOrders(after, before)}
-      paginationInfo={getPaginationInfo(after, before)}
+      orders={getOrders(locale, after, before)}
+      paginationInfo={getPaginationInfo(locale, after, before)}
       title={t('title')}
       totalLabel={t('totalPrice')}
       viewDetailsLabel={t('viewDetails')}

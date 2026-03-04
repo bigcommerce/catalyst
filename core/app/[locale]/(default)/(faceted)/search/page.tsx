@@ -22,14 +22,14 @@ import { getSearchPageData } from './page-data';
 const compareLoader = createCompareLoader();
 
 const createSearchSearchParamsLoader = cache(
-  async (searchParams: SearchParams, customerAccessToken?: string) => {
+  async (locale: string, searchParams: SearchParams, customerAccessToken?: string) => {
     const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
 
     if (!searchTerm) {
       return null;
     }
 
-    const search = await fetchFacetedSearch(searchParams, undefined, customerAccessToken);
+    const search = await fetchFacetedSearch(locale, searchParams, undefined, customerAccessToken);
     const searchFacets = search.facets.items;
     const transformedSearchFacets = await facetsTransformer({
       refinedFacets: searchFacets,
@@ -76,7 +76,7 @@ export default async function Search(props: Props) {
 
   const t = await getTranslations('Faceted');
 
-  const { settings } = await getSearchPageData();
+  const { settings } = await getSearchPageData(locale);
 
   const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
 
@@ -89,12 +89,14 @@ export default async function Search(props: Props) {
     const currencyCode = await getPreferredCurrencyCode();
 
     const loadSearchParams = await createSearchSearchParamsLoader(
+      locale,
       searchParams,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
+      locale,
       {
         ...searchParams,
         ...parsedSearchParams,
@@ -186,11 +188,12 @@ export default async function Search(props: Props) {
     }
 
     const loadSearchParams = await createSearchSearchParamsLoader(
+      locale,
       searchParams,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
-    const categorySearch = await fetchFacetedSearch({}, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(locale, {}, undefined, customerAccessToken);
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
@@ -221,7 +224,7 @@ export default async function Search(props: Props) {
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProductsData(compareIds, customerAccessToken);
+    const products = await getCompareProductsData(locale, compareIds, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),

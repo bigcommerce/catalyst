@@ -64,7 +64,12 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const products = await getComparedProducts(
+      locale,
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
     const format = await getFormatter();
 
     return products.map((product) => ({
@@ -97,7 +102,12 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const products = await getComparedProducts(
+      locale,
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
 
     return products.map((product) => {
       return {

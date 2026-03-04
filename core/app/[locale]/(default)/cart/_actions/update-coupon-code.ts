@@ -3,9 +3,10 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { couponCodeActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { getCartId } from '~/lib/cart';
 
 import { getCart } from '../page-data';
@@ -34,7 +35,11 @@ export const updateCouponCode = async (
     return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
   }
 
-  const cart = await getCart({ cartId });
+  const [locale, customerAccessToken] = await Promise.all([
+    getLocale(),
+    getSessionCustomerAccessToken(),
+  ]);
+  const cart = await getCart(locale, { cartId }, customerAccessToken);
   const checkout = cart.site.checkout;
 
   if (!checkout) {

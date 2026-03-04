@@ -153,7 +153,7 @@ export default async function GiftCertificatePurchasePage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
   const format = await getFormatter();
   const currencyCode = await getPreferredCurrencyCode();
-  const data = await getGiftCertificatePurchaseData(currencyCode);
+  const data = await getGiftCertificatePurchaseData(locale, currencyCode);
 
   if (!data.giftCertificateSettings?.isEnabled) {
     return redirect({ href: '/', locale });

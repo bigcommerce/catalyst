@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   const t = await getTranslations({ locale, namespace: 'Blog' });
-  const blog = await getBlog();
+  const blog = await getBlog(locale);
 
   const description =
     blog?.description && blog.description.length > 150
@@ -43,9 +43,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
+async function listBlogPosts(locale: string, searchParamsPromise: Promise<SearchParams>) {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const blogPosts = await getBlogPosts(searchParamsParsed);
+  const blogPosts = await getBlogPosts(locale, searchParamsParsed);
   const posts = blogPosts?.posts ?? [];
 
   return posts;
@@ -63,9 +63,9 @@ async function getEmptyStateSubtitle(): Promise<string | null> {
   return t('subtitle');
 }
 
-async function getPaginationInfo(searchParamsPromise: Promise<SearchParams>) {
+async function getPaginationInfo(locale: string, searchParamsPromise: Promise<SearchParams>) {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const blogPosts = await getBlogPosts(searchParamsParsed);
+  const blogPosts = await getBlogPosts(locale, searchParamsParsed);
 
   return pageInfoTransformer(blogPosts?.pageInfo ?? defaultPageInfo);
 }
@@ -79,7 +79,7 @@ export default async function Blog(props: Props) {
 
   const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
   const { tag } = searchParamsParsed;
-  const blog = await getBlog();
+  const blog = await getBlog(locale);
 
   if (!blog) {
     return notFound();
@@ -103,9 +103,9 @@ export default async function Blog(props: Props) {
       description={blog.description}
       emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
       emptyStateTitle={Streamable.from(getEmptyStateTitle)}
-      paginationInfo={Streamable.from(() => getPaginationInfo(props.searchParams))}
+      paginationInfo={Streamable.from(() => getPaginationInfo(locale, props.searchParams))}
       placeholderCount={6}
-      posts={Streamable.from(() => listBlogPosts(props.searchParams))}
+      posts={Streamable.from(() => listBlogPosts(locale, props.searchParams))}
       title={blog.name}
     />
   );

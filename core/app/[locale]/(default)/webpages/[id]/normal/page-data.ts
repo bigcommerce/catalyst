@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -32,10 +31,11 @@ const NormalPageQuery = graphql(
 type Variables = VariablesOf<typeof NormalPageQuery>;
 
 const getCachedWebpageData = unstable_cache(
-  async (_locale: string, variables: Variables) => {
+  async (locale: string, variables: Variables) => {
     const { data } = await client.fetch({
       document: NormalPageQuery,
       variables,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -45,8 +45,6 @@ const getCachedWebpageData = unstable_cache(
   { revalidate },
 );
 
-export const getWebpageData = cache(async (variables: Variables) => {
-  const locale = await getLocale();
-
+export const getWebpageData = cache(async (locale: string, variables: Variables) => {
   return getCachedWebpageData(locale, variables);
 });

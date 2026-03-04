@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const variables = cachedBlogPageDataVariables(blogId);
 
-  const blog = await getBlogPageData(variables);
+  const blog = await getBlogPageData(locale, variables);
   const blogPost = blog?.post;
 
   if (!blogPost) {
@@ -45,11 +45,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
   const format = await getFormatter();
 
-  const { blogId } = await props.params;
+  const { blogId, locale } = await props.params;
 
   const variables = cachedBlogPageDataVariables(blogId);
 
-  const blog = await getBlogPageData(variables);
+  const blog = await getBlogPageData(locale, variables);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {
@@ -76,11 +76,11 @@ async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
 async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   const t = await getTranslations('Blog');
 
-  const { blogId } = await props.params;
+  const { blogId, locale } = await props.params;
 
   const variables = cachedBlogPageDataVariables(blogId);
 
-  const blog = await getBlogPageData(variables);
+  const blog = await getBlogPageData(locale, variables);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {
