@@ -192,7 +192,6 @@ const getCachedProductSearchResults = unstable_cache(
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs, currencyCode },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     const { site } = response.data;

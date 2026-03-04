@@ -72,7 +72,6 @@ const getCachedRegisterCustomerQuery = unstable_cache(
         customerFilters: customer?.filters,
         customerSortBy: customer?.sortBy,
       },
-      fetchOptions: { cache: 'no-store' },
       locale,
     });
 

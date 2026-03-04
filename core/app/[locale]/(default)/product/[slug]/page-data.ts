@@ -161,7 +161,6 @@ const getCachedProductPageMetadata = unstable_cache(
       document: ProductPageMetadataQuery,
       variables: { entityId },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -227,7 +226,6 @@ const getCachedProduct = unstable_cache(
       document: ProductQuery,
       variables: { entityId },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site;
@@ -298,7 +296,6 @@ const getCachedStreamableProductVariantInventory = unstable_cache(
       document: StreamableProductVariantInventoryBySkuQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product?.variants;
@@ -391,7 +388,6 @@ const getCachedStreamableProduct = unstable_cache(
       document: StreamableProductQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -454,7 +450,6 @@ const getCachedStreamableProductInventory = unstable_cache(
       document: StreamableProductInventoryQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -518,7 +513,6 @@ const getCachedProductPricingAndRelatedProducts = unstable_cache(
       document: ProductPricingAndRelatedProductsQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -568,7 +562,6 @@ const getCachedStreamableInventorySettingsQuery = unstable_cache(
     const { data } = await client.fetch({
       document: InventorySettingsQuery,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.settings?.inventory;

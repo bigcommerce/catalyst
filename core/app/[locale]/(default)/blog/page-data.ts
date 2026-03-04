@@ -78,7 +78,6 @@ const getCachedBlog = unstable_cache(
     const response = await client.fetch({
       document: BlogQuery,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return response.data.site.content.blog;
@@ -100,7 +99,6 @@ const getCachedBlogPosts = unstable_cache(
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     const { blog } = response.data.site.content;

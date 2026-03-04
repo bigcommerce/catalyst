@@ -36,7 +36,6 @@ const getCachedGiftCertificatePurchaseData = unstable_cache(
       document: GiftCertificatePurchaseSettingsQuery,
       variables: { currencyCode },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return {

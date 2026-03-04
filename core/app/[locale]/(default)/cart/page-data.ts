@@ -344,7 +344,6 @@ const getCachedShippingCountries = unstable_cache(
     const { data } = await client.fetch({
       document: SupportedShippingDestinationsQuery,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];

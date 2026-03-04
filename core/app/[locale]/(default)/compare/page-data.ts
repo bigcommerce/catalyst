@@ -70,7 +70,6 @@ const getCachedComparedProducts = unstable_cache(
         currencyCode,
       },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return removeEdgesAndNodes(data.site.products);

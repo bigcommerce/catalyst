@@ -59,7 +59,6 @@ const getCachedPublicWishlist = unstable_cache(
       document: PublicWishlistQuery,
       variables: { ...paginationArgs, currencyCode, token },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     const wishlist = response.data.site.publicWishlist;

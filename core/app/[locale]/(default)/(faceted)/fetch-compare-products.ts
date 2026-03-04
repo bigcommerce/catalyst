@@ -55,7 +55,6 @@ const getCachedCompareProducts = unstable_cache(
       document: CompareProductsQuery,
       variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return removeEdgesAndNodes(response.data.site.products);

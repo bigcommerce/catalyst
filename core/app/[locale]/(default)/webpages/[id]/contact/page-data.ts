@@ -38,7 +38,6 @@ const getCachedWebpageData = unstable_cache(
       document: ContactPageQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data;

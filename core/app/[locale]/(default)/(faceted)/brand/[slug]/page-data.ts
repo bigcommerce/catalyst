@@ -45,7 +45,6 @@ const getCachedBrandPageData = unstable_cache(
       document: BrandPageQuery,
       variables: { entityId },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return response.data.site;

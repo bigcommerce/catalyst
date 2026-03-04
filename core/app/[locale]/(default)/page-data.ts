@@ -84,7 +84,6 @@ const getCachedPageData = unstable_cache(
       document: HomePageQuery,
       variables: { currencyCode },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data;

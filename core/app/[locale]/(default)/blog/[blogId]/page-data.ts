@@ -45,7 +45,6 @@ const getCachedBlogPageData = unstable_cache(
       document: BlogPageQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     const { blog } = response.data.site.content;

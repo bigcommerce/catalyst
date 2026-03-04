@@ -35,7 +35,6 @@ const getCachedSearchPageData = unstable_cache(
     const response = await client.fetch({
       document: SearchPageQuery,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return response.data.site;

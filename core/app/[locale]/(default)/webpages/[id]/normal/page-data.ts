@@ -36,7 +36,6 @@ const getCachedWebpageData = unstable_cache(
       document: NormalPageQuery,
       variables,
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return data;

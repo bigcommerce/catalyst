@@ -33,7 +33,6 @@ const getCachedGiftCertificatesData = unstable_cache(
       document: GiftCertificatesRootQuery,
       variables: { currencyCode },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return {

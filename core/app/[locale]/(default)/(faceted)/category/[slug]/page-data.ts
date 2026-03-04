@@ -65,7 +65,6 @@ const getCachedCategoryPageData = unstable_cache(
       document: CategoryPageQuery,
       variables: { entityId },
       locale,
-      fetchOptions: { cache: 'no-store' },
     });
 
     return response.data.site;
