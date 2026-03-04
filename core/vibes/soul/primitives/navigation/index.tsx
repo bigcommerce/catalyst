@@ -19,6 +19,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import React, {
   forwardRef,
   Ref,
+  Suspense,
   useActionState,
   useCallback,
   useEffect,
@@ -407,11 +408,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     <div className="flex items-center px-3 py-1 @4xl:py-2">
                       {/* Locale / Language Dropdown */}
                       {locales.length > 1 ? (
-                        <LocaleSwitcher
-                          activeLocaleId={activeLocaleId}
-                          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                          locales={locales as [Locale, Locale, ...Locale[]]}
-                        />
+                        <Suspense>
+                          <LocaleSwitcher
+                            activeLocaleId={activeLocaleId}
+                            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                            locales={locales as [Locale, Locale, ...Locale[]]}
+                          />
+                        </Suspense>
                       ) : null}
 
                       {/* Currency Dropdown */}
@@ -625,12 +628,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
-            <LocaleSwitcher
-              activeLocaleId={activeLocaleId}
-              className="hidden @4xl:block"
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              locales={locales as [Locale, Locale, ...Locale[]]}
-            />
+            <Suspense>
+              <LocaleSwitcher
+                activeLocaleId={activeLocaleId}
+                className="hidden @4xl:block"
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                locales={locales as [Locale, Locale, ...Locale[]]}
+              />
+            </Suspense>
           ) : null}
 
           {/* Currency Dropdown */}

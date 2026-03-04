@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -58,9 +59,12 @@ const RootLayoutMetadataQuery = graphql(
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   return await client.fetch({
     document: RootLayoutMetadataQuery,
-    fetchOptions: { next: { revalidate } },
   });
 });
 
@@ -118,7 +122,9 @@ const VercelComponents = () => {
 
 async function ToastNotification() {
   const toastData = await getToastNotification();
+
   if (!toastData) return null;
+
   return <CookieNotifications {...toastData} />;
 }
 
