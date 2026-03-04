@@ -13,7 +13,6 @@ import { backendUserAgent } from '../user-agent';
 // During config resolution, the dynamic import of next-intl/server succeeds but
 // getLocale() throws ("not supported in Client Components") — the try/catch
 // below absorbs this gracefully, and getChannelId falls back to defaultChannelId.
-import { getCorrelationId } from './correlation-id';
 
 export const client = createClient({
   storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
@@ -39,8 +38,6 @@ export const client = createClient({
         requestHeaders['True-Client-IP'] = ipAddress;
       }
     }
-
-    requestHeaders['X-Correlation-ID'] = getCorrelationId();
 
     return {
       headers: requestHeaders,
