@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -58,7 +57,7 @@ const ComparedProductsQuery = graphql(
 );
 
 const getCachedComparedProducts = unstable_cache(
-  async (_locale: string, productIds: number[], currencyCode: CurrencyCode | undefined) => {
+  async (locale: string, productIds: number[], currencyCode: CurrencyCode | undefined) => {
     if (productIds.length === 0) {
       return [];
     }
@@ -70,6 +69,7 @@ const getCachedComparedProducts = unstable_cache(
         first: productIds.length ? MAX_COMPARE_LIMIT : 0,
         currencyCode,
       },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -80,7 +80,12 @@ const getCachedComparedProducts = unstable_cache(
 );
 
 export const getComparedProducts = cache(
-  async (productIds: number[] = [], currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+  async (
+    locale: string,
+    productIds: number[] = [],
+    currencyCode?: CurrencyCode,
+    customerAccessToken?: string,
+  ) => {
     if (customerAccessToken) {
       if (productIds.length === 0) {
         return [];
@@ -94,13 +99,12 @@ export const getComparedProducts = cache(
           currencyCode,
         },
         customerAccessToken,
+        locale,
         fetchOptions: { cache: 'no-store' },
       });
 
       return removeEdgesAndNodes(data.site.products);
     }
-
-    const locale = await getLocale();
 
     return getCachedComparedProducts(locale, productIds, currencyCode);
   },

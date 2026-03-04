@@ -1,6 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -182,7 +181,7 @@ interface ProductSearch {
 
 const getCachedProductSearchResults = unstable_cache(
   async (
-    _locale: string,
+    locale: string,
     { limit = 9, after, before, sort, filters }: ProductSearch,
     currencyCode: CurrencyCode | undefined,
   ) => {
@@ -192,6 +191,7 @@ const getCachedProductSearchResults = unstable_cache(
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs, currencyCode },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -249,6 +249,7 @@ const getCachedProductSearchResults = unstable_cache(
 const getProductSearchResults = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (
+    locale: string,
     { limit = 9, after, before, sort, filters }: ProductSearch,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
@@ -261,6 +262,7 @@ const getProductSearchResults = cache(
         document: GetProductSearchResultsQuery,
         variables: { ...filterArgs, ...paginationArgs, currencyCode },
         customerAccessToken,
+        locale,
         fetchOptions: { cache: 'no-store' },
       });
 
@@ -311,8 +313,6 @@ const getProductSearchResults = cache(
         },
       };
     }
-
-    const locale = await getLocale();
 
     return getCachedProductSearchResults(
       locale,
@@ -484,6 +484,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (
+    locale: string,
     params: z.input<typeof PublicSearchParamsSchema>,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
@@ -491,6 +492,7 @@ export const fetchFacetedSearch = cache(
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
     return getProductSearchResults(
+      locale,
       {
         after,
         before,

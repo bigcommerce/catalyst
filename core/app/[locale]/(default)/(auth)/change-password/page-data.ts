@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -27,11 +26,10 @@ const ChangePasswordQuery = graphql(`
 `);
 
 const getCachedChangePasswordQuery = unstable_cache(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async (_locale: string) => {
+  async (locale: string) => {
     const response = await client.fetch({
       document: ChangePasswordQuery,
-      fetchOptions: { cache: 'no-store' },
+      locale,
     });
 
     const passwordComplexitySettings =
@@ -45,8 +43,6 @@ const getCachedChangePasswordQuery = unstable_cache(
   { revalidate },
 );
 
-export const getChangePasswordQuery = cache(async () => {
-  const locale = await getLocale();
-
+export const getChangePasswordQuery = cache(async (locale: string) => {
   return getCachedChangePasswordQuery(locale);
 });

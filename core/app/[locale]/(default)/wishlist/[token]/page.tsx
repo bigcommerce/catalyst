@@ -13,12 +13,14 @@ import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-detail
 import { addWishlistItemToCart } from '~/app/[locale]/(default)/account/wishlists/[id]/_actions/add-to-cart';
 import { WishlistAnalyticsProvider } from '~/app/[locale]/(default)/account/wishlists/[id]/_components/wishlist-analytics-provider';
 import { ExistingResultType } from '~/client/util';
+import type { CurrencyCode } from '~/components/header/fragment';
 import {
   WishlistShareButton,
   WishlistShareButtonSkeleton,
 } from '~/components/wishlist/share-button';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { publicWishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 import { isMobileUser } from '~/lib/user-agent';
 
@@ -38,14 +40,16 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 async function getWishlist(
+  locale: string,
   token: string,
   t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParams: Promise<SearchParams>,
+  currencyCode: CurrencyCode | undefined,
 ): Promise<Wishlist> {
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
   const formatter = await getFormatter();
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
   if (!wishlist) {
     return notFound();
@@ -55,11 +59,13 @@ async function getWishlist(
 }
 
 async function getPaginationInfo(
+  locale: string,
   token: string,
   searchParams: Promise<SearchParams>,
+  currencyCode: CurrencyCode | undefined,
 ): Promise<CursorPaginationInfo> {
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
   return pageInfoTransformer(wishlist?.items.pageInfo ?? defaultPageInfo);
 }
@@ -70,7 +76,8 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // to make sure we aren't bypassing an existing cache just for the metadata generation.
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
   const t = await getTranslations({ locale, namespace: 'PublicWishlist' });
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const currencyCode = await getPreferredCurrencyCode();
+  const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
   return {
     title: wishlist?.name ?? t('title'),
@@ -78,9 +85,14 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   };
 }
 
-const getAnalyticsData = async (token: string, searchParamsPromise: Promise<SearchParams>) => {
+const getAnalyticsData = async (
+  locale: string,
+  token: string,
+  searchParamsPromise: Promise<SearchParams>,
+  currencyCode: CurrencyCode | undefined,
+) => {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
   if (!wishlist) {
     return [];
@@ -102,12 +114,14 @@ const getAnalyticsData = async (token: string, searchParamsPromise: Promise<Sear
 };
 
 async function getBreadcrumbs(
+  locale: string,
   token: string,
   searchParams: Promise<SearchParams>,
+  currencyCode: CurrencyCode | undefined,
 ): Promise<Breadcrumb[]> {
   const t = await getTranslations('PublicWishlist');
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
   return [
     { href: '/', label: 'Home' },
@@ -120,6 +134,7 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
+  const currencyCode = await getPreferredCurrencyCode();
   const t = await getTranslations('Wishlist');
   const pwt = await getTranslations('PublicWishlist');
   const pt = await getTranslations('Product.ProductDetails');
@@ -159,17 +174,27 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
   };
 
   return (
-    <WishlistAnalyticsProvider data={Streamable.from(() => getAnalyticsData(token, searchParams))}>
+    <WishlistAnalyticsProvider
+      data={Streamable.from(() => getAnalyticsData(locale, token, searchParams, currencyCode))}
+    >
       <SectionLayout>
-        <Breadcrumbs breadcrumbs={Streamable.from(() => getBreadcrumbs(token, searchParams))} />
+        <Breadcrumbs
+          breadcrumbs={Streamable.from(() =>
+            getBreadcrumbs(locale, token, searchParams, currencyCode),
+          )}
+        />
 
         <WishlistDetails
           action={addWishlistItemToCart}
           className="mt-8"
           emptyStateText={pwt('emptyWishlist')}
           headerActions={wishlistActions}
-          paginationInfo={Streamable.from(() => getPaginationInfo(token, searchParams))}
-          wishlist={Streamable.from(() => getWishlist(token, t, pt, searchParams))}
+          paginationInfo={Streamable.from(() =>
+            getPaginationInfo(locale, token, searchParams, currencyCode),
+          )}
+          wishlist={Streamable.from(() =>
+            getWishlist(locale, token, t, pt, searchParams, currencyCode),
+          )}
         />
       </SectionLayout>
     </WishlistAnalyticsProvider>

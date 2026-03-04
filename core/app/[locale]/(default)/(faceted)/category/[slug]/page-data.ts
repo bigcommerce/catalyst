@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -61,10 +60,11 @@ const CategoryPageQuery = graphql(
 );
 
 const getCachedCategoryPageData = unstable_cache(
-  async (_locale: string, entityId: number) => {
+  async (locale: string, entityId: number) => {
     const response = await client.fetch({
       document: CategoryPageQuery,
       variables: { entityId },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -74,19 +74,20 @@ const getCachedCategoryPageData = unstable_cache(
   { revalidate },
 );
 
-export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
-  if (customerAccessToken) {
-    const response = await client.fetch({
-      document: CategoryPageQuery,
-      variables: { entityId },
-      customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
-    });
+export const getCategoryPageData = cache(
+  async (locale: string, entityId: number, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const response = await client.fetch({
+        document: CategoryPageQuery,
+        variables: { entityId },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
 
-    return response.data.site;
-  }
+      return response.data.site;
+    }
 
-  const locale = await getLocale();
-
-  return getCachedCategoryPageData(locale, entityId);
-});
+    return getCachedCategoryPageData(locale, entityId);
+  },
+);

@@ -1,5 +1,4 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -80,10 +79,11 @@ const HomePageQuery = graphql(
 );
 
 const getCachedPageData = unstable_cache(
-  async (_locale: string, currencyCode: CurrencyCode | undefined) => {
+  async (locale: string, currencyCode: CurrencyCode | undefined) => {
     const { data } = await client.fetch({
       document: HomePageQuery,
       variables: { currencyCode },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -94,19 +94,18 @@ const getCachedPageData = unstable_cache(
 );
 
 export const getPageData = cache(
-  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+  async (locale: string, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
     if (customerAccessToken) {
       const { data } = await client.fetch({
         document: HomePageQuery,
         customerAccessToken,
         variables: { currencyCode },
+        locale,
         fetchOptions: { cache: 'no-store' },
       });
 
       return data;
     }
-
-    const locale = await getLocale();
 
     return getCachedPageData(locale, currencyCode);
   },

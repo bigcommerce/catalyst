@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { getFormatter, getLocale } from 'next-intl/server';
+import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -74,10 +74,10 @@ interface Pagination {
 }
 
 const getCachedBlog = unstable_cache(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async (_locale: string) => {
+  async (locale: string) => {
     const response = await client.fetch({
       document: BlogQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -87,23 +87,19 @@ const getCachedBlog = unstable_cache(
   { revalidate },
 );
 
-export const getBlog = cache(async () => {
-  const locale = await getLocale();
-
+export const getBlog = cache(async (locale: string) => {
   return getCachedBlog(locale);
 });
 
 const getCachedBlogPosts = unstable_cache(
-  async (
-    _locale: string,
-    { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination,
-  ) => {
+  async (locale: string, { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
     const filterArgs = tag ? { filters: { tags: [tag] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -136,8 +132,7 @@ const getCachedBlogPosts = unstable_cache(
 );
 
 export const getBlogPosts = cache(
-  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
-    const locale = await getLocale();
+  async (locale: string, { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
     const raw = await getCachedBlogPosts(locale, { tag, limit, before, after });
 
     if (!raw) {

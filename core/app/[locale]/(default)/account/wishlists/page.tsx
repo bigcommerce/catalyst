@@ -7,9 +7,12 @@ import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination'
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
 import { WishlistsSection } from '@/vibes/soul/sections/wishlists-section';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { ExistingResultType } from '~/client/util';
+import type { CurrencyCode } from '~/components/header/fragment';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistsTransformer } from '~/data-transformers/wishlists-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { NewWishlistButton } from './_components/new-wishlist-button';
@@ -36,12 +39,20 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 async function listWishlists(
+  locale: string,
   searchParamsPromise: Promise<SearchParams>,
   t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
+  customerAccessToken?: string,
+  currencyCode?: CurrencyCode,
 ): Promise<Wishlist[]> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
-  const wishlists = await getCustomerWishlists(searchParamsParsed);
+  const wishlists = await getCustomerWishlists(
+    locale,
+    searchParamsParsed,
+    customerAccessToken,
+    currencyCode,
+  );
 
   if (!wishlists) {
     return [];
@@ -51,10 +62,18 @@ async function listWishlists(
 }
 
 async function getPaginationInfo(
+  locale: string,
   searchParamsPromise: Promise<SearchParams>,
+  customerAccessToken?: string,
+  currencyCode?: CurrencyCode,
 ): Promise<CursorPaginationInfo> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlists = await getCustomerWishlists(searchParamsParsed);
+  const wishlists = await getCustomerWishlists(
+    locale,
+    searchParamsParsed,
+    customerAccessToken,
+    currencyCode,
+  );
 
   return pageInfoTransformer(wishlists?.pageInfo ?? defaultPageInfo);
 }
@@ -64,8 +83,12 @@ export default async function Wishlists({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Wishlist');
-  const isMobile = await isMobileUser();
+  const [t, isMobile, customerAccessToken, currencyCode] = await Promise.all([
+    getTranslations('Wishlist'),
+    isMobileUser(),
+    getSessionCustomerAccessToken(),
+    getPreferredCurrencyCode(),
+  ]);
   const newWishlistModal = getNewWishlistModal(t);
 
   return (
@@ -121,10 +144,14 @@ export default async function Wishlists({ params, searchParams }: Props) {
           );
         },
       }}
-      paginationInfo={Streamable.from(() => getPaginationInfo(searchParams))}
+      paginationInfo={Streamable.from(() =>
+        getPaginationInfo(locale, searchParams, customerAccessToken, currencyCode),
+      )}
       title={t('title')}
       viewWishlistLabel={t('viewWishlist')}
-      wishlists={Streamable.from(() => listWishlists(searchParams, t))}
+      wishlists={Streamable.from(() =>
+        listWishlists(locale, searchParams, t, customerAccessToken, currencyCode),
+      )}
     />
   );
 }

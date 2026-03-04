@@ -1,8 +1,6 @@
 import { unstable_cache } from 'next/cache';
-import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -297,12 +295,15 @@ const CartPageQuery = graphql(
 
 type Variables = VariablesOf<typeof CartPageQuery>;
 
-export const getCart = async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
+export const getCart = async (
+  locale: string,
+  variables: Variables,
+  customerAccessToken?: string,
+) => {
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables,
+    locale,
     customerAccessToken,
     fetchOptions: {
       cache: 'no-store',
@@ -339,10 +340,10 @@ const SupportedShippingDestinationsQuery = graphql(`
 `);
 
 const getCachedShippingCountries = unstable_cache(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async (_locale: string) => {
+  async (locale: string) => {
     const { data } = await client.fetch({
       document: SupportedShippingDestinationsQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -352,8 +353,6 @@ const getCachedShippingCountries = unstable_cache(
   { revalidate },
 );
 
-export const getShippingCountries = cache(async () => {
-  const locale = await getLocale();
-
+export const getShippingCountries = cache(async (locale: string) => {
   return getCachedShippingCountries(locale);
 });

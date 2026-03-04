@@ -4,6 +4,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
@@ -32,8 +33,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const getAnalyticsData = async (cartId: string) => {
-  const data = await getCart({ cartId });
+const getAnalyticsData = async (locale: string, cartId: string, customerAccessToken?: string) => {
+  const data = await getCart(locale, { cartId }, customerAccessToken);
 
   const cart = data.site.cart;
 
@@ -65,10 +66,7 @@ export default async function Cart({ params }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Cart');
-  const tGiftCertificates = await getTranslations('GiftCertificates');
-  const format = await getFormatter();
-  const cartId = await getCartId();
+  const [t, cartId] = await Promise.all([getTranslations('Cart'), getCartId()]);
 
   if (!cartId) {
     return (
@@ -80,8 +78,13 @@ export default async function Cart({ params }: Props) {
     );
   }
 
-  const currencyCode = await getPreferredCurrencyCode();
-  const data = await getCart({ cartId, currencyCode });
+  const [tGiftCertificates, format, currencyCode, customerAccessToken] = await Promise.all([
+    getTranslations('GiftCertificates'),
+    getFormatter(),
+    getPreferredCurrencyCode(),
+    getSessionCustomerAccessToken(),
+  ]);
+  const data = await getCart(locale, { cartId, currencyCode }, customerAccessToken);
 
   const cart = data.site.cart;
   const checkout = data.site.checkout;
@@ -227,7 +230,7 @@ export default async function Cart({ params }: Props) {
     checkout?.shippingConsignments?.find((consignment) => consignment.selectedShippingOption) ||
     checkout?.shippingConsignments?.[0];
 
-  const shippingCountries = await getShippingCountries();
+  const shippingCountries = await getShippingCountries(locale);
 
   const countries = shippingCountries.map((country) => ({
     value: country.code,
@@ -260,7 +263,9 @@ export default async function Cart({ params }: Props) {
 
   return (
     <>
-      <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
+      <CartAnalyticsProvider
+        data={Streamable.from(() => getAnalyticsData(locale, cartId, customerAccessToken))}
+      >
         {checkoutUrl ? <CheckoutPreconnect url={checkoutUrl} /> : null}
         <CartComponent
           cart={{

@@ -89,13 +89,10 @@ interface CustomerOrdersArgs {
 }
 
 export const getCustomerOrders = cache(
-  async ({
-    before = '',
-    after = '',
-    filterByStatus,
-    filterByDateRange,
-    limit = 5,
-  }: CustomerOrdersArgs) => {
+  async (
+    locale: string,
+    { before = '', after = '', filterByStatus, filterByDateRange, limit = 5 }: CustomerOrdersArgs,
+  ) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
     const filtersArgs = {
@@ -107,6 +104,7 @@ export const getCustomerOrders = cache(
     const response = await client.fetch({
       document: CustomerAllOrders,
       variables: { ...paginationArgs, ...filtersArgs },
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
       errorPolicy: 'auth',
