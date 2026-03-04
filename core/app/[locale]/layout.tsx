@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { cache, PropsWithChildren } from 'react';
+import { cache, PropsWithChildren, Suspense } from 'react';
 
 import '../../globals.css';
 
@@ -116,6 +116,12 @@ const VercelComponents = () => {
   );
 };
 
+async function ToastNotification() {
+  const toastData = await getToastNotification();
+  if (!toastData) return null;
+  return <CookieNotifications {...toastData} />;
+}
+
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
@@ -124,7 +130,6 @@ export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
   const rootData = await fetchRootLayoutMetadata();
-  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -155,9 +160,9 @@ export default async function RootLayout({ params, children }: Props) {
                 settings={rootData.data.site.settings}
               >
                 <Providers>
-                  {toastNotificationCookieData && (
-                    <CookieNotifications {...toastNotificationCookieData} />
-                  )}
+                  <Suspense>
+                    <ToastNotification />
+                  </Suspense>
                   {children}
                 </Providers>
               </AnalyticsProvider>
