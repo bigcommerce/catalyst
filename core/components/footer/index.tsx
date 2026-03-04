@@ -7,6 +7,7 @@ import {
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
 import { getTranslations } from 'next-intl/server';
+import { connection } from 'next/server';
 import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -72,6 +73,7 @@ const getFooterData = cache(async () => {
 });
 
 export const Footer = async () => {
+  await connection();
   const t = await getTranslations('Components.Footer');
   const data = await getFooterData();
 
