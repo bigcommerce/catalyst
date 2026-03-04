@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -155,19 +155,19 @@ const ProductPageMetadataQuery = graphql(`
   }
 `);
 
-const getCachedProductPageMetadata = unstable_cache(
-  async (locale: string, entityId: number) => {
-    const { data } = await client.fetch({
-      document: ProductPageMetadataQuery,
-      variables: { entityId },
-      locale,
-    });
+async function getCachedProductPageMetadata(locale: string, entityId: number) {
+  'use cache';
 
-    return data.site.product;
-  },
-  ['get-product-page-metadata'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: ProductPageMetadataQuery,
+    variables: { entityId },
+    locale,
+  });
+
+  return data.site.product;
+}
 
 export const getProductPageMetadata = cache(
   async (locale: string, entityId: number, customerAccessToken?: string) => {
@@ -220,19 +220,19 @@ const ProductQuery = graphql(
   [ProductOptionsFragment],
 );
 
-const getCachedProduct = unstable_cache(
-  async (locale: string, entityId: number) => {
-    const { data } = await client.fetch({
-      document: ProductQuery,
-      variables: { entityId },
-      locale,
-    });
+async function getCachedProduct(locale: string, entityId: number) {
+  'use cache';
 
-    return data.site;
-  },
-  ['get-product'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: ProductQuery,
+    variables: { entityId },
+    locale,
+  });
+
+  return data.site;
+}
 
 export const getProduct = cache(
   async (locale: string, entityId: number, customerAccessToken?: string) => {
@@ -290,19 +290,22 @@ const StreamableProductVariantInventoryBySkuQuery = graphql(`
 
 type VariantInventoryVariables = VariablesOf<typeof StreamableProductVariantInventoryBySkuQuery>;
 
-const getCachedStreamableProductVariantInventory = unstable_cache(
-  async (locale: string, variables: VariantInventoryVariables) => {
-    const { data } = await client.fetch({
-      document: StreamableProductVariantInventoryBySkuQuery,
-      variables,
-      locale,
-    });
+async function getCachedStreamableProductVariantInventory(
+  locale: string,
+  variables: VariantInventoryVariables,
+) {
+  'use cache';
 
-    return data.site.product?.variants;
-  },
-  ['get-streamable-product-variant-inventory'],
-  { revalidate: 60 },
-);
+  cacheLife({ revalidate: 60 });
+
+  const { data } = await client.fetch({
+    document: StreamableProductVariantInventoryBySkuQuery,
+    variables,
+    locale,
+  });
+
+  return data.site.product?.variants;
+}
 
 export const getStreamableProductVariantInventory = cache(
   async (locale: string, variables: VariantInventoryVariables, customerAccessToken?: string) => {
@@ -382,19 +385,19 @@ const StreamableProductQuery = graphql(
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
 
-const getCachedStreamableProduct = unstable_cache(
-  async (locale: string, variables: Variables) => {
-    const { data } = await client.fetch({
-      document: StreamableProductQuery,
-      variables,
-      locale,
-    });
+async function getCachedStreamableProduct(locale: string, variables: Variables) {
+  'use cache';
 
-    return data.site.product;
-  },
-  ['get-streamable-product'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: StreamableProductQuery,
+    variables,
+    locale,
+  });
+
+  return data.site.product;
+}
 
 export const getStreamableProduct = cache(
   async (locale: string, variables: Variables, customerAccessToken?: string) => {
@@ -444,19 +447,22 @@ const StreamableProductInventoryQuery = graphql(
 
 type ProductInventoryVariables = VariablesOf<typeof StreamableProductQuery>;
 
-const getCachedStreamableProductInventory = unstable_cache(
-  async (locale: string, variables: ProductInventoryVariables) => {
-    const { data } = await client.fetch({
-      document: StreamableProductInventoryQuery,
-      variables,
-      locale,
-    });
+async function getCachedStreamableProductInventory(
+  locale: string,
+  variables: ProductInventoryVariables,
+) {
+  'use cache';
 
-    return data.site.product;
-  },
-  ['get-streamable-product-inventory'],
-  { revalidate: 60 },
-);
+  cacheLife({ revalidate: 60 });
+
+  const { data } = await client.fetch({
+    document: StreamableProductInventoryQuery,
+    variables,
+    locale,
+  });
+
+  return data.site.product;
+}
 
 export const getStreamableProductInventory = cache(
   async (locale: string, variables: ProductInventoryVariables, customerAccessToken?: string) => {
@@ -507,19 +513,19 @@ const ProductPricingAndRelatedProductsQuery = graphql(
   [PricingFragment, FeaturedProductsCarouselFragment],
 );
 
-const getCachedProductPricingAndRelatedProducts = unstable_cache(
-  async (locale: string, variables: Variables) => {
-    const { data } = await client.fetch({
-      document: ProductPricingAndRelatedProductsQuery,
-      variables,
-      locale,
-    });
+async function getCachedProductPricingAndRelatedProducts(locale: string, variables: Variables) {
+  'use cache';
 
-    return data.site.product;
-  },
-  ['get-product-pricing-and-related-products'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: ProductPricingAndRelatedProductsQuery,
+    variables,
+    locale,
+  });
+
+  return data.site.product;
+}
 
 export const getProductPricingAndRelatedProducts = cache(
   async (locale: string, variables: Variables, customerAccessToken?: string) => {
@@ -557,18 +563,18 @@ const InventorySettingsQuery = graphql(`
   }
 `);
 
-const getCachedStreamableInventorySettingsQuery = unstable_cache(
-  async (locale: string) => {
-    const { data } = await client.fetch({
-      document: InventorySettingsQuery,
-      locale,
-    });
+async function getCachedStreamableInventorySettingsQuery(locale: string) {
+  'use cache';
 
-    return data.site.settings?.inventory;
-  },
-  ['get-streamable-inventory-settings'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: InventorySettingsQuery,
+    locale,
+  });
+
+  return data.site.settings?.inventory;
+}
 
 export const getStreamableInventorySettingsQuery = cache(
   async (locale: string, customerAccessToken?: string) => {

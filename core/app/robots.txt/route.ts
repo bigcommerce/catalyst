@@ -55,5 +55,3 @@ export const GET = async () => {
     },
   });
 };
-
-export const dynamic = 'force-static';

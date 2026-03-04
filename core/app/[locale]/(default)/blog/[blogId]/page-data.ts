@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -39,25 +39,25 @@ const BlogPageQuery = graphql(`
 
 type Variables = VariablesOf<typeof BlogPageQuery>;
 
-const getCachedBlogPageData = unstable_cache(
-  async (locale: string, variables: Variables) => {
-    const response = await client.fetch({
-      document: BlogPageQuery,
-      variables,
-      locale,
-    });
+async function getCachedBlogPageData(locale: string, variables: Variables) {
+  'use cache';
 
-    const { blog } = response.data.site.content;
+  cacheLife({ revalidate });
 
-    if (!blog?.post) {
-      return null;
-    }
+  const response = await client.fetch({
+    document: BlogPageQuery,
+    variables,
+    locale,
+  });
 
-    return blog;
-  },
-  ['get-blog-page-data'],
-  { revalidate },
-);
+  const { blog } = response.data.site.content;
+
+  if (!blog?.post) {
+    return null;
+  }
+
+  return blog;
+}
 
 export const getBlogPageData = cache(async (locale: string, variables: Variables) => {
   return getCachedBlogPageData(locale, variables);

@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -25,23 +25,23 @@ const ChangePasswordQuery = graphql(`
   }
 `);
 
-const getCachedChangePasswordQuery = unstable_cache(
-  async (locale: string) => {
-    const response = await client.fetch({
-      document: ChangePasswordQuery,
-      locale,
-    });
+async function getCachedChangePasswordQuery(locale: string) {
+  'use cache';
 
-    const passwordComplexitySettings =
-      response.data.site.settings?.customers?.passwordComplexitySettings;
+  cacheLife({ revalidate });
 
-    return {
-      passwordComplexitySettings,
-    };
-  },
-  ['get-change-password-query'],
-  { revalidate },
-);
+  const response = await client.fetch({
+    document: ChangePasswordQuery,
+    locale,
+  });
+
+  const passwordComplexitySettings =
+    response.data.site.settings?.customers?.passwordComplexitySettings;
+
+  return {
+    passwordComplexitySettings,
+  };
+}
 
 export const getChangePasswordQuery = cache(async (locale: string) => {
   return getCachedChangePasswordQuery(locale);

@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -56,27 +56,31 @@ const ComparedProductsQuery = graphql(
   [ProductCardFragment],
 );
 
-const getCachedComparedProducts = unstable_cache(
-  async (locale: string, productIds: number[], currencyCode: CurrencyCode | undefined) => {
-    if (productIds.length === 0) {
-      return [];
-    }
+async function getCachedComparedProducts(
+  locale: string,
+  productIds: number[],
+  currencyCode: CurrencyCode | undefined,
+) {
+  'use cache';
 
-    const { data } = await client.fetch({
-      document: ComparedProductsQuery,
-      variables: {
-        entityIds: productIds,
-        first: productIds.length ? MAX_COMPARE_LIMIT : 0,
-        currencyCode,
-      },
-      locale,
-    });
+  cacheLife({ revalidate });
 
-    return removeEdgesAndNodes(data.site.products);
-  },
-  ['get-compared-products'],
-  { revalidate },
-);
+  if (productIds.length === 0) {
+    return [];
+  }
+
+  const { data } = await client.fetch({
+    document: ComparedProductsQuery,
+    variables: {
+      entityIds: productIds,
+      first: productIds.length ? MAX_COMPARE_LIMIT : 0,
+      currencyCode,
+    },
+    locale,
+  });
+
+  return removeEdgesAndNodes(data.site.products);
+}
 
 export const getComparedProducts = cache(
   async (

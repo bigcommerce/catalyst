@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { VariablesOf } from 'gql.tada';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -43,25 +43,25 @@ const CompareProductsQuery = graphql(`
 
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
-const getCachedCompareProducts = unstable_cache(
-  async (locale: string, variables: Variables) => {
-    const parsedVariables = CompareProductsSchema.parse(variables);
+async function getCachedCompareProducts(locale: string, variables: Variables) {
+  'use cache';
 
-    if (parsedVariables.entityIds.length === 0) {
-      return [];
-    }
+  cacheLife({ revalidate });
 
-    const response = await client.fetch({
-      document: CompareProductsQuery,
-      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
-      locale,
-    });
+  const parsedVariables = CompareProductsSchema.parse(variables);
 
-    return removeEdgesAndNodes(response.data.site.products);
-  },
-  ['get-compare-products'],
-  { revalidate },
-);
+  if (parsedVariables.entityIds.length === 0) {
+    return [];
+  }
+
+  const response = await client.fetch({
+    document: CompareProductsQuery,
+    variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
+    locale,
+  });
+
+  return removeEdgesAndNodes(response.data.site.products);
+}
 
 export const getCompareProducts = cache(
   async (locale: string, variables: Variables, customerAccessToken?: string) => {

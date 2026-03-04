@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -73,61 +73,64 @@ interface Pagination {
   after: string | null;
 }
 
-const getCachedBlog = unstable_cache(
-  async (locale: string) => {
-    const response = await client.fetch({
-      document: BlogQuery,
-      locale,
-    });
+async function getCachedBlog(locale: string) {
+  'use cache';
 
-    return response.data.site.content.blog;
-  },
-  ['get-blog'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const response = await client.fetch({
+    document: BlogQuery,
+    locale,
+  });
+
+  return response.data.site.content.blog;
+}
 
 export const getBlog = cache(async (locale: string) => {
   return getCachedBlog(locale);
 });
 
-const getCachedBlogPosts = unstable_cache(
-  async (locale: string, { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
-    const filterArgs = tag ? { filters: { tags: [tag] } } : {};
-    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+async function getCachedBlogPosts(
+  locale: string,
+  { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination,
+) {
+  'use cache';
 
-    const response = await client.fetch({
-      document: BlogPostsPageQuery,
-      variables: { ...filterArgs, ...paginationArgs },
-      locale,
-    });
+  cacheLife({ revalidate });
 
-    const { blog } = response.data.site.content;
+  const filterArgs = tag ? { filters: { tags: [tag] } } : {};
+  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-    if (!blog) {
-      return null;
-    }
+  const response = await client.fetch({
+    document: BlogPostsPageQuery,
+    variables: { ...filterArgs, ...paginationArgs },
+    locale,
+  });
 
-    return {
-      pageInfo: blog.posts.pageInfo,
-      posts: removeEdgesAndNodes(blog.posts).map((post) => ({
-        id: String(post.entityId),
-        author: post.author,
-        content: post.plainTextSummary,
-        dateUtc: post.publishedDate.utc,
-        image: post.thumbnailImage
-          ? {
-              src: post.thumbnailImage.url,
-              alt: post.thumbnailImage.altText,
-            }
-          : undefined,
-        href: post.path,
-        title: post.name,
-      })),
-    };
-  },
-  ['get-blog-posts'],
-  { revalidate },
-);
+  const { blog } = response.data.site.content;
+
+  if (!blog) {
+    return null;
+  }
+
+  return {
+    pageInfo: blog.posts.pageInfo,
+    posts: removeEdgesAndNodes(blog.posts).map((post) => ({
+      id: String(post.entityId),
+      author: post.author,
+      content: post.plainTextSummary,
+      dateUtc: post.publishedDate.utc,
+      image: post.thumbnailImage
+        ? {
+            src: post.thumbnailImage.url,
+            alt: post.thumbnailImage.altText,
+          }
+        : undefined,
+      href: post.path,
+      title: post.name,
+    })),
+  };
+}
 
 export const getBlogPosts = cache(
   async (locale: string, { tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {

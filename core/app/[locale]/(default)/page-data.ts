@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -78,19 +78,19 @@ const HomePageQuery = graphql(
   [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
-const getCachedPageData = unstable_cache(
-  async (locale: string, currencyCode: CurrencyCode | undefined) => {
-    const { data } = await client.fetch({
-      document: HomePageQuery,
-      variables: { currencyCode },
-      locale,
-    });
+async function getCachedPageData(locale: string, currencyCode: CurrencyCode | undefined) {
+  'use cache';
 
-    return data;
-  },
-  ['get-page-data'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: HomePageQuery,
+    variables: { currencyCode },
+    locale,
+  });
+
+  return data;
+}
 
 export const getPageData = cache(
   async (locale: string, currencyCode?: CurrencyCode, customerAccessToken?: string) => {

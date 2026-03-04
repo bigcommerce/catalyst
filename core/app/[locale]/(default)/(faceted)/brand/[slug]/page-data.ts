@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -39,19 +39,19 @@ const BrandPageQuery = graphql(`
   }
 `);
 
-const getCachedBrandPageData = unstable_cache(
-  async (locale: string, entityId: number) => {
-    const response = await client.fetch({
-      document: BrandPageQuery,
-      variables: { entityId },
-      locale,
-    });
+async function getCachedBrandPageData(locale: string, entityId: number) {
+  'use cache';
 
-    return response.data.site;
-  },
-  ['get-brand-page-data'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const response = await client.fetch({
+    document: BrandPageQuery,
+    variables: { entityId },
+    locale,
+  });
+
+  return response.data.site;
+}
 
 export const getBrandPageData = cache(
   async (locale: string, entityId: number, customerAccessToken?: string) => {

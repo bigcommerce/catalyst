@@ -64,6 +64,7 @@ export default async (): Promise<NextConfig> => {
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
+      cacheComponents: true,
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
