@@ -21,7 +21,9 @@ export default async function DefaultLayout({ params, children }: Props) {
 
       <main>{children}</main>
 
-      <Footer />
+      <Suspense>
+        <Footer />
+      </Suspense>
     </>
   );
 }
