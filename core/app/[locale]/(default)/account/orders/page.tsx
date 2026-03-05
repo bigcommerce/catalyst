@@ -1,4 +1,5 @@
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Order, OrderList } from '@/vibes/soul/sections/order-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -47,7 +48,7 @@ async function getPaginationInfo(locale: string, after?: string, before?: string
   return pageInfoTransformer(customerOrdersDetails?.pageInfo ?? defaultPageInfo);
 }
 
-export default async function Orders({ params, searchParams }: Props) {
+async function OrdersContent({ params, searchParams }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -66,5 +67,13 @@ export default async function Orders({ params, searchParams }: Props) {
       totalLabel={t('totalPrice')}
       viewDetailsLabel={t('viewDetails')}
     />
+  );
+}
+
+export default function Orders(props: Props) {
+  return (
+    <Suspense>
+      <OrdersContent {...props} />
+    </Suspense>
   );
 }

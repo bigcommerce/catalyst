@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Addresses({ params, searchParams }: Props) {
+async function AddressesContent({ params, searchParams }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -117,5 +118,13 @@ export default async function Addresses({ params, searchParams }: Props) {
       title={t('title')}
       updateLabel={t('update')}
     />
+  );
+}
+
+export default function Addresses(props: Props) {
+  return (
+    <Suspense>
+      <AddressesContent {...props} />
+    </Suspense>
   );
 }

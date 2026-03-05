@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
+import { Suspense } from 'react';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -129,7 +130,7 @@ async function getBreadcrumbs(
   ];
 }
 
-export default async function PublicWishlist({ params, searchParams }: Props) {
+async function PublicWishlistContent({ params, searchParams }: Props) {
   const { locale, token } = await params;
 
   setRequestLocale(locale);
@@ -198,5 +199,13 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
         />
       </SectionLayout>
     </WishlistAnalyticsProvider>
+  );
+}
+
+export default function PublicWishlist(props: Props) {
+  return (
+    <Suspense>
+      <PublicWishlistContent {...props} />
+    </Suspense>
   );
 }

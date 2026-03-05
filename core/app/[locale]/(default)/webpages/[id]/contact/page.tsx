@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
 import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
@@ -168,7 +168,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ContactPage({ params, searchParams }: Props) {
+async function ContactPageContent({ params, searchParams }: Props) {
   const { id, locale } = await params;
   const { success } = await searchParams;
 
@@ -208,5 +208,13 @@ export default async function ContactPage({ params, searchParams }: Props) {
         />
       </div>
     </WebPageContent>
+  );
+}
+
+export default function ContactPage(props: Props) {
+  return (
+    <Suspense>
+      <ContactPageContent {...props} />
+    </Suspense>
   );
 }

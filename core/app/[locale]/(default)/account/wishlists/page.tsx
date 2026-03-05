@@ -1,5 +1,6 @@
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
+import { Suspense } from 'react';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -78,7 +79,7 @@ async function getPaginationInfo(
   return pageInfoTransformer(wishlists?.pageInfo ?? defaultPageInfo);
 }
 
-export default async function Wishlists({ params, searchParams }: Props) {
+async function WishlistsContent({ params, searchParams }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -153,5 +154,13 @@ export default async function Wishlists({ params, searchParams }: Props) {
         listWishlists(locale, searchParams, t, customerAccessToken, currencyCode),
       )}
     />
+  );
+}
+
+export default function Wishlists(props: Props) {
+  return (
+    <Suspense>
+      <WishlistsContent {...props} />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
 import { ResultOf } from 'gql.tada';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { GiftCertificatePurchaseSection } from '@/vibes/soul/sections/gift-certificate-purchase-section';
@@ -147,7 +148,7 @@ function getExpiryDate(
   }
 }
 
-export default async function GiftCertificatePurchasePage({ params }: Props) {
+async function GiftCertificatePurchasePageContent({ params }: Props) {
   const { locale } = await params;
 
   const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
@@ -190,5 +191,13 @@ export default async function GiftCertificatePurchasePage({ params }: Props) {
       subtitle={data.storeName}
       title={t('Purchase.title')}
     />
+  );
+}
+
+export default function GiftCertificatePurchasePage(props: Props) {
+  return (
+    <Suspense>
+      <GiftCertificatePurchasePageContent {...props} />
+    </Suspense>
   );
 }

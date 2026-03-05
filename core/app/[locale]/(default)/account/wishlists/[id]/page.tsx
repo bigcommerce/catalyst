@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
+import { Suspense } from 'react';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -119,7 +120,7 @@ async function getPaginationInfo(
   return pageInfoTransformer(wishlist?.items.pageInfo ?? defaultPageInfo);
 }
 
-export default async function WishlistPage({ params, searchParams }: Props) {
+async function WishlistPageContent({ params, searchParams }: Props) {
   const { locale, id } = await params;
 
   setRequestLocale(locale);
@@ -183,5 +184,13 @@ export default async function WishlistPage({ params, searchParams }: Props) {
         )}
       />
     </WishlistAnalyticsProvider>
+  );
+}
+
+export default function WishlistPage(props: Props) {
+  return (
+    <Suspense>
+      <WishlistPageContent {...props} />
+    </Suspense>
   );
 }

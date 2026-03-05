@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { OrderDetailsSection } from '@/vibes/soul/sections/order-details-section';
@@ -15,7 +16,7 @@ interface Props {
   }>;
 }
 
-export default async function OrderDetails(props: Props) {
+async function OrderDetailsContent(props: Props) {
   const { id, locale } = await props.params;
 
   setRequestLocale(locale);
@@ -46,5 +47,13 @@ export default async function OrderDetails(props: Props) {
       summaryTotalLabel={t('summaryTotal')}
       title={t('title', { orderNumber: id })}
     />
+  );
+}
+
+export default function OrderDetails(props: Props) {
+  return (
+    <Suspense>
+      <OrderDetailsContent {...props} />
+    </Suspense>
   );
 }

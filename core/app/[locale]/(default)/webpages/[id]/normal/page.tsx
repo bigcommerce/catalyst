@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
@@ -73,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function WebPage({ params }: Props) {
+async function NormalWebPageContent({ params }: Props) {
   const { locale, id } = await params;
 
   setRequestLocale(locale);
@@ -83,5 +83,13 @@ export default async function WebPage({ params }: Props) {
       breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(locale, id))}
       webPage={Streamable.from(() => getWebPage(locale, id))}
     />
+  );
+}
+
+export default function WebPage(props: Props) {
+  return (
+    <Suspense>
+      <NormalWebPageContent {...props} />
+    </Suspense>
   );
 }

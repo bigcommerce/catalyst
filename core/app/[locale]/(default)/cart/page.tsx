@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
@@ -61,7 +62,7 @@ const getAnalyticsData = async (locale: string, cartId: string, customerAccessTo
 };
 
 // eslint-disable-next-line complexity
-export default async function Cart({ params }: Props) {
+async function CartContent({ params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -417,5 +418,13 @@ export default async function Cart({ params }: Props) {
         subtotal={checkout?.subtotal?.value}
       />
     </>
+  );
+}
+
+export default function Cart(props: Props) {
+  return (
+    <Suspense>
+      <CartContent {...props} />
+    </Suspense>
   );
 }

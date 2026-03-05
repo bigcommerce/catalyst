@@ -2,6 +2,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings';
 
@@ -26,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Settings({ params }: Props) {
+async function SettingsContent({ params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -71,5 +72,13 @@ export default async function Settings({ params }: Props) {
       updateAccountSubmitLabel={t('cta')}
       updateNewsletterSubscriptionAction={updateNewsletterSubscriptionActionWithCustomerInfo}
     />
+  );
+}
+
+export default function Settings(props: Props) {
+  return (
+    <Suspense>
+      <SettingsContent {...props} />
+    </Suspense>
   );
 }

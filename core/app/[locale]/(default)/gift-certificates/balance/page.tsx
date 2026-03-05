@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { GiftCertificateCheckBalanceSection } from '@/vibes/soul/sections/gift-certificate-balance-section';
 import { redirect } from '~/i18n/routing';
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function GiftCertificates(props: Props) {
+async function GiftCertificatesContent(props: Props) {
   const { locale } = await props.params;
 
   setRequestLocale(locale);
@@ -61,5 +62,13 @@ export default async function GiftCertificates(props: Props) {
       senderLabel={t('CheckBalance.senderLabel')}
       title={t('CheckBalance.title')}
     />
+  );
+}
+
+export default function GiftCertificates(props: Props) {
+  return (
+    <Suspense>
+      <GiftCertificatesContent {...props} />
+    </Suspense>
   );
 }

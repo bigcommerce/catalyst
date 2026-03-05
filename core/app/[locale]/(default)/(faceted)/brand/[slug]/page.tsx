@@ -5,6 +5,7 @@ import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Suspense } from 'react';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
@@ -94,7 +95,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Brand(props: Props) {
+async function BrandContent(props: Props) {
   const { locale, slug } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -253,5 +254,13 @@ export default async function Brand(props: Props) {
       title={brand.name}
       totalCount={streamableTotalCount}
     />
+  );
+}
+
+export default function Brand(props: Props) {
+  return (
+    <Suspense>
+      <BrandContent {...props} />
+    </Suspense>
   );
 }

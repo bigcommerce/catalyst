@@ -5,6 +5,7 @@ import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Suspense } from 'react';
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
@@ -70,7 +71,7 @@ async function getPaginationInfo(locale: string, searchParamsPromise: Promise<Se
   return pageInfoTransformer(blogPosts?.pageInfo ?? defaultPageInfo);
 }
 
-export default async function Blog(props: Props) {
+async function BlogContent(props: Props) {
   const { locale } = await props.params;
 
   setRequestLocale(locale);
@@ -108,5 +109,13 @@ export default async function Blog(props: Props) {
       posts={Streamable.from(() => listBlogPosts(locale, props.searchParams))}
       title={blog.name}
     />
+  );
+}
+
+export default function Blog(props: Props) {
+  return (
+    <Suspense>
+      <BlogContent {...props} />
+    </Suspense>
   );
 }

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
+
+import { Streamable } from '@/vibes/soul/lib/streamable';
 
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
@@ -103,12 +105,23 @@ async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   ];
 }
 
-export default async function Blog(props: Props) {
+async function BlogPostPageContent(props: Props) {
   const { locale } = await props.params;
 
   setRequestLocale(locale);
 
   return (
-    <BlogPostContent blogPost={getBlogPost(props)} breadcrumbs={getBlogPostBreadcrumbs(props)} />
+    <BlogPostContent
+      blogPost={Streamable.from(() => getBlogPost(props))}
+      breadcrumbs={Streamable.from(() => getBlogPostBreadcrumbs(props))}
+    />
+  );
+}
+
+export default function Blog(props: Props) {
+  return (
+    <Suspense>
+      <BlogPostPageContent {...props} />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 
 import { Maintenance as MaintenanceSection } from '@/vibes/soul/sections/maintenance';
 import { client } from '~/client';
@@ -46,7 +46,7 @@ const Container = ({ children }: { children: ReactNode }) => (
   </main>
 );
 
-export default async function Maintenance({ params }: Props) {
+async function MaintenanceContent({ params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
@@ -82,5 +82,13 @@ export default async function Maintenance({ params }: Props) {
         title={t('message')}
       />
     </Container>
+  );
+}
+
+export default function Maintenance(props: Props) {
+  return (
+    <Suspense>
+      <MaintenanceContent {...props} />
+    </Suspense>
   );
 }

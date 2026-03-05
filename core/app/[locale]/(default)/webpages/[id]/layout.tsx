@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { cacheLife } from 'next/cache';
 import { setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
@@ -45,7 +46,11 @@ interface PageLink {
   href: string;
 }
 
-const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
+async function getCachedWebPageChildren(id: string): Promise<PageLink[]> {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data } = await client.fetch({
     document: WebPageChildrenQuery,
     variables: { id: decodeURIComponent(id) },
@@ -73,9 +78,13 @@ const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
 
     return acc;
   }, []);
+}
+
+const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
+  return getCachedWebPageChildren(id);
 });
 
-export default async function WebPageLayout({ params, children }: Props) {
+async function WebPageLayoutContent({ params, children }: Props) {
   const { locale, id } = await params;
 
   setRequestLocale(locale);
@@ -87,5 +96,13 @@ export default async function WebPageLayout({ params, children }: Props) {
     >
       {children}
     </StickySidebarLayout>
+  );
+}
+
+export default function WebPageLayout(props: Props) {
+  return (
+    <Suspense>
+      <WebPageLayoutContent {...props} />
+    </Suspense>
   );
 }

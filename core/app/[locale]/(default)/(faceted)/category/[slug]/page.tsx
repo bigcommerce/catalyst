@@ -6,6 +6,7 @@ import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Suspense } from 'react';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
@@ -101,7 +102,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category(props: Props) {
+async function CategoryContent(props: Props) {
   const { slug, locale } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -301,5 +302,13 @@ export default async function Category(props: Props) {
         {(search) => <CategoryViewed category={category} products={search.products.items} />}
       </Stream>
     </>
+  );
+}
+
+export default function Category(props: Props) {
+  return (
+    <Suspense>
+      <CategoryContent {...props} />
+    </Suspense>
   );
 }

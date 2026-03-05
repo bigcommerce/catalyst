@@ -5,6 +5,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Suspense } from 'react';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { auth, getSessionCustomerAccessToken } from '~/auth';
@@ -64,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Product({ params, searchParams }: Props) {
+async function ProductContent({ params, searchParams }: Props) {
   const { locale, slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
@@ -642,5 +643,13 @@ export default async function Product({ params, searchParams }: Props) {
         searchParams={searchParams}
       />
     </>
+  );
+}
+
+export default function Product(props: Props) {
+  return (
+    <Suspense>
+      <ProductContent {...props} />
+    </Suspense>
   );
 }
