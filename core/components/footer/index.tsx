@@ -6,8 +6,8 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
+import { cacheLife } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
-import { connection } from 'next/server';
 import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -47,39 +47,60 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
+const cachedGetFooterSections = cache(async (currencyCode?: CurrencyCode) => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
+  const { data: response } = await client.fetch({
+    document: GetLinksAndSectionsQuery,
+    variables: { currencyCode },
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return readFragment(FooterSectionsFragment, response).site;
+});
+
 const getFooterSections = cache(
   async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
-    const { data: response } = await client.fetch({
-      document: GetLinksAndSectionsQuery,
-      customerAccessToken,
-      variables: { currencyCode },
-      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-      validateCustomerAccessToken: false,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    if (customerAccessToken) {
+      const { data: response } = await client.fetch({
+        document: GetLinksAndSectionsQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+        // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+        validateCustomerAccessToken: false,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
 
-    return readFragment(FooterSectionsFragment, response).site;
+      return readFragment(FooterSectionsFragment, response).site;
+    }
+
+    return cachedGetFooterSections(currencyCode);
   },
 );
 
 const getFooterData = cache(async () => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data: response } = await client.fetch({
     document: LayoutQuery,
     fetchOptions: { next: { revalidate } },
   });
 
-  return readFragment(FooterFragment, response).site;
+  return { site: readFragment(FooterFragment, response).site, year: new Date().getFullYear() };
 });
 
 export const Footer = async () => {
-  await connection();
   const t = await getTranslations('Components.Footer');
-  const data = await getFooterData();
+  const { site: data, year } = await getFooterData();
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
-  const copyright = `© ${new Date().getFullYear()} ${data.settings?.storeName} – Powered by BigCommerce`;
+  const copyright = `© ${year} ${data.settings?.storeName} – Powered by BigCommerce`;
 
   const contactInformation = data.settings?.contact
     ? {

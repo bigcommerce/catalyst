@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -47,21 +48,43 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 });
 
-const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+const cachedGetHeaderLinks = cache(async (currencyCode?: CurrencyCode) => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data: response } = await client.fetch({
     document: GetLinksAndSectionsQuery,
-    customerAccessToken,
     variables: { currencyCode },
-    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-    validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { next: { revalidate } },
   });
 
   return readFragment(HeaderLinksFragment, response).site;
 });
 
+const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+  if (customerAccessToken) {
+    const { data: response } = await client.fetch({
+      document: GetLinksAndSectionsQuery,
+      customerAccessToken,
+      variables: { currencyCode },
+      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+      validateCustomerAccessToken: false,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return readFragment(HeaderLinksFragment, response).site;
+  }
+
+  return cachedGetHeaderLinks(currencyCode);
+});
+
 const getHeaderData = cache(async () => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data: response } = await client.fetch({
     document: LayoutQuery,
     fetchOptions: { next: { revalidate } },

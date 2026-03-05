@@ -1,3 +1,4 @@
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -46,6 +47,10 @@ const VanityUrlQuery = graphql(`
 `);
 
 const getVanityUrl = cache(async () => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data } = await client.fetch({
     document: VanityUrlQuery,
     fetchOptions: { next: { revalidate } },

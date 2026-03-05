@@ -176,7 +176,9 @@ export default async function RootLayout({ params, children }: Props) {
           </ConsentManager>
         </NextIntlClientProvider>
         <VercelComponents />
-        <ContainerQueryPolyfill />
+        <Suspense>
+          <ContainerQueryPolyfill />
+        </Suspense>
       </body>
     </html>
   );
