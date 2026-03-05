@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { cacheLife } from 'next/cache';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
@@ -65,10 +66,13 @@ const ReviewsQuery = graphql(
 );
 
 const getReviews = cache(async (productId: number, paginationArgs: object) => {
+  'use cache';
+
+  cacheLife({ revalidate });
+
   const { data } = await client.fetch({
     document: ReviewsQuery,
     variables: { ...paginationArgs, entityId: productId },
-    fetchOptions: { next: { revalidate } },
   });
 
   return data.site.product;

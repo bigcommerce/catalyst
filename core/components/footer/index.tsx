@@ -88,7 +88,6 @@ const getFooterData = cache(async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return { site: readFragment(FooterFragment, response).site, year: new Date().getFullYear() };

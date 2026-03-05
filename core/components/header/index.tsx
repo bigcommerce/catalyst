@@ -87,7 +87,6 @@ const getHeaderData = cache(async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return readFragment(HeaderFragment, response).site;
