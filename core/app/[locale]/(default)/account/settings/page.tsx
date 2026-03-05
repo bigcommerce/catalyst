@@ -5,7 +5,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 
 import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings';
-
 import { getSessionCustomerAccessToken } from '~/auth';
 
 import { changePassword } from './_actions/change-password';

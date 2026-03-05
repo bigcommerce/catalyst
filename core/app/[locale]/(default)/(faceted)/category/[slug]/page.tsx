@@ -3,10 +3,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { createLoader, SearchParams } from 'nuqs/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Suspense } from 'react';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';

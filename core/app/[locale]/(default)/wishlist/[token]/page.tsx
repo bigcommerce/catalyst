@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
-import { Suspense } from 'react';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
+import { Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';

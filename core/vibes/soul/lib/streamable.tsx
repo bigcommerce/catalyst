@@ -15,7 +15,9 @@ const stableKeys = (function () {
       return key;
     }
 
-    const keyValue = String(counter++);
+    const keyValue = String(counter);
+
+    counter += 1;
 
     cache.set(obj, keyValue);
 

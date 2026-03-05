@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
+import { Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { Suspense } from 'react';
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { getMetadataAlternates } from '~/lib/seo/canonical';

@@ -3,9 +3,9 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs/server';
+import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Suspense } from 'react';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { auth, getSessionCustomerAccessToken } from '~/auth';

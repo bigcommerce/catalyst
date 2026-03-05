@@ -4,7 +4,6 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { cache, Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
