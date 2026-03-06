@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { connection } from 'next/server';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs/server';
 import { Suspense } from 'react';
@@ -646,7 +647,9 @@ async function ProductContent({ params, searchParams }: Props) {
   );
 }
 
-export default function Product(props: Props) {
+export default async function Product(props: Props) {
+  await connection();
+
   return (
     <Suspense>
       <ProductContent {...props} />
