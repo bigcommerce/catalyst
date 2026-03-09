@@ -76,11 +76,7 @@ export async function submitContactForm<F extends Field>(
   }
 
   const { siteKey, token } = await getRecaptchaFromForm(formData);
-  const recaptchaValidation = validateRecaptchaToken(
-    siteKey,
-    token,
-    t('recaptchaRequired'),
-  );
+  const recaptchaValidation = validateRecaptchaToken(siteKey, token, t('recaptchaRequired'));
 
   if (!recaptchaValidation.success) {
     return {
@@ -95,9 +91,7 @@ export async function submitContactForm<F extends Field>(
       variables: {
         input,
         reCaptchaV2:
-          recaptchaValidation.token != null
-            ? { token: recaptchaValidation.token }
-            : undefined,
+          recaptchaValidation.token != null ? { token: recaptchaValidation.token } : undefined,
       },
       fetchOptions: { cache: 'no-store' },
     });

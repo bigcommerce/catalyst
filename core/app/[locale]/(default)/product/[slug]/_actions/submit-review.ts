@@ -43,11 +43,7 @@ export async function submitReview(
   }
 
   const { siteKey, token } = await getRecaptchaFromForm(payload);
-  const recaptchaValidation = validateRecaptchaToken(
-    siteKey,
-    token,
-    t('recaptchaRequired'),
-  );
+  const recaptchaValidation = validateRecaptchaToken(siteKey, token, t('recaptchaRequired'));
 
   if (!recaptchaValidation.success) {
     return {
@@ -71,9 +67,7 @@ export async function submitReview(
           productEntityId,
         },
         reCaptchaV2:
-          recaptchaValidation.token != null
-            ? { token: recaptchaValidation.token }
-            : undefined,
+          recaptchaValidation.token != null ? { token: recaptchaValidation.token } : undefined,
       },
     });
 

@@ -60,6 +60,7 @@ export async function getRecaptchaFromForm(
   const siteKey = await getRecaptchaSiteKey();
   const raw = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
   const token = typeof raw === 'string' ? raw : '';
+
   return { siteKey, token };
 }
 
