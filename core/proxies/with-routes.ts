@@ -10,7 +10,7 @@ import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
 
-import { type MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
 const trailingSlashDisabled = process.env.TRAILING_SLASH === 'false';
 
@@ -285,7 +285,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
-export const withRoutes: MiddlewareFactory = () => {
+export const withRoutes: ProxyFactory = () => {
   // eslint-disable-next-line complexity
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';

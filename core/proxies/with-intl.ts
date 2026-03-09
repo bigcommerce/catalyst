@@ -2,11 +2,11 @@ import createMiddleware from 'next-intl/middleware';
 
 import { routing } from '~/i18n/routing';
 
-import { type MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
 const intlMiddleware = createMiddleware(routing);
 
-export const withIntl: MiddlewareFactory = (next) => {
+export const withIntl: ProxyFactory = (next) => {
   return async (request, event) => {
     const intlResponse = intlMiddleware(request);
 
@@ -20,7 +20,7 @@ export const withIntl: MiddlewareFactory = (next) => {
 
     request.headers.set('x-bc-locale', locale);
 
-    // Continue the middleware chain
+    // Continue the proxy chain
     const response = await next(request, event);
 
     // Copy headers from intlResponse to response, excluding 'x-middleware-rewrite'

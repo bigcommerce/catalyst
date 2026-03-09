@@ -21,11 +21,11 @@ const getLocale = async () => {
     return await getServerLocale();
   } catch {
     /**
-     * Next-intl `getLocale` only works on the server, and when middleware has run.
+     * Next-intl `getLocale` only works on the server, and when the proxy has run.
      *
      * Instances when `getLocale` will not work:
      * - Requests during next.config.ts resolution
-     * - Requests in middlewares
+     * - Requests in proxies
      * - Requests in `generateStaticParams`
      * - Request in api routes
      * - Requests in static sites without `setRequestLocale`

@@ -3,6 +3,9 @@
   "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
   "version": "1.4.2",
   "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "scripts": {
     "dev": "npm run generate && next dev",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",

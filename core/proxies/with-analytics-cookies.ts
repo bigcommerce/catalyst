@@ -8,9 +8,9 @@ import {
 } from '~/lib/analytics/bigcommerce';
 import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
 
-import { MiddlewareFactory } from './compose-middlewares';
+import { ProxyFactory } from './compose-proxies';
 
-export const withAnalyticsCookies: MiddlewareFactory = (next) => {
+export const withAnalyticsCookies: ProxyFactory = (next) => {
   return async (request, event) => {
     const existingVisitorId = await getVisitorIdCookie();
     const existingVisitId = await getVisitIdCookie();
