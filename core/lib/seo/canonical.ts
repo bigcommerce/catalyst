@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -45,20 +46,26 @@ const VanityUrlQuery = graphql(`
   }
 `);
 
-const getVanityUrl = cache(async () => {
-  const { data } = await client.fetch({
-    document: VanityUrlQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedVanityUrl = unstable_cache(
+  async () => {
+    const { data } = await client.fetch({
+      document: VanityUrlQuery,
+      fetchOptions: { next: { revalidate } },
+    });
 
-  const vanityUrl = data.site.settings?.url.vanityUrl;
+    const vanityUrl = data.site.settings?.url.vanityUrl;
 
-  if (!vanityUrl) {
-    throw new Error('Vanity URL not found in site settings');
-  }
+    if (!vanityUrl) {
+      throw new Error('Vanity URL not found in site settings');
+    }
 
-  return vanityUrl;
-});
+    return vanityUrl;
+  },
+  ['get-vanity-url'],
+  { revalidate },
+);
+
+const getVanityUrl = cache(getCachedVanityUrl);
 
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {
   const { path, locale, includeAlternates = true } = options;
