@@ -613,6 +613,8 @@ export default async function Product({ params, searchParams }: Props) {
       {showRating && (
         <div id="reviews">
           <Reviews
+            customerAccessToken={customerAccessToken}
+            locale={locale}
             productId={productId}
             recaptchaSiteKey={recaptchaSiteKey}
             searchParams={searchParams}

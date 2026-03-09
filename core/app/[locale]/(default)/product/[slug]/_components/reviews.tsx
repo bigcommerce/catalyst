@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
@@ -64,18 +65,48 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getReviews = cache(async (productId: number, paginationArgs: object) => {
-  const { data } = await client.fetch({
-    document: ReviewsQuery,
-    variables: { ...paginationArgs, entityId: productId },
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedReviews = unstable_cache(
+  async (locale: string, productId: number, paginationArgs: object) => {
+    const { data } = await client.fetch({
+      document: ReviewsQuery,
+      variables: { ...paginationArgs, entityId: productId },
+      locale,
+      fetchOptions: { next: { revalidate } },
+    });
 
-  return data.site.product;
-});
+    return data.site.product;
+  },
+  ['get-reviews'],
+  { revalidate },
+);
+
+const getReviews = cache(
+  async (
+    locale: string,
+    productId: number,
+    paginationArgs: object,
+    customerAccessToken?: string,
+  ) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: ReviewsQuery,
+        variables: { ...paginationArgs, entityId: productId },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product;
+    }
+
+    return getCachedReviews(locale, productId, paginationArgs);
+  },
+);
 
 interface Props {
   productId: number;
+  locale: string;
+  customerAccessToken?: string;
   searchParams: Promise<SearchParams>;
   streamableImages: Streamable<{
     images: Array<{ src: string; alt: string }>;
@@ -87,6 +118,8 @@ interface Props {
 
 export const Reviews = async ({
   productId,
+  locale,
+  customerAccessToken,
   searchParams,
   streamableProduct,
   streamableImages,
@@ -103,7 +136,7 @@ export const Reviews = async ({
     } = paginationSearchParams;
     const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
 
-    return getReviews(productId, paginationArgs);
+    return getReviews(locale, productId, paginationArgs, customerAccessToken);
   });
 
   const streamableReviews = Streamable.from(async () => {
