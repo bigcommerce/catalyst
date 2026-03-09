@@ -11,7 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
-import { getRecaptchaSiteKey, RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { getRecaptchaFromForm, validateRecaptchaToken } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({
@@ -75,28 +75,28 @@ export async function submitContactForm<F extends Field>(
     };
   }
 
-  const recaptchaSiteKey = await getRecaptchaSiteKey();
+  const { siteKey, token } = await getRecaptchaFromForm(formData);
+  const recaptchaValidation = validateRecaptchaToken(
+    siteKey,
+    token,
+    t('recaptchaRequired'),
+  );
 
-  if (recaptchaSiteKey) {
-    const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
-
-    if (typeof recaptchaToken !== 'string' || !recaptchaToken.trim()) {
-      return {
-        lastResult: submission.reply({ formErrors: [t('recaptchaRequired')] }),
-      };
-    }
+  if (!recaptchaValidation.success) {
+    return {
+      lastResult: submission.reply({ formErrors: recaptchaValidation.formErrors }),
+    };
   }
 
   try {
     const input = parseContactFormInput(submission.value);
-    const recaptchaToken = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
     const response = await client.fetch({
       document: SubmitContactUsMutation,
       variables: {
         input,
         reCaptchaV2:
-          typeof recaptchaToken === 'string' && recaptchaToken
-            ? { token: recaptchaToken }
+          recaptchaValidation.token != null
+            ? { token: recaptchaValidation.token }
             : undefined,
       },
       fetchOptions: { cache: 'no-store' },

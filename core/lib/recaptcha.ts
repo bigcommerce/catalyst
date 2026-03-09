@@ -6,7 +6,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import type { ReCaptchaSettings } from './recaptcha/constants';
+import { RECAPTCHA_TOKEN_FORM_KEY, type ReCaptchaSettings } from './recaptcha/constants';
 
 export { RECAPTCHA_TOKEN_FORM_KEY } from './recaptcha/constants';
 export type { ReCaptchaSettings } from './recaptcha/constants';
@@ -53,3 +53,30 @@ export const getRecaptchaSiteKey = cache(async (): Promise<string | undefined> =
     ? settings.siteKey
     : undefined;
 });
+
+export async function getRecaptchaFromForm(
+  formData: FormData,
+): Promise<{ siteKey: string | undefined; token: string }> {
+  const siteKey = await getRecaptchaSiteKey();
+  const raw = formData.get(RECAPTCHA_TOKEN_FORM_KEY);
+  const token = typeof raw === 'string' ? raw : '';
+  return { siteKey, token };
+}
+
+export function validateRecaptchaToken(
+  siteKey: string | undefined,
+  token: string,
+  recaptchaRequiredMessage: string,
+): { success: true; token: string | undefined } | { success: false; formErrors: [string] } {
+  if (!siteKey) {
+    return { success: true, token: undefined };
+  }
+
+  const tokenValue = token.trim();
+
+  if (!tokenValue) {
+    return { success: false, formErrors: [recaptchaRequiredMessage] };
+  }
+
+  return { success: true, token: tokenValue };
+}

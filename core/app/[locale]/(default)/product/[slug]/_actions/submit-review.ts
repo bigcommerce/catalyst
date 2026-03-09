@@ -9,7 +9,7 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { getRecaptchaSiteKey, RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha';
+import { getRecaptchaFromForm, validateRecaptchaToken } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
   mutation AddProductReviewMutation(
@@ -42,22 +42,21 @@ export async function submitReview(
     return { ...prevState, lastResult: submission.reply() };
   }
 
-  const recaptchaSiteKey = await getRecaptchaSiteKey();
+  const { siteKey, token } = await getRecaptchaFromForm(payload);
+  const recaptchaValidation = validateRecaptchaToken(
+    siteKey,
+    token,
+    t('recaptchaRequired'),
+  );
 
-  if (recaptchaSiteKey) {
-    const token = payload.get(RECAPTCHA_TOKEN_FORM_KEY);
-    const tokenValue = typeof token === 'string' ? token.trim() : '';
-
-    if (!tokenValue) {
-      return {
-        ...prevState,
-        lastResult: submission.reply({ formErrors: [t('recaptchaRequired')] }),
-      };
-    }
+  if (!recaptchaValidation.success) {
+    return {
+      ...prevState,
+      lastResult: submission.reply({ formErrors: recaptchaValidation.formErrors }),
+    };
   }
 
   const { productEntityId, ...input } = submission.value;
-  const recaptchaToken = payload.get(RECAPTCHA_TOKEN_FORM_KEY);
 
   try {
     const response = await client.fetch({
@@ -72,8 +71,8 @@ export async function submitReview(
           productEntityId,
         },
         reCaptchaV2:
-          typeof recaptchaToken === 'string' && recaptchaToken
-            ? { token: recaptchaToken }
+          recaptchaValidation.token != null
+            ? { token: recaptchaValidation.token }
             : undefined,
       },
     });
