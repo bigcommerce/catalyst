@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable no-console, no-restricted-syntax, no-plusplus, no-continue */
 
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -190,6 +190,59 @@ function computeRouteMetrics(
   return routes;
 }
 
+function readTurbopackEntries(serverAppDir: string): Record<string, string[]> {
+  const entries: Record<string, string[]> = {};
+
+  function scanDir(dir: string): void {
+    const items = readdirSync(dir, { withFileTypes: true });
+
+    for (const item of items) {
+      const fullPath = join(dir, item.name);
+
+      if (item.isDirectory()) {
+        scanDir(fullPath);
+      } else if (item.name.endsWith("_client-reference-manifest.js")) {
+        try {
+          const content = readFileSync(fullPath, "utf-8");
+          const g: Record<string, unknown> = {};
+          // eslint-disable-next-line no-new-func
+          const fn = new Function("globalThis", "self", `${content}\nreturn globalThis;`);
+          const result = fn(g, g) as {
+            __RSC_MANIFEST?: Record<
+              string,
+              { clientModules?: Record<string, { chunks?: string[] }> }
+            >;
+          };
+          const manifest = result.__RSC_MANIFEST;
+
+          if (!manifest) continue;
+
+          for (const [routeKey, entry] of Object.entries(manifest)) {
+            if (!routeKey.endsWith("/page")) continue;
+
+            const chunks = new Set<string>();
+
+            for (const mod of Object.values(entry.clientModules ?? {})) {
+              for (const chunk of mod.chunks ?? []) {
+                // Normalize: "/_next/static/chunks/xxx.js" → "static/chunks/xxx.js"
+                chunks.add(chunk.replace(/^\/_next\//, ""));
+              }
+            }
+
+            entries[routeKey] = [...chunks];
+          }
+        } catch {
+          // Skip malformed manifest files
+        }
+      }
+    }
+  }
+
+  scanDir(serverAppDir);
+
+  return entries;
+}
+
 function compareReport(
   baseline: BundleReport,
   current: BundleReport,
@@ -320,17 +373,18 @@ function generate(
 ): void {
   const appManifestPath = join(nextDir, "app-build-manifest.json");
   const buildManifestPath = join(nextDir, "build-manifest.json");
+  const serverAppDir = join(nextDir, "server", "app");
 
-  if (!existsSync(appManifestPath)) {
+  const isWebpack = existsSync(appManifestPath);
+  const isTurbopack = !isWebpack && existsSync(serverAppDir);
+
+  if (!isWebpack && !isTurbopack) {
     console.error(
-      "Error: .next/app-build-manifest.json not found. Run `next build` first.",
+      "Error: No build output found (.next/app-build-manifest.json or .next/server/app/). Run `next build` first.",
     );
     process.exit(1);
   }
 
-  const appManifest = JSON.parse(readFileSync(appManifestPath, "utf-8")) as {
-    pages?: Record<string, string[]>;
-  };
   const buildManifest = JSON.parse(
     readFileSync(buildManifestPath, "utf-8"),
   ) as {
@@ -342,7 +396,17 @@ function generate(
   const polyfillFiles = new Set(buildManifest.polyfillFiles ?? []);
   const sharedChunks = new Set([...rootMainFiles, ...polyfillFiles]);
 
-  const entries = appManifest.pages ?? {};
+  let entries: Record<string, string[]>;
+
+  if (isWebpack) {
+    const appManifest = JSON.parse(readFileSync(appManifestPath, "utf-8")) as {
+      pages?: Record<string, string[]>;
+    };
+
+    entries = appManifest.pages ?? {};
+  } else {
+    entries = readTurbopackEntries(serverAppDir);
+  }
   const { layouts, pages } = parseManifestEntries(entries);
 
   // Shared JS = sum of rootMainFiles gzipped sizes
@@ -440,6 +504,7 @@ export {
   computeRouteMetrics,
   compareReport,
   clearSizeCache,
+  readTurbopackEntries,
 };
 
 export type { BundleReport, RouteMetric, ChunkSizes, CompareOptions };

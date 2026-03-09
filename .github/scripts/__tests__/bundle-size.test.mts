@@ -12,6 +12,7 @@ import {
   computeRouteMetrics,
   compareReport,
   clearSizeCache,
+  readTurbopackEntries,
 } from '../bundle-size.mts';
 
 // ---------------------------------------------------------------------------
@@ -660,6 +661,152 @@ describe('compareReport', () => {
     assert.ok(report.includes('| Route |'));
     assert.ok(report.includes('| Baseline |'));
     assert.ok(report.includes('| Current |'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// readTurbopackEntries
+// ---------------------------------------------------------------------------
+
+describe('readTurbopackEntries', () => {
+  // Helper: create a minimal _client-reference-manifest.js fixture
+  function makeManifestContent(
+    routes: Record<string, Record<string, { chunks: string[] }>>,
+  ): string {
+    const manifest: Record<string, { clientModules: Record<string, { chunks: string[] }> }> = {};
+
+    for (const [routeKey, modules] of Object.entries(routes)) {
+      manifest[routeKey] = { clientModules: modules };
+    }
+
+    return `globalThis.__RSC_MANIFEST = ${JSON.stringify(manifest)};`;
+  }
+
+  it('reads chunk paths from a single manifest and normalizes /_next/ prefix', () => {
+    const dir = join(testDir, `turbopack-basic-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, 'page_client-reference-manifest.js'),
+      makeManifestContent({
+        '/products/page': {
+          'mod-a': { chunks: ['/_next/static/chunks/a.js'] },
+          'mod-b': { chunks: ['/_next/static/chunks/b.js'] },
+        },
+      }),
+    );
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.ok(entries['/products/page'], 'should have /products/page entry');
+    assert.ok(entries['/products/page'].includes('static/chunks/a.js'), 'should normalize /_next/ prefix');
+    assert.ok(entries['/products/page'].includes('static/chunks/b.js'));
+    assert.ok(!entries['/products/page'].some((c) => c.startsWith('/_next/')), 'no chunk should start with /_next/');
+  });
+
+  it('filters out non-/page routes (layouts, route handlers)', () => {
+    const dir = join(testDir, `turbopack-filter-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, 'page_client-reference-manifest.js'),
+      makeManifestContent({
+        '/app/layout': { 'mod-a': { chunks: ['/_next/static/chunks/layout.js'] } },
+        '/app/route': { 'mod-b': { chunks: ['/_next/static/chunks/route.js'] } },
+        '/app/page': { 'mod-c': { chunks: ['/_next/static/chunks/page.js'] } },
+      }),
+    );
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.ok(entries['/app/page'], 'should include /page route');
+    assert.ok(!entries['/app/layout'], 'should exclude /layout route');
+    assert.ok(!entries['/app/route'], 'should exclude /route handler');
+  });
+
+  it('deduplicates chunks appearing in multiple modules', () => {
+    const dir = join(testDir, `turbopack-dedup-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, 'page_client-reference-manifest.js'),
+      makeManifestContent({
+        '/shop/page': {
+          'mod-a': { chunks: ['/_next/static/chunks/shared.js', '/_next/static/chunks/a.js'] },
+          'mod-b': { chunks: ['/_next/static/chunks/shared.js', '/_next/static/chunks/b.js'] },
+        },
+      }),
+    );
+
+    const entries = readTurbopackEntries(dir);
+    const chunks = entries['/shop/page'];
+
+    assert.ok(chunks, 'should have /shop/page entry');
+
+    const sharedCount = chunks.filter((c) => c === 'static/chunks/shared.js').length;
+
+    assert.equal(sharedCount, 1, 'shared chunk should appear exactly once');
+    assert.equal(chunks.length, 3, 'should have 3 unique chunks');
+  });
+
+  it('scans subdirectories recursively', () => {
+    const dir = join(testDir, `turbopack-recursive-${Date.now()}`);
+
+    mkdirSync(join(dir, 'nested', 'deep'), { recursive: true });
+    writeFileSync(
+      join(dir, 'nested', 'deep', 'page_client-reference-manifest.js'),
+      makeManifestContent({
+        '/nested/deep/page': { 'mod-a': { chunks: ['/_next/static/chunks/deep.js'] } },
+      }),
+    );
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.ok(entries['/nested/deep/page'], 'should find manifest in nested directory');
+  });
+
+  it('skips malformed manifest files gracefully', () => {
+    const dir = join(testDir, `turbopack-malformed-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(join(dir, 'bad_client-reference-manifest.js'), 'this is not valid JS {{{');
+    writeFileSync(
+      join(dir, 'good_client-reference-manifest.js'),
+      makeManifestContent({
+        '/valid/page': { 'mod-a': { chunks: ['/_next/static/chunks/valid.js'] } },
+      }),
+    );
+
+    // Should not throw, and should still return valid entries
+    assert.doesNotThrow(() => readTurbopackEntries(dir));
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.ok(entries['/valid/page'], 'should return valid entries even when another file is malformed');
+  });
+
+  it('returns empty object when no manifest files exist', () => {
+    const dir = join(testDir, `turbopack-empty-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.deepEqual(entries, {});
+  });
+
+  it('returns empty object when manifests have no __RSC_MANIFEST', () => {
+    const dir = join(testDir, `turbopack-no-rsc-${Date.now()}`);
+
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, 'page_client-reference-manifest.js'),
+      'globalThis.somethingElse = {};',
+    );
+
+    const entries = readTurbopackEntries(dir);
+
+    assert.deepEqual(entries, {});
   });
 });
 
