@@ -54,7 +54,7 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.1.5)
       '@makeswift/runtime':
-        specifier: ^0.26.0
+        specifier: ^0.26.3
         version: 0.26.3(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(react-dom@19.1.5(react@19.1.5))(react@19.1.5)
       '@opentelemetry/api':
         specifier: ^1.9.0
