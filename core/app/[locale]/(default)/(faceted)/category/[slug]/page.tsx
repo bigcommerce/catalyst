@@ -18,7 +18,7 @@ import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
-import { fetchFacetedSearch } from '../../fetch-faceted-search';
+import { fetchFacetedSearch, PublicSearchParamsSchema } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
@@ -71,15 +71,47 @@ interface Props {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug, locale } = await props.params;
+  const searchParams = await props.searchParams;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const categoryId = Number(slug);
+  const { before, after } = PublicSearchParamsSchema.parse(searchParams);
+  const baseFilters = { category: categoryId };
 
-  const { category } = await getCategoryPageData(categoryId, customerAccessToken);
+  const [{ category }, paginationSearch] = await Promise.all([
+    getCategoryPageData(categoryId, customerAccessToken),
+    before ? fetchFacetedSearch({ before, ...baseFilters }) : undefined,
+  ]);
 
   if (!category) {
     return notFound();
   }
+
+  const canonicalSearchParams = await (async (): Promise<Record<string, string>> => {
+    if (before && paginationSearch) {
+      const { hasPreviousPage, startCursor } = paginationSearch.products.pageInfo;
+
+      if (hasPreviousPage && startCursor) {
+        const boundary = await fetchFacetedSearch({
+          before: startCursor,
+          limit: 1,
+          ...baseFilters,
+        });
+
+        if (boundary.products.pageInfo.endCursor) {
+          return { after: boundary.products.pageInfo.endCursor };
+        }
+      }
+
+      return {};
+    }
+
+    if (after) {
+      return { after };
+    }
+
+    return {};
+  })();
 
   const { pageTitle, metaDescription, metaKeywords } = category.seo;
 
@@ -91,7 +123,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     ...(metaDescription && { description: metaDescription }),
     ...(metaKeywords && { keywords: metaKeywords.split(',') }),
     ...(categoryPath && {
-      alternates: await getMetadataAlternates({ path: categoryPath, locale }),
+      alternates: await getMetadataAlternates({
+        path: categoryPath,
+        locale,
+        searchParams: canonicalSearchParams,
+      }),
     }),
   };
 }

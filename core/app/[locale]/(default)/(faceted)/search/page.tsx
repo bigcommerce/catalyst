@@ -12,10 +12,11 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { MAX_COMPARE_LIMIT } from '../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../fetch-compare-products';
-import { fetchFacetedSearch } from '../fetch-faceted-search';
+import { fetchFacetedSearch, PublicSearchParamsSchema } from '../fetch-faceted-search';
 
 import { getSearchPageData } from './page-data';
 
@@ -59,13 +60,46 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const resolvedSearchParams = await searchParams;
 
-  const t = await getTranslations({ locale, namespace: 'Faceted.Search' });
+  const { before, after, term } = PublicSearchParamsSchema.parse(resolvedSearchParams);
+
+  const [t, paginationSearch] = await Promise.all([
+    getTranslations({ locale, namespace: 'Faceted.Search' }),
+    before ? fetchFacetedSearch({ before, term }) : undefined,
+  ]);
+
+  const canonicalSearchParams = await (async (): Promise<Record<string, string>> => {
+    if (before && paginationSearch) {
+      const { hasPreviousPage, startCursor } = paginationSearch.products.pageInfo;
+
+      if (hasPreviousPage && startCursor) {
+        const boundary = await fetchFacetedSearch({ before: startCursor, limit: 1, term });
+
+        if (boundary.products.pageInfo.endCursor) {
+          return { after: boundary.products.pageInfo.endCursor };
+        }
+      }
+
+      return {};
+    }
+
+    if (after) {
+      return { after };
+    }
+
+    return {};
+  })();
 
   return {
     title: t('title'),
+    alternates: await getMetadataAlternates({
+      path: '/search',
+      locale,
+      searchParams: canonicalSearchParams,
+    }),
   };
 }
 

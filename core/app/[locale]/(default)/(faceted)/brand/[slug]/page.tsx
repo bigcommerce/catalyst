@@ -17,7 +17,7 @@ import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
-import { fetchFacetedSearch } from '../../fetch-faceted-search';
+import { fetchFacetedSearch, PublicSearchParamsSchema } from '../../fetch-faceted-search';
 
 import { getBrandPageData } from './page-data';
 
@@ -69,15 +69,47 @@ interface Props {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug, locale } = await props.params;
+  const searchParams = await props.searchParams;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const brandId = Number(slug);
+  const { before, after } = PublicSearchParamsSchema.parse(searchParams);
+  const baseFilters = { brand: [slug] };
 
-  const { brand } = await getBrandPageData(brandId, customerAccessToken);
+  const [{ brand }, paginationSearch] = await Promise.all([
+    getBrandPageData(brandId, customerAccessToken),
+    before ? fetchFacetedSearch({ before, ...baseFilters }) : undefined,
+  ]);
 
   if (!brand) {
     return notFound();
   }
+
+  const canonicalSearchParams = await (async (): Promise<Record<string, string>> => {
+    if (before && paginationSearch) {
+      const { hasPreviousPage, startCursor } = paginationSearch.products.pageInfo;
+
+      if (hasPreviousPage && startCursor) {
+        const boundary = await fetchFacetedSearch({
+          before: startCursor,
+          limit: 1,
+          ...baseFilters,
+        });
+
+        if (boundary.products.pageInfo.endCursor) {
+          return { after: boundary.products.pageInfo.endCursor };
+        }
+      }
+
+      return {};
+    }
+
+    if (after) {
+      return { after };
+    }
+
+    return {};
+  })();
 
   const { pageTitle, metaDescription, metaKeywords } = brand.seo;
 
@@ -85,7 +117,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || brand.name,
     ...(metaDescription && { description: metaDescription }),
     ...(metaKeywords && { keywords: metaKeywords.split(',') }),
-    ...(brand.path && { alternates: await getMetadataAlternates({ path: brand.path, locale }) }),
+    ...(brand.path && {
+      alternates: await getMetadataAlternates({
+        path: brand.path,
+        locale,
+        searchParams: canonicalSearchParams,
+      }),
+    }),
   };
 }
 

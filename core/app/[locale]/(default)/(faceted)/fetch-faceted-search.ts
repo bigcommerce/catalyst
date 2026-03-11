@@ -180,7 +180,7 @@ interface ProductSearch {
 
 const getProductSearchResults = cache(
   async (
-    { limit = 9, after, before, sort, filters }: ProductSearch,
+    { limit = 3, after, before, sort, filters }: ProductSearch,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
@@ -410,7 +410,7 @@ export const fetchFacetedSearch = cache(
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
-    const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
+    const { after, before, limit = 3, sort, filters } = PublicToPrivateParams.parse(params);
 
     return getProductSearchResults(
       {

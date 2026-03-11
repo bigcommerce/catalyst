@@ -20,6 +20,10 @@ interface CanonicalUrlOptions {
    * @default true
    */
   includeAlternates?: boolean;
+  /**
+   * Optional query parameters to append to the canonical URL (e.g., pagination cursors)
+   */
+  searchParams?: Record<string, string>;
 }
 
 /**
@@ -61,31 +65,36 @@ const getVanityUrl = cache(async () => {
 });
 
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {
-  const { path, locale, includeAlternates = true } = options;
+  const { path, locale, includeAlternates = true, searchParams } = options;
 
   // Use preview deployment URL so canonical/hreflang URLs point at the preview, not production.
   const previewUrl =
     process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
   const baseUrl = previewUrl && URL.canParse(previewUrl) ? previewUrl : await getVanityUrl();
 
-  const canonical = buildLocalizedUrl(baseUrl, path, locale);
+  const canonical = buildLocalizedUrl(baseUrl, path, locale, searchParams);
 
   if (!includeAlternates) {
     return { canonical };
   }
 
   const languages = locales.reduce<Record<string, string>>((acc, loc) => {
-    acc[loc] = buildLocalizedUrl(baseUrl, path, loc);
+    acc[loc] = buildLocalizedUrl(baseUrl, path, loc, searchParams);
 
     return acc;
   }, {});
 
-  languages['x-default'] = buildLocalizedUrl(baseUrl, path, defaultLocale);
+  languages['x-default'] = buildLocalizedUrl(baseUrl, path, defaultLocale, searchParams);
 
   return { canonical, languages };
 }
 
-function buildLocalizedUrl(baseUrl: string, pathname: string, locale: string): string {
+function buildLocalizedUrl(
+  baseUrl: string,
+  pathname: string,
+  locale: string,
+  searchParams?: Record<string, string>,
+): string {
   const trailingSlash = process.env.TRAILING_SLASH !== 'false';
 
   const url = new URL(pathname, baseUrl);
@@ -96,6 +105,12 @@ function buildLocalizedUrl(baseUrl: string, pathname: string, locale: string): s
     url.pathname += '/';
   } else if (!trailingSlash && url.pathname.endsWith('/') && url.pathname !== '/') {
     url.pathname = url.pathname.slice(0, -1);
+  }
+
+  if (searchParams) {
+    Object.entries(searchParams).forEach(([key, value]) => {
+      url.searchParams.set(key, value);
+    });
   }
 
   return url.href;
