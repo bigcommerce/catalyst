@@ -37,8 +37,6 @@ export const getReCaptchaSettings = cache(async (): Promise<ReCaptchaSettings | 
   }
 
   return {
-    failedLoginLockoutDurationSeconds: reCaptcha.failedLoginLockoutDurationSeconds ?? null,
-    isEnabledOnCheckout: reCaptcha.isEnabledOnCheckout,
     isEnabledOnStorefront: reCaptcha.isEnabledOnStorefront,
     siteKey: reCaptcha.siteKey,
   };
