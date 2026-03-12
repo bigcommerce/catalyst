@@ -16,8 +16,6 @@ export const ReCaptchaSettingsQuery = graphql(`
     site {
       settings {
         reCaptcha {
-          failedLoginLockoutDurationSeconds
-          isEnabledOnCheckout
           isEnabledOnStorefront
           siteKey
         }
