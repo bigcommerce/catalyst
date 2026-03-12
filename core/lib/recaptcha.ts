@@ -64,7 +64,7 @@ export async function getRecaptchaFromForm(
   return { siteKey, token };
 }
 
-export function validateRecaptchaToken(
+export function assertRecaptchaTokenPresent(
   siteKey: string | undefined,
   token: string,
   recaptchaRequiredMessage: string,

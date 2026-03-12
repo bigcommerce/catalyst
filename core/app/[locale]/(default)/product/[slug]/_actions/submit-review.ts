@@ -9,7 +9,7 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { getRecaptchaFromForm, validateRecaptchaToken } from '~/lib/recaptcha';
+import { getRecaptchaFromForm, assertRecaptchaTokenPresent } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
   mutation AddProductReviewMutation(
@@ -43,7 +43,7 @@ export async function submitReview(
   }
 
   const { siteKey, token } = await getRecaptchaFromForm(payload);
-  const recaptchaValidation = validateRecaptchaToken(siteKey, token, t('recaptchaRequired'));
+  const recaptchaValidation = assertRecaptchaTokenPresent(siteKey, token, t('recaptchaRequired'));
 
   if (!recaptchaValidation.success) {
     return {

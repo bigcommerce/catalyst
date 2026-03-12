@@ -14,7 +14,7 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
 import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
-import { getRecaptchaFromForm, validateRecaptchaToken } from '~/lib/recaptcha';
+import { getRecaptchaFromForm, assertRecaptchaTokenPresent } from '~/lib/recaptcha';
 
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './prefixes';
 
@@ -361,7 +361,7 @@ export async function registerCustomer<F extends Field>(
   }
 
   const { siteKey, token } = await getRecaptchaFromForm(formData);
-  const recaptchaValidation = validateRecaptchaToken(siteKey, token, t('recaptchaRequired'));
+  const recaptchaValidation = assertRecaptchaTokenPresent(siteKey, token, t('recaptchaRequired'));
 
   if (!recaptchaValidation.success) {
     return {

@@ -11,7 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
-import { getRecaptchaFromForm, validateRecaptchaToken } from '~/lib/recaptcha';
+import { getRecaptchaFromForm, assertRecaptchaTokenPresent } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({
@@ -76,7 +76,7 @@ export async function submitContactForm<F extends Field>(
   }
 
   const { siteKey, token } = await getRecaptchaFromForm(formData);
-  const recaptchaValidation = validateRecaptchaToken(siteKey, token, t('recaptchaRequired'));
+  const recaptchaValidation = assertRecaptchaTokenPresent(siteKey, token, t('recaptchaRequired'));
 
   if (!recaptchaValidation.success) {
     return {
