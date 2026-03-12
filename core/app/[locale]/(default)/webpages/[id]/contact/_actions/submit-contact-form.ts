@@ -11,7 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
-import { getRecaptchaFromForm, assertRecaptchaTokenPresent } from '~/lib/recaptcha';
+import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({

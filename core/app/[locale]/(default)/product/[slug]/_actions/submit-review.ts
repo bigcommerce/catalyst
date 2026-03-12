@@ -9,7 +9,7 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { getRecaptchaFromForm, assertRecaptchaTokenPresent } from '~/lib/recaptcha';
+import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
   mutation AddProductReviewMutation(
