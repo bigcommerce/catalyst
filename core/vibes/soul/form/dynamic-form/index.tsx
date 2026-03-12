@@ -116,7 +116,6 @@ function DynamicFormInner<F extends Field>({
   });
 
   const recaptchaRef = useRef<ComponentRef<typeof RecaptchaWidget> | null>(null);
-  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
@@ -162,26 +161,8 @@ function DynamicFormInner<F extends Field>({
     onSubmit(event, { formData }) {
       event.preventDefault();
 
-      setRecaptchaError(null);
-
-      let payload: FormData = formData;
-
-      if (recaptchaSiteKey && recaptchaRef.current) {
-        const token = recaptchaRef.current.getValue();
-
-        if (!token || typeof token !== 'string') {
-          setRecaptchaError(t('recaptchaRequired'));
-
-          return;
-        }
-
-        payload = new FormData(event.currentTarget);
-        payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
-        recaptchaRef.current.reset();
-      }
-
       startTransition(() => {
-        formAction(payload);
+        formAction(formData);
       });
     },
   });
@@ -241,7 +222,6 @@ function DynamicFormInner<F extends Field>({
               {submitLabel}
             </SubmitButton>
           </div>
-          {recaptchaError ? <FormStatus type="error">{recaptchaError}</FormStatus> : null}
           {form.errors?.map((error, index) => (
             <FormStatus key={index} type="error">
               {error}
