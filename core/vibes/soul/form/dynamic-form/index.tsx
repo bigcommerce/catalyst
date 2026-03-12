@@ -81,11 +81,7 @@ export interface DynamicFormProps<F extends Field> {
   recaptchaSiteKey?: string;
 }
 
-export function DynamicForm<F extends Field>(props: DynamicFormProps<F>) {
-  return <DynamicFormInner {...props} />;
-}
-
-function DynamicFormInner<F extends Field>({
+export function DynamicForm<F extends Field>({
   action,
   fields,
   buttonSize = 'medium',
@@ -198,9 +194,7 @@ function DynamicFormInner<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
-          {recaptchaSiteKey ? (
-            <RecaptchaWidget sitekey={recaptchaSiteKey} />
-          ) : null}
+          {recaptchaSiteKey ? <RecaptchaWidget sitekey={recaptchaSiteKey} /> : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button
