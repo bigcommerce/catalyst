@@ -5,4 +5,4 @@ export interface ReCaptchaSettings {
   siteKey: string;
 }
 
-export const RECAPTCHA_TOKEN_FORM_KEY = 'recaptchaToken';
+export const RECAPTCHA_TOKEN_FORM_KEY = 'g-recaptcha-response';

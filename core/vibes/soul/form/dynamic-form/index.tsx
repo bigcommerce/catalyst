@@ -13,15 +13,12 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
 import {
-  type ComponentRef,
   FormEvent,
   MouseEvent,
   ReactNode,
   startTransition,
   useActionState,
   useEffect,
-  useRef,
-  useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 import RecaptchaWidget from 'react-google-recaptcha';
@@ -40,7 +37,6 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import {
   Field,
@@ -114,8 +110,6 @@ function DynamicFormInner<F extends Field>({
   const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
     lastResult: null,
   });
-
-  const recaptchaRef = useRef<ComponentRef<typeof RecaptchaWidget> | null>(null);
 
   const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
@@ -205,7 +199,7 @@ function DynamicFormInner<F extends Field>({
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
           {recaptchaSiteKey ? (
-            <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} />
+            <RecaptchaWidget sitekey={recaptchaSiteKey} />
           ) : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (

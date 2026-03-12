@@ -3,14 +3,7 @@
 import { getFormProps, SubmissionResult, useForm, useInputControl } from '@conform-to/react';
 import { getZodConstraint } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
-import {
-  type ComponentRef,
-  startTransition,
-  useActionState,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import RecaptchaWidget from 'react-google-recaptcha';
 
@@ -24,7 +17,6 @@ import { Modal } from '@/vibes/soul/primitives/modal';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { Image } from '~/components/image';
 import { parseWithZodTranslatedErrors } from '~/i18n/utils';
-import { RECAPTCHA_TOKEN_FORM_KEY } from '~/lib/recaptcha/constants';
 
 import { reviewFormErrorTranslations, schema } from './schema';
 
@@ -80,8 +72,6 @@ export const ReviewForm = ({
     lastResult: null,
   });
   const formRef = useRef<HTMLFormElement>(null);
-  const recaptchaRef = useRef<ComponentRef<typeof RecaptchaWidget> | null>(null);
-  const [recaptchaError, setRecaptchaError] = useState<string | null>(null);
 
   const user = useStreamable(streamableUser);
 
@@ -100,26 +90,8 @@ export const ReviewForm = ({
     onSubmit(event, { formData }) {
       event.preventDefault();
 
-      setRecaptchaError(null);
-
-      let payload: FormData = formData;
-
-      if (recaptchaSiteKey && recaptchaRef.current) {
-        const token = recaptchaRef.current.getValue();
-
-        if (!token || typeof token !== 'string') {
-          setRecaptchaError(t('recaptchaRequired'));
-
-          return;
-        }
-
-        payload = new FormData(event.currentTarget);
-        payload.set(RECAPTCHA_TOKEN_FORM_KEY, token);
-        recaptchaRef.current.reset();
-      }
-
       startTransition(() => {
-        formAction(payload);
+        formAction(formData);
       });
     },
   });
@@ -246,7 +218,6 @@ export const ReviewForm = ({
               type="email"
               value={typeof emailControl.value === 'string' ? emailControl.value : ''}
             />
-            {recaptchaError ? <FormStatus type="error">{recaptchaError}</FormStatus> : null}
             {form.errors?.map((error, index) => (
               <FormStatus key={index} type="error">
                 {error}
@@ -254,7 +225,7 @@ export const ReviewForm = ({
             ))}
             {recaptchaSiteKey ? (
               <div>
-                <RecaptchaWidget ref={recaptchaRef} sitekey={recaptchaSiteKey} />
+                <RecaptchaWidget sitekey={recaptchaSiteKey} />
               </div>
             ) : null}
             <div className="mt-auto flex justify-end gap-3">
