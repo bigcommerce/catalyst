@@ -103,40 +103,33 @@ This ensures `integrations/makeswift` remains a faithful mirror of `canary` whil
 
 #### Stage 2: Sync and Release `integrations/makeswift`
 
-2. Follow steps 1-6 under "[Keeping `integrations/makeswift` in sync with `canary`](#keeping-integrationsmakeswift-in-sync-with-canary)"
+2. Follow steps 1-6 under "[Keeping `integrations/makeswift` in sync with `canary`](#keeping-integrationsmakeswift-in-sync-with-canary)", with one addition: **include a changeset for `@bigcommerce/catalyst-makeswift` in the sync merge commit** rather than opening a separate PR for it afterwards.
 
-3. **IMPORTANT**: After step 6, you'll need to open another PR into `integrations/makeswift`
-   - Ensure a local `integrations/makeswift` branch exists and is up to date (`git checkout -B integrations/makeswift origin/integrations/makeswift`)
-   - Run `git fetch origin` and create a new branch from `integrations/makeswift` (`git checkout -B bump-version origin/integrations/makeswift`)
-   - From this new `bump-version` branch, run `pnpm changeset`
-   - Select `@bigcommerce/catalyst-makeswift`
-   - For choosing between a `patch/minor/major` bump, you should copy the bump from Stage 1. (e.g., if `@bigcommerce/catalyst-core` went from `1.1.0` to `1.2.0`, choose `minor`)
-     - Example changeset:
+   - Match the bump type from Stage 1 (e.g., if `@bigcommerce/catalyst-core` went from `1.4.2` to `1.5.0`, use `minor`)
+   - Create a changeset file in `.changeset/` (e.g., `.changeset/sync-canary-1-5-0.md`):
 
      ```
      ---
-     "@bigcommerce/catalyst-makeswift": patch
+     "@bigcommerce/catalyst-makeswift": minor
      ---
 
-     Pulls in changes from the `@bigcommerce/catalyst-core@1.4.1` patch.
+     Pulls in changes from the `@bigcommerce/catalyst-core@1.5.0` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/<canary-sha>/core/CHANGELOG.md#150).
      ```
 
-   - Commit the generated changeset file and open a PR to merge this branch into `integrations/makeswift`
-   - Once merged, you can proceed to the next step
+   - Replace `<canary-sha>` with the merge commit SHA of the Version Packages PR on `canary` so the link remains stable
+   - Amend this changeset into the merge commit alongside any other sync changes (changeset cleanup, `core/package.json` and `core/CHANGELOG.md` fixes, etc.)
 
-4. Merge the **Version Packages (`integrations/makeswift`)** PR: Changesets will open another PR (similar to Stage 1) bumping `@bigcommerce/catalyst-makeswift`. Merge it following the same process. This cuts a new release of the Makeswift variant.
+3. Merge the **Version Packages (`integrations/makeswift`)** PR: After the sync lands, Changesets will open a PR (similar to Stage 1) bumping `@bigcommerce/catalyst-makeswift`. Merge it following the same process. This cuts a new release of the Makeswift variant.
 
-5. **Tags and Releases:** Confirm tags exist for both `@bigcommerce/catalyst-core` and `@bigcommerce/catalyst-makeswift`. If needed, update `latest` tags in GitHub manually.
+4. **Tags and Releases:** Confirm tags exist for both `@bigcommerce/catalyst-core` and `@bigcommerce/catalyst-makeswift`. Update `latest` tags to point to the new releases:
 
-- Push manually:
-  ```
-  git checkout canary
-  # Make sure you have the latest code
-  git fetch origin
-  git pull
-  git tag @bigcommerce/catalyst-core@latest -f
-  git push origin @bigcommerce/catalyst-core@latest -f
-  ```
+   ```bash
+   git fetch origin --tags
+   git tag @bigcommerce/catalyst-core@latest @bigcommerce/catalyst-core@<version> -f
+   git tag @bigcommerce/catalyst-makeswift@latest @bigcommerce/catalyst-makeswift@<version> -f
+   git push origin @bigcommerce/catalyst-core@latest -f
+   git push origin @bigcommerce/catalyst-makeswift@latest -f
+   ```
 
 ### Additional Notes
 
