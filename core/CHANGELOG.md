@@ -1,5 +1,441 @@
 # Changelog
 
+## 1.5.0
+
+### Minor Changes
+
+- [#2905](https://github.com/bigcommerce/catalyst/pull/2905) [`6f788e9`](https://github.com/bigcommerce/catalyst/commit/6f788e95dbf6e21bd025a32173f5e2c8e81aee46) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Use dynamic imports for next/headers, next/navigation, and next-intl/server in the client module to avoid AsyncLocalStorage poisoning during next.config.ts resolution
+
+- [#2801](https://github.com/bigcommerce/catalyst/pull/2801) [`18cfdc8`](https://github.com/bigcommerce/catalyst/commit/18cfdc8ca018c33ea49b462ecb6f055a153cd4ab) Thanks [@Tharaae](https://github.com/Tharaae)! - Fetch product inventory data with a separate GQL query with no caching
+
+  ## Migration
+
+  The files to be rebased for this change to be applied are:
+  - core/app/[locale]/(default)/product/[slug]/page-data.ts
+  - core/app/[locale]/(default)/product/[slug]/page.tsx
+
+- [#2863](https://github.com/bigcommerce/catalyst/pull/2863) [`6a23c90`](https://github.com/bigcommerce/catalyst/commit/6a23c90714b2218db45f17cebe395b21753157e7) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add pagination support for the product gallery. When a product has more images than the initial page load, new images will load as batches once the user reaches the end of the existing thumbnails. Thumbnail images now will display in horizontal direction in all viewport sizes.
+
+  ## Migration
+  1. Create the new server action file `core/app/[locale]/(default)/product/[slug]/_actions/get-more-images.ts` with a GraphQL query to fetch additional product images with pagination.
+  2. Update the product page data fetching in `core/app/[locale]/(default)/product/[slug]/page-data.ts` to include `pageInfo` (with `hasNextPage` and `endCursor`) from the images query.
+  3. Update `core/app/[locale]/(default)/product/[slug]/page.tsx` to pass the new pagination props (`pageInfo`, `productId`, `loadMoreAction`) to the `ProductDetail` component.
+  4. The `ProductGallery` component now accepts optional props for pagination:
+     - `pageInfo?: { hasNextPage: boolean; endCursor: string | null }`
+     - `productId?: number`
+     - `loadMoreAction?: ProductGalleryLoadMoreAction`
+
+  Due to the number of changes, it is recommended to use the PR as a reference for migration.
+
+- [#2758](https://github.com/bigcommerce/catalyst/pull/2758) [`d78bc85`](https://github.com/bigcommerce/catalyst/commit/d78bc85fa4a6ae39d2b99a347a3f9fc56725826a) Thanks [@Tharaae](https://github.com/Tharaae)! - Add the following messages to each line item on cart page based on store inventory settings:
+  - Fully/partially out-of-stock message if enabled on the store and the line item is currently out of stock
+  - Ready-to-ship quantity if enabled on the store
+  - Backordered quantity if enabled on the store
+
+  ## Migration
+
+  For existing Catalyst stores, to get the newly added feature, simply rebase the existing code with the new release code. The files to be rebased for this change to be applied are:
+  - core/app/[locale]/(default)/cart/page-data.ts
+  - core/app/[locale]/(default)/cart/page.tsx
+  - core/messages/en.json
+  - core/vibes/soul/sections/cart/client.tsx
+
+- [#2907](https://github.com/bigcommerce/catalyst/pull/2907) [`35adccb`](https://github.com/bigcommerce/catalyst/commit/35adccb0429f462efaa5bfb4cabf4d51b4a62522) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Upgrade Next.js to v16 and align peer dependencies.
+
+  To migrate your Catalyst storefront to Next.js 16:
+  - Update `next` to `^16.0.0` in your `package.json` and install dependencies.
+  - Replace any usage of `unstable_expireTag` with `revalidateTag` and `unstable_expirePath` with `revalidatePath` from `next/cache`.
+  - Update `tsconfig.json` to use `"moduleResolution": "bundler"` and `"module": "nodenext"` as required by Next.js 16.
+  - Address Next.js 16 deprecation lint errors (e.g. legacy `<img>` elements, missing `rel="noopener noreferrer"` on external links).
+  - Rename `middleware.ts` to `proxy.ts` and change `export const middleware` to `export const proxy` (Next.js 16 proxy pattern).
+  - Ensure you are running Node.js 24+ (proxy runs on the Node.js runtime, not Edge).
+
+### Patch Changes
+
+- [#2916](https://github.com/bigcommerce/catalyst/pull/2916) [`e3185b6`](https://github.com/bigcommerce/catalyst/commit/e3185b6f0612424af01b1515b440b6f43988da66) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix analytics visit count inflation by implementing a sliding window for the visit cookie TTL, guarding against prefetch/RSC requests creating spurious visits, and reordering middleware so analytics cookies survive locale redirects.
+
+- [#2852](https://github.com/bigcommerce/catalyst/pull/2852) [`a7395f1`](https://github.com/bigcommerce/catalyst/commit/a7395f1a6778fe93080e8fcb05dce423cbc3acc0) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Uses regular `dompurify` (DP) instead of `isomorphic-dompurify` (IDP), because IDP requires JSDOM. JSDOM doesn't work in edge-runtime environments even with nodejs compatibility. We only need it on the client anyways for the JSON-LD schema, so it doesn't need the isomorphic aspect of it. This also changes `core/app/[locale]/(default)/product/[slug]/_components/product-review-schema/product-review-schema.tsx` to be a client-component to enable `dompurify to work correctly.
+
+  ## Migration
+  1. Remove the old dependency and add the new:
+
+  ```bash
+  pnpm rm isomorphic-dompurify
+  pnpm add dompurify -S
+  ```
+
+  2. Change the import in `core/app/[locale]/(default)/product/[slug]/_components/product-review-schema/product-review-schema.tsx`:
+
+  ```diff
+  - import DOMPurify from 'isomorphic-dompurify';
+  +// eslint-disable-next-line import/no-named-as-default
+  +import DOMPurify from 'dompurify';
+  ```
+
+  3. Add the `'use client';` directive to the top of `core/app/[locale]/(default)/product/[slug]/_components/product-review-schema/product-review-schema.tsx`.
+
+- [#2844](https://github.com/bigcommerce/catalyst/pull/2844) [`74dee6e`](https://github.com/bigcommerce/catalyst/commit/74dee6e6cafc57ea0e6eea94aafc4b38063352b1) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Update forms to translate the form field validation errors
+
+  ## Migration
+
+  Due to the amount of changes, it is recommended to just use the PR as a reference for migration.
+
+  Detailed migration steps can be found on the PR here:
+  https://github.com/bigcommerce/catalyst/pull/2844
+
+- [#2901](https://github.com/bigcommerce/catalyst/pull/2901) [`8b5fee6`](https://github.com/bigcommerce/catalyst/commit/8b5fee6a1f396f000748d3e9bb65e44383148eb4) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix GiftCertificateCard not updating when selecting a new amount on the gift certificate purchase form
+
+- [#2858](https://github.com/bigcommerce/catalyst/pull/2858) [`0633612`](https://github.com/bigcommerce/catalyst/commit/06336122585db5021de9028ed88e2bc48c6faede) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Use state abbreviation instead of entityId for cart shipping form state values. The shipping API expects state abbreviations, and using entityId caused form submissions to fail. Additionally, certain US military states that share the same abbreviation (AE) are now filtered out to prevent duplicate key issues and ambiguous submissions.
+
+  ## Migration steps
+
+  ### Step 1: Add blacklist for states with duplicate abbreviations
+
+  Certain US states share the same abbreviation (AE), which causes issues with the shipping API and React select dropdowns. Add a blacklist to filter these out.
+
+  Update `core/app/[locale]/(default)/cart/page.tsx`:
+
+  ```diff
+    const countries = shippingCountries.map((country) => ({
+      value: country.code,
+      label: country.name,
+    }));
+
+  + // These US states share the same abbreviation (AE), which causes issues:
+  + // 1. The shipping API uses abbreviations, so it can't distinguish between them
+  + // 2. React select dropdowns require unique keys, causing duplicate key warnings
+  + const blacklistedUSStates = new Set([
+  +   'Armed Forces Africa',
+  +   'Armed Forces Canada',
+  +   'Armed Forces Middle East',
+  + ]);
+
+    const statesOrProvinces = shippingCountries.map((country) => ({
+  ```
+
+  ### Step 2: Use state abbreviation instead of entityId
+
+  Update the state mapping to use `abbreviation` instead of `entityId`, and apply the blacklist filter for US states.
+
+  Update `core/app/[locale]/(default)/cart/page.tsx`:
+
+  ```diff
+    const statesOrProvinces = shippingCountries.map((country) => ({
+      country: country.code,
+  -   states: country.statesOrProvinces.map((state) => ({
+  -     value: state.entityId.toString(),
+  -     label: state.name,
+  -   })),
+  +   states: country.statesOrProvinces
+  +     .filter((state) => country.code !== 'US' || !blacklistedUSStates.has(state.name))
+  +     .map((state) => ({
+  +       value: state.abbreviation,
+  +       label: state.name,
+  +     })),
+    }));
+  ```
+
+- [#2856](https://github.com/bigcommerce/catalyst/pull/2856) [`f5330c7`](https://github.com/bigcommerce/catalyst/commit/f5330c7248b2e3a32b2bfbb8e3bc6c11742a5d27) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add canonical URLs and hreflang alternates for SEO. Pages now set `alternates.canonical` and `alternates.languages` in `generateMetadata` via the new `getMetadataAlternates` helper in `core/lib/seo/canonical.ts`. The helper fetches the vanity URL via GraphQL (`site.settings.url.vanityUrl`) and is cached per request. The default locale uses no path prefix; other locales use `/{locale}/path`. The root locale layout sets `metadataBase` to the configured vanity URL so canonical URLs resolve correctly. On Vercel preview deployments (`VERCEL_ENV=preview`), `metadataBase` and canonical/hreflang URLs use `VERCEL_URL` instead of the production vanity URL to prevent preview environments from generating SEO metadata pointing to production.
+
+  ## Migration steps
+
+  ### Step 1: Root layout metadata base
+
+  The root locale layout now sets `metadataBase` from the vanity URL fetched via GraphQL. On Vercel preview deployments, `VERCEL_URL` is used instead so preview environments don't point to production. `URL.canParse` guards against malformed URLs.
+
+  Update `core/app/[locale]/layout.tsx`:
+
+  ```diff
+  + const vanityUrl = data.site.settings?.url.vanityUrl;
+  +
+  + // Use preview deployment URL so metadataBase (canonical, og:url) points at the preview, not production.
+  + let baseUrl: URL | undefined;
+  + const previewUrl =
+  +   process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
+  +
+  + if (previewUrl && URL.canParse(previewUrl)) {
+  +   baseUrl = new URL(previewUrl);
+  + } else if (vanityUrl && URL.canParse(vanityUrl)) {
+  +   baseUrl = new URL(vanityUrl);
+  + }
+  +
+    return {
+  +   metadataBase: baseUrl,
+      title: {
+  ```
+
+  ### Step 2: Canonical/hreflang base URL for preview environments
+
+  The `getMetadataAlternates` function in `core/lib/seo/canonical.ts` now checks for a Vercel preview URL before falling back to the GraphQL vanity URL. `URL.canParse` guards against malformed URLs.
+
+  Update `core/lib/seo/canonical.ts`:
+
+  ```diff
+   export async function getMetadataAlternates(options: CanonicalUrlOptions) {
+     const { path, locale, includeAlternates = true } = options;
+
+  -  const baseUrl = await getVanityUrl();
+  +  // Use preview deployment URL so canonical/hreflang URLs point at the preview, not production.
+  +  const previewUrl =
+  +    process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : undefined;
+  +  const baseUrl = previewUrl && URL.canParse(previewUrl) ? previewUrl : await getVanityUrl();
+  ```
+
+  ### Step 3: GraphQL fragment updates
+
+  Add the `path` field to brand, blog post, and product queries so metadata can build canonical URLs.
+
+  Update `core/app/[locale]/(default)/(faceted)/brand/[slug]/page-data.ts`:
+
+  ```diff
+    site {
+      brand(entityId: $entityId) {
+        name
+  +     path
+        seo {
+  ```
+
+  Update `core/app/[locale]/(default)/blog/[blogId]/page-data.ts`:
+
+  ```diff
+    author
+    htmlBody
+    name
+  + path
+    publishedDate {
+  ```
+
+  Update `core/app/[locale]/(default)/product/[slug]/page-data.ts` (in the metadata query):
+
+  ```diff
+    site {
+      product(entityId: $entityId) {
+        name
+  +     path
+        defaultImage {
+  ```
+
+  ### Step 4: Page metadata alternates
+
+  Add the `getMetadataAlternates` import and set `alternates` in `generateMetadata` for each page. The function is async and must be awaited. Ensure `core/lib/seo/canonical.ts` exists (it is included in this release).
+
+  Update `core/app/[locale]/(default)/page.tsx` (home):
+
+  ```diff
+  + import { Metadata } from 'next';
+    import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+    ...
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+  + export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  +   const { locale } = await params;
+  +   return {
+  +     alternates: await getMetadataAlternates({ path: '/', locale }),
+  +   };
+  + }
+  +
+    export default async function Home({ params }: Props) {
+  ```
+
+  For entity pages (product, category, brand, blog, blog post, webpage), add the import and include `alternates` in the existing `generateMetadata` return value using the entity `path` (or breadcrumb-derived path for category and webpage). Example for a brand page:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+    export async function generateMetadata(props: Props): Promise<Metadata> {
+  -   const { slug } = await props.params;
+  +   const { slug, locale } = await props.params;
+      ...
+      return {
+        title: pageTitle || brand.name,
+        description: metaDescription,
+        keywords: metaKeywords ? metaKeywords.split(',') : null,
+  +     alternates: await getMetadataAlternates({ path: brand.path, locale }),
+      };
+    }
+  ```
+
+  ### Step 5: Gift certificates pages
+
+  Update `core/app/[locale]/(default)/gift-certificates/page.tsx`:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+    export async function generateMetadata({ params }: Props): Promise<Metadata> {
+      const { locale } = await params;
+      const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+
+      return {
+        title: t('title') || 'Gift certificates',
+  +     alternates: await getMetadataAlternates({ path: '/gift-certificates', locale }),
+      };
+    }
+  ```
+
+  Update `core/app/[locale]/(default)/gift-certificates/balance/page.tsx`:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+      return {
+        title: t('title') || 'Gift certificates - Check balance',
+  +     alternates: await getMetadataAlternates({ path: '/gift-certificates/balance', locale }),
+      };
+  ```
+
+  Add `generateMetadata` to `core/app/[locale]/(default)/gift-certificates/purchase/page.tsx`:
+
+  ```diff
+  + import { Metadata } from 'next';
+    import { getFormatter, getTranslations } from 'next-intl/server';
+    ...
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+  + export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  +   const { locale } = await params;
+  +   const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+  +
+  +   return {
+  +     title: t('Purchase.title'),
+  +     alternates: await getMetadataAlternates({ path: '/gift-certificates/purchase', locale }),
+  +   };
+  + }
+  ```
+
+  ### Step 6: Contact page
+
+  Update `core/app/[locale]/(default)/webpages/[id]/contact/page.tsx`:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+    export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  -   const { id } = await params;
+  +   const { id, locale } = await params;
+      const webpage = await getWebPage(id);
+      const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
+
+      return {
+        title: pageTitle || webpage.title,
+        description: metaDescription,
+        keywords: metaKeywords ? metaKeywords.split(',') : null,
+  +     alternates: await getMetadataAlternates({ path: webpage.path, locale }),
+      };
+    }
+  ```
+
+  ### Step 7: Public wishlist page
+
+  Update `core/app/[locale]/(default)/wishlist/[token]/page.tsx`:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+    export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+      const { locale, token } = await params;
+      ...
+      return {
+        title: wishlist?.name ?? t('title'),
+  +     alternates: await getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
+      };
+    }
+  ```
+
+  ### Step 8: Compare page
+
+  Update `core/app/[locale]/(default)/compare/page.tsx`:
+
+  ```diff
+  + import { getMetadataAlternates } from '~/lib/seo/canonical';
+    ...
+    export async function generateMetadata({ params }: Props): Promise<Metadata> {
+      const { locale } = await params;
+      const t = await getTranslations({ locale, namespace: 'Compare' });
+
+      return {
+        title: t('title'),
+  +     alternates: await getMetadataAlternates({ path: '/compare', locale }),
+      };
+    }
+  ```
+
+- [#2898](https://github.com/bigcommerce/catalyst/pull/2898) [`46ee3de`](https://github.com/bigcommerce/catalyst/commit/46ee3de640f030be56111c668102bbeeb961b4a4) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Conditionally include optional SEO metadata fields in `generateMetadata` across page files. Fields `description`, `keywords`, `alternates`, and `openGraph` are now only included in the returned metadata object when they have a value, using spread syntax (`...(value && { key: value })`). Previously, these fields were always set — potentially assigning `null` or an empty string — which could cause Next.js to render empty `<meta>` tags.
+
+  ## Migration steps
+
+  Update `generateMetadata` in the following pages to use conditional spread syntax for optional metadata fields:
+
+  ### brand, category, webpages (contact + normal)
+
+  ```diff
+    return {
+      title: pageTitle || entity.name,
+  -   description: metaDescription,
+  -   keywords: metaKeywords ? metaKeywords.split(',') : null,
+  +   ...(metaDescription && { description: metaDescription }),
+  +   ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+    };
+  ```
+
+  For `brand/[slug]/page.tsx`, also guard the `alternates` field:
+
+  ```diff
+  -   alternates: await getMetadataAlternates({ path: brand.path, locale }),
+  +   ...(brand.path && { alternates: await getMetadataAlternates({ path: brand.path, locale }) }),
+  ```
+
+  ### blog/[blogId]/page.tsx
+
+  ```diff
+    return {
+      title: pageTitle || blogPost.name,
+  -   description: metaDescription,
+  -   keywords: metaKeywords ? metaKeywords.split(',') : null,
+  +   ...(metaDescription && { description: metaDescription }),
+  +   ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+      ...(blogPost.path && {
+        alternates: await getMetadataAlternates({ path: blogPost.path, locale }),
+      }),
+    };
+  ```
+
+  ### product/[slug]/page.tsx
+
+  ```diff
+  - keywords: metaKeywords ? metaKeywords.split(',') : null,
+  + ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+  - openGraph: url
+  -   ? {
+  -       images: [{ url, alt }],
+  -     }
+  -   : null,
+  + ...(url && { openGraph: { images: [{ url, alt }] } }),
+  ```
+
+  ### blog/page.tsx
+
+  Extract the description to a variable and spread conditionally:
+
+  ```diff
+  + const description =
+  +   blog?.description && blog.description.length > 150
+  +     ? `${blog.description.substring(0, 150)}...`
+  +     : blog?.description;
+  +
+    return {
+      title: blog?.name ?? t('title'),
+  -   description:
+  -     blog?.description && blog.description.length > 150
+  -       ? `${blog.description.substring(0, 150)}...`
+  -       : blog?.description,
+  +   ...(description && { description }),
+      ...(blog?.path && { alternates: await getMetadataAlternates({ path: blog.path, locale }) }),
+    };
+  ```
+
+- [#2897](https://github.com/bigcommerce/catalyst/pull/2897) [`8d128fc`](https://github.com/bigcommerce/catalyst/commit/8d128fc75006ef8ab330e3597bfcf15cdc70da71) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.4.2
 
 ### Patch Changes
