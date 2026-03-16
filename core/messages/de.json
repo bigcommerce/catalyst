@@ -98,6 +98,7 @@
             "heading": "Neues Konto",
             "cta": "Konto erstellen",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
             "FieldErrors": {
                 "firstNameRequired": "Es muss ein Vorname angegeben werden",
                 "lastNameRequired": "Es muss ein Nachname angegeben werden",
@@ -505,6 +506,7 @@
                 "emailLabel": "E-Mail",
                 "successMessage": "Ihre Bewertung wurde erfolgreich übermittelt!",
                 "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
                 "FieldErrors": {
                     "titleRequired": "Titel ist erforderlich",
                     "authorRequired": "Es muss ein Name angegeben werden",
@@ -535,7 +537,8 @@
                 "email": "E-Mail",
                 "comments": "Kommentare/Fragen",
                 "cta": "Formular einreichen",
-                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+                "recaptchaRequired": "Please complete the reCAPTCHA verification."
             }
         }
     },
@@ -705,6 +708,7 @@
     },
     "Form": {
         "optional": "optional",
+        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
         "Errors": {
             "invalidInput": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut",
             "invalidFormat": "Der eingegebene Wert entspricht nicht dem erforderlichen Format"

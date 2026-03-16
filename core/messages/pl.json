@@ -98,6 +98,7 @@
             "heading": "Nowe konto",
             "cta": "Utwórz konto",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
             "FieldErrors": {
                 "firstNameRequired": "Imię jest wymagane",
                 "lastNameRequired": "Nazwisko jest wymagane",
@@ -505,6 +506,7 @@
                 "emailLabel": "Email",
                 "successMessage": "Your review has been submitted successfully!",
                 "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
                 "FieldErrors": {
                     "titleRequired": "Title is required",
                     "authorRequired": "Nazwa jest wymagana",
@@ -535,7 +537,8 @@
                 "email": "Email",
                 "comments": "Uwagi/pytania",
                 "cta": "Prześlij formularz",
-                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+                "recaptchaRequired": "Please complete the reCAPTCHA verification."
             }
         }
     },
@@ -705,6 +708,7 @@
     },
     "Form": {
         "optional": "opcjonalne",
+        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
         "Errors": {
             "invalidInput": "Please check your input and try again",
             "invalidFormat": "The value entered does not match the required format"
