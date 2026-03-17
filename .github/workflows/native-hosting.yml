@@ -3,13 +3,13 @@ name: Native Hosting
 on:
   push:
     branches: [canary]
-  pull_request:
-    types: [opened, synchronize]
 
 jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,44 +26,48 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Catalyst CLI
-        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare
+        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@1.17.3
         working-directory: core
 
-      - name: Update package scripts
+      - name: Convert proxy.ts to middleware.ts
+        working-directory: core
         run: |
-          jq '.scripts.build = "npm run generate && catalyst build --framework catalyst" |
-              .scripts.dev = "npm run generate && catalyst dev" |
-              .scripts.start = "catalyst start" |
-              .scripts["deploy"] = "catalyst deploy"' \
-          package.json > package.tmp.json
-          mv package.tmp.json package.json
-        working-directory: core
+          mv proxy.ts middleware.ts
+          sed -i 's/export const proxy/export const middleware/' middleware.ts
+          sed -i "s/export const config = {/export const config = {\n  runtime: 'experimental-edge',/" middleware.ts
 
-      - name: Build Dependencies
+      - name: Build monorepo packages
         run: pnpm --filter "./packages/*" build
 
-      - name: Catalyst Build
-        run: pnpm run build
+      - name: Generate GraphQL types
+        run: pnpm run generate
         working-directory: core
-        # These environment variables are required for the build step to succeed
         env:
-          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
-          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
           BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
           BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
-          BIGCOMMERCE_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
 
-      - name: Catalyst Deploy
+      - name: Build
+        run: pnpm exec catalyst build
+        working-directory: core
+        env:
+          # CLI env vars
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          # App env vars (needed by Next.js build for GraphQL calls in next.config.ts)
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+
+      - name: Deploy
         run: |
-          pnpm run deploy \
+          pnpm exec catalyst deploy --prebuilt \
             --secret BIGCOMMERCE_STORE_HASH=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }} \
             --secret BIGCOMMERCE_STOREFRONT_TOKEN=${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }} \
             --secret BIGCOMMERCE_CHANNEL_ID=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }} \
             --secret AUTH_SECRET=${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
         working-directory: core
-        # These environment variables are for the deploy command only
-        # Added here to avoid polluting the run script with additional flags
         env:
-          BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
-          BIGCOMMERCE_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
-          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          CATALYST_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          CATALYST_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
