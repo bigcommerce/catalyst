@@ -58,7 +58,7 @@ Invoke the `/sync-makeswift` skill, with one addition: during the sync (after me
 
 **Determine bump type**: Match the bump type from Stage 1 (e.g., if core went `1.4.2` → `1.5.0`, that's a `minor`).
 
-**Create changeset file** (`.changeset/sync-canary-<version>.md`):
+**Create changeset file** (`.changeset/sync-canary-<version>.md`, where `<version>` uses hyphens instead of dots — e.g., `1.6.0` → `sync-canary-1-6-0.md`). Changeset filenames only allow lowercase letters and hyphens; dots are invalid.
 
 ```markdown
 ---
