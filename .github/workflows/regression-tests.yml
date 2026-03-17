@@ -47,17 +47,22 @@ jobs:
                   echo "production-url=" >> $GITHUB_OUTPUT ;;
               esac
             else
-              REF="${{ github.event.deployment.ref }}"
+              PKG_NAME=$(node -p "require('./core/package.json').name")
               echo "is-preview=false" >> $GITHUB_OUTPUT
-              if [[ "$REF" == "canary" || "$REF" == "integrations/makeswift" ]]; then
-                echo "is-canary-branch=true" >> $GITHUB_OUTPUT
-                echo "branch-label=$REF" >> $GITHUB_OUTPUT
-                echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT
-              else
-                echo "is-canary-branch=false" >> $GITHUB_OUTPUT
-                echo "branch-label=" >> $GITHUB_OUTPUT
-                echo "production-url=" >> $GITHUB_OUTPUT
-              fi
+              case "$PKG_NAME" in
+                "@bigcommerce/catalyst-core")
+                  echo "is-canary-branch=true" >> $GITHUB_OUTPUT
+                  echo "branch-label=canary" >> $GITHUB_OUTPUT
+                  echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
+                "@bigcommerce/catalyst-makeswift")
+                  echo "is-canary-branch=true" >> $GITHUB_OUTPUT
+                  echo "branch-label=integrations/makeswift" >> $GITHUB_OUTPUT
+                  echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
+                *)
+                  echo "is-canary-branch=false" >> $GITHUB_OUTPUT
+                  echo "branch-label=" >> $GITHUB_OUTPUT
+                  echo "production-url=" >> $GITHUB_OUTPUT ;;
+              esac
             fi
 
           elif [[ "$CREATOR" == "cloudflare-pages[bot]" ]]; then
