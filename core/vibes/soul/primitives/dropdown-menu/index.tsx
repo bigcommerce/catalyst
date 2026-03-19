@@ -62,7 +62,7 @@ export const DropdownMenu = ({
         <DropdownMenuPrimitive.Content
           align={align}
           className={clsx(
-            'z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl ring ring-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
+            'z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl ring-1 ring-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
             className,
           )}
           sideOffset={slideOffset}
