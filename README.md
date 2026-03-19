@@ -48,7 +48,7 @@ Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.cataly
 **Requirements:**
 
 - A [BigCommerce account](https://www.bigcommerce.com/start-your-trial)
-- Node.js version 20 or 22
+- Node.js version 24
 - Corepack-enabled `pnpm`
 
   ```bash
