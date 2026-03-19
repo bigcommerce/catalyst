@@ -6,7 +6,7 @@ const semver = require('semver');
  * Discourage use of odd-numbered versions of Node.js
  * @see https://nodejs.org/en/about/previous-releases#nodejs-releases
  */
-const catalystRequiredNodeVersions = ['^20', '^22'];
+const catalystRequiredNodeVersions = ['^24'];
 const userNodeVersion = process.version;
 
 if (!catalystRequiredNodeVersions.some((version) => semver.satisfies(userNodeVersion, version))) {
