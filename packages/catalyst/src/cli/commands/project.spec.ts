@@ -181,6 +181,33 @@ describe('project create', () => {
 
     promptMock.mockRestore();
   });
+
+  test('propagates 422 validation error', async () => {
+    server.use(
+      http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({}, { status: 422 }),
+      ),
+    );
+
+    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('bad name');
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'create',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow(
+      "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
+    );
+
+    promptMock.mockRestore();
+  });
 });
 
 describe('project list', () => {
@@ -419,6 +446,62 @@ describe('project link', () => {
         accessToken,
       ]),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
+
+    expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+
+    expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+    expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('errors when create project returns 422 validation error', async () => {
+    server.use(
+      http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({}, { status: 422 }),
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (message, opts) => {
+        expect(message).toContain(
+          'Select a project or create a new project (Press <enter> to select).',
+        );
+
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        expect(options).toHaveLength(3);
+        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
+        expect(options[1]).toMatchObject({
+          label: 'Project Two',
+          value: projectUuid2,
+        });
+        expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
+
+        return new Promise((resolve) => resolve('create'));
+      })
+      .mockImplementationOnce(async (message) => {
+        expect(message).toBe('Enter a name for the new project:');
+
+        return new Promise((resolve) => resolve('bad name'));
+      });
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow(
+      "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
