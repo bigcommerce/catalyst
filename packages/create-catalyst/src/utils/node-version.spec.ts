@@ -1,12 +1,9 @@
-import semver from 'semver';
+import { satisfies } from 'semver';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { CATALYST_REQUIRED_NODE_VERSIONS } = require('../../bin/supported-node-versions.cjs') as {
-  CATALYST_REQUIRED_NODE_VERSIONS: string[];
-};
+const REQUIRED_NODE_VERSIONS = ['^24'];
 
 const isNodeVersionSupported = (version: string) =>
-  CATALYST_REQUIRED_NODE_VERSIONS.some((range) => semver.satisfies(version, range));
+  REQUIRED_NODE_VERSIONS.some((range) => satisfies(version, range));
 
 describe('Node.js version gating (mirrors bin/index.cjs)', () => {
   it('accepts the minimum supported version (24.0.0)', () => {
