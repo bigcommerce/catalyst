@@ -108,6 +108,25 @@ export const handlers = [
     });
   }),
 
+  // Handler for log tailing
+  http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid/tail', () => {
+    const stream = new ReadableStream({
+      start(controller) {
+        controller.enqueue(
+          encoder.encode(
+            'data: {"uuid":"0f258256-0a83-4704-a456-03e99b4445c2","project_uuid":"6b202364-10f3-11f1-8bc7-fe9b9d8b14ab","request":{"method":"GET","url":"https://example.com/test","status_code":200},"logs":[{"timestamp":"2026-03-11T22:05:28.870Z","level":"info","messages":["hello world"]}],"exceptions":[],"timestamp":"2026-03-11T22:05:28.870Z"}\n\n',
+          ),
+        );
+        setTimeout(() => controller.close(), 10);
+      },
+    });
+
+    return new HttpResponse(stream, {
+      status: 200,
+      headers: { 'Content-Type': 'text/event-stream' },
+    });
+  }),
+
   // Handle for createProjects
   http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
