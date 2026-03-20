@@ -29,6 +29,7 @@ describe('CLI program', () => {
     expect(commands).toContain('deploy');
     expect(commands).toContain('project');
     expect(commands).toContain('auth');
+    expect(commands).toContain('logs');
 
     const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
 
@@ -40,6 +41,12 @@ describe('CLI program', () => {
 
     expect(authCmd?.commands.map((c) => c.name())).toEqual(
       expect.arrayContaining(['whoami', 'login', 'logout']),
+    );
+
+    const logsCmd = program.commands.find((cmd) => cmd.name() === 'logs');
+
+    expect(logsCmd?.commands.map((c) => c.name())).toEqual(
+      expect.arrayContaining(['tail', 'query']),
     );
   });
 
