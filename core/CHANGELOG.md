@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.1
+
+### Patch Changes
+
+- [#2934](https://github.com/bigcommerce/catalyst/pull/2934) [`6a5b019`](https://github.com/bigcommerce/catalyst/commit/6a5b019083aa3e000e5989f6f13256b57c22c479) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix extra thick border on dropdown menu by changing `ring` (3px) to `ring-1` (1px) to match the Select component styling.
+
 ## 1.6.0
 
 ### Minor Changes
