@@ -9,6 +9,7 @@ import PACKAGE_INFO from '../../package.json';
 import { auth } from './commands/auth';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
+import { logs } from './commands/logs';
 import { project } from './commands/project';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
@@ -60,6 +61,7 @@ program
   .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
+  .addCommand(logs)
   .addCommand(project)
   .addCommand(auth)
   .addCommand(telemetry)
