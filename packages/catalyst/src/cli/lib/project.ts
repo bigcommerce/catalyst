@@ -95,6 +95,12 @@ export async function createProject(
     );
   }
 
+  if (response.status === 422) {
+    throw new Error(
+      "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
+    );
+  }
+
   if (!response.ok) {
     throw new Error(`Failed to create project: ${response.statusText}`);
   }
