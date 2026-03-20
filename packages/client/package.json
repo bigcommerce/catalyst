@@ -2,6 +2,11 @@
   "name": "@bigcommerce/catalyst-client",
   "description": "BigCommerce API client for Catalyst.",
   "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigcommerce/catalyst",
+    "directory": "packages/client"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

@@ -1,6 +1,11 @@
 {
   "name": "@bigcommerce/create-catalyst",
   "version": "1.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigcommerce/catalyst",
+    "directory": "packages/create-catalyst"
+  },
   "type": "module",
   "bin": "bin/index.cjs",
   "files": [
