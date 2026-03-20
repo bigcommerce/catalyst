@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 
 const semver = require('semver');
+const { CATALYST_REQUIRED_NODE_VERSIONS } = require('./supported-node-versions.cjs');
 
-/**
- * Discourage use of odd-numbered versions of Node.js
- * @see https://nodejs.org/en/about/previous-releases#nodejs-releases
- */
-const catalystRequiredNodeVersions = ['^24'];
+const catalystRequiredNodeVersions = CATALYST_REQUIRED_NODE_VERSIONS;
 const userNodeVersion = process.version;
 
 if (!catalystRequiredNodeVersions.some((version) => semver.satisfies(userNodeVersion, version))) {
