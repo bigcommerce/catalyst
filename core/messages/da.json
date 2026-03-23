@@ -98,7 +98,7 @@
             "heading": "Ny konto",
             "cta": "Opret konto",
             "somethingWentWrong": "Noget gik galt. Prøv igen senere.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Udfyld reCAPTCHA-bekræftelsen.",
             "FieldErrors": {
                 "firstNameRequired": "Fornavnet er påkrævet",
                 "lastNameRequired": "Efternavnet er påkrævet",
@@ -506,7 +506,7 @@
                 "emailLabel": "E-mail",
                 "successMessage": "Din anmeldelse er blevet indsendt!",
                 "somethingWentWrong": "Noget gik galt. Prøv igen senere.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Udfyld reCAPTCHA-bekræftelsen.",
                 "FieldErrors": {
                     "titleRequired": "Titel er påkrævet",
                     "authorRequired": "Navn er påkrævet",
@@ -538,7 +538,7 @@
                 "comments": "Kommentarer/spørgsmål",
                 "cta": "Indsend formular",
                 "somethingWentWrong": "Noget gik galt. Prøv igen senere.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Udfyld reCAPTCHA-bekræftelsen."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "Valgfrit",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Udfyld reCAPTCHA-bekræftelsen.",
         "Errors": {
             "invalidInput": "Tjek din indtastning, og prøv igen",
             "invalidFormat": "Den indtastede værdi stemmer ikke overens med det krævede format"

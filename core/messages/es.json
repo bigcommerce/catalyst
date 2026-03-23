@@ -98,7 +98,7 @@
             "heading": "Cuenta nueva",
             "cta": "Crear cuenta",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Completa la verificación de reCAPTCHA.",
             "FieldErrors": {
                 "firstNameRequired": "El campo Nombre es obligatorio.",
                 "lastNameRequired": "El campo Apellido(s) es obligatorio.",
@@ -506,7 +506,7 @@
                 "emailLabel": "Correo electrónico",
                 "successMessage": "¡Tu reseña se ha enviado correctamente!",
                 "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Completa la verificación de reCAPTCHA.",
                 "FieldErrors": {
                     "titleRequired": "El título es obligatorio",
                     "authorRequired": "El campo Nombre es obligatorio",
@@ -538,7 +538,7 @@
                 "comments": "Comentarios/Preguntas",
                 "cta": "Enviar formulario",
                 "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Completa la verificación de reCAPTCHA."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "Opcional",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Completa la verificación de reCAPTCHA.",
         "Errors": {
             "invalidInput": "Comprueba lo que has escrito e inténtalo de nuevo",
             "invalidFormat": "El valor introducido no coincide con el formato requerido"

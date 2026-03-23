@@ -98,7 +98,7 @@
             "heading": "Nieuw account",
             "cta": "Account aanmaken",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Voltooi de reCAPTCHA-verificatie.",
             "FieldErrors": {
                 "firstNameRequired": "Voornaam is vereist",
                 "lastNameRequired": "Achternaam is vereist",
@@ -506,7 +506,7 @@
                 "emailLabel": "E-mailadres",
                 "successMessage": "Je beoordeling is succesvol ingediend!",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Voltooi de reCAPTCHA-verificatie.",
                 "FieldErrors": {
                     "titleRequired": "Titel is vereist",
                     "authorRequired": "Naam is verplicht",
@@ -538,7 +538,7 @@
                 "comments": "Opmerkingen/vragen",
                 "cta": "Formulier indienen",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Voltooi de reCAPTCHA-verificatie."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "optioneel",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Voltooi de reCAPTCHA-verificatie.",
         "Errors": {
             "invalidInput": "Controleer uw invoer en probeer het opnieuw",
             "invalidFormat": "De ingevoerde waarde komt niet overeen met het vereiste formaat"
