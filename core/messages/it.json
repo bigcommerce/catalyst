@@ -98,7 +98,7 @@
             "heading": "Nuovo account",
             "cta": "Crea account",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Completa la verifica reCAPTCHA.",
             "FieldErrors": {
                 "firstNameRequired": "Il nome è obbligatorio",
                 "lastNameRequired": "Il cognome è obbligatorio",
@@ -506,7 +506,7 @@
                 "emailLabel": "E-mail",
                 "successMessage": "La tua recensione è stata inviata correttamente.",
                 "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Completa la verifica reCAPTCHA.",
                 "FieldErrors": {
                     "titleRequired": "Il titolo è obbligatorio",
                     "authorRequired": "Il nome è obbligatorio",
@@ -538,7 +538,7 @@
                 "comments": "Commenti/domande",
                 "cta": "Invia modulo",
                 "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Completa la verifica reCAPTCHA."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "facoltativo",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Completa la verifica reCAPTCHA.",
         "Errors": {
             "invalidInput": "Controlla i dati inseriti e riprova",
             "invalidFormat": "Il valore inserito non corrisponde al formato richiesto"

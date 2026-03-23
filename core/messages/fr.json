@@ -98,7 +98,7 @@
             "heading": "Nouveau compte",
             "cta": "Créer un compte",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Veuillez compléter la vérification reCAPTCHA.",
             "FieldErrors": {
                 "firstNameRequired": "Le prénom est requis",
                 "lastNameRequired": "Le nom de famille est requis",
@@ -506,7 +506,7 @@
                 "emailLabel": "E-mail",
                 "successMessage": "Votre avis a bien été envoyé !",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Veuillez compléter la vérification reCAPTCHA.",
                 "FieldErrors": {
                     "titleRequired": "Le titre est obligatoire",
                     "authorRequired": "Le nom doit être renseigné",
@@ -538,7 +538,7 @@
                 "comments": "Commentaires/Questions",
                 "cta": "Envoyer le formulaire",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Veuillez compléter la vérification reCAPTCHA."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "facultatif",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Veuillez compléter la vérification reCAPTCHA.",
         "Errors": {
             "invalidInput": "Veuillez vérifier votre saisie et réessayer",
             "invalidFormat": "La valeur saisie ne correspond pas au format requis"

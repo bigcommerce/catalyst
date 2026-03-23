@@ -98,7 +98,7 @@
             "heading": "Nytt konto",
             "cta": "Skapa konto",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
             "FieldErrors": {
                 "firstNameRequired": "Förnamn krävs",
                 "lastNameRequired": "Efternamn krävs",
@@ -506,7 +506,7 @@
                 "emailLabel": "E-post",
                 "successMessage": "Din recension har skickats in!",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
                 "FieldErrors": {
                     "titleRequired": "Rubrik krävs",
                     "authorRequired": "Namn krävs",
@@ -538,7 +538,7 @@
                 "comments": "Kommentarer/frågor",
                 "cta": "Skicka formulär",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Slutför reCAPTCHA-verifieringen."
             }
         }
     },
@@ -708,7 +708,7 @@
     },
     "Form": {
         "optional": "frivillig",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
         "Errors": {
             "invalidInput": "Kontrollera det som angetts och försök igen",
             "invalidFormat": "Det inmatade värdet stämmer inte överens med det format som krävs"
