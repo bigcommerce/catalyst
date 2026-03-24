@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.6.2
+
+### Patch Changes
+
+- [#2947](https://github.com/bigcommerce/catalyst/pull/2947) [`e198d89`](https://github.com/bigcommerce/catalyst/commit/e198d8966d589bd6707cdb1588986c9c092d73be) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add root-level not-found page so /404 renders a branded page instead of the default Vercel error screen
+
+- [#2945](https://github.com/bigcommerce/catalyst/pull/2945) [`4479964`](https://github.com/bigcommerce/catalyst/commit/447996400e6fcc6388937011e101d802308e6b33) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.6.1
 
 ### Patch Changes
