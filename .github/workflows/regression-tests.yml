@@ -79,7 +79,7 @@ jobs:
     if: needs.detect-provider.outputs.is-preview == 'true'
     runs-on: ubuntu-latest
     concurrency:
-      group: regression-preview-${{ github.event.deployment.sha }}-${{ matrix.device }}
+      group: regression-preview-${{ github.event.deployment.ref }}-${{ matrix.device }}
       cancel-in-progress: true
     strategy:
       matrix:
@@ -119,7 +119,7 @@ jobs:
     if: needs.detect-provider.outputs.production-url != ''
     runs-on: ubuntu-latest
     concurrency:
-      group: regression-production-${{ github.event.deployment.sha }}-${{ matrix.device }}
+      group: regression-production-${{ github.event.deployment.environment == 'Preview' && github.event.deployment.ref || github.event.deployment.sha }}-${{ matrix.device }}
       cancel-in-progress: ${{ github.event.deployment.environment == 'Preview' }}
     strategy:
       matrix:
