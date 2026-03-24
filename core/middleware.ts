@@ -5,15 +5,13 @@ import { withChannelId } from './proxies/with-channel-id';
 import { withIntl } from './proxies/with-intl';
 import { withRoutes } from './proxies/with-routes';
 
-export const proxy = composeProxies(
+export const middleware = composeProxies(
   withAuth,
   withAnalyticsCookies,
   withIntl,
   withChannelId,
   withRoutes,
 );
-
-export const runtime = 'edge';
 
 export const config = {
   matcher: [
