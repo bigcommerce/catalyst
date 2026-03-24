@@ -13,6 +13,8 @@ export const proxy = composeProxies(
   withRoutes,
 );
 
+export const runtime = 'edge';
+
 export const config = {
   matcher: [
     /*
