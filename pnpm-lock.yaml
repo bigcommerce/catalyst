@@ -54,8 +54,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.1.5)
       '@makeswift/runtime':
-        specifier: 0.28.2
-        version: 0.28.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(react-dom@19.1.5(react@19.1.5))(react@19.1.5)
+        specifier: 0.26.4
+        version: 0.26.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(react-dom@19.1.5(react@19.1.5))(react@19.1.5)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -2563,8 +2563,8 @@ packages:
   '@makeswift/prop-controllers@0.4.10':
     resolution: {integrity: sha512-rqiUsEKe+3I0eyJNosTuef3Z0FG3UnPz6rOXY2G7SbKk1h+jyKGVulNPVmsafM9SzuMTfzZNtNL0ouDRsQym+Q==}
 
-  '@makeswift/runtime@0.28.2':
-    resolution: {integrity: sha512-ZzF2yZoBeuDTPOFbj5ZPyyifHjgxGAvZ2HYxQ45P2vVlOi7c1nenYua/u8FfQTQBjEjzhD16m/8JSYr0VHIb1A==}
+  '@makeswift/runtime@0.26.4':
+    resolution: {integrity: sha512-hCmXv5h94j+MMOgPh7F0yteFvGOmSztlr6tTjrPEfxr9OCwr+gmE3crlXgO/SQW34NtQXVZLtg5ZcCoD6kFzlw==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
@@ -13733,7 +13733,7 @@ snapshots:
       ts-pattern: 5.9.0
       zod: 3.25.51
 
-  '@makeswift/runtime@0.28.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(react-dom@19.1.5(react@19.1.5))(react@19.1.5)':
+  '@makeswift/runtime@0.26.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(react-dom@19.1.5(react@19.1.5))(react@19.1.5)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5

@@ -10,15 +10,12 @@ import { registerVideoComponent } from '@makeswift/runtime/react/builtins/video'
 import { ReactRuntimeCore } from '@makeswift/runtime/react/core';
 
 const runtime = new ReactRuntimeCore({
-  apiOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN ?? process.env.MAKESWIFT_API_ORIGIN,
-  appOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN ?? process.env.MAKESWIFT_APP_ORIGIN,
   breakpoints: {
     small: { width: 640, viewport: 390, label: 'Small' },
     medium: { width: 768, viewport: 765, label: 'Medium' },
     large: { width: 1024, viewport: 1000, label: 'Large' },
     screen: { width: 1280, label: 'XL' },
   },
-  fetch,
 });
 
 // Only register necessary built-in components. Omitted components are:
