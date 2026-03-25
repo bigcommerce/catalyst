@@ -13,10 +13,7 @@ export function MakeswiftProvider({
   siteVersion: SiteVersion | null;
 }) {
   return (
-    <ReactRuntimeProvider
-      runtime={runtime}
-      siteVersion={siteVersion}
-    >
+    <ReactRuntimeProvider runtime={runtime} siteVersion={siteVersion}>
       <RootStyleRegistry enableCssReset={false}>{children}</RootStyleRegistry>
     </ReactRuntimeProvider>
   );

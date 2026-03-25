@@ -1,3 +1,4 @@
+import { ReactRuntime } from '@makeswift/runtime/next';
 import { registerBoxComponent } from '@makeswift/runtime/react/builtins/box';
 import { registerDividerComponent } from '@makeswift/runtime/react/builtins/divider';
 import { registerEmbedComponent } from '@makeswift/runtime/react/builtins/embed';
@@ -7,7 +8,6 @@ import { registerSlotComponent } from '@makeswift/runtime/react/builtins/slot';
 import { registerSocialLinksComponent } from '@makeswift/runtime/react/builtins/social-links';
 import { registerTextComponent } from '@makeswift/runtime/react/builtins/text';
 import { registerVideoComponent } from '@makeswift/runtime/react/builtins/video';
-import { ReactRuntime } from '@makeswift/runtime/next';
 
 const runtime = new ReactRuntime({
   apiOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN ?? process.env.MAKESWIFT_API_ORIGIN,
