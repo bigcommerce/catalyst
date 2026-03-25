@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.3
+
+### Patch Changes
+
+- [#2952](https://github.com/bigcommerce/catalyst/pull/2952) [`66d2a7d`](https://github.com/bigcommerce/catalyst/commit/66d2a7dfab653762da4986b55a7c92fa4ab9b6c6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade `@makeswift/runtime` from `0.26.3` to `0.26.4`.
+
 ## 1.6.2
 
 ### Patch Changes
