@@ -14,8 +14,6 @@ export function MakeswiftProvider({
 }) {
   return (
     <ReactRuntimeProvider
-      apiOrigin={process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN}
-      appOrigin={process.env.NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN}
       runtime={runtime}
       siteVersion={siteVersion}
     >

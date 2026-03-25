@@ -7,9 +7,11 @@ import { registerSlotComponent } from '@makeswift/runtime/react/builtins/slot';
 import { registerSocialLinksComponent } from '@makeswift/runtime/react/builtins/social-links';
 import { registerTextComponent } from '@makeswift/runtime/react/builtins/text';
 import { registerVideoComponent } from '@makeswift/runtime/react/builtins/video';
-import { ReactRuntimeCore } from '@makeswift/runtime/react/core';
+import { ReactRuntime } from '@makeswift/runtime/next';
 
-const runtime = new ReactRuntimeCore({
+const runtime = new ReactRuntime({
+  apiOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN ?? process.env.MAKESWIFT_API_ORIGIN,
+  appOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN ?? process.env.MAKESWIFT_APP_ORIGIN,
   breakpoints: {
     small: { width: 640, viewport: 390, label: 'Small' },
     medium: { width: 768, viewport: 765, label: 'Medium' },
