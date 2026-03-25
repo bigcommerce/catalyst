@@ -1,4 +1,3 @@
-import { ReactRuntime } from '@makeswift/runtime/next';
 import { registerBoxComponent } from '@makeswift/runtime/react/builtins/box';
 import { registerDividerComponent } from '@makeswift/runtime/react/builtins/divider';
 import { registerEmbedComponent } from '@makeswift/runtime/react/builtins/embed';
@@ -8,8 +7,9 @@ import { registerSlotComponent } from '@makeswift/runtime/react/builtins/slot';
 import { registerSocialLinksComponent } from '@makeswift/runtime/react/builtins/social-links';
 import { registerTextComponent } from '@makeswift/runtime/react/builtins/text';
 import { registerVideoComponent } from '@makeswift/runtime/react/builtins/video';
+import { ReactRuntimeCore } from '@makeswift/runtime/react/core';
 
-const runtime = new ReactRuntime({
+const runtime = new ReactRuntimeCore({
   apiOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN ?? process.env.MAKESWIFT_API_ORIGIN,
   appOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN ?? process.env.MAKESWIFT_APP_ORIGIN,
   breakpoints: {
@@ -18,6 +18,7 @@ const runtime = new ReactRuntime({
     large: { width: 1024, viewport: 1000, label: 'Large' },
     screen: { width: 1280, label: 'XL' },
   },
+  fetch,
 });
 
 // Only register necessary built-in components. Omitted components are:
