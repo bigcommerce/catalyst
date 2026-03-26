@@ -9,6 +9,7 @@
     "@bigcommerce/eslint-config-catalyst": "1.0.0"
   },
   "changesets": [
-    "alpha-release-notes"
+    "alpha-release-notes",
+    "fix-env-var-names"
   ]
 }
