@@ -20,7 +20,7 @@ export const login = async (email: string, password: string) => {
     console.error(error);
 
     if (error instanceof BigCommerceGQLError) {
-      return error.errors.map(({ message }) => message).join(', ');
+      return t('somethingWentWrong');
     }
 
     if (
