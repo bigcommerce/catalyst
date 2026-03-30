@@ -19,7 +19,7 @@
   - **Local preview** — `catalyst start` launches a local Cloudflare Workers preview of your built storefront via the OpenNext adapter.
   - **Live log tailing** — `catalyst logs tail` streams real-time application logs from your deployed storefront with color-coded log levels and multiple output formats.
   - **Smart credential resolution** — Configuration is resolved in priority order: CLI flags → `--env-file` → process environment variables → `.bigcommerce/project.json`.
-  - **Telemetry** — Anonymous usage telemetry with session and trace IDs for support. Opt out anytime with `catalyst telemetry disable`.
+  - **Telemetry** — Anonymous usage telemetry with session and correlation IDs for support. Opt out anytime with `catalyst telemetry disable`.
 
   ### Commands
 
