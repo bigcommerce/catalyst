@@ -14,11 +14,11 @@ afterEach(() => {
 });
 
 describe('Telemetry', () => {
-  test('sessionId is a valid UUID', () => {
+  test('correlationId is a valid UUID', () => {
     const telemetry = new Telemetry();
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-    expect(telemetry.sessionId).toMatch(uuidRegex);
+    expect(telemetry.correlationId).toMatch(uuidRegex);
   });
 
   test('commandName defaults to unknown', () => {
@@ -54,6 +54,6 @@ describe('getTelemetry', () => {
     const second = getTelemetry();
 
     expect(first).not.toBe(second);
-    expect(first.sessionId).not.toBe(second.sessionId);
+    expect(first.correlationId).not.toBe(second.correlationId);
   });
 });
