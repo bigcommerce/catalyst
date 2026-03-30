@@ -18,7 +18,7 @@ interface Config {
 }
 
 export class Telemetry {
-  readonly sessionId: string;
+  readonly correlationId: string;
   readonly analytics: Analytics;
 
   private conf: Conf<Config> | null;
@@ -39,7 +39,7 @@ export class Telemetry {
       this.conf = null;
     }
 
-    this.sessionId = randomBytes(32).toString('hex');
+    this.correlationId = randomBytes(32).toString('hex');
     this.analytics = new Analytics({
       writeKey: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
     });
@@ -55,7 +55,7 @@ export class Telemetry {
       anonymousId: this.getAnonymousId(),
       properties: {
         ...payload,
-        sessionId: this.sessionId,
+        correlationId: this.correlationId,
       },
       context: {
         app: {

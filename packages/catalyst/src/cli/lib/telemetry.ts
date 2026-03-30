@@ -10,7 +10,7 @@ const TELEMETRY_KEY_ENABLED = 'telemetry.enabled';
 const TELEMETRY_KEY_ID = `telemetry.anonymousId`;
 
 export class Telemetry {
-  readonly sessionId: string;
+  readonly correlationId: string;
   readonly analytics: Analytics;
   readonly startTime: number;
   commandName = 'unknown';
@@ -26,7 +26,7 @@ export class Telemetry {
 
     this.projectConfig = getProjectConfig();
 
-    this.sessionId = randomUUID();
+    this.correlationId = randomUUID();
     this.startTime = Date.now();
     this.analytics = new Analytics({
       writeKey: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
@@ -47,7 +47,7 @@ export class Telemetry {
       anonymousId: this.getAnonymousId(),
       properties: {
         ...payload,
-        sessionId: this.sessionId,
+        correlationId: this.correlationId,
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
@@ -114,7 +114,7 @@ export class Telemetry {
 let telemetryInstance: Telemetry | undefined;
 
 // Singleton so the pre-hook, post-hook, error handler, and command bodies all
-// share one sessionId for correlation. resetTelemetry() is for test isolation.
+// share one correlationId. resetTelemetry() is for test isolation.
 export function getTelemetry(): Telemetry {
   telemetryInstance ??= new Telemetry();
 
