@@ -3,7 +3,7 @@ import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 import { server } from './tests/mocks/node';
 
 const mockTelemetryInstance = {
-  sessionId: 'test-session-uuid',
+  correlationId: 'test-session-uuid',
   commandName: 'unknown',
   analytics: {
     track: vi.fn(),

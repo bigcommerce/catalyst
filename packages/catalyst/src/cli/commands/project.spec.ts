@@ -35,7 +35,7 @@ beforeAll(async () => {
       identify: mockIdentify,
       isEnabled: vi.fn(() => true),
       track: vi.fn(),
-      sessionId: 'test-session-uuid',
+      correlationId: 'test-session-uuid',
       commandName: 'unknown',
       durationMs: vi.fn().mockReturnValue(0),
       analytics: {
