@@ -25,11 +25,11 @@ const handleFatalError = async (error: unknown) => {
 
   if (telemetry.isEnabled()) {
     consola.info(
-      `\nTrace ID: ${telemetry.sessionId}\nShare this Trace ID with BigCommerce support.`,
+      `Correlation ID: ${telemetry.correlationId}\nShare this Correlation ID with BigCommerce support.`,
     );
   } else {
     consola.info(
-      '\nEnable telemetry (`catalyst telemetry enable`) for improved troubleshooting with BigCommerce support.',
+      'Enable telemetry (`catalyst telemetry enable`) for improved troubleshooting with BigCommerce support.',
     );
   }
 
