@@ -185,7 +185,7 @@ describe('deployment and event streaming', () => {
       'Fetching...',
       'Processing...',
       'Finalizing...',
-      'Deployment completed successfully.\n',
+      'Deployment completed successfully.',
     ]);
   });
 
@@ -234,7 +234,7 @@ describe('deployment and event streaming', () => {
       'Fetching...',
       'Processing...',
       'Finalizing...',
-      'Deployment completed successfully.\n',
+      'Deployment completed successfully.',
     ]);
 
     expect(consola.warn).toHaveBeenCalledWith(
