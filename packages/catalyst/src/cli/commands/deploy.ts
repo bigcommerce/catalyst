@@ -3,6 +3,7 @@ import { Command, Option } from 'commander';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
+import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
@@ -289,7 +290,6 @@ export const getDeploymentStatus = async (
         }
 
         if (data.deployment_url) {
-          console.log(data.deployment_url);
           deploymentUrl = data.deployment_url;
         }
       });
@@ -298,10 +298,11 @@ export const getDeploymentStatus = async (
     done = streamDone;
   }
 
-  spinner.success('Deployment completed successfully.\n');
+  spinner.success('Deployment completed successfully.');
 
   if (deploymentUrl) {
-    consola.success(`View your deployment at: ${deploymentUrl}`);
+    const url = deploymentUrl.startsWith('https://') ? deploymentUrl : `https://${deploymentUrl}`;
+    consola.success(`View your deployment at: ${colorize('blue', url)}`);
   }
 };
 
