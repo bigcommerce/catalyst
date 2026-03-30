@@ -118,7 +118,7 @@ export const generateUploadSignature = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-Correlation-Id': getTelemetry().sessionId,
+        'X-Correlation-Id': getTelemetry().correlationId,
       },
       body: JSON.stringify({}),
     },
@@ -195,7 +195,7 @@ export const createDeployment = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-Correlation-Id': getTelemetry().sessionId,
+        'X-Correlation-Id': getTelemetry().correlationId,
       },
       body: JSON.stringify({
         project_uuid: projectUuid,
@@ -235,7 +235,7 @@ export const getDeploymentStatus = async (
         'X-Auth-Token': accessToken,
         Accept: 'text/event-stream',
         Connection: 'keep-alive',
-        'X-Correlation-Id': getTelemetry().sessionId,
+        'X-Correlation-Id': getTelemetry().correlationId,
       },
     },
   );
@@ -319,7 +319,7 @@ export const fetchProject = async (
         'X-Auth-Token': accessToken,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'X-Correlation-Id': getTelemetry().sessionId,
+        'X-Correlation-Id': getTelemetry().correlationId,
       },
     },
   );
