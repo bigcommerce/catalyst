@@ -29,6 +29,7 @@ import {
   generateBundleZip,
   generateUploadSignature,
   getDeploymentStatus,
+  autoDetectSecrets,
   parseEnvironmentVariables,
   uploadBundleZip,
 } from './deploy';
@@ -389,6 +390,93 @@ test('reads from env options', () => {
   expect(() => parseEnvironmentVariables(['foo_bar'])).toThrow(
     'Invalid secret format: foo_bar. Expected format: KEY=VALUE',
   );
+});
+
+describe('autoDetectSecrets', () => {
+  test('auto-detects env vars from process.env', () => {
+    vi.stubEnv('BIGCOMMERCE_STORE_HASH', 'hash123');
+    vi.stubEnv('BIGCOMMERCE_CHANNEL_ID', '1');
+    vi.stubEnv('BIGCOMMERCE_STOREFRONT_TOKEN', 'token456');
+    vi.stubEnv('BIGCOMMERCE_API_HOST', 'api.bigcommerce.com');
+    vi.stubEnv('BIGCOMMERCE_GRAPHQL_API_DOMAIN', 'graphql.bigcommerce.com');
+
+    const result = autoDetectSecrets([]);
+
+    expect(result).toEqual([
+      { type: 'secret', key: 'BIGCOMMERCE_STORE_HASH', value: 'hash123' },
+      { type: 'secret', key: 'BIGCOMMERCE_CHANNEL_ID', value: '1' },
+      { type: 'secret', key: 'BIGCOMMERCE_STOREFRONT_TOKEN', value: 'token456' },
+      { type: 'secret', key: 'BIGCOMMERCE_API_HOST', value: 'api.bigcommerce.com' },
+      { type: 'secret', key: 'BIGCOMMERCE_GRAPHQL_API_DOMAIN', value: 'graphql.bigcommerce.com' },
+    ]);
+
+    vi.unstubAllEnvs();
+  });
+
+  test('skips env vars already provided by user', () => {
+    vi.stubEnv('BIGCOMMERCE_STORE_HASH', 'env-hash');
+    vi.stubEnv('BIGCOMMERCE_CHANNEL_ID', '99');
+
+    const result = autoDetectSecrets([
+      { type: 'secret', key: 'BIGCOMMERCE_STORE_HASH', value: 'user-hash' },
+    ]);
+
+    expect(result).toContainEqual({
+      type: 'secret',
+      key: 'BIGCOMMERCE_STORE_HASH',
+      value: 'user-hash',
+    });
+    expect(result).not.toContainEqual(
+      expect.objectContaining({ key: 'BIGCOMMERCE_STORE_HASH', value: 'env-hash' }),
+    );
+    expect(result).toContainEqual({
+      type: 'secret',
+      key: 'BIGCOMMERCE_CHANNEL_ID',
+      value: '99',
+    });
+
+    vi.unstubAllEnvs();
+  });
+
+  test('warns for required missing env vars', () => {
+    vi.stubEnv('BIGCOMMERCE_STORE_HASH', '');
+    vi.stubEnv('BIGCOMMERCE_CHANNEL_ID', '');
+    vi.stubEnv('BIGCOMMERCE_STOREFRONT_TOKEN', '');
+
+    autoDetectSecrets([]);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('BIGCOMMERCE_STORE_HASH'),
+    );
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('BIGCOMMERCE_CHANNEL_ID'),
+    );
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('BIGCOMMERCE_STOREFRONT_TOKEN'),
+    );
+
+    vi.unstubAllEnvs();
+  });
+
+  test('silently skips optional missing env vars', () => {
+    vi.stubEnv('BIGCOMMERCE_API_HOST', '');
+    vi.stubEnv('BIGCOMMERCE_GRAPHQL_API_DOMAIN', '');
+
+    autoDetectSecrets([]);
+
+    const warnCalls = vi.mocked(consola.warn).mock.calls.flat().join(' ');
+
+    expect(warnCalls).not.toContain('BIGCOMMERCE_API_HOST');
+    expect(warnCalls).not.toContain('BIGCOMMERCE_GRAPHQL_API_DOMAIN');
+
+    vi.unstubAllEnvs();
+  });
+
+  test('returns empty array when no env vars and no input', () => {
+    const result = autoDetectSecrets(undefined);
+
+    expect(result).toEqual(expect.arrayContaining([]));
+  });
 });
 
 describe('--prebuilt flag', () => {
