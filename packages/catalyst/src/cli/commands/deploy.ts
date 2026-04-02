@@ -192,9 +192,9 @@ export const autoDetectSecrets = (
   const secrets = environmentVariables ?? [];
   const existingKeys = new Set(secrets.map((s) => s.key));
 
-  for (const { key, warnIfMissing } of AUTO_DETECT_SECRETS) {
+  AUTO_DETECT_SECRETS.forEach(({ key, warnIfMissing }) => {
     if (existingKeys.has(key)) {
-      continue;
+      return;
     }
 
     const value = process.env[key];
@@ -204,7 +204,7 @@ export const autoDetectSecrets = (
     } else if (warnIfMissing) {
       consola.warn(`${key} is not set in the environment and was not provided via --secret.`);
     }
-  }
+  });
 
   return secrets;
 };

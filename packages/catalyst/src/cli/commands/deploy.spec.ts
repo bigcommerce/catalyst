@@ -24,12 +24,12 @@ import { program } from '../program';
 
 import { buildCatalystProject } from './build';
 import {
+  autoDetectSecrets,
   createDeployment,
   deploy,
   generateBundleZip,
   generateUploadSignature,
   getDeploymentStatus,
-  autoDetectSecrets,
   parseEnvironmentVariables,
   uploadBundleZip,
 } from './deploy';
@@ -445,12 +445,8 @@ describe('autoDetectSecrets', () => {
 
     autoDetectSecrets([]);
 
-    expect(consola.warn).toHaveBeenCalledWith(
-      expect.stringContaining('BIGCOMMERCE_STORE_HASH'),
-    );
-    expect(consola.warn).toHaveBeenCalledWith(
-      expect.stringContaining('BIGCOMMERCE_CHANNEL_ID'),
-    );
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('BIGCOMMERCE_STORE_HASH'));
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('BIGCOMMERCE_CHANNEL_ID'));
     expect(consola.warn).toHaveBeenCalledWith(
       expect.stringContaining('BIGCOMMERCE_STOREFRONT_TOKEN'),
     );
