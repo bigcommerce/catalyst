@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- [#2940](https://github.com/bigcommerce/catalyst/pull/2940) [`a4b614d`](https://github.com/bigcommerce/catalyst/commit/a4b614d99a208f21b4d4ee1462666581f21335d8) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Align Node.js engine requirement with v24. The `engines.node` field in `create-catalyst` now matches the runtime version gate (`^24.0.0`), ensuring `pnpm create @bigcommerce/catalyst` correctly rejects unsupported Node versions before installation begins.
+
 ## 1.0.1
 
 ### Patch Changes

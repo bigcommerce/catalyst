@@ -1,6 +1,11 @@
 {
   "name": "@bigcommerce/create-catalyst",
-  "version": "1.0.1",
+  "version": "1.0.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigcommerce/catalyst",
+    "directory": "packages/create-catalyst"
+  },
   "type": "module",
   "bin": "bin/index.cjs",
   "files": [
@@ -15,7 +20,7 @@
     "build": "tsup"
   },
   "engines": {
-    "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
+    "node": "^24.0.0"
   },
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",

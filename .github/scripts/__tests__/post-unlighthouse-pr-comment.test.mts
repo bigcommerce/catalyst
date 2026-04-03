@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const postComment = require('../post-unlighthouse-comment.js') as (args: {
+const postComment = require('../post-unlighthouse-pr-comment.js') as (args: {
   github: ReturnType<typeof makeGithub>['github'];
   context: ReturnType<typeof makeContext>;
   provider?: string;

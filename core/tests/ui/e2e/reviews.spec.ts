@@ -44,6 +44,15 @@ test(
     await expect(modal.getByLabel(t('nameLabel'))).toBeEnabled();
     await expect(modal.getByLabel(t('emailLabel'))).toBeEnabled();
 
+    // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
+    const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
+    const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
+
+    if (await recaptchaCheckbox.isVisible()) {
+      await recaptchaCheckbox.click();
+      await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
+    }
+
     await modal.getByRole('button', { name: t('submit') }).click();
     await page.waitForLoadState('networkidle');
 
@@ -93,4 +102,43 @@ test('Shows validation errors when submitting review form with empty inputs', as
   await expect(errorMessages.nth(2)).toBeVisible();
   await expect(errorMessages.nth(3)).toBeVisible();
   await expect(errorMessages.nth(4)).toBeVisible();
+});
+
+test('Review submission fails if reCAPTCHA is not completed', async ({ page, catalog }) => {
+  const t = await getTranslations('Product.Reviews.Form');
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
+
+  await page.goto(product.path);
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: t('button') }).click();
+
+  const modal = page.getByRole('dialog');
+
+  await expect(modal.getByRole('heading', { name: t('title') })).toBeVisible();
+
+  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
+  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
+
+  try {
+    await recaptchaCheckbox.waitFor({ state: 'visible', timeout: 5000 });
+  } catch {
+    test.skip();
+  }
+
+  // Fill all required fields but intentionally skip clicking reCAPTCHA
+  const rating = faker.number.int({ min: 1, max: 5 });
+  const ratingLabel = rating === 1 ? '1 star' : `${rating} stars`;
+
+  await modal.getByLabel(ratingLabel).click();
+  await modal.getByLabel(t('titleLabel')).fill(faker.lorem.sentence());
+  await modal.getByLabel(t('reviewLabel')).fill(faker.lorem.paragraph());
+  await modal.getByLabel(t('nameLabel')).fill(faker.person.fullName());
+  await modal.getByLabel(t('emailLabel')).fill(faker.internet.email());
+
+  await modal.getByRole('button', { name: t('submit') }).click();
+  await page.waitForLoadState('networkidle');
+
+  await expect(modal).toBeVisible();
+  await expect(page.getByText(t('recaptchaRequired'))).toBeVisible();
 });

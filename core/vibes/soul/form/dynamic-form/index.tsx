@@ -21,6 +21,7 @@ import {
   useEffect,
 } from 'react';
 import { useFormStatus } from 'react-dom';
+import RecaptchaWidget from 'react-google-recaptcha';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -77,6 +78,7 @@ export interface DynamicFormProps<F extends Field> {
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
+  recaptchaSiteKey?: string;
 }
 
 export function DynamicForm<F extends Field>({
@@ -92,6 +94,7 @@ export function DynamicForm<F extends Field>({
   onSuccess,
   passwordComplexity,
   errorTranslations,
+  recaptchaSiteKey,
 }: DynamicFormProps<F>) {
   const t = useTranslations('Form');
   // Remove options from fields before passing to action to reduce payload size
@@ -191,6 +194,7 @@ export function DynamicForm<F extends Field>({
 
             return <DynamicFormField field={field} formField={formField} key={formField.id} />;
           })}
+          {recaptchaSiteKey ? <RecaptchaWidget sitekey={recaptchaSiteKey} /> : null}
           <div className="flex gap-1 pt-3">
             {onCancel && (
               <Button

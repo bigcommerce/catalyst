@@ -13,6 +13,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { ProductDetail } from '~/lib/makeswift/components/product-detail';
+import { getRecaptchaSiteKey } from '~/lib/recaptcha';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { addToCart } from './_actions/add-to-cart';
@@ -80,7 +81,10 @@ export default async function Product({ params, searchParams }: Props) {
 
   const productId = Number(slug);
 
-  const { product: baseProduct, settings } = await getProduct(productId, customerAccessToken);
+  const [{ product: baseProduct, settings }, recaptchaSiteKey] = await Promise.all([
+    getProduct(productId, customerAccessToken),
+    getRecaptchaSiteKey(),
+  ]);
 
   const reviewsEnabled = Boolean(settings?.reviews.enabled && !settings.display.showProductRating);
   const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
@@ -586,6 +590,7 @@ export default async function Product({ params, searchParams }: Props) {
           }}
           productId={baseProduct.entityId}
           quantityLabel={t('ProductDetails.quantity')}
+          recaptchaSiteKey={recaptchaSiteKey}
           reviewFormAction={submitReview}
           thumbnailLabel={t('ProductDetails.thumbnail')}
           user={streamableUser}
@@ -607,6 +612,7 @@ export default async function Product({ params, searchParams }: Props) {
         <div id="reviews">
           <Reviews
             productId={productId}
+            recaptchaSiteKey={recaptchaSiteKey}
             searchParams={searchParams}
             streamableImages={streamableImages}
             streamableProduct={streamableProduct}

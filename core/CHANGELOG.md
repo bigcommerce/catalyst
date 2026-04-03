@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.6.3
+
+### Patch Changes
+
+- [#2952](https://github.com/bigcommerce/catalyst/pull/2952) [`66d2a7d`](https://github.com/bigcommerce/catalyst/commit/66d2a7dfab653762da4986b55a7c92fa4ab9b6c6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade `@makeswift/runtime` from `0.26.3` to `0.26.4`.
+
+## 1.6.2
+
+### Patch Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.6.2` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.6.2` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/canary/core/CHANGELOG.md#162).
+
+## 1.6.1
+
+### Patch Changes
+
+- [#2934](https://github.com/bigcommerce/catalyst/pull/2934) [`6a5b019`](https://github.com/bigcommerce/catalyst/commit/6a5b019083aa3e000e5989f6f13256b57c22c479) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix extra thick border on dropdown menu by changing `ring` (3px) to `ring-1` (1px) to match the Select component styling.
+
+## 1.6.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.6.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.6.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/a00b8647c59e81d69f73f10161ea5cf6f3d74c87/core/CHANGELOG.md#160).
+
 ## 1.5.0
 
 ### Minor Changes

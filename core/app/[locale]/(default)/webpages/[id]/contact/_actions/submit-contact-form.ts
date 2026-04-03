@@ -11,6 +11,7 @@ import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
+import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
 const inputSchema = z.object({
   data: z.object({
@@ -26,8 +27,8 @@ const inputSchema = z.object({
 });
 
 const SubmitContactUsMutation = graphql(`
-  mutation SubmitContactUsMutation($input: SubmitContactUsInput!) {
-    submitContactUs(input: $input) {
+  mutation SubmitContactUsMutation($input: SubmitContactUsInput!, $reCaptchaV2: ReCaptchaV2Input) {
+    submitContactUs(input: $input, reCaptchaV2: $reCaptchaV2) {
       __typename
       errors {
         __typename
@@ -74,12 +75,23 @@ export async function submitContactForm<F extends Field>(
     };
   }
 
+  const { siteKey, token } = await getRecaptchaFromForm(formData);
+  const recaptchaValidation = assertRecaptchaTokenPresent(siteKey, token, t('recaptchaRequired'));
+
+  if (!recaptchaValidation.success) {
+    return {
+      lastResult: submission.reply({ formErrors: recaptchaValidation.formErrors }),
+    };
+  }
+
   try {
     const input = parseContactFormInput(submission.value);
     const response = await client.fetch({
       document: SubmitContactUsMutation,
       variables: {
         input,
+        reCaptchaV2:
+          recaptchaValidation.token != null ? { token: recaptchaValidation.token } : undefined,
       },
       fetchOptions: { cache: 'no-store' },
     });

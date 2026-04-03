@@ -37,6 +37,16 @@ test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page
   await page.getByRole('combobox', { name: 'Country' }).click();
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
+
+  // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
+  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
+  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
+
+  if (await recaptchaCheckbox.isVisible()) {
+    await recaptchaCheckbox.click();
+    await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
+  }
+
   await page.getByRole('button', { name: t('Auth.Register.cta') }).click();
 
   await expect(page).toHaveURL('/account/orders/');
@@ -83,10 +93,59 @@ test('Registration fails if email is already in use', async ({ page, customer })
   await page.getByRole('combobox', { name: 'Country' }).click();
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
+
+  // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
+  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
+  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
+
+  if (await recaptchaCheckbox.isVisible()) {
+    await recaptchaCheckbox.click();
+    await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
+  }
+
   await page.getByRole('button', { name: t('cta') }).click();
 
   await expect(page).not.toHaveURL('/account/orders/');
 
   // TODO: Error message needs to be translated
   await expect(page.getByText('The email address is already in use.')).toBeVisible();
+});
+
+test('Registration fails if reCAPTCHA is not completed', async ({ page }) => {
+  const t = await getTranslations('Auth.Register');
+
+  await page.goto('/register');
+  await page.getByRole('heading', { name: t('heading') }).waitFor();
+
+  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
+  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
+
+  try {
+    await recaptchaCheckbox.waitFor({ state: 'visible', timeout: 5000 });
+  } catch {
+    test.skip();
+  }
+
+  // Fill form but intentionally skip clicking reCAPTCHA
+  await page.getByLabel('First Name').fill(faker.person.firstName());
+  await page.getByLabel('Last Name').fill(faker.person.lastName());
+  await page.getByLabel('Email Address').fill(faker.internet.email({ provider: 'example.com' }));
+
+  const password = faker.internet.password({ pattern: /[a-zA-Z0-9]/, prefix: '1At!', length: 10 });
+
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await page.getByLabel('Confirm Password').fill(password);
+  await page.getByLabel('Phone').fill(faker.phone.number({ style: 'national' }));
+  await page.getByLabel('Address Line 1').fill(faker.location.streetAddress());
+  await page.getByLabel('Suburb/City').fill(faker.location.city());
+  await page.getByLabel('State/Province').fill(faker.location.state());
+  await page.getByLabel('Zip/Postcode').fill(faker.location.zipCode());
+  await page.getByRole('combobox', { name: 'Country' }).click();
+  await page.keyboard.type('United States');
+  await page.keyboard.press('Enter');
+
+  await page.getByRole('button', { name: t('cta') }).click();
+
+  await expect(page).not.toHaveURL('/account/orders/');
+  await expect(page.getByText(t('recaptchaRequired'))).toBeVisible();
 });
