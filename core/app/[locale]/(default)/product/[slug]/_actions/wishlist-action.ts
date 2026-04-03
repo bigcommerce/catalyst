@@ -235,7 +235,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
       }
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

@@ -114,7 +114,7 @@ export function ProductCard({
                 }[colorScheme],
               )}
               fill
-              priority={imagePriority}
+              preload={imagePriority}
               sizes={imageSizes}
               src={image.src}
             />

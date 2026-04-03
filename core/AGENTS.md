@@ -10,13 +10,13 @@ This document provides guidance for Large Language Models (LLMs) working with th
 
 The main Next.js application is located in the `/core` directory, which contains the complete e-commerce storefront implementation. Other packages exist outside of `/core` but are not the primary focus for most development work.
 
-## Middleware Architecture
+## Proxy Architecture
 
-The application uses a composed middleware stack that significantly alters the default Next.js routing behavior. The middleware composition includes authentication, internationalization, analytics, channel handling, and most importantly, custom routing.
+The application uses the Next.js 16 proxy pattern (`proxy.ts`) with a composed proxy stack that significantly alters the default Next.js routing behavior. The proxy composition (in the `proxies/` directory) includes authentication, internationalization, analytics, channel handling, and most importantly, custom routing.
 
-### Custom Routing with `with-routes` Middleware
+### Custom Routing with `with-routes`
 
-The `with-routes` middleware is the most critical component that overrides Next.js's default path-based routing. Instead of relying on file-based routing, this middleware:
+The `with-routes` proxy is the most critical component that overrides Next.js's default path-based routing. Instead of relying on file-based routing, this proxy:
 
 1. **Queries the BigCommerce GraphQL API** to resolve incoming URL paths to specific entity types (products, categories, brands, blog posts, pages).
 
@@ -271,10 +271,10 @@ export default async function ProductPage({ params, searchParams }: Props) {
 3. **Progressive Enhancement**: Static content loads immediately with dynamic content streaming via PPR and Streamable
 4. **Vibes Separation**: Complete separation between data fetching (`page.tsx`) and presentation (`vibes/`) concerns
 5. **Centralized API Access**: All BigCommerce API interactions go through the configured GraphQL client
-6. **Middleware-First**: Critical functionality like routing, auth, and internationalization handled at the middleware layer
+6. **Proxy-First**: Critical functionality like routing, auth, and internationalization handled at the proxy layer
 
 ## Notes
 
-This codebase differs significantly from typical Next.js applications due to the custom routing middleware and e-commerce-specific patterns. The `with-routes` middleware essentially turns Next.js into a headless CMS router, where content structure is determined by the BigCommerce backend rather than the filesystem. Understanding this fundamental difference is crucial for working effectively with the codebase.
+This codebase differs significantly from typical Next.js applications due to the custom routing proxy and e-commerce-specific patterns. The `with-routes` proxy (composed within `proxy.ts`) essentially turns Next.js into a headless CMS router, where content structure is determined by the BigCommerce backend rather than the filesystem. Understanding this fundamental difference is crucial for working effectively with the codebase.
 
 The Streamable pattern and PPR integration provide excellent user experience through progressive loading, but require understanding of React's newer concurrent features like the `use()` hook and Suspense boundaries.

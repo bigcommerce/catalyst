@@ -63,7 +63,7 @@ export async function removeWishlistItem(
       };
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     // Server toast has to be used here since the item is being deleted. When revalidateTag is called,
     // the wishlist items will update, and the element node containing the useEffect will be removed.

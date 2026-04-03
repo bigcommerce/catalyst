@@ -70,7 +70,7 @@ jobs:
                     DEPLOY_ARGS+=(--env BIGCOMMERCE_ACCESS_TOKEN="$BIGCOMMERCE_ACCESS_TOKEN")
                   fi
 
-                  DEPLOYMENT_URL=$(vercel deploy "${DEPLOY_ARGS[@]}")
+                  DEPLOYMENT_URL=$(vercel deploy --scope="${{ vars.VERCEL_TEAM_SLUG }}" "${DEPLOY_ARGS[@]}")
                   echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
 
             - name: Set Vercel Domain Alias
@@ -78,4 +78,4 @@ jobs:
               env:
                   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
               run: |
-                  vercel alias ${{ steps.deploy.outputs.deployment_url }} $DOMAIN --token="$VERCEL_TOKEN"
+                  vercel alias ${{ steps.deploy.outputs.deployment_url }} $DOMAIN --scope="${{ vars.VERCEL_TEAM_SLUG }}" --token="$VERCEL_TOKEN"

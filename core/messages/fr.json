@@ -43,7 +43,17 @@
             "newPassword": "Nouveau mot de passe",
             "confirmPassword": "Confirmer le mot de passe",
             "passwordUpdated": "Le mot de passe a bien été mis à jour !",
-            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+            "FieldErrors": {
+                "passwordRequired": "Un mot de passe est requis",
+                "passwordTooSmall": "Le mot de passe doit comporter au moins {minLength, plural, =1 {1 character} other {# characters}} caractères",
+                "passwordLowercaseRequired": "Le mot de passe doit comporter au moins une lettre minuscule",
+                "passwordUppercaseRequired": "Le mot de passe doit comporter au moins une lettre majuscule",
+                "passwordNumberRequired": "Le mot de passe doit comporter au moins {minNumbers, plural, =1 {one number} other {# numbers}} chiffres",
+                "passwordSpecialCharacterRequired": "Le mot de passe doit comporter au moins un caractère spécial",
+                "passwordsMustMatch": "Les mots de passe ne correspondent pas",
+                "confirmPasswordRequired": "Veuillez confirmer votre mot de passe"
+            }
         },
         "Login": {
             "title": "Connexion",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "passwordResetRequired": "Réinitialisation du mot de passe requise. Veuillez consulter votre e-mail pour les instructions de réinitialisation de votre mot de passe.",
             "invalidToken": "Votre lien de connexion n'est pas valide ou a expiré. Veuillez réessayer de vous connecter.",
+            "FieldErrors": {
+                "emailRequired": "L'adresse e-mail est requise",
+                "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+                "passwordRequired": "Un mot de passe est requis",
+                "invalidInput": "Veuillez vérifier votre saisie et réessayer."
+            },
             "CreateAccount": {
                 "title": "Nouveau client ?",
                 "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
@@ -70,14 +86,36 @@
                 "title": "Mot de passe oublié",
                 "subtitle": "Veuillez saisir ci-dessous l'adresse e-mail associée à votre compte. Nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
                 "confirmResetPassword": "Si l'adresse e-mail {email} est liée à un compte dans notre boutique, vous recevrez un e-mail pour réinitialiser votre mot de passe. Veuillez consulter votre boîte de réception, ainsi que votre dossier de courrier indésirable si vous ne trouvez pas cet e-mail.",
-                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+                "FieldErrors": {
+                    "emailRequired": "L'adresse e-mail est requise",
+                    "emailInvalid": "Veuillez saisir une adresse e-mail valide"
+                }
             }
         },
         "Register": {
             "title": "Enregistrer un compte",
             "heading": "Nouveau compte",
             "cta": "Créer un compte",
-            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+            "FieldErrors": {
+                "firstNameRequired": "Le prénom est requis",
+                "lastNameRequired": "Le nom de famille est requis",
+                "emailRequired": "L'adresse e-mail est requise",
+                "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+                "passwordRequired": "Un mot de passe est requis",
+                "passwordTooSmall": "Le mot de passe doit comporter au moins {minLength, plural, =1 {1 character} other {# characters}} caractères",
+                "passwordLowercaseRequired": "Le mot de passe doit comporter au moins une lettre minuscule",
+                "passwordUppercaseRequired": "Le mot de passe doit comporter au moins une lettre majuscule",
+                "passwordNumberRequired": "Le mot de passe doit comporter au moins {minNumbers, plural, =1 {one number} other {# numbers}} chiffres",
+                "passwordSpecialCharacterRequired": "Le mot de passe doit comporter au moins un caractère spécial",
+                "passwordsMustMatch": "Les mots de passe ne correspondent pas",
+                "addressLine1Required": "Ligne d'adresse 1 est requise",
+                "cityRequired": "La ville est requise",
+                "countryRequired": "Le pays est requis",
+                "stateRequired": "État/province est requis",
+                "postalCodeRequired": "Le code postal est requis"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "EmptyState": {
                 "title": "Vous n'avez pas d'adresse"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Le prénom est requis",
+                "lastNameRequired": "Le nom de famille est requis",
+                "addressLine1Required": "Ligne d'adresse 1 est requise",
+                "cityRequired": "La ville est requise",
+                "countryRequired": "Le pays est requis",
+                "stateRequired": "État/province est requis",
+                "postalCodeRequired": "Le code postal est requis"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Abonnez-vous à notre newsletter.",
                 "marketingPreferencesUpdated": "Les préférences marketing ont bien été mises à jour.",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Le prénom est requis",
+                "firstNameTooSmall": "Le prénom doit comporter au moins 2 caractères",
+                "lastNameRequired": "Le nom de famille est requis",
+                "lastNameTooSmall": "Le nom de famille doit comporter au moins 2 caractères",
+                "emailRequired": "L'adresse e-mail est requise",
+                "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+                "currentPasswordRequired": "Vous devez saisir le mot de passe actuel",
+                "passwordRequired": "Un mot de passe est requis",
+                "passwordTooSmall": "Le mot de passe doit comporter au moins {minLength, plural, =1 {1 character} other {# characters}} caractères",
+                "passwordLowercaseRequired": "Le mot de passe doit comporter au moins une lettre minuscule",
+                "passwordUppercaseRequired": "Le mot de passe doit comporter au moins une lettre majuscule",
+                "passwordNumberRequired": "Le mot de passe doit comporter au moins {minNumbers, plural, =1 {one number} other {# numbers}} chiffres",
+                "passwordSpecialCharacterRequired": "Le mot de passe doit comporter au moins un caractère spécial",
+                "passwordsMustMatch": "Les mots de passe ne correspondent pas",
+                "confirmPasswordRequired": "Veuillez confirmer votre mot de passe"
             }
         }
     },
@@ -360,8 +424,11 @@
         "cartCombined": "Nous avons remarqué que votre panier précédent contenait des articles enregistrés. Nous avons donc ajouté ces articles à votre panier actuel.",
         "cartRestored": "Vous avez débuté vos achats sur un autre appareil. Nous avons restauré votre panier ici pour que vous puissiez reprendre là où vous en étiez.",
         "cartUpdateInProgress": "Une mise à jour de votre panier est en cours. Voulez-vous vraiment quitter cette page ? Vos modifications pourraient être perdues.",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "Le prix initial était de {price}.",
+        "currentPrice": "Le prix actuel est de {price}.",
+        "quantityReadyToShip": "{quantity, number} prêts à être expédiés",
+        "quantityOnBackorder": "{quantity, number} seront en attente de réapprovisionnement",
+        "partiallyAvailable": "Seulement {quantity, number} disponibles",
         "CheckoutSummary": {
             "title": "Récapitulatif",
             "subTotal": "Sous-total",
@@ -391,7 +458,8 @@
                 "updateShipping": "Mettre à jour l’expédition",
                 "addShipping": "Ajouter l’expédition",
                 "cartNotFound": "Une erreur s’est produite lors de la récupération de votre panier",
-                "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse"
+                "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse",
+                "countryRequired": "Le pays est requis"
             }
         },
         "GiftCertificate": {
@@ -451,6 +519,8 @@
             "additionalInformation": "Informations supplémentaires",
             "currentStock": "{quantity, number} en stock",
             "backorderQuantity": "{quantité, nombre} en attente de réapprovisionnement",
+            "loadingMoreImages": "Chargement de plus d'images",
+            "imagesLoaded": "{count, plural, =1 {1 image supplémentaire chargée} other {# images supplémentaires chargées}}",
             "Submit": {
                 "addToCart": "Ajouter au panier",
                 "outOfStock": "En rupture de stock",
@@ -483,13 +553,24 @@
                 "button": "Rédiger un avis",
                 "title": "Rédiger un avis",
                 "submit": "Envoyer",
+                "cancel": "Annuler",
                 "ratingLabel": "Note",
                 "titleLabel": "Titre",
                 "reviewLabel": "Avis",
                 "nameLabel": "Nom",
                 "emailLabel": "E-mail",
                 "successMessage": "Votre avis a bien été envoyé !",
-                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+                "FieldErrors": {
+                    "titleRequired": "Le titre est obligatoire",
+                    "authorRequired": "Le nom doit être renseigné",
+                    "emailRequired": "L'adresse e-mail est requise",
+                    "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+                    "textRequired": "Une révision est requise",
+                    "ratingRequired": "La note est requise",
+                    "ratingTooSmall": "La note doit être supérieure ou égale à 1",
+                    "ratingTooLarge": "La note doit être au maximum de 5"
+                }
             }
         }
     },
@@ -571,7 +652,8 @@
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
             "subscribedToNewsletter": "Votre abonnement à la newsletter a bien été pris en compte !",
             "Errors": {
-                "invalidEmail": "Veuillez saisir une adresse e-mail valide.",
+                "emailRequired": "L'adresse e-mail est requise",
+                "invalidEmail": "Veuillez saisir une adresse e-mail valide",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
             }
         },
@@ -615,9 +697,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "Le prix initial était de {price}.",
+            "currentPrice": "Le prix actuel est de {price}.",
+            "range": "Prix de {minValue} à {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -630,7 +712,7 @@
             "title": "Vérifier le solde",
             "description": "Vous pouvez vérifier le solde et obtenir des informations sur votre chèque-cadeau en saisissant le code dans la case ci-dessous.",
             "inputLabel": "Code",
-            "inputPlaceholder": "xxx-xxx-xxx-xxx",
+            "inputPlaceholder": "XXX-XXX-XXX-XXX",
             "purchasedDateLabel": "Acheté(s",
             "senderLabel": "De",
             "Errors": {
@@ -663,15 +745,25 @@
                 "expiryCheckboxLabel": "Je reconnais que ce chèque-cadeau expirera le {expiryDate}",
                 "ctaLabel": "Ajouter au panier",
                 "Errors": {
-                    "amountRequired": "Veuillez sélectionner ou saisir un montant de chèque-cadeau.",
-                    "amountInvalid": "Veuillez sélectionner un montant de chèque-cadeau valide.",
-                    "amountOutOfRange": "Veuillez saisir un montant entre {minAmount} et {maxAmount}.",
-                    "unexpectedSettingsError": "Une erreur inattendue s’est produite lors de la récupération des paramètres du chèque-cadeau. Veuillez réessayer plus tard."
+                    "amountRequired": "Veuillez sélectionner ou saisir un montant de chèque-cadeau",
+                    "amountInvalid": "Veuillez sélectionner un montant de chèque-cadeau valide",
+                    "amountOutOfRange": "Veuillez saisir un montant entre {minAmount} et {maxAmount}",
+                    "unexpectedSettingsError": "Une erreur inattendue s’est produite lors de la récupération des paramètres du chèque-cadeau. Veuillez réessayer plus tard.",
+                    "senderNameRequired": "Votre nom est requis",
+                    "senderEmailRequired": "Votre adresse e-mail est requise",
+                    "recipientNameRequired": "Le nom du destinataire est obligatoire",
+                    "recipientEmailRequired": "L’adresse e-mail du destinataire est obligatoire",
+                    "emailInvalid": "Veuillez saisir une adresse e-mail valide",
+                    "checkboxRequired": "Vous devez cocher cette case pour continuer"
                 }
             }
         }
     },
     "Form": {
-        "optional": "facultatif"
+        "optional": "facultatif",
+        "Errors": {
+            "invalidInput": "Veuillez vérifier votre saisie et réessayer",
+            "invalidFormat": "La valeur saisie ne correspond pas au format requis"
+        }
     }
 }

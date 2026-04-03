@@ -324,7 +324,7 @@ export const deploy = new Command('deploy')
 
       if (!projectUuid) {
         throw new Error(
-          'Project UUID is required. Please run either `bigcommerce link` or this command again with --project-uuid <uuid>.',
+          'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
         );
       }
 

@@ -64,7 +64,7 @@ export const switchCurrency = async (_prevState: SubmissionResult | null, payloa
   if (cartId) {
     await updateCartCurrency(cartId, submission.value.id)
       .then(() => {
-        revalidateTag(TAGS.cart);
+        revalidateTag(TAGS.cart, { expire: 0 });
       })
       .catch((error: unknown) => {
         // eslint-disable-next-line no-console

@@ -5,6 +5,7 @@ export interface WebPage {
   title: string;
   content: string;
   breadcrumbs: Breadcrumb[];
+  path: string;
   seo: {
     pageTitle: string;
     metaDescription: string;

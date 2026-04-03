@@ -1,6 +1,6 @@
 import { expect, test } from '~/tests/fixtures';
 
-test.describe('Anonymous session middleware', () => {
+test.describe('Anonymous session proxy', () => {
   test('handles invalid anonymous JWT cookie gracefully', async ({ page, context }) => {
     // Set an invalid anonymous JWT cookie to simulate the issue
     await context.addCookies([
@@ -23,7 +23,7 @@ test.describe('Anonymous session middleware', () => {
       }
     });
 
-    // Navigate to the homepage - this should trigger the middleware
+    // Navigate to the homepage - this should trigger the proxy
     await page.goto('/');
 
     // The page should load successfully despite the invalid cookie

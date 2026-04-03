@@ -9,6 +9,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect, useMemo, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -106,6 +107,8 @@ export function ShippingForm({
   showShippingForm = false,
   noShippingOptionsLabel = 'There are no shipping options available for your address',
 }: Props) {
+  const t = useTranslations('Cart.CheckoutSummary.Shipping');
+  const schema = shippingActionFormDataSchema({ required_error: t('countryRequired') });
   const [showForms, setShowForms] = useState(showShippingForm);
   const [showAddressForm, setShowAddressForm] = useState(!address);
 
@@ -119,7 +122,7 @@ export function ShippingForm({
 
   const [addressForm, addressFields] = useForm({
     lastResult: state.form === 'address' ? state.lastResult : null,
-    constraint: getZodConstraint(shippingActionFormDataSchema),
+    constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     defaultValue: {
@@ -129,7 +132,7 @@ export function ShippingForm({
       postalCode: state.address?.postalCode,
     },
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: shippingActionFormDataSchema });
+      return parseWithZod(formData, { schema });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();
@@ -143,14 +146,14 @@ export function ShippingForm({
 
   const [shippingOptionsForm, shippingOptionsFields] = useForm({
     lastResult: state.form === 'shipping' ? state.lastResult : null,
-    constraint: getZodConstraint(shippingActionFormDataSchema),
+    constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     defaultValue: {
       shippingOption: state.shippingOption?.value,
     },
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: shippingActionFormDataSchema });
+      return parseWithZod(formData, { schema });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();

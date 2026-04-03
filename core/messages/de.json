@@ -43,7 +43,17 @@
             "newPassword": "Neues Passwort",
             "confirmPassword": "Passwort bestätigen",
             "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+            "FieldErrors": {
+                "passwordRequired": "Es muss ein Passwort angegeben werden",
+                "passwordTooSmall": "Das Passwort muss mindestens {minLength, plural, =1 {1 Zeichen} other {# Zeichen}} lang sein",
+                "passwordLowercaseRequired": "Das Passwort muss mindestens einen Kleinbuchstaben enthalten",
+                "passwordUppercaseRequired": "Das Passwort muss mindestens einen Großbuchstaben enthalten",
+                "passwordNumberRequired": "Das Passwort muss mindestens {minNumbers, plural, =1 {eine Zahl} other {# Zahlen}} enthalten",
+                "passwordSpecialCharacterRequired": "Das Passwort muss mindestens ein Sonderzeichen enthalten",
+                "passwordsMustMatch": "Die Passwörter stimmen nicht überein",
+                "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort"
+            }
         },
         "Login": {
             "title": "Anmelden",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "passwordResetRequired": "Passwortzurücksetzung erforderlich. Bitte überprüfen Sie Ihre E-Mails für die Anleitung zum Zurücksetzen Ihres Passworts.",
             "invalidToken": "Ihr Anmeldelink ist ungültig oder abgelaufen. Bitte versuchen Sie erneut, sich anzumelden.",
+            "FieldErrors": {
+                "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an",
+                "passwordRequired": "Es muss ein Passwort angegeben werden",
+                "invalidInput": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut"
+            },
             "CreateAccount": {
                 "title": "Neuer Kunde?",
                 "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
@@ -70,14 +86,36 @@
                 "title": "Passwort vergessen",
                 "subtitle": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
                 "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+                "FieldErrors": {
+                    "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an"
+                }
             }
         },
         "Register": {
             "title": "Konto registrieren",
             "heading": "Neues Konto",
             "cta": "Konto erstellen",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+            "FieldErrors": {
+                "firstNameRequired": "Es muss ein Vorname angegeben werden",
+                "lastNameRequired": "Es muss ein Nachname angegeben werden",
+                "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an",
+                "passwordRequired": "Es muss ein Passwort angegeben werden",
+                "passwordTooSmall": "Das Passwort muss mindestens {minLength, plural, =1 {1 Zeichen} other {# Zeichen}} lang sein",
+                "passwordLowercaseRequired": "Das Passwort muss mindestens einen Kleinbuchstaben enthalten",
+                "passwordUppercaseRequired": "Das Passwort muss mindestens einen Großbuchstaben enthalten",
+                "passwordNumberRequired": "Das Passwort muss mindestens {minNumbers, plural, =1 {eine Zahl} other {# Zahlen}} enthalten",
+                "passwordSpecialCharacterRequired": "Das Passwort muss mindestens ein Sonderzeichen enthalten",
+                "passwordsMustMatch": "Die Passwörter stimmen nicht überein",
+                "addressLine1Required": "Adresszeile 1 ist eine Pflichtangabe",
+                "cityRequired": "Ort ist eine Pflichtangabe",
+                "countryRequired": "Land ist eine Pflichtangabe",
+                "stateRequired": "Bundesstaat/Provinz ist eine Pflichtangabe",
+                "postalCodeRequired": "Postleitzahl ist erforderlich"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "EmptyState": {
                 "title": "Sie haben keine Adressen"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Es muss ein Vorname angegeben werden",
+                "lastNameRequired": "Es muss ein Nachname angegeben werden",
+                "addressLine1Required": "Adresszeile 1 ist eine Pflichtangabe",
+                "cityRequired": "Ort ist eine Pflichtangabe",
+                "countryRequired": "Land ist eine Pflichtangabe",
+                "stateRequired": "Bundesstaat/Provinz ist eine Pflichtangabe",
+                "postalCodeRequired": "Postleitzahl ist erforderlich"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Abonnieren Sie unseren Newsletter.",
                 "marketingPreferencesUpdated": "Marketingeinstellungen wurden erfolgreich aktualisiert!",
                 "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Es muss ein Vorname angegeben werden",
+                "firstNameTooSmall": "„Vorname“ muss mindestens 2 Zeichen lang sei",
+                "lastNameRequired": "Es muss ein Nachname angegeben werden",
+                "lastNameTooSmall": "„Nachname“ muss mindestens 2 Zeichen lang sein",
+                "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an",
+                "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+                "passwordRequired": "Es muss ein Passwort angegeben werden",
+                "passwordTooSmall": "Das Passwort muss mindestens {minLength, plural, =1 {1 Zeichen} other {# Zeichen}} lang sein",
+                "passwordLowercaseRequired": "Das Passwort muss mindestens einen Kleinbuchstaben enthalten",
+                "passwordUppercaseRequired": "Das Passwort muss mindestens einen Großbuchstaben enthalten",
+                "passwordNumberRequired": "Das Passwort muss mindestens {minNumbers, plural, =1 {eine Zahl} other {# Zahlen}} enthalten",
+                "passwordSpecialCharacterRequired": "Das Passwort muss mindestens ein Sonderzeichen enthalten",
+                "passwordsMustMatch": "Die Passwörter stimmen nicht überein",
+                "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort"
             }
         }
     },
@@ -360,8 +424,11 @@
         "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
         "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
         "cartUpdateInProgress": "Sie führen derzeit eine Aktualisierung Ihres Warenkorbs durch. Sind Sie sicher, dass Sie diese Seite verlassen möchten? Ihre Änderungen könnten verloren gehen.",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "Der ursprüngliche Preis war {price}.",
+        "currentPrice": "Der aktuelle Preis beträgt {price}.",
+        "quantityReadyToShip": "{quantity, number} bereit zum Versand",
+        "quantityOnBackorder": "{quantity, number} wird nachbestellt",
+        "partiallyAvailable": "Nur {quantity, number} verfügbar",
         "CheckoutSummary": {
             "title": "Übersicht",
             "subTotal": "Zwischensumme",
@@ -391,7 +458,8 @@
                 "updateShipping": "Versand aktualisieren",
                 "addShipping": "Versand hinzufügen",
                 "cartNotFound": "Beim Abrufen des Warenkorbs ist ein Fehler aufgetreten",
-                "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
+                "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar",
+                "countryRequired": "Land ist eine Pflichtangabe"
             }
         },
         "GiftCertificate": {
@@ -451,6 +519,8 @@
             "additionalInformation": "Weitere Informationen",
             "currentStock": "{quantity, number} auf Lager",
             "backorderQuantity": "{quantity, number} wird nachbestellt",
+            "loadingMoreImages": "Weitere Bilder werden geladen",
+            "imagesLoaded": "{count, plural, =1 {1 weiteres Bild geladen, } other {# weitere Bilder geladen, }}",
             "Submit": {
                 "addToCart": "Zum Warenkorb hinzufügen",
                 "outOfStock": "Kein Lagerbestand",
@@ -483,13 +553,24 @@
                 "button": "Eine Bewertung schreiben",
                 "title": "Eine Bewertung schreiben",
                 "submit": "Einreichen",
+                "cancel": "Abbrechen",
                 "ratingLabel": "Bewertung",
                 "titleLabel": "Titel",
                 "reviewLabel": "Bewertung",
                 "nameLabel": "Name",
                 "emailLabel": "E-Mail",
                 "successMessage": "Ihre Bewertung wurde erfolgreich übermittelt!",
-                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+                "FieldErrors": {
+                    "titleRequired": "Titel ist erforderlich",
+                    "authorRequired": "Es muss ein Name angegeben werden",
+                    "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an",
+                    "textRequired": "Überprüfung ist erforderlich",
+                    "ratingRequired": "Bewertung ist erforderlich.",
+                    "ratingTooSmall": "Die Bewertung muss mindestens 1 betragen",
+                    "ratingTooLarge": "Die Bewertung darf höchstens 5 betragen"
+                }
             }
         }
     },
@@ -571,7 +652,8 @@
             "description": "Bleiben Sie auf dem Laufenden über die aktuellen Neuigkeiten und Angebote in unserem Shop.",
             "subscribedToNewsletter": "Sie haben unseren Newsletter abonniert!",
             "Errors": {
-                "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse an.",
+                "emailRequired": "Die E-Mail-Adresse muss angegeben werden",
+                "invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse an",
                 "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
             }
         },
@@ -615,9 +697,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "Der ursprüngliche Preis war {price}.",
+            "currentPrice": "Der aktuelle Preis beträgt {price}.",
+            "range": "Preis von {minValue} bis {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -630,7 +712,7 @@
             "title": "Guthaben abfragen",
             "description": "Sie können das Guthaben überprüfen und Informationen zu Ihrem Geschenkgutschein erhalten, indem Sie den Code in das Feld unten eingeben.",
             "inputLabel": "Code",
-            "inputPlaceholder": "xxx-xxx-xxx-xxx",
+            "inputPlaceholder": "XXX-XXX-XXX-XXX",
             "purchasedDateLabel": "Gekauft",
             "senderLabel": "Von",
             "Errors": {
@@ -663,15 +745,25 @@
                 "expiryCheckboxLabel": "Ich bestätige, dass dieser Geschenkgutschein am {expiryDate} abläuft.",
                 "ctaLabel": "Zum Warenkorb hinzufügen",
                 "Errors": {
-                    "amountRequired": "Bitte wählen Sie einen Geschenkgutscheinbetrag aus oder geben Sie ihn ein.",
-                    "amountInvalid": "Bitte wählen Sie einen gültigen Betrag für diesen Geschenkgutschein aus.",
-                    "amountOutOfRange": "Bitte geben Sie einen Betrag zwischen {minAmount} und {maxAmount} ein.",
-                    "unexpectedSettingsError": "Beim Abrufen der Geschenkgutscheineinstellungen ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es später erneut."
+                    "amountRequired": "Bitte wählen Sie einen Geschenkgutscheinbetrag aus oder geben Sie ihn ein",
+                    "amountInvalid": "Bitte wählen Sie einen gültigen Betrag für diesen Geschenkgutschein aus",
+                    "amountOutOfRange": "Bitte geben Sie einen Betrag zwischen {minAmount} und {maxAmount} ein",
+                    "unexpectedSettingsError": "Beim Abrufen der Geschenkgutscheineinstellungen ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+                    "senderNameRequired": "Ihr Name ist erforderlich",
+                    "senderEmailRequired": "Ihre E-Mail-Adresse ist erforderlich",
+                    "recipientNameRequired": "Der Name des Empfängers ist erforderlich",
+                    "recipientEmailRequired": "Die E-Mail-Adresse des Empfängers ist erforderlich",
+                    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse an",
+                    "checkboxRequired": "Sie müssen dieses Feld ankreuzen, um fortzufahren"
                 }
             }
         }
     },
     "Form": {
-        "optional": "optional"
+        "optional": "optional",
+        "Errors": {
+            "invalidInput": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut",
+            "invalidFormat": "Der eingegebene Wert entspricht nicht dem erforderlichen Format"
+        }
     }
 }

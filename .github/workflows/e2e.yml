@@ -1,0 +1,106 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [canary, integrations/makeswift, integrations/b2b-makeswift]
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+  BIGCOMMERCE_STORE_HASH: ${{ vars.BIGCOMMERCE_STORE_HASH }}
+  BIGCOMMERCE_CHANNEL_ID: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
+  BIGCOMMERCE_CLIENT_ID: ${{ secrets.BIGCOMMERCE_CLIENT_ID }}
+  BIGCOMMERCE_CLIENT_SECRET: ${{ secrets.BIGCOMMERCE_CLIENT_SECRET }}
+  BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+  BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+  TEST_CUSTOMER_ID: ${{ vars.TEST_CUSTOMER_ID }}
+  TEST_CUSTOMER_EMAIL: ${{ vars.TEST_CUSTOMER_EMAIL }}
+  TEST_CUSTOMER_PASSWORD: ${{ secrets.TEST_CUSTOMER_PASSWORD }}
+  TESTS_FALLBACK_LOCALE: ${{ vars.TESTS_FALLBACK_LOCALE }}
+  TESTS_READ_ONLY: ${{ vars.TESTS_READ_ONLY }}
+  DEFAULT_PRODUCT_ID: ${{ vars.DEFAULT_PRODUCT_ID }}
+  DEFAULT_COMPLEX_PRODUCT_ID: ${{ vars.DEFAULT_COMPLEX_PRODUCT_ID }}
+  MAKESWIFT_SITE_API_KEY: ${{ secrets.MAKESWIFT_SITE_API_KEY }}
+
+jobs:
+  e2e-tests:
+    name: E2E Functional Tests (${{ matrix.name }})
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - name: default
+            browsers: chromium webkit
+            test-filter: tests/ui/e2e
+            trailing-slash: true
+            locale-var: TESTS_LOCALE
+            artifact-name: playwright-report
+          - name: TRAILING_SLASH=false
+            browsers: chromium
+            test-filter: tests/ui/e2e --grep @no-trailing-slash
+            trailing-slash: false
+            locale-var: TESTS_LOCALE
+            artifact-name: playwright-report-no-trailing
+          - name: alternate locale
+            browsers: chromium
+            test-filter: tests/ui/e2e --grep @alternate-locale
+            trailing-slash: true
+            locale-var: TESTS_ALTERNATE_LOCALE
+            artifact-name: playwright-report-alternate-locale
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps ${{ matrix.browsers }}
+        working-directory: ./core
+
+      - name: Build catalyst
+        run: pnpm build
+
+      - name: Start server
+        run: |
+          mkdir -p ./.tests/reports/
+          pnpm start > ./.tests/reports/nextjs.app.log 2>&1 &
+          npx wait-on http://localhost:3000 --timeout 60000
+        working-directory: ./core
+        env:
+          PORT: 3000
+          AUTH_SECRET: ${{ secrets.TESTS_AUTH_SECRET }}
+          AUTH_TRUST_HOST: ${{ vars.TESTS_AUTH_TRUST_HOST }}
+          BIGCOMMERCE_TRUSTED_PROXY_SECRET: ${{ secrets.BIGCOMMERCE_TRUSTED_PROXY_SECRET }}
+          TESTS_LOCALE: ${{ vars[matrix.locale-var] }}
+          TRAILING_SLASH: ${{ matrix.trailing-slash }}
+          DEFAULT_REVALIDATE_TARGET: ${{ matrix.name == 'default' && '1' || '' }}
+
+      - name: Run E2E tests
+        run: pnpm exec playwright test ${{ matrix.test-filter }}
+        working-directory: ./core
+        env:
+          PLAYWRIGHT_TEST_BASE_URL: http://localhost:3000
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact-name }}
+          path: ./core/.tests/reports/
+          retention-days: 3

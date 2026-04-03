@@ -1,3 +1,5 @@
+import { PasswordComplexitySettings } from '@/vibes/soul/form/dynamic-form/schema';
+
 import { ResetPasswordAction, ResetPasswordForm } from './reset-password-form';
 
 interface Props {
@@ -7,6 +9,7 @@ interface Props {
   submitLabel?: string;
   newPasswordLabel?: string;
   confirmPasswordLabel?: string;
+  passwordComplexitySettings?: PasswordComplexitySettings | null;
 }
 
 export function ResetPasswordSection({
@@ -15,6 +18,7 @@ export function ResetPasswordSection({
   submitLabel,
   newPasswordLabel,
   confirmPasswordLabel,
+  passwordComplexitySettings,
   action,
 }: Props) {
   return (
@@ -27,6 +31,7 @@ export function ResetPasswordSection({
             action={action}
             confirmPasswordLabel={confirmPasswordLabel}
             newPasswordLabel={newPasswordLabel}
+            passwordComplexitySettings={passwordComplexitySettings}
             submitLabel={submitLabel}
           />
         </div>

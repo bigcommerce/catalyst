@@ -1,8 +1,8 @@
 import { unstable_isDraftModeRequest } from '@makeswift/runtime/next/middleware';
 
-import { MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
-export const withMakeswift: MiddlewareFactory = (middleware) => {
+export const withMakeswift: ProxyFactory = (proxy) => {
   return async (request, event) => {
     const isDraftRequest = unstable_isDraftModeRequest(request);
 
@@ -12,9 +12,9 @@ export const withMakeswift: MiddlewareFactory = (middleware) => {
       // meet this expectation.
       request.headers.set('x-bc-disable-locale-detection', 'true');
 
-      return await middleware(request, event);
+      return await proxy(request, event);
     }
 
-    return middleware(request, event);
+    return proxy(request, event);
   };
 };

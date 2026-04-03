@@ -10,7 +10,7 @@ import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
 
-import { type MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
 const trailingSlashDisabled = process.env.TRAILING_SLASH === 'false';
 
@@ -285,7 +285,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   }
 };
 
-export const withRoutes: MiddlewareFactory = () => {
+export const withRoutes: ProxyFactory = () => {
   // eslint-disable-next-line complexity
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
@@ -369,7 +369,12 @@ export const withRoutes: MiddlewareFactory = () => {
       case 'Product': {
         url = `/${locale}/product/${node.entityId}`;
 
-        event.waitUntil(recordProductVisit(request, node.entityId));
+        const isPrefetch = request.headers.get('Next-Router-Prefetch') === '1';
+        const isRSC = request.headers.get('RSC') === '1';
+
+        if (!isPrefetch && !isRSC) {
+          event.waitUntil(recordProductVisit(request, node.entityId));
+        }
 
         break;
       }

@@ -60,7 +60,7 @@ export const build = new Command('build')
 
         if (!projectUuid) {
           throw new Error(
-            'Project UUID is required. Please run `link` or provide `--project-uuid`',
+            'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
           );
         }
 

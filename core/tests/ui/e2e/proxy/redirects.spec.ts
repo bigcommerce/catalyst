@@ -4,11 +4,7 @@ import { testEnv } from '~/tests/environment';
 import { expect, test } from '~/tests/fixtures';
 import { TAGS } from '~/tests/tags';
 
-test('Middleware follows a dynamic 301 redirect correctly', async ({
-  page,
-  catalog,
-  redirects,
-}) => {
+test('Proxy follows a dynamic 301 redirect correctly', async ({ page, catalog, redirects }) => {
   const redirectFrom = `/test-dynamic-redirect-${faker.string.alpha(6)}`;
   const product = await catalog.getDefaultOrCreateSimpleProduct();
 
@@ -24,7 +20,7 @@ test('Middleware follows a dynamic 301 redirect correctly', async ({
   await expect(page).toHaveURL(product.customUrl.url);
 });
 
-test('Middleware follows a manual redirect correctly', async ({ page, redirects }) => {
+test('Proxy follows a manual redirect correctly', async ({ page, redirects }) => {
   const fromPath = `/test-manual-redirect-${faker.string.alpha(6)}`;
   const toPath = `/test-manual-destination-${faker.string.alpha(6)}`;
 
@@ -41,7 +37,7 @@ test('Middleware follows a manual redirect correctly', async ({ page, redirects 
   await expect(page).toHaveURL(toPath);
 });
 
-test('Middleware follows redirects in respect to capitalization', async ({ page, redirects }) => {
+test('Proxy follows redirects in respect to capitalization', async ({ page, redirects }) => {
   const fromPath = '/path-test';
   const toPath = '/path-TEST';
 

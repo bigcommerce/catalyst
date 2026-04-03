@@ -43,7 +43,17 @@
             "newPassword": "新しいパスワード",
             "confirmPassword": "パスワード確認",
             "passwordUpdated": "パスワードが正常に更新されました！",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+            "FieldErrors": {
+                "passwordRequired": "パスワードが必要です",
+                "passwordTooSmall": "パスワードは少なくとも {minLength, plural, =1 {1 character } other {# characters }}の長さである必要があります",
+                "passwordLowercaseRequired": "パスワードには少なくとも1つの小文字を含める必要があります",
+                "passwordUppercaseRequired": "パスワードには少なくとも1つの大文字を含める必要があります",
+                "passwordNumberRequired": "パスワードには少なくとも {minNumbers, plural, =1 {one number } other {#個の数字}}が含まれている必要があります",
+                "passwordSpecialCharacterRequired": "パスワードには少なくとも1つの特殊文字を含める必要があります",
+                "passwordsMustMatch": "パスワードが一致しません",
+                "confirmPasswordRequired": "パスワードを確認してください"
+            }
         },
         "Login": {
             "title": "ログイン",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "passwordResetRequired": "パスワードのリセットが必要です。パスワードをリセットするための手順については、メールを確認してください。",
             "invalidToken": "ログインリンクが無効または期限切れです。もう一度ログインしてください。",
+            "FieldErrors": {
+                "emailRequired": "メールアドレスは必須です",
+                "emailInvalid": "有効なメールアドレスを入力してください",
+                "passwordRequired": "パスワードが必要です",
+                "invalidInput": "入力内容を確認して、もう一度お試しください。"
+            },
             "CreateAccount": {
                 "title": "新規のお客様ですか？",
                 "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
@@ -70,14 +86,36 @@
                 "title": "パスワードをお忘れですか",
                 "subtitle": "アカウントに関連付けられたメールアドレスを以下に入力してください。パスワードをリセットするための手順をお送りいたします。",
                 "confirmResetPassword": "メールアドレス {email} が当社のアカウントにリンクされている場合、パスワードリセットのメールが送信されました。受信トレイをご確認ください。見つからない場合は、スパムフォルダもご確認ください。",
-                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+                "FieldErrors": {
+                    "emailRequired": "メールアドレスは必須です",
+                    "emailInvalid": "有効なメールアドレスを入力してください"
+                }
             }
         },
         "Register": {
             "title": "アカウントを登録",
             "heading": "新しいアカウント",
             "cta": "アカウント作成",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+            "FieldErrors": {
+                "firstNameRequired": "名は必須です",
+                "lastNameRequired": "姓は必須です",
+                "emailRequired": "メールアドレスは必須です",
+                "emailInvalid": "有効なメールアドレスを入力してください",
+                "passwordRequired": "パスワードが必要です",
+                "passwordTooSmall": "パスワードは少なくとも {minLength, plural, =1 {1 character } other {# characters }}の長さである必要があります",
+                "passwordLowercaseRequired": "パスワードには少なくとも1つの小文字を含める必要があります",
+                "passwordUppercaseRequired": "パスワードには少なくとも1つの大文字を含める必要があります",
+                "passwordNumberRequired": "パスワードには少なくとも {minNumbers, plural, =1 {one number } other {#個の数字}}が含まれている必要があります",
+                "passwordSpecialCharacterRequired": "パスワードには少なくとも1つの特殊文字を含める必要があります",
+                "passwordsMustMatch": "パスワードが一致しません",
+                "addressLine1Required": "住所1行目は必須です",
+                "cityRequired": "市区町村が必要です",
+                "countryRequired": "国名コードが必要です",
+                "stateRequired": "都道府県が必要です",
+                "postalCodeRequired": "郵便番号は必要です"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "EmptyState": {
                 "title": "アドレスがありません"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "名は必須です",
+                "lastNameRequired": "姓は必須です",
+                "addressLine1Required": "住所1行目は必須です",
+                "cityRequired": "市区町村が必要です",
+                "countryRequired": "国名コードが必要です",
+                "stateRequired": "都道府県が必要です",
+                "postalCodeRequired": "郵便番号は必要です"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "ニュースレターに登録してください。",
                 "marketingPreferencesUpdated": "マーケティング設定が正常に更新されました。",
                 "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "名は必須です",
+                "firstNameTooSmall": "名は2文字以上でなければなりません",
+                "lastNameRequired": "姓は必須です",
+                "lastNameTooSmall": "姓は2文字以上でなければなりません",
+                "emailRequired": "メールアドレスは必須です",
+                "emailInvalid": "有効なメールアドレスを入力してください",
+                "currentPasswordRequired": "現在のパスワードは必須です",
+                "passwordRequired": "パスワードが必要です",
+                "passwordTooSmall": "パスワードは少なくとも {minLength, plural, =1 {1 character } other {# characters }}の長さである必要があります",
+                "passwordLowercaseRequired": "パスワードには少なくとも1つの小文字を含める必要があります",
+                "passwordUppercaseRequired": "パスワードには少なくとも1つの大文字を含める必要があります",
+                "passwordNumberRequired": "パスワードには少なくとも {minNumbers, plural, =1 {one number } other {#個の数字}}が含まれている必要があります",
+                "passwordSpecialCharacterRequired": "パスワードには少なくとも1つの特殊文字を含める必要があります",
+                "passwordsMustMatch": "パスワードが一致しません",
+                "confirmPasswordRequired": "パスワードを確認してください"
             }
         }
     },
@@ -360,8 +424,11 @@
         "cartCombined": "以前のカートに商品が保存されていたので、それを現在のカートに追加しました。",
         "cartRestored": "別のデバイスでカートに商品が追加されていたため、中断されたところからお買い物を再開できるよう、こちらにカートの内容を復元しました。",
         "cartUpdateInProgress": "カートの更新が進行中です。このページを離れてもよろしいですか?変更内容が失われる可能性があります。",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "元の価格は{price}でした。",
+        "currentPrice": "現在の価格は{price}です。",
+        "quantityReadyToShip": "{quantity, number} 個、発送準備完了",
+        "quantityOnBackorder": "{quantity, number} はバックオーダーになります",
+        "partiallyAvailable": "{quantity, number} 個のみ在庫あり",
         "CheckoutSummary": {
             "title": "要約",
             "subTotal": "小計",
@@ -391,7 +458,8 @@
                 "updateShipping": "配送情報を更新",
                 "addShipping": "配送を追加",
                 "cartNotFound": "カートの取得中にエラーが発生しました",
-                "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません"
+                "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません",
+                "countryRequired": "国名コードが必要です"
             }
         },
         "GiftCertificate": {
@@ -451,6 +519,8 @@
             "additionalInformation": "追加情報",
             "currentStock": "{quantity, number} 個の在庫あり",
             "backorderQuantity": "{quantity, number} はバックオーダーになります",
+            "loadingMoreImages": "さらに画像を読み込んでいます",
+            "imagesLoaded": "{count, plural, =1 {1 枚の画像が読み込まれました} other {#枚の画像が読み込まれました}}",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",
@@ -483,13 +553,24 @@
                 "button": "レビューを書く",
                 "title": "レビューを書く",
                 "submit": "提出",
+                "cancel": "キャンセル",
                 "ratingLabel": "評価",
                 "titleLabel": "タイトル",
                 "reviewLabel": "レビュー",
                 "nameLabel": "名前",
                 "emailLabel": "Eメール",
                 "successMessage": "レビューは正常に送信されました。",
-                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+                "FieldErrors": {
+                    "titleRequired": "タイトルは必須です",
+                    "authorRequired": "商品名は必須です",
+                    "emailRequired": "メールアドレスは必須です",
+                    "emailInvalid": "有効なメールアドレスを入力してください",
+                    "textRequired": "レビューが必要です",
+                    "ratingRequired": "評価は必須です",
+                    "ratingTooSmall": "評価は1以上である必要があります",
+                    "ratingTooLarge": "評価は5以下でなければなりません"
+                }
             }
         }
     },
@@ -571,7 +652,8 @@
             "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
             "subscribedToNewsletter": "ニュースレターを購読されました。",
             "Errors": {
-                "invalidEmail": "有効なメールアドレスを入力してください。",
+                "emailRequired": "メールアドレスは必須です",
+                "invalidEmail": "有効なメールアドレスを入力してください",
                 "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
             }
         },
@@ -615,9 +697,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "元の価格は{price}でした。",
+            "currentPrice": "現在の価格は{price}です。",
+            "range": "価格は{minValue}から{maxValue}までです。"
         }
     },
     "GiftCertificates": {
@@ -663,15 +745,25 @@
                 "expiryCheckboxLabel": "このギフト券は{expiryDate}に有効期限が切れることに同意します。",
                 "ctaLabel": "カートに追加",
                 "Errors": {
-                    "amountRequired": "ギフト券の金額を選択または入力してください。",
-                    "amountInvalid": "有効なギフト券の金額を選択してください。",
-                    "amountOutOfRange": "{minAmount}から{maxAmount}の間の金額を入力してください。",
-                    "unexpectedSettingsError": "ギフト券設定の取得中に予期しないエラーが発生しました。しばらくしてから再度お試しください"
+                    "amountRequired": "ギフト券の金額を選択または入力してください",
+                    "amountInvalid": "有効なギフト券の金額を選択してください",
+                    "amountOutOfRange": "{minAmount}から{maxAmount}の間の金額を入力してください",
+                    "unexpectedSettingsError": "ギフト券設定の取得中に予期しないエラーが発生しました。しばらくしてから再度お試しください",
+                    "senderNameRequired": "お名前は必須です",
+                    "senderEmailRequired": "メールアドレスは必須です",
+                    "recipientNameRequired": "受取人の名前は必須です",
+                    "recipientEmailRequired": "受信者のメールアドレスは必須です",
+                    "emailInvalid": "有効なメールアドレスを入力してください",
+                    "checkboxRequired": "続行するにはこのボックスにチェックを入れてください"
                 }
             }
         }
     },
     "Form": {
-        "optional": "オプション"
+        "optional": "オプション",
+        "Errors": {
+            "invalidInput": "入力内容を確認してもう一度お試しください",
+            "invalidFormat": "入力された値は必要な形式と一致しません"
+        }
     }
 }

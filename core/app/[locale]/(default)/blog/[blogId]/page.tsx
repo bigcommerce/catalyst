@@ -5,6 +5,8 @@ import { cache } from 'react';
 
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
+import { getMakeswiftPageMetadata } from '~/lib/makeswift';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { getBlogPageData } from './page-data';
 
@@ -18,7 +20,7 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { blogId } = await params;
+  const { blogId, locale } = await params;
 
   const variables = cachedBlogPageDataVariables(blogId);
 
@@ -29,12 +31,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
   }
 
+  const makeswiftMetadata = await getMakeswiftPageMetadata({ path: blogPost.path, locale });
   const { pageTitle, metaDescription, metaKeywords } = blogPost.seo;
 
   return {
-    title: pageTitle || blogPost.name,
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    title: makeswiftMetadata?.title || pageTitle || blogPost.name,
+    ...((makeswiftMetadata?.description || metaDescription) && {
+      description: makeswiftMetadata?.description || metaDescription,
+    }),
+    ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+    ...(blogPost.path && {
+      alternates: await getMetadataAlternates({ path: blogPost.path, locale }),
+    }),
   };
 }
 

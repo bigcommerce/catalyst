@@ -43,7 +43,17 @@
             "newPassword": "Nuova password",
             "confirmPassword": "Conferma password",
             "passwordUpdated": "La password è stata aggiornata!",
-            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
+            "FieldErrors": {
+                "passwordRequired": "La password è obbligatoria",
+                "passwordTooSmall": "La password deve essere lunga almeno {minLength, plural, =1 {1 carattere} other {# caratteri}}",
+                "passwordLowercaseRequired": "La password deve contenere almeno una lettera minuscola",
+                "passwordUppercaseRequired": "La password deve contenere almeno una lettera maiuscola",
+                "passwordNumberRequired": "La password deve contenere almeno {minNumbers, plural, =1 {un numero} other {# numeri}}",
+                "passwordSpecialCharacterRequired": "La password deve contenere almeno un carattere speciale",
+                "passwordsMustMatch": "Le password non corrispondono",
+                "confirmPasswordRequired": "Conferma la tua password"
+            }
         },
         "Login": {
             "title": "Accedi",
@@ -56,6 +66,12 @@
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "passwordResetRequired": "È necessario reimpostare la password. Controlla la tua email per le istruzioni su come reimpostare la password.",
             "invalidToken": "Il tuo link di accesso non è valido o è scaduto. Riprova ad accedere.",
+            "FieldErrors": {
+                "emailRequired": "L'indirizzo email è obbligatorio",
+                "emailInvalid": "Inserisci un indirizzo e-mail valido",
+                "passwordRequired": "La password è obbligatoria",
+                "invalidInput": "Controlla i dati inseriti e riprova."
+            },
             "CreateAccount": {
                 "title": "Nuovo cliente?",
                 "accountBenefits": "Crea un account con noi e sarai in grado di:",
@@ -70,14 +86,36 @@
                 "title": "Password dimenticata",
                 "subtitle": "Inserisci di seguito l'e-mail associata al tuo account. Ti invieremo le istruzioni per reimpostare la password.",
                 "confirmResetPassword": "Se l'indirizzo e-mail {email} è collegato a un account nel nostro negozio, ti abbiamo inviato un'e-mail per reimpostare la password. Se non la trovi, controlla le cartelle di posta in arrivo e indesiderata.",
-                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
+                "FieldErrors": {
+                    "emailRequired": "L'indirizzo email è obbligatorio",
+                    "emailInvalid": "Inserisci un indirizzo e-mail valido"
+                }
             }
         },
         "Register": {
             "title": "Registra un account",
             "heading": "Nuovo account",
             "cta": "Crea account",
-            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
+            "FieldErrors": {
+                "firstNameRequired": "Il nome è obbligatorio",
+                "lastNameRequired": "Il cognome è obbligatorio",
+                "emailRequired": "L'indirizzo email è obbligatorio",
+                "emailInvalid": "Inserisci un indirizzo e-mail valido",
+                "passwordRequired": "La password è obbligatoria",
+                "passwordTooSmall": "La password deve essere lunga almeno {minLength, plural, =1 {1 carattere} other {# caratteri}}",
+                "passwordLowercaseRequired": "La password deve contenere almeno una lettera minuscola",
+                "passwordUppercaseRequired": "La password deve contenere almeno una lettera maiuscola",
+                "passwordNumberRequired": "La password deve contenere almeno {minNumbers, plural, =1 {un numero} other {# numeri}}",
+                "passwordSpecialCharacterRequired": "La password deve contenere almeno un carattere speciale",
+                "passwordsMustMatch": "Le password non corrispondono",
+                "addressLine1Required": "La riga 1 dell'indirizzo è obbligatoria",
+                "cityRequired": "La Città è necessaria",
+                "countryRequired": "Il paese è obbligatorio",
+                "stateRequired": "Lo Stato/Provincia è obbligatorio",
+                "postalCodeRequired": "Il CAP è necessario"
+            }
         }
     },
     "Faceted": {
@@ -188,6 +226,15 @@
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "EmptyState": {
                 "title": "Non hai indirizzi"
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Il nome è obbligatorio",
+                "lastNameRequired": "Il cognome è obbligatorio",
+                "addressLine1Required": "La riga 1 dell'indirizzo è obbligatoria",
+                "cityRequired": "La Città è necessaria",
+                "countryRequired": "Il paese è obbligatorio",
+                "stateRequired": "Lo Stato/Provincia è obbligatorio",
+                "postalCodeRequired": "Il CAP è necessario"
             }
         },
         "Settings": {
@@ -205,6 +252,23 @@
                 "label": "Iscriviti alla nostra newsletter.",
                 "marketingPreferencesUpdated": "Le preferenze di marketing sono state aggiornate.",
                 "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            },
+            "FieldErrors": {
+                "firstNameRequired": "Il nome è obbligatorio",
+                "firstNameTooSmall": "Il nome deve essere lungo almeno 2 caratteri",
+                "lastNameRequired": "Il cognome è obbligatorio",
+                "lastNameTooSmall": "Il cognome deve essere lungo almeno 2 caratteri",
+                "emailRequired": "L'indirizzo email è obbligatorio",
+                "emailInvalid": "Inserisci un indirizzo e-mail valido",
+                "currentPasswordRequired": "È necessario inserire la password attuale",
+                "passwordRequired": "La password è obbligatoria",
+                "passwordTooSmall": "La password deve essere lunga almeno {minLength, plural, =1 {1 carattere} other {# caratteri}}",
+                "passwordLowercaseRequired": "La password deve contenere almeno una lettera minuscola",
+                "passwordUppercaseRequired": "La password deve contenere almeno una lettera maiuscola",
+                "passwordNumberRequired": "La password deve contenere almeno {minNumbers, plural, =1 {un numero} other {# numeri}}",
+                "passwordSpecialCharacterRequired": "La password deve contenere almeno un carattere speciale",
+                "passwordsMustMatch": "Le password non corrispondono",
+                "confirmPasswordRequired": "Conferma la tua password"
             }
         }
     },
@@ -360,8 +424,11 @@
         "cartCombined": "Abbiamo notato che avevi salvato degli articoli in un carrello precedente, quindi li abbiamo aggiunti al carrello attuale.",
         "cartRestored": "Hai avviato un carrello su un altro dispositivo e lo abbiamo ripristinato qui, così puoi riprendere da dove avevi lasciato.",
         "cartUpdateInProgress": "Hai un aggiornamento del carrello attivo in corso. Uscire dalla pagina? Le modifiche potrebbero andare perse.",
-        "originalPrice": "Original price was {price}.",
-        "currentPrice": "Current price is {price}.",
+        "originalPrice": "Il prezzo originale era {price}.",
+        "currentPrice": "Il prezzo corrente è {price}.",
+        "quantityReadyToShip": "{quantity, number} pronto per la spedizione",
+        "quantityOnBackorder": "{quantity, number} sarà in arretrato",
+        "partiallyAvailable": "Solo {quantity, number} disponibili",
         "CheckoutSummary": {
             "title": "Riepilogo",
             "subTotal": "Subtotale",
@@ -391,7 +458,8 @@
                 "updateShipping": "Aggiorna la spedizione",
                 "addShipping": "Aggiungi spedizione",
                 "cartNotFound": "Si è verificato un errore durante il recupero del carrello",
-                "noShippingOptions": "Non ci sono opzioni di spedizione disponibili per il tuo indirizzo"
+                "noShippingOptions": "Non ci sono opzioni di spedizione disponibili per il tuo indirizzo",
+                "countryRequired": "Il paese è obbligatorio"
             }
         },
         "GiftCertificate": {
@@ -451,6 +519,8 @@
             "additionalInformation": "Informazioni aggiuntive",
             "currentStock": "{quantità, numero} in magazzino",
             "backorderQuantity": "{quantity, number} sarà in arretrato",
+            "loadingMoreImages": "Caricamento di altre immagini",
+            "imagesLoaded": "{count, plural, =1 {1 altra immagine caricata} other {# altre immagini caricate}}",
             "Submit": {
                 "addToCart": "Aggiungi al carrello",
                 "outOfStock": "Esaurito",
@@ -483,13 +553,24 @@
                 "button": "Scrivi una recensione",
                 "title": "Scrivi una recensione",
                 "submit": "Invia",
+                "cancel": "Annulla",
                 "ratingLabel": "Valutazione",
                 "titleLabel": "Titolo",
                 "reviewLabel": "Recensione",
                 "nameLabel": "Nome",
                 "emailLabel": "E-mail",
                 "successMessage": "La tua recensione è stata inviata correttamente.",
-                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+                "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
+                "FieldErrors": {
+                    "titleRequired": "Il titolo è obbligatorio",
+                    "authorRequired": "Il nome è obbligatorio",
+                    "emailRequired": "L'indirizzo email è obbligatorio",
+                    "emailInvalid": "Inserisci un indirizzo e-mail valido",
+                    "textRequired": "La revisione è obbligatoria",
+                    "ratingRequired": "La valutazione è obbligatoria",
+                    "ratingTooSmall": "Il punteggio deve essere almeno 1",
+                    "ratingTooLarge": "Il punteggio deve essere al massimo 5"
+                }
             }
         }
     },
@@ -571,7 +652,8 @@
             "description": "Ricevi aggiornamenti sulle ultime novità e offerte dal nostro negozio.",
             "subscribedToNewsletter": "Hai effettuato l'iscrizione alla nostra newsletter.",
             "Errors": {
-                "invalidEmail": "Inserisci un indirizzo e-mail valido.",
+                "emailRequired": "L'indirizzo email è obbligatorio",
+                "invalidEmail": "Inserisci un indirizzo e-mail valido",
                 "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
             }
         },
@@ -615,9 +697,9 @@
             }
         },
         "Price": {
-            "originalPrice": "Original price was {price}.",
-            "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "originalPrice": "Il prezzo originale era {price}.",
+            "currentPrice": "Il prezzo corrente è {price}.",
+            "range": "Prezzo da {minValue} a {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -630,7 +712,7 @@
             "title": "Controlla il saldo",
             "description": "Puoi controllare il saldo e ottenere informazioni sul tuo buono regalo inserendo il codice nella casella sottostante.",
             "inputLabel": "Codice",
-            "inputPlaceholder": "xxx-xxx-xxx-xxx",
+            "inputPlaceholder": "XXX-XXX-XXX-XXX",
             "purchasedDateLabel": "Acquistato",
             "senderLabel": "Da",
             "Errors": {
@@ -663,15 +745,25 @@
                 "expiryCheckboxLabel": "Riconosco che questo buono regalo scadrà il {expiryDate}",
                 "ctaLabel": "Aggiungi al carrello",
                 "Errors": {
-                    "amountRequired": "Seleziona o inserisci un importo del buono regalo.",
-                    "amountInvalid": "Seleziona un importo valido per il buono regalo.",
-                    "amountOutOfRange": "Inserisci un importo compreso tra {minAmount} e {maxAmount}.",
-                    "unexpectedSettingsError": "Si è verificato un errore imprevisto durante il recupero delle impostazioni del buono regalo. Riprova più tardi."
+                    "amountRequired": "Seleziona o inserisci un importo del buono regalo",
+                    "amountInvalid": "Seleziona un importo valido per il buono regalo",
+                    "amountOutOfRange": "Inserisci un importo compreso tra {minAmount} e {maxAmount}",
+                    "unexpectedSettingsError": "Si è verificato un errore imprevisto durante il recupero delle impostazioni del buono regalo. Riprova più tardi.",
+                    "senderNameRequired": "Il tuo nome è obbligatorio",
+                    "senderEmailRequired": "La tua e-mail è obbligatoria",
+                    "recipientNameRequired": "Il nome del destinatario è obbligatorio",
+                    "recipientEmailRequired": "L'e-mail del destinatario è obbligatoria",
+                    "emailInvalid": "Inserisci un indirizzo e-mail valido",
+                    "checkboxRequired": "Devi spuntare questa casella per continuare"
                 }
             }
         }
     },
     "Form": {
-        "optional": "facoltativo"
+        "optional": "facoltativo",
+        "Errors": {
+            "invalidInput": "Controlla i dati inseriti e riprova",
+            "invalidFormat": "Il valore inserito non corrisponde al formato richiesto"
+        }
     }
 }
