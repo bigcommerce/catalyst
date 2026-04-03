@@ -1,13 +1,9 @@
 import { cookies } from 'next/headers';
-import { z } from 'zod';
 
-import { decode } from '../decoder';
-import { encode } from '../encoder';
 import { ConsentCookieSchema } from '../schema';
 
-import { CONSENT_COOKIE_NAME, ONE_YEAR_SECONDS } from './constants';
-
-type ConsentCookie = z.infer<typeof ConsentCookieSchema>;
+import { CONSENT_COOKIE_NAME } from './constants';
+import { parseCompactFormat } from './parse-compact-format';
 
 export const getConsentCookie = async () => {
   const cookieStore = await cookies();
@@ -15,18 +11,11 @@ export const getConsentCookie = async () => {
 
   if (!cookie) return null;
 
-  return decode(cookie);
-};
+  try {
+    const consent = parseCompactFormat(cookie);
 
-export const setConsentCookie = async (consent: ConsentCookie) => {
-  const cookieStore = await cookies();
-
-  cookieStore.set({
-    name: CONSENT_COOKIE_NAME,
-    value: encode(consent),
-    path: '/',
-    maxAge: ONE_YEAR_SECONDS,
-    sameSite: 'lax',
-    secure: true,
-  });
+    return ConsentCookieSchema.parse(consent);
+  } catch {
+    return null;
+  }
 };

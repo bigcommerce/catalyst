@@ -54,6 +54,8 @@
             "password": "Senha",
             "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
+            "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+            "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
             "CreateAccount": {
                 "title": "Cliente novo?",
                 "accountBenefits": "Crie uma conta conosco para poder:",
@@ -197,7 +199,13 @@
             "currentPassword": "Senha atual",
             "newPassword": "Nova senha",
             "confirmPassword": "Confirmar senha",
-            "cta": "Atualizar"
+            "cta": "Atualizar",
+            "NewsletterSubscription": {
+                "title": "Marketing preferences",
+                "label": "Inscreva-se no nosso boletim informativo.",
+                "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         }
     },
     "Wishlist": {
@@ -352,6 +360,8 @@
         "cartCombined": "Percebemos que você tinha itens salvos em um carrinho anterior, então colocamos esses itens no carrinho atual para você.",
         "cartRestored": "Você iniciou um carrinho em outro dispositivo, e restauramos esse carrinho aqui para que você possa continuar de onde parou.",
         "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Resumo",
             "subTotal": "Subtotal",
@@ -363,7 +373,7 @@
                 "couponCode": "Código de cupom",
                 "removeCouponCode": "Remover código de cupom",
                 "invalidCouponCode": "Digite um código de cupom válido",
-                "cartNotFound": "Nenhum cookie cartId foi encontrado."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Envio",
@@ -380,7 +390,7 @@
                 "shippingOptions": "Opções de envio",
                 "updateShipping": "Atualizar envio",
                 "addShipping": "Adicionar envio",
-                "cartNotFound": "Nenhum cookie cartId foi encontrado.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Não há opções de envio disponíveis para o seu endereço"
             }
         },
@@ -392,7 +402,7 @@
             "to": "para",
             "message": "Mensagem",
             "invalidGiftCertificate": "Please enter a valid gift certificate code",
-            "cartNotFound": "Nenhum cookie cartId foi encontrado."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Seu carrinho está vazio.",
@@ -400,7 +410,7 @@
             "cta": "Continuar comprando"
         },
         "Errors": {
-            "cartNotFound": "Nenhum cookie cartId foi encontrado.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Item de linha não encontrado.",
             "failedToUpdateQuantity": "Não foi possível atualizar a quantidade.",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
@@ -439,7 +449,8 @@
             "decreaseNumber": "Diminuir número",
             "thumbnail": "Visualizar número da imagem",
             "additionalInformation": "Outras informações",
-            "currentStock": "Current stock: {quantity, number}",
+            "currentStock": "{quantity, number} in stock",
+            "backorderQuantity": "{quantity, number} will be on backorder",
             "Submit": {
                 "addToCart": "Adicionar ao carrinho",
                 "outOfStock": "Fora do estoque",
@@ -467,7 +478,19 @@
             "title": "Avaliações",
             "empty": "Nenhuma avaliação foi adicionada para este produto.",
             "previous": "Avaliações anteriores",
-            "next": "Próximas avaliações"
+            "next": "Próximas avaliações",
+            "Form": {
+                "button": "Write a review",
+                "title": "Write a review",
+                "submit": "Enviar",
+                "ratingLabel": "Taxa",
+                "titleLabel": "Título",
+                "reviewLabel": "Avaliação",
+                "nameLabel": "Nome",
+                "emailLabel": "Email",
+                "successMessage": "Your review has been submitted successfully!",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +537,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrinho",
-                "search": "Abrir pop-up de pesquisa"
+                "search": "Abrir pop-up de pesquisa",
+                "giftCertificates": "Vales-presente"
             },
             "SwitchCurrency": {
                 "label": "Switch currency",
@@ -538,13 +562,18 @@
             "socialMediaLinks": "Links de redes sociais",
             "categories": "Categorias",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Vales-presente"
         },
         "Subscribe": {
             "title": "Assine nosso boletim informativo",
             "placeholder": "Digite seu email",
             "description": "Fique por dentro das últimas novidades e ofertas da nossa loja.",
-            "success": "Agradecemos o seu interesse! O recurso de newsletter estará disponível em breve!"
+            "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+            "Errors": {
+                "invalidEmail": "Informe um endereço de email válido.",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -555,7 +584,8 @@
             },
             "CookieBanner": {
                 "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+                "privacyPolicy": "Política de privacidade"
             },
             "Dialog": {
                 "title": "Privacy Settings",
@@ -583,6 +613,11 @@
                     "description": "These cookies help us provide a better user experience and test new features."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -595,7 +630,7 @@
             "title": "Check balance",
             "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
             "inputLabel": "Código",
-            "inputPlaceholder": "Informe o código",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Comprados",
             "senderLabel": "De",
             "Errors": {
@@ -635,5 +670,8 @@
                 }
             }
         }
+    },
+    "Form": {
+        "optional": "Opcional"
     }
 }

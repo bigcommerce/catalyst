@@ -42,7 +42,9 @@ const getAnalyticsData = async (cartId: string) => {
     return [];
   }
 
-  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].filter(
+    (item) => !item.parentEntityId, // Only include top-level items
+  );
 
   return lineItems.map((item) => {
     return {
@@ -65,6 +67,7 @@ export default async function Cart({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Cart');
+  const tGiftCertificates = await getTranslations('GiftCertificates');
   const format = await getFormatter();
   const cartId = await getCartId();
 
@@ -99,7 +102,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.giftCertificates,
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
-  ];
+  ].filter((item) => !('parentEntityId' in item) || !item.parentEntityId);
 
   const formattedLineItems = lineItems.map((item) => {
     if (item.__typename === 'CartGiftCertificate') {
@@ -130,6 +133,10 @@ export default async function Cart({ params }: Props) {
       price: format.number(item.listPrice.value, {
         style: 'currency',
         currency: item.listPrice.currencyCode,
+      }),
+      salePrice: format.number(item.salePrice.value, {
+        style: 'currency',
+        currency: item.salePrice.currencyCode,
       }),
       subtitle: item.selectedOptions
         .map((option) => {
@@ -278,6 +285,7 @@ export default async function Cart({ params }: Props) {
                   giftCertificateCodes: checkout?.giftCertificates.map((gc) => gc.code) ?? [],
                   ctaLabel: t('GiftCertificate.apply'),
                   label: t('GiftCertificate.giftCertificateCode'),
+                  placeholder: tGiftCertificates('CheckBalance.inputPlaceholder'),
                   removeLabel: t('GiftCertificate.removeGiftCertificate'),
                 }
               : undefined

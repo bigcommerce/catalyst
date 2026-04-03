@@ -1,10 +1,12 @@
 'use client';
 
-import { CookieBanner as C15TCookieBanner, CookieBannerProps } from '@c15t/nextjs';
+import { CookieBanner as C15TCookieBanner, CookieBannerProps } from '@c15t/nextjs/client';
 import { useTranslations } from 'next-intl';
 import { PropsWithChildren } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
+
+import { Link } from '../link';
 
 function CookieBannerTitle() {
   const t = useTranslations('Components.ConsentManager.CookieBanner');
@@ -16,12 +18,26 @@ function CookieBannerTitle() {
   );
 }
 
-function CookieBannerDescription() {
+function CookieBannerDescription({ privacyPolicyUrl }: { privacyPolicyUrl?: string | null }) {
   const t = useTranslations('Components.ConsentManager.CookieBanner');
 
   return (
     <C15TCookieBanner.Description asChild>
-      <div className="font-body">{t('description')}</div>
+      <div className="prose font-body">
+        {t('description')}
+        {typeof privacyPolicyUrl === 'string' && (
+          <>
+            {' '}
+            <Link
+              className="rounded-lg ring-primary ring-offset-4 focus:outline-0 focus-visible:ring-2"
+              href={privacyPolicyUrl}
+              target="_blank"
+            >
+              {t('privacyPolicy')}
+            </Link>
+          </>
+        )}
+      </div>
     </C15TCookieBanner.Description>
   );
 }
@@ -76,7 +92,8 @@ export function CookieBanner({
   disableAnimation,
   scrollLock,
   trapFocus,
-}: CookieBannerProps) {
+  privacyPolicyUrl,
+}: CookieBannerProps & { privacyPolicyUrl?: string | null }) {
   return (
     <C15TCookieBanner.Root
       disableAnimation={disableAnimation}
@@ -88,7 +105,7 @@ export function CookieBanner({
       <C15TCookieBanner.Card className="!max-w-lg">
         <C15TCookieBanner.Header>
           <CookieBannerTitle />
-          <CookieBannerDescription />
+          <CookieBannerDescription privacyPolicyUrl={privacyPolicyUrl} />
         </C15TCookieBanner.Header>
         <CookieBannerFooter>
           <C15TCookieBanner.FooterSubGroup>

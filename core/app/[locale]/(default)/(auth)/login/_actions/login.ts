@@ -48,6 +48,16 @@ export const login = async (
       error.type === 'CallbackRouteError' &&
       error.cause &&
       error.cause.err instanceof BigCommerceGQLError &&
+      error.cause.err.message.includes('Reset password"')
+    ) {
+      return submission.reply({ formErrors: [t('passwordResetRequired')] });
+    }
+
+    if (
+      error instanceof AuthError &&
+      error.type === 'CallbackRouteError' &&
+      error.cause &&
+      error.cause.err instanceof BigCommerceGQLError &&
       error.cause.err.message.includes('Invalid credentials')
     ) {
       return submission.reply({ formErrors: [t('invalidCredentials')] });

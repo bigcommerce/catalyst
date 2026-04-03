@@ -54,6 +54,8 @@
             "password": "Passord",
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
+            "passwordResetRequired": "Krever tilbakestilling av passord. Kontroller e-posten din for instruksjoner om hvordan du tilbakestiller passordet.",
+            "invalidToken": "Innloggingskoblingen din er ugyldig eller har utløpt. Prøv å logge inn igjen.",
             "CreateAccount": {
                 "title": "Ny kunde?",
                 "accountBenefits": "Opprett en konto hos oss, så kan du:",
@@ -197,7 +199,13 @@
             "currentPassword": "Nåværende passord",
             "newPassword": "Nytt passord",
             "confirmPassword": "Bekreft passord",
-            "cta": "Oppdater"
+            "cta": "Oppdater",
+            "NewsletterSubscription": {
+                "title": "Markedsføringsinnstillinger",
+                "label": "Abonner på nyhetsbrevet vårt.",
+                "marketingPreferencesUpdated": "Markedsføringsinnstillingene er oppdatert!",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         }
     },
     "Wishlist": {
@@ -352,6 +360,8 @@
         "cartCombined": "Vi la merke til at du hadde varer lagret i en tidligere handlekurv, så vi har lagt dem til i din nåværende handlekurv for deg.",
         "cartRestored": "Du startet en handlekurv på en annen enhet, og vi har gjenopprettet den her, slik at du kan fortsette der du slapp.",
         "cartUpdateInProgress": "Du har en handlekurvoppdatering i gang. Er du sikker på at du vil forlate denne siden? Endringene kan gå tapt.",
+        "originalPrice": "Original price was {price}.",
+        "currentPrice": "Current price is {price}.",
         "CheckoutSummary": {
             "title": "Sammendrag",
             "subTotal": "Delsum",
@@ -363,7 +373,7 @@
                 "couponCode": "Kupongkode",
                 "removeCouponCode": "Fjern kupongkode",
                 "invalidCouponCode": "Skriv inn en gyldig kupongkode",
-                "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+                "cartNotFound": "Det oppsto en feil da du hentet handlekurven din"
             },
             "Shipping": {
                 "shipping": "Frakt",
@@ -380,7 +390,7 @@
                 "shippingOptions": "Fraktalternativer",
                 "updateShipping": "Oppdater forsendelse",
                 "addShipping": "Legg til forsendelse",
-                "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet.",
+                "cartNotFound": "Det oppsto en feil da du hentet handlekurven din",
                 "noShippingOptions": "Det finnes ingen tilgjengelige forsendelsesalternativer for adressen din"
             }
         },
@@ -392,7 +402,7 @@
             "to": "Til",
             "message": "Melding",
             "invalidGiftCertificate": "Skriv inn en gyldig gavekortkode",
-            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+            "cartNotFound": "Det oppsto en feil da du hentet handlekurven din"
         },
         "Empty": {
             "title": "Handlekurven din er tom.",
@@ -400,7 +410,7 @@
             "cta": "Fortsett å handle"
         },
         "Errors": {
-            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet.",
+            "cartNotFound": "Det oppsto en feil da du hentet handlekurven din",
             "lineItemNotFound": "Linjeelement ikke funnet.",
             "failedToUpdateQuantity": "Kan ikke oppdatere antall.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
@@ -439,7 +449,8 @@
             "decreaseNumber": "Reduser tall",
             "thumbnail": "Vis bildets nummer",
             "additionalInformation": "Mer informasjon",
-            "currentStock": "Nåværende lagerbeholdning: {mengde, antall}",
+            "currentStock": "{antall, nummer} på lager",
+            "backorderQuantity": "{antall, nummer} vil være restordre",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",
@@ -467,7 +478,19 @@
             "title": "Anmeldelser",
             "empty": "Ingen anmeldelser har blitt lagt til for dette produktet.",
             "previous": "Tidligere anmeldelser",
-            "next": "Neste anmeldelser"
+            "next": "Neste anmeldelser",
+            "Form": {
+                "button": "Skriv en anmeldelse",
+                "title": "Skriv en anmeldelse",
+                "submit": "Send inn",
+                "ratingLabel": "Vurdering",
+                "titleLabel": "Tittel",
+                "reviewLabel": "Anmeldelse",
+                "nameLabel": "Navn",
+                "emailLabel": "E-post",
+                "successMessage": "Din anmeldelse er sendt inn!",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +537,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Handlekurv",
-                "search": "Åpne popup-vinduet for søk"
+                "search": "Åpne popup-vinduet for søk",
+                "giftCertificates": "Gavekort"
             },
             "SwitchCurrency": {
                 "label": "Bytt valuta",
@@ -538,13 +562,18 @@
             "socialMediaLinks": "Lenker til sosiale medier",
             "categories": "Kategorier",
             "brands": "merker",
-            "navigate": "Naviger"
+            "navigate": "Naviger",
+            "giftCertificates": "Gavekort"
         },
         "Subscribe": {
             "title": "Meld deg på nyhetsbrevet vårt",
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
-            "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
+            "subscribedToNewsletter": "Du har abonnert på nyhetsbrevet vårt.",
+            "Errors": {
+                "invalidEmail": "Skriv inn en gyldig e-postadresse.",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -555,7 +584,8 @@
             },
             "CookieBanner": {
                 "title": "Vi verdsetter personvernet ditt",
-                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold."
+                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold.",
+                "privacyPolicy": "Personvernerklæring"
             },
             "Dialog": {
                 "title": "Personverninnstillinger",
@@ -583,6 +613,11 @@
                     "description": "Disse informasjonskapslene hjelper oss med å gi en bedre brukeropplevelse og teste nye funksjoner."
                 }
             }
+        },
+        "Price": {
+            "originalPrice": "Original price was {price}.",
+            "currentPrice": "Current price is {price}.",
+            "range": "Price from {minValue} to {maxValue}."
         }
     },
     "GiftCertificates": {
@@ -595,7 +630,7 @@
             "title": "Sjekk saldo",
             "description": "Du kan sjekke saldoen og få informasjon om gavekortet ved å skrive inn koden i boksen nedenfor.",
             "inputLabel": "Kode",
-            "inputPlaceholder": "Skriv inn kode",
+            "inputPlaceholder": "xxx-xxx-xxx-xxx",
             "purchasedDateLabel": "Kjøpt",
             "senderLabel": "Fra",
             "Errors": {
@@ -635,5 +670,8 @@
                 }
             }
         }
+    },
+    "Form": {
+        "optional": "valgfri"
     }
 }

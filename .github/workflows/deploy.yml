@@ -1,0 +1,81 @@
+name: Production Tag Deployment
+env:
+    # secrets is for dependabot compatibility; prefer vars when available
+    VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID != '' && vars.VERCEL_ORG_ID || secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID != '' && vars.VERCEL_PROJECT_ID || secrets.VERCEL_PROJECT_ID }}
+on:
+    push:
+        tags:
+            - "@bigcommerce/catalyst-core@latest"
+            - "@bigcommerce/catalyst-makeswift@latest"
+            - "@bigcommerce/catalyst-b2b-makeswift@latest"
+jobs:
+    deploy-tag:
+        name: Deploy `${{ github.ref_name }}` tag
+        runs-on: ubuntu-latest
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref_name }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install Vercel CLI
+              run: npm install --global vercel@latest
+
+            - name: Configure catalyst-core deployment
+              if: contains(github.ref_name, 'catalyst-core@')
+              run: |
+                  echo "DOMAIN=catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.CORE_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.CORE_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
+
+            - name: Configure catalyst-makeswift deployment
+              if: contains(github.ref_name, 'catalyst-makeswift@')
+              run: |
+                  echo "DOMAIN=makeswift.catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
+                  echo "MAKESWIFT_KEY=${{ secrets.MAKESWIFT_SITE_API_KEY }}" >> $GITHUB_ENV
+
+            - name: Configure catalyst-b2b-makeswift deployment
+              if: contains(github.ref_name, 'catalyst-b2b-makeswift@')
+              run: |
+                  echo "DOMAIN=b2b-makeswift.catalyst-demo.site" >> $GITHUB_ENV
+                  echo "CHANNEL_ID=${{ vars.B2B_MAKESWIFT_BIGCOMMERCE_CHANNEL_ID }}" >> $GITHUB_ENV
+                  echo "STOREFRONT_TOKEN=${{ secrets.B2B_MAKESWIFT_BIGCOMMERCE_STOREFRONT_TOKEN }}" >> $GITHUB_ENV
+                  echo "MAKESWIFT_KEY=${{ secrets.B2B_MAKESWIFT_SITE_API_KEY }}" >> $GITHUB_ENV
+                  echo "B2B_API_HOST=${{ vars.B2B_API_HOST }}" >> $GITHUB_ENV
+                  echo "BIGCOMMERCE_ACCESS_TOKEN=${{ secrets.B2B_BIGCOMMERCE_ACCESS_TOKEN }}" >> $GITHUB_ENV
+
+            - name: Deploy to Vercel
+              id: deploy
+              timeout-minutes: 15
+              env:
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+              run: |
+                  DEPLOY_ARGS=(
+                    --token="$VERCEL_TOKEN"
+                    --env BIGCOMMERCE_CHANNEL_ID="$CHANNEL_ID"
+                    --env BIGCOMMERCE_STOREFRONT_TOKEN="$STOREFRONT_TOKEN"
+                  )
+
+                  if [[ -n "$MAKESWIFT_KEY" ]]; then
+                    DEPLOY_ARGS+=(--env MAKESWIFT_SITE_API_KEY="$MAKESWIFT_KEY")
+                  fi
+
+                  if [[ -n "$B2B_API_HOST" ]]; then
+                    DEPLOY_ARGS+=(--env B2B_API_HOST="$B2B_API_HOST")
+                  fi
+
+                  if [[ -n "$BIGCOMMERCE_ACCESS_TOKEN" ]]; then
+                    DEPLOY_ARGS+=(--env BIGCOMMERCE_ACCESS_TOKEN="$BIGCOMMERCE_ACCESS_TOKEN")
+                  fi
+
+                  DEPLOYMENT_URL=$(vercel deploy "${DEPLOY_ARGS[@]}")
+                  echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+            - name: Set Vercel Domain Alias
+              timeout-minutes: 5
+              env:
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+              run: |
+                  vercel alias ${{ steps.deploy.outputs.deployment_url }} $DOMAIN --token="$VERCEL_TOKEN"

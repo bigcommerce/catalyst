@@ -16,6 +16,7 @@ import { extendedPage, toHaveURL } from './page';
 import { PromotionFixture } from './promotion';
 import { RedirectsFixture } from './redirects';
 import { SettingsFixture } from './settings';
+import { SubscribeFixture } from './subscribe';
 import { WebPageFixture } from './webpage';
 
 interface Fixtures {
@@ -27,6 +28,7 @@ interface Fixtures {
   promotion: PromotionFixture;
   redirects: RedirectsFixture;
   settings: SettingsFixture;
+  subscribe: SubscribeFixture;
   webPage: WebPageFixture;
   /**
    * 'reuseCustomerSession' sets the the configuration for the customer fixture and determines whether to reuse the customer session.
@@ -128,6 +130,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(settingsFixture);
 
       await settingsFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  subscribe: [
+    async ({ page }, use, currentTest) => {
+      const subscribeFixture = new SubscribeFixture(page, currentTest);
+
+      await use(subscribeFixture);
+
+      await subscribeFixture.cleanup();
     },
     { scope: 'test' },
   ],

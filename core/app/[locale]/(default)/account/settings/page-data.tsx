@@ -6,9 +6,9 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
 
-const CustomerSettingsQuery = graphql(
+const AccountSettingsQuery = graphql(
   `
-    query CustomerSettingsQuery(
+    query AccountSettingsQuery(
       $customerFilters: FormFieldFiltersInput
       $customerSortBy: FormFieldSortInput
       $addressFilters: FormFieldFiltersInput
@@ -20,6 +20,7 @@ const CustomerSettingsQuery = graphql(
         firstName
         lastName
         company
+        isSubscribedToNewsletter
       }
       site {
         settings {
@@ -31,6 +32,9 @@ const CustomerSettingsQuery = graphql(
               ...FormFieldsFragment
             }
           }
+          newsletter {
+            showNewsletterSignup
+          }
         }
       }
     }
@@ -38,7 +42,7 @@ const CustomerSettingsQuery = graphql(
   [FormFieldsFragment],
 );
 
-type Variables = VariablesOf<typeof CustomerSettingsQuery>;
+type Variables = VariablesOf<typeof AccountSettingsQuery>;
 
 interface Props {
   address?: {
@@ -52,11 +56,11 @@ interface Props {
   };
 }
 
-export const getCustomerSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
+export const getAccountSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
-    document: CustomerSettingsQuery,
+    document: AccountSettingsQuery,
     variables: {
       addressFilters: address?.filters,
       addressSortBy: address?.sortBy,
@@ -70,6 +74,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
   const customerInfo = response.data.customer;
+  const newsletterSettings = response.data.site.settings?.newsletter;
 
   if (!addressFields || !customerFields || !customerInfo) {
     return null;
@@ -79,5 +84,6 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
     addressFields,
     customerFields,
     customerInfo,
+    newsletterSettings,
   };
 });

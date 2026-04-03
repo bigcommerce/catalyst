@@ -10,9 +10,10 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { clsx } from 'clsx';
 import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
+import { ReactNode, startTransition, useActionState, useCallback, useEffect, useMemo } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -24,7 +25,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
-import { SelectField } from '@/vibes/soul/form/select-field';
+import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -46,6 +47,19 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
+export interface StockDisplayData {
+  stockLevelMessage?: string | null;
+  backorderAvailabilityPrompt?: string | null;
+}
+
+export interface BackorderDisplayData {
+  availableOnHand: number;
+  availableForBackorder: number;
+  unlimitedBackorder: boolean;
+  showQuantityOnBackorder: boolean;
+  backorderMessage: string | null;
+}
+
 export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
@@ -60,6 +74,8 @@ export interface ProductDetailFormProps<F extends Field> {
   additionalActions?: ReactNode;
   minQuantity?: number;
   maxQuantity?: number;
+  stockDisplayData?: StockDisplayData;
+  backorderDisplayData?: BackorderDisplayData;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -76,10 +92,13 @@ export function ProductDetailForm<F extends Field>({
   additionalActions,
   minQuantity,
   maxQuantity,
+  stockDisplayData,
+  backorderDisplayData,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
   const events = useEvents();
+  const t = useTranslations('Product.ProductDetails');
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -100,10 +119,35 @@ export function ProductDetailForm<F extends Field>({
   const defaultValue = fields.reduce<{
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
   }>(
-    (acc, field) => ({
-      ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue,
-    }),
+    (acc, field) => {
+      // Checkbox field has to be handled separately because we want to convert checked or unchecked value to true or undefined respectively.
+      // This is because the form expects a boolean value, but we want to store the checked or unchecked value in the query params.
+      if (field.type === 'checkbox') {
+        if (params[field.name] === field.checkedValue) {
+          return {
+            ...acc,
+            [field.name]: 'true',
+          };
+        }
+
+        if (params[field.name] === field.uncheckedValue) {
+          return {
+            ...acc,
+            [field.name]: undefined,
+          };
+        }
+
+        return {
+          ...acc,
+          [field.name]: field.defaultValue, // Default value is either 'true' or undefined
+        };
+      }
+
+      return {
+        ...acc,
+        [field.name]: params[field.name] ?? field.defaultValue,
+      };
+    },
     { quantity: minQuantity ?? 1 },
   );
 
@@ -124,7 +168,6 @@ export function ProductDetailForm<F extends Field>({
     }
   }, [lastResult, successMessage, router]);
 
-  const t = useTranslations('Product.ProductDetails');
   const { isQuotesEnabled, isAddingToQuote, addProductsToQuote } = useAddToQuote();
   const { isShoppingListEnabled, isAddingToShoppingList, addProductToShoppingList } =
     useAddToShoppingList();
@@ -173,14 +216,53 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
+  const backorderMessages = useMemo(() => {
+    const {
+      availableForBackorder,
+      availableOnHand,
+      backorderMessage,
+      showQuantityOnBackorder,
+      unlimitedBackorder,
+    } = backorderDisplayData || { availableForBackorder: 0, availableOnHand: 0 };
+
+    if (!showQuantityOnBackorder && !backorderMessage) {
+      return undefined;
+    }
+
+    const orderQuantity = Number(formFields.quantity.value);
+
+    if (Number.isNaN(orderQuantity) || orderQuantity <= availableOnHand) {
+      return {
+        backorderQuantityMessage: undefined,
+        backorderInfoMessage: undefined,
+      };
+    }
+
+    if (!showQuantityOnBackorder) {
+      return {
+        backorderQuantityMessage: undefined,
+        backorderInfoMessage: backorderMessage ?? undefined,
+      };
+    }
+
+    return {
+      backorderQuantityMessage: t('backorderQuantity', {
+        quantity: unlimitedBackorder
+          ? orderQuantity - availableOnHand
+          : Math.min(orderQuantity - availableOnHand, availableForBackorder),
+      }),
+      backorderInfoMessage: backorderMessage ?? undefined,
+    };
+  }, [backorderDisplayData, formFields.quantity.value, t]);
+
   const quantityControl = useInputControl(formFields.quantity);
 
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction} className="py-8">
+      <form {...getFormProps(form)} action={formAction}>
         <input name="id" type="hidden" value={productId} />
-        <div className="space-y-6">
+        <div className="space-y-6 pb-8">
           {fields.map((field) => {
             return (
               <FormField
@@ -199,7 +281,53 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          <div className="flex gap-x-3 pt-3">
+
+          <div className="h-[3.2rem] sm:h-[2.6rem]">
+            {!!stockDisplayData?.stockLevelMessage && (
+              <div
+                className={clsx(
+                  'flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
+                  'transition-transform duration-200 ease-in-out',
+                  backorderMessages?.backorderQuantityMessage ||
+                    backorderMessages?.backorderInfoMessage
+                    ? 'translate-y-0'
+                    : 'translate-y-[calc(100%+4px)]',
+                )}
+              >
+                <div className="flex-none whitespace-nowrap font-semibold text-black">
+                  {stockDisplayData.stockLevelMessage}
+                </div>
+                {!!stockDisplayData.backorderAvailabilityPrompt && (
+                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
+                    {stockDisplayData.backorderAvailabilityPrompt}
+                  </div>
+                )}
+              </div>
+            )}
+            {!!backorderMessages && (
+              <div
+                className={clsx(
+                  'mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
+                  'ease-initial transition-opacity',
+                  backorderMessages.backorderQuantityMessage ||
+                    backorderMessages.backorderInfoMessage
+                    ? 'duration-400 opacity-100'
+                    : 'opacity-0 delay-0 duration-100',
+                )}
+              >
+                <div className="flex-none whitespace-nowrap font-semibold text-black">
+                  {backorderMessages.backorderQuantityMessage}
+                </div>
+                {!!backorderMessages.backorderInfoMessage && (
+                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
+                    {backorderMessages.backorderInfoMessage}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-x-3">
             <NumberInput
               aria-label={quantityLabel}
               decrementLabel={decrementLabel}
@@ -283,20 +411,22 @@ function FormField({
 }) {
   const controls = useInputControl(formField);
 
-  const [params, setParams] = useQueryStates(
+  const [, setParams] = useQueryStates(
     field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
   );
 
   const handleChange = useCallback(
     (value: string) => {
-      // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || params[field.name];
+      // Checkbox field has to be handled separately because we want to convert 'true' or '' to the checked or unchecked value respectively.
+      if (field.type === 'checkbox') {
+        void setParams({ [field.name]: value ? field.checkedValue : field.uncheckedValue });
+      } else {
+        void setParams({ [field.name]: value || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+      }
 
-      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
-
-      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
+      controls.change(value || ''); // If fieldValue is falsey, we set it to an empty string
     },
-    [setParams, field, controls, params],
+    [setParams, field, controls],
   );
 
   const handleOnOptionMouseEnter = (value: string) => {
@@ -388,7 +518,7 @@ function FormField({
 
     case 'select':
       return (
-        <SelectField
+        <Select
           errors={formField.errors}
           key={formField.id}
           label={field.label}

@@ -7,7 +7,8 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 import { z } from 'zod';
 
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
+import { Field } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
@@ -19,7 +20,6 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { GiftCertificateSettingsFragment } from '../fragment';
 
 interface State {
-  fields: Array<Field | FieldGroup<Field>>;
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
 }
@@ -100,8 +100,9 @@ const schema = (
     });
 };
 
-export async function addGiftCertificateToCart(
-  prevState: State,
+export async function addGiftCertificateToCart<F extends Field>(
+  _args: DynamicFormActionArgs<F>,
+  _prevState: State,
   formData: FormData,
 ): Promise<State> {
   const t = await getTranslations('GiftCertificates.Purchase');
@@ -117,7 +118,7 @@ export async function addGiftCertificateToCart(
   });
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply(), fields: prevState.fields };
+    return { lastResult: submission.reply() };
   }
 
   const amountFormatted = format.number(submission.value.amount, {
@@ -148,7 +149,6 @@ export async function addGiftCertificateToCart(
 
     return {
       lastResult: submission.reply(),
-      fields: prevState.fields,
       successMessage: t.rich('successMessage', {
         cartLink: (chunks) => (
           <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
@@ -168,27 +168,23 @@ export async function addGiftCertificateToCart(
             return message;
           }),
         }),
-        fields: prevState.fields,
       };
     }
 
     if (error instanceof MissingCartError) {
       return {
         lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-        fields: prevState.fields,
       };
     }
 
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
-        fields: prevState.fields,
       };
     }
 
     return {
       lastResult: submission.reply({ formErrors: [t('unknownError')] }),
-      fields: prevState.fields,
     };
   }
 }

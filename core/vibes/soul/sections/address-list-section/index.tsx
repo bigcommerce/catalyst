@@ -29,14 +29,23 @@ export interface DefaultAddressConfiguration {
   id: string | null;
 }
 
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
+type Action<F extends Field, S, P> = (
+  fields: Array<F | FieldGroup<F>>,
+  state: Awaited<S>,
+  payload: P,
+) => S | Promise<S>;
 
-interface State<A extends Address, F extends Field> {
+interface State<A extends Address> {
   addresses: A[];
   defaultAddress?: DefaultAddressConfiguration;
   lastResult: SubmissionResult | null;
-  fields: Array<F | FieldGroup<F>>;
 }
+
+type DynamicAddressListFormAction<F extends Field, A extends Address> = Action<
+  F,
+  State<A>,
+  FormData
+>;
 
 export interface AddressListSectionProps<A extends Address, F extends Field> {
   title?: string;
@@ -44,7 +53,7 @@ export interface AddressListSectionProps<A extends Address, F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   minimumAddressCount?: number;
   defaultAddress?: DefaultAddressConfiguration;
-  addressAction: Action<State<A, F>, FormData>;
+  addressAction: DynamicAddressListFormAction<F, A>;
   editLabel?: string;
   deleteLabel?: string;
   updateLabel?: string;
@@ -87,14 +96,15 @@ export function AddressListSection<A extends Address, F extends Field>({
   setDefaultLabel = 'Set as default',
   emptyStateTitle = "You don't have any addresses",
 }: AddressListSectionProps<A, F>) {
-  const [state, formAction] = useActionState(addressAction, {
+  const actionWithFields = addressAction.bind(null, fields);
+
+  const [state, formAction] = useActionState(actionWithFields, {
     addresses,
     defaultAddress,
     lastResult: null,
-    fields,
   });
 
-  const [optimisticState, setOptimisticState] = useOptimistic<State<Address, F>, FormData>(
+  const [optimisticState, setOptimisticState] = useOptimistic<State<Address>, FormData>(
     state,
     (prevState, formData) => {
       const intent = formData.get('intent');
@@ -170,7 +180,7 @@ export function AddressListSection<A extends Address, F extends Field>({
           <div className="border-b border-[var(--address-list-section-border,hsl(var(--contrast-100)))] pb-6 pt-5">
             <div className="w-[480px] space-y-4">
               <DynamicForm
-                action={(_prevState, formData) => {
+                action={(_args, _prevState, formData) => {
                   setShowNewAddressForm(false);
 
                   startTransition(() => {
@@ -179,13 +189,12 @@ export function AddressListSection<A extends Address, F extends Field>({
                   });
 
                   return {
-                    fields: optimisticState.fields,
                     lastResult: optimisticState.lastResult,
                   };
                 }}
                 buttonSize="small"
                 cancelLabel={cancelLabel}
-                fields={optimisticState.fields.map((field) => {
+                fields={fields.map((field) => {
                   if ('name' in field && field.name === 'id') {
                     return {
                       ...field,
@@ -206,7 +215,7 @@ export function AddressListSection<A extends Address, F extends Field>({
         )}
         {!isEmpty ? (
           optimisticState.addresses.map((address) => {
-            const addressFields = optimisticState.fields.map<F | FieldGroup<F>>((field) => {
+            const addressFields = fields.map((field) => {
               if (Array.isArray(field)) {
                 return field.map((f) => {
                   return {
@@ -230,7 +239,7 @@ export function AddressListSection<A extends Address, F extends Field>({
                 {activeAddressIds.includes(address.id) ? (
                   <div className="w-[480px] space-y-4">
                     <DynamicForm
-                      action={(_prevState, formData) => {
+                      action={(_args, _prevState, formData) => {
                         setActiveAddressIds((prev) => prev.filter((id) => id !== address.id));
 
                         startTransition(() => {
@@ -239,7 +248,6 @@ export function AddressListSection<A extends Address, F extends Field>({
                         });
 
                         return {
-                          fields: optimisticState.fields,
                           lastResult: optimisticState.lastResult,
                         };
                       }}

@@ -13,13 +13,13 @@ test('Blog is accessible and displays posts', async ({ page, blog }) => {
 
   const breadcrumbs = page.getByLabel('breadcrumb');
 
-  await expect(breadcrumbs.getByText(t('home'))).toBeVisible();
-  await expect(breadcrumbs.getByText(name)).toBeVisible();
+  await expect(breadcrumbs.getByText(t('home')).first()).toBeVisible();
+  await expect(breadcrumbs.getByText(name).first()).toBeVisible();
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   posts.forEach(async (post) => {
     await expect(
-      page.locator(`a[href*="${post.path}"]`).filter({ hasText: post.title }),
+      page.locator(`a[href*="${post.path}"]`).filter({ hasText: post.title }).first(),
     ).toBeVisible();
   });
 });

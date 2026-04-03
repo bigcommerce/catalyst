@@ -1,5 +1,8 @@
+'use client';
+
 import * as LabelPrimitive from '@radix-ui/react-label';
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 import { ComponentPropsWithoutRef } from 'react';
 
 // eslint-disable-next-line valid-jsdoc
@@ -17,8 +20,15 @@ import { ComponentPropsWithoutRef } from 'react';
 export function Label({
   className,
   colorScheme = 'light',
+  required,
+  children,
   ...rest
-}: ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & { colorScheme?: 'light' | 'dark' }) {
+}: ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & {
+  colorScheme?: 'light' | 'dark';
+  required?: boolean;
+}) {
+  const t = useTranslations('Form');
+
   return (
     <LabelPrimitive.Root
       {...rest}
@@ -30,6 +40,9 @@ export function Label({
         }[colorScheme],
         className,
       )}
-    />
+    >
+      {children}
+      {!required && <span className="ml-1 normal-case">({t('optional')})</span>}
+    </LabelPrimitive.Root>
   );
 }

@@ -33,6 +33,7 @@ export const RenameWishlistModal = ({
         onChange={(e) => {
           defaultValue.current = e.target.value;
         }}
+        required
       />
       {state.lastResult?.status === 'error' && (
         <div className="mt-4">

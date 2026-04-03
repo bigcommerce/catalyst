@@ -6,6 +6,7 @@ import { clsx } from 'clsx';
 import { ArrowRight } from 'lucide-react';
 import { useActionState } from 'react';
 
+import { FieldError } from '@/vibes/soul/form/field-error';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Button } from '@/vibes/soul/primitives/button';
 
@@ -40,14 +41,14 @@ export function InlineEmailForm({
     shouldRevalidate: 'onInput',
   });
 
-  const { errors = [] } = fields.email;
-
   return (
     <form {...getFormProps(form)} action={formAction} className={clsx('space-y-2', className)}>
       <div
         className={clsx(
           'relative rounded-xl border bg-background text-base transition-colors duration-200 focus-within:border-primary focus:outline-none',
-          errors.length ? 'border-error' : 'border-black',
+          form.errors?.length || fields.email.errors?.length
+            ? 'border-error focus-within:border-error'
+            : 'border-black focus-within:border-primary',
         )}
       >
         <input
@@ -70,7 +71,10 @@ export function InlineEmailForm({
           </Button>
         </div>
       </div>
-      {errors.map((error, index) => (
+      {fields.email.errors?.map((error) => (
+        <FieldError key={error}>{error}</FieldError>
+      ))}
+      {form.errors?.map((error, index) => (
         <FormStatus key={index} type="error">
           {error}
         </FormStatus>

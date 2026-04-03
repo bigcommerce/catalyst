@@ -32,6 +32,8 @@ export const BcProductSchema = z.object({
 
 export type BcProductSchema = z.infer<typeof BcProductSchema>;
 
+export type { Product };
+
 export function useBcProductToVibesProduct(): (product: BcProductSchema) => Product {
   const format = useFormatter();
 

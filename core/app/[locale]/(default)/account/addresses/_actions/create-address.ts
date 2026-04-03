@@ -196,7 +196,11 @@ function parseAddAddressInput(
   return inputSchema.parse(mappedInput);
 }
 
-export async function createAddress(prevState: Awaited<State>, formData: FormData): Promise<State> {
+export async function createAddress(
+  fields: Array<Field | FieldGroup<Field>>,
+  prevState: Awaited<State>,
+  formData: FormData,
+): Promise<State> {
   const t = await getTranslations('Account.Addresses');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -210,7 +214,7 @@ export async function createAddress(prevState: Awaited<State>, formData: FormDat
   }
 
   try {
-    const input = parseAddAddressInput(submission.value, prevState.fields);
+    const input = parseAddAddressInput(submission.value, fields);
 
     const response = await client.fetch({
       document: AddCustomerAddressMutation,
@@ -242,7 +246,6 @@ export async function createAddress(prevState: Awaited<State>, formData: FormDat
       ],
       lastResult: submission.reply({ resetForm: true }),
       defaultAddress: prevState.defaultAddress,
-      fields: prevState.fields,
     };
   } catch (error) {
     // eslint-disable-next-line no-console

@@ -22,29 +22,36 @@ export const facetsTransformer = async ({
   const { filters } = PublicToPrivateParams.parse(searchParams);
 
   return allFacets.map((facet) => {
-    const refinedFacet = refinedFacets.find((f) => f.name === facet.name);
+    const refinedFacet = refinedFacets.find((f) => f.displayName === facet.displayName);
+
+    if (refinedFacet == null) {
+      return null;
+    }
 
     if (facet.__typename === 'CategorySearchFilter') {
       const refinedCategorySearchFilter =
-        refinedFacet?.__typename === 'CategorySearchFilter' ? refinedFacet : null;
+        refinedFacet.__typename === 'CategorySearchFilter' ? refinedFacet : null;
 
       return {
         type: 'toggle-group' as const,
         paramName: 'categoryIn',
-        label: facet.name,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.categories.map((category) => {
           const refinedCategory = refinedCategorySearchFilter?.categories.find(
             (c) => c.entityId === category.entityId,
           );
           const isSelected = filters.categoryEntityIds?.includes(category.entityId) === true;
+          const disabled = refinedCategory == null && !isSelected;
+          const productCountLabel = disabled ? '' : ` (${category.productCount})`;
+          const label = facet.displayProductCount
+            ? `${category.name}${productCountLabel}`
+            : category.name;
 
           return {
-            label: facet.displayProductCount
-              ? `${category.name} (${category.productCount})`
-              : category.name,
+            label,
             value: category.entityId.toString(),
-            disabled: refinedCategory == null && !isSelected,
+            disabled,
           };
         }),
       };
@@ -52,23 +59,28 @@ export const facetsTransformer = async ({
 
     if (facet.__typename === 'BrandSearchFilter') {
       const refinedBrandSearchFilter =
-        refinedFacet?.__typename === 'BrandSearchFilter' ? refinedFacet : null;
+        refinedFacet.__typename === 'BrandSearchFilter' ? refinedFacet : null;
 
       return {
         type: 'toggle-group' as const,
         paramName: 'brand',
-        label: facet.name,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.brands.map((brand) => {
           const refinedBrand = refinedBrandSearchFilter?.brands.find(
             (b) => b.entityId === brand.entityId,
           );
           const isSelected = filters.brandEntityIds?.includes(brand.entityId) === true;
+          const disabled = refinedBrand == null && !isSelected;
+          const productCountLabel = disabled ? '' : ` (${brand.productCount})`;
+          const label = facet.displayProductCount
+            ? `${brand.name}${productCountLabel}`
+            : brand.name;
 
           return {
-            label: facet.displayProductCount ? `${brand.name} (${brand.productCount})` : brand.name,
+            label,
             value: brand.entityId.toString(),
-            disabled: refinedBrand == null && !isSelected,
+            disabled,
           };
         }),
       };
@@ -76,12 +88,12 @@ export const facetsTransformer = async ({
 
     if (facet.__typename === 'ProductAttributeSearchFilter') {
       const refinedProductAttributeSearchFilter =
-        refinedFacet?.__typename === 'ProductAttributeSearchFilter' ? refinedFacet : null;
+        refinedFacet.__typename === 'ProductAttributeSearchFilter' ? refinedFacet : null;
 
       return {
         type: 'toggle-group' as const,
-        paramName: `attr_${facet.filterName}`,
-        label: facet.filterName,
+        paramName: `attr_${facet.filterKey}`,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.attributes.map((attribute) => {
           const refinedAttribute = refinedProductAttributeSearchFilter?.attributes.find(
@@ -92,12 +104,16 @@ export const facetsTransformer = async ({
             filters.productAttributes?.some((attr) => attr.values.includes(attribute.value)) ===
             true;
 
+          const disabled = refinedAttribute == null && !isSelected;
+          const productCountLabel = disabled ? '' : ` (${attribute.productCount})`;
+          const label = facet.displayProductCount
+            ? `${attribute.value}${productCountLabel}`
+            : attribute.value;
+
           return {
-            label: facet.displayProductCount
-              ? `${attribute.value} (${attribute.productCount})`
-              : attribute.value,
+            label,
             value: attribute.value,
-            disabled: refinedAttribute == null && !isSelected,
+            disabled,
           };
         }),
       };
@@ -105,13 +121,13 @@ export const facetsTransformer = async ({
 
     if (facet.__typename === 'RatingSearchFilter') {
       const refinedRatingSearchFilter =
-        refinedFacet?.__typename === 'RatingSearchFilter' ? refinedFacet : null;
+        refinedFacet.__typename === 'RatingSearchFilter' ? refinedFacet : null;
       const isSelected = filters.rating?.minRating != null;
 
       return {
         type: 'rating' as const,
         paramName: 'minRating',
-        label: facet.name,
+        label: facet.displayName,
         disabled: refinedRatingSearchFilter == null && !isSelected,
         defaultCollapsed: facet.isCollapsedByDefault,
       };
@@ -119,14 +135,14 @@ export const facetsTransformer = async ({
 
     if (facet.__typename === 'PriceSearchFilter') {
       const refinedPriceSearchFilter =
-        refinedFacet?.__typename === 'PriceSearchFilter' ? refinedFacet : null;
+        refinedFacet.__typename === 'PriceSearchFilter' ? refinedFacet : null;
       const isSelected = filters.price?.minPrice != null || filters.price?.maxPrice != null;
 
       return {
         type: 'range' as const,
         minParamName: 'minPrice',
         maxParamName: 'maxPrice',
-        label: facet.name,
+        label: facet.displayName,
         min: facet.selected?.minPrice ?? undefined,
         max: facet.selected?.maxPrice ?? undefined,
         disabled: refinedPriceSearchFilter == null && !isSelected,
@@ -136,7 +152,7 @@ export const facetsTransformer = async ({
 
     if (facet.freeShipping) {
       const refinedFreeShippingSearchFilter =
-        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.freeShipping
+        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.freeShipping
           ? refinedFacet
           : null;
       const isSelected = filters.isFreeShipping === true;
@@ -158,7 +174,7 @@ export const facetsTransformer = async ({
 
     if (facet.isFeatured) {
       const refinedIsFeaturedSearchFilter =
-        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.isFeatured
+        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.isFeatured
           ? refinedFacet
           : null;
       const isSelected = filters.isFeatured === true;
@@ -180,7 +196,7 @@ export const facetsTransformer = async ({
 
     if (facet.isInStock) {
       const refinedIsInStockSearchFilter =
-        refinedFacet?.__typename === 'OtherSearchFilter' && refinedFacet.isInStock
+        refinedFacet.__typename === 'OtherSearchFilter' && refinedFacet.isInStock
           ? refinedFacet
           : null;
       const isSelected = filters.hideOutOfStock === true;

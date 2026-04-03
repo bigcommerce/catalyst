@@ -36,17 +36,26 @@ import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
-import { Field, FieldGroup, schema } from './schema';
+import { Field, FieldGroup, PasswordComplexitySettings, schema } from './schema';
+import { removeOptionsFromFields } from './utils';
 
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
-
-interface State<F extends Field> {
+export interface DynamicFormActionArgs<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
+  passwordComplexity?: PasswordComplexitySettings | null;
+}
+
+type Action<F extends Field, S, P> = (
+  args: DynamicFormActionArgs<F>,
+  state: Awaited<S>,
+  payload: P,
+) => S | Promise<S>;
+
+interface State {
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
 }
 
-export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
+export type DynamicFormAction<F extends Field> = Action<F, State, FormData>;
 
 export interface DynamicFormProps<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
@@ -59,11 +68,12 @@ export interface DynamicFormProps<F extends Field> {
   onCancel?: (e: MouseEvent<HTMLButtonElement>) => void;
   onChange?: (e: FormEvent<HTMLFormElement>) => void;
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
+  passwordComplexity?: PasswordComplexitySettings | null;
 }
 
 export function DynamicForm<F extends Field>({
   action,
-  fields: defaultFields,
+  fields,
   buttonSize = 'medium',
   cancelLabel = 'Cancel',
   submitLabel = 'Submit',
@@ -72,13 +82,19 @@ export function DynamicForm<F extends Field>({
   onCancel,
   onChange,
   onSuccess,
+  passwordComplexity,
 }: DynamicFormProps<F>) {
-  const [{ lastResult, fields, successMessage }, formAction] = useActionState(action, {
-    fields: defaultFields,
+  // Remove options from fields before passing to action to reduce payload size
+  // Options are only needed for rendering, not for processing form submissions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const fieldsWithoutOptions = removeOptionsFromFields(fields) as Array<F | FieldGroup<F>>;
+  const actionWithFields = action.bind(null, { fields: fieldsWithoutOptions, passwordComplexity });
+
+  const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
     lastResult: null,
   });
 
-  const dynamicSchema = schema(fields);
+  const dynamicSchema = schema(fields, passwordComplexity);
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
     .reduce<z.infer<typeof dynamicSchema>>(
@@ -269,7 +285,7 @@ function DynamicFormField({
           onBlur={controls.blur}
           onCheckedChange={(value) => controls.change(String(value))}
           onFocus={controls.focus}
-          required={formField.required}
+          required={field.required}
           value={controls.value}
         />
       );
@@ -283,6 +299,7 @@ function DynamicFormField({
           name={formField.name}
           onValueChange={controls.change}
           options={field.options}
+          required={field.required}
           value={Array.isArray(controls.value) ? controls.value : []}
         />
       );

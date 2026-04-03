@@ -2,13 +2,20 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
+import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
-import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
+import { ReviewForm, SubmitReviewAction } from '@/vibes/soul/sections/reviews/review-form';
 
-import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
+import {
+  BackorderDisplayData,
+  ProductDetailForm,
+  ProductDetailFormAction,
+  StockDisplayData,
+} from './product-detail-form';
+import { RatingLink } from './rating-link';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -20,6 +27,9 @@ interface ProductDetailProduct {
   subtitle?: string;
   badge?: string;
   rating?: Streamable<number | null>;
+  reviewsEnabled?: boolean;
+  showRating?: boolean;
+  numberOfReviews?: number;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
   accordions?: Streamable<
@@ -30,7 +40,8 @@ interface ProductDetailProduct {
   >;
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
-  stockLevelMessage?: Streamable<string | null>;
+  stockDisplayData?: Streamable<StockDisplayData | null>;
+  backorderDisplayData?: Streamable<BackorderDisplayData | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -48,6 +59,15 @@ export interface ProductDetailProps<F extends Field> {
   thumbnailLabel?: string;
   additionalInformationTitle?: string;
   additionalActions?: ReactNode;
+  reviewFormEmailLabel?: string;
+  reviewFormModalTitle?: string;
+  reviewFormNameLabel?: string;
+  reviewFormRatingLabel?: string;
+  reviewFormReviewLabel?: string;
+  reviewFormSubmitLabel?: string;
+  reviewFormTitleLabel?: string;
+  reviewFormAction: SubmitReviewAction;
+  user: Streamable<{ email: string; name: string }>;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -80,6 +100,15 @@ export function ProductDetail<F extends Field>({
   thumbnailLabel,
   additionalInformationTitle = 'Additional information',
   additionalActions,
+  reviewFormEmailLabel,
+  reviewFormModalTitle,
+  reviewFormNameLabel,
+  reviewFormRatingLabel,
+  reviewFormReviewLabel,
+  reviewFormSubmitLabel,
+  reviewFormTitleLabel,
+  reviewFormAction,
+  user,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -108,27 +137,50 @@ export function ProductDetail<F extends Field>({
                   <h1 className="mb-3 mt-2 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
-                  <div className="group/product-rating">
-                    <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                      {(rating) => <Rating rating={rating ?? 0} />}
-                    </Stream>
-                  </div>
+                  {product.reviewsEnabled && (
+                    <div className="group/product-rating">
+                      <ReviewForm
+                        action={reviewFormAction}
+                        formEmailLabel={reviewFormEmailLabel}
+                        formModalTitle={reviewFormModalTitle}
+                        formNameLabel={reviewFormNameLabel}
+                        formRatingLabel={reviewFormRatingLabel}
+                        formReviewLabel={reviewFormReviewLabel}
+                        formSubmitLabel={reviewFormSubmitLabel}
+                        formTitleLabel={reviewFormTitleLabel}
+                        productId={Number(product.id)}
+                        streamableImages={product.images}
+                        streamableProduct={{ name: product.title }}
+                        streamableUser={user}
+                        trigger={
+                          <AnimatedUnderline className="cursor-pointer">
+                            Write a review
+                          </AnimatedUnderline>
+                        }
+                      />
+                    </div>
+                  )}
+                  {product.showRating && (
+                    <div className="group/product-rating">
+                      <Stream
+                        fallback={<RatingSkeleton />}
+                        value={Streamable.all([product.rating, product.numberOfReviews])}
+                      >
+                        {([rating, numberOfReviews]) => (
+                          <RatingLink
+                            numberOfReviews={numberOfReviews ?? 0}
+                            rating={rating ?? 0}
+                            scrollTargetId="reviews"
+                          />
+                        )}
+                      </Stream>
+                    </div>
+                  )}
                   <div className="group/product-price">
                     <Stream fallback={<PriceLabelSkeleton />} value={product.price}>
                       {(price) => (
                         <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                       )}
-                    </Stream>
-                  </div>
-                  <div className="group/product-stock-level mb-8 sm:mb-2 md:mb-0">
-                    <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
-                      {(stockLevelMessage) =>
-                        Boolean(stockLevelMessage) && (
-                          <p className="text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-                            {stockLevelMessage}
-                          </p>
-                        )
-                      }
                     </Stream>
                   </div>
                   <div className="group/product-gallery mb-8 @2xl:hidden">
@@ -158,12 +210,23 @@ export function ProductDetail<F extends Field>({
                         streamableCtaDisabled,
                         product.minQuantity,
                         product.maxQuantity,
+                        product.stockDisplayData,
+                        product.backorderDisplayData,
                       ])}
                     >
-                      {([fields, ctaLabel, ctaDisabled, minQuantity, maxQuantity]) => (
+                      {([
+                        fields,
+                        ctaLabel,
+                        ctaDisabled,
+                        minQuantity,
+                        maxQuantity,
+                        stockDisplayData,
+                        backorderDisplayData,
+                      ]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
+                          backorderDisplayData={backorderDisplayData ?? undefined}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
@@ -175,6 +238,7 @@ export function ProductDetail<F extends Field>({
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}
+                          stockDisplayData={stockDisplayData ?? undefined}
                         />
                       )}
                     </Stream>
@@ -242,10 +306,6 @@ function ProductGallerySkeleton() {
 
 function PriceLabelSkeleton() {
   return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
-}
-
-function ProductStockSkeleton() {
-  return <Skeleton.Box className="my-3 h-2 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {

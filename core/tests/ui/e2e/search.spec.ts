@@ -14,7 +14,7 @@ test('Typing in the search bar displays quick search results', async ({ page, ca
 
   await expect(page.getByRole('heading', { name: t('Search.categories') })).toBeVisible();
   await expect(page.getByRole('heading', { name: t('Search.brands') })).toBeVisible();
-  await expect(page.getByRole('heading', { name: t('Search.products') })).toBeVisible();
+  await expect(page.getByRole('heading', { name: t('Search.products') }).first()).toBeVisible();
 
   const searchResultLocator = page.getByRole('region', { name: t('Search.products') });
 

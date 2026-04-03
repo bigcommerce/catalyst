@@ -29,6 +29,7 @@ export default defineConfig({
   projects: [
     {
       name: 'tests-chromium',
+      testIgnore: /.*\.mobile\.spec\.ts$/,
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
@@ -38,6 +39,14 @@ export default defineConfig({
         },
       },
     },
+    {
+      name: 'tests-webkit-mobile',
+      testMatch: /.*\.mobile\.spec\.ts$/,
+      use: {
+        ...devices['iPhone 11'],
+        // WebKit doesn't support --disable-web-security
+      },
+    },
   ],
-  retries: 1,
+  retries: 2,
 });

@@ -6,7 +6,7 @@ import {
   ConsentManagerDialogProps,
   ConsentManagerWidgetProps,
   useConsentManager,
-} from '@c15t/nextjs';
+} from '@c15t/nextjs/client';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 

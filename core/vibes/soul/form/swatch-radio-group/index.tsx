@@ -58,7 +58,16 @@ export const SwatchRadioGroup = React.forwardRef<
   }
 >(
   (
-    { label, options, errors, className, colorScheme = 'light', onOptionMouseEnter, ...rest },
+    {
+      label,
+      options,
+      errors,
+      className,
+      colorScheme = 'light',
+      onOptionMouseEnter,
+      required,
+      ...rest
+    },
     ref,
   ) => {
     const id = React.useId();
@@ -66,7 +75,7 @@ export const SwatchRadioGroup = React.forwardRef<
     return (
       <div className={clsx('space-y-2', className)}>
         {label !== undefined && label !== '' && (
-          <Label colorScheme={colorScheme} id={id}>
+          <Label colorScheme={colorScheme} id={id} required={required}>
             {label}
           </Label>
         )}
@@ -75,12 +84,13 @@ export const SwatchRadioGroup = React.forwardRef<
           aria-labelledby={id}
           className="flex flex-wrap gap-1"
           ref={ref}
+          required={required}
         >
           {options.map((option) => (
             <RadioGroupPrimitive.Item
               aria-label={option.label}
               className={clsx(
-                'data-disabled:pointer-events-none group relative box-content h-8 w-8 rounded-full border p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--swatch-radio-group-focus,hsl(var(--primary)))] [&:disabled>.disabled-icon]:grid',
+                'group relative box-content h-8 w-8 rounded-full border p-0.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--swatch-radio-group-focus,hsl(var(--primary)))] data-[disabled]:pointer-events-none [&:disabled>.disabled-icon]:grid',
                 {
                   light:
                     'hover:border-[var(--swatch-radio-group-light-unchecked-border-hover,hsl(var(--contrast-200)))] data-[state=checked]:border-[var(--swatch-radio-group-light-checked-border,hsl(var(--foreground)))]',
