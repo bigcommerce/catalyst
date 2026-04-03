@@ -1,5 +1,151 @@
 # Changelog
 
+## 1.3.8
+
+### Patch Changes
+
+- [#2773](https://github.com/bigcommerce/catalyst/pull/2773) [`b475a36`](https://github.com/bigcommerce/catalyst/commit/b475a3670a3a9b265e4fddddd506bfea943772cf) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Catalyst has been upgraded to Next.js 15.5.9. This is a patch version upgrade that requires migration steps for existing stores to fix a security vulnerability.
+
+  ## 🔒 Security Update
+
+  **This upgrade addresses a security vulnerability ([CVE-2025-55184 + CVE-2025-55183](https://nextjs.org/blog/security-update-2025-12-11))** that affects React Server Components. These vulnerabilities allow a Denial of Service attack and Source Code Exposure attach. This upgrade includes:
+  - Next.js 15.5.9 with the security patch
+  - React 19.1.4 and React DOM 19.1.4 with the security patch
+
+  **All users are strongly encouraged to upgrade immediately.**
+
+  ## Key Changes
+  - ⚡ **Next.js 15.5.9**: Upgraded from Next.js 15.5.7 to 15.5.9
+  - ⚛️ **React 19**: Upgraded to React 19.1.4 and React DOM 19.1.4
+
+  ## Migration Guide
+
+  ### Update Dependencies
+
+  If you're maintaining a custom Catalyst store, update your `package.json`:
+
+  ```json
+  {
+    "dependencies": {
+      "next": "15.5.9",
+      "react": "19.1.4",
+      "react-dom": "19.1.4"
+    },
+    "devDependencies": {
+      "@next/bundle-analyzer": "15.5.9",
+      "eslint-config-next": "15.5.9"
+    }
+  }
+  ```
+
+  Then run:
+
+  ```bash
+  pnpm install
+  ```
+
+## 1.3.7
+
+### Patch Changes
+
+- [#2764](https://github.com/bigcommerce/catalyst/pull/2764) [`83c5b75`](https://github.com/bigcommerce/catalyst/commit/83c5b758a4a19e76fbb89bcea48f95a3da3f76b4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - # Next.js 15.5.8 Upgrade
+
+  Catalyst has been upgraded to Next.js 15.5.8. This is a patch version upgrade that requires migration steps for existing stores to fix a security vulnerability.
+
+  ## 🔒 Critical Security Update
+
+  **This upgrade addresses a critical security vulnerability ([CVE-2025-55184 + CVE-2025-55183](https://nextjs.org/blog/security-update-2025-12-11))** that affects React Server Components. These vulnerabilities allow a Denial of Service attack and Source Code Exposure attach. This upgrade includes:
+  - Next.js 15.5.8 with the security patch
+  - React 19.1.3 and React DOM 19.1.3 with the security patch
+
+  **All users are strongly encouraged to upgrade immediately.**
+
+  ## Key Changes
+  - ⚡ **Next.js 15.5.8**: Upgraded from Next.js 15.5.7 to 15.5.8
+  - ⚛️ **React 19**: Upgraded to React 19.1.3 and React DOM 19.1.3
+
+  ## Migration Guide
+
+  ### Update Dependencies
+
+  If you're maintaining a custom Catalyst store, update your `package.json`:
+
+  ```json
+  {
+    "dependencies": {
+      "next": "15.5.8",
+      "react": "19.1.3",
+      "react-dom": "19.1.3"
+    },
+    "devDependencies": {
+      "@next/bundle-analyzer": "15.5.8",
+      "eslint-config-next": "15.5.8"
+    }
+  }
+  ```
+
+  Then run:
+
+  ```bash
+  pnpm install
+  ```
+
+## 1.3.6
+
+### Patch Changes
+
+- [#2746](https://github.com/bigcommerce/catalyst/pull/2746) [`a0408ee`](https://github.com/bigcommerce/catalyst/commit/a0408ee75d712f30d85860d7ab41667e98fb0d5a) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Pulls in changes from the `@bigcommerce/catalyst-core@1.3.5` patch.
+
+## 1.3.5
+
+### Patch Changes
+
+- [#2736](https://github.com/bigcommerce/catalyst/pull/2736) [`05f40a2`](https://github.com/bigcommerce/catalyst/commit/05f40a2f21d7e815811767e9cd346731d94ab39e) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Enable Makeswift builder to work in different environments by adding `apiOrigin` and `appOrigin` props to `ReactRuntimeProvider`.
+
+  **Action required:** Add the following environment variables:
+  - `NEXT_PUBLIC_MAKESWIFT_API_ORIGIN`
+  - `NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN`
+
+  **Deprecation notice:** `MAKESWIFT_API_ORIGIN` and `MAKESWIFT_APP_ORIGIN` are deprecated and will be removed in v1.4.0. Prefix `MAKESWIFT_API_ORIGIN` and `MAKESWIFT_APP_ORIGIN` with `NEXT_PUBLIC_` to migrate.
+
+## 1.3.4
+
+### Patch Changes
+
+- [#2723](https://github.com/bigcommerce/catalyst/pull/2723) [`dbafb31`](https://github.com/bigcommerce/catalyst/commit/dbafb317fc27c976ae48f23ee4645c9980253a3a) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Noop release to account for typecheck issue.
+
+## 1.3.3
+
+### Patch Changes
+
+- [#2718](https://github.com/bigcommerce/catalyst/pull/2718) [`a66b9ae`](https://github.com/bigcommerce/catalyst/commit/a66b9ae11083bf56135a3c3a00d6974ae2c86593) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Pulls in changes from the @bigcommerce/catalyst-core@1.3.3 patch.
+
+## 1.3.2
+
+### Patch Changes
+
+- [`6c94dec`](https://github.com/bigcommerce/catalyst/commit/6c94dece0f72f2bc74ef67b456f2522475e2f129) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Pulls in changes from the `@bigcommerce/catalyst-core@1.3.2` patch.
+
+## 1.3.1
+
+### Patch Changes
+
+- [#2685](https://github.com/bigcommerce/catalyst/pull/2685) [`bf176c2`](https://github.com/bigcommerce/catalyst/commit/bf176c28bddc17455cab2d217156dc1822e1e86f) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Includes all changes included in the [1.3.1 release](https://github.com/bigcommerce/catalyst/blob/61183ca1cd2957a2ebc114aa1b15a9d5184c8966/core/CHANGELOG.md#131) of `@bigcommerce/catalyst-core`
+
+## 1.3.0
+
+### Minor Changes
+
+- [#2678](https://github.com/bigcommerce/catalyst/pull/2678) [`f121097`](https://github.com/bigcommerce/catalyst/commit/f1210973265b481ec964a71848304f2ca1931162) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Synced the changes made on `canary`. See the 1.3.0 changelog for more details: https://github.com/bigcommerce/catalyst/releases/tag/%40bigcommerce%2Fcatalyst-core%401.3.0
+
+- [#2593](https://github.com/bigcommerce/catalyst/pull/2593) [`9e2f992`](https://github.com/bigcommerce/catalyst/commit/9e2f992a3f6b6e3fcd45a823343859403cda9542) Thanks [@hunterbecton](https://github.com/hunterbecton)! - Create alias for variables for button and button-link components
+
+### Patch Changes
+
+- [#2628](https://github.com/bigcommerce/catalyst/pull/2628) [`d52d6f6`](https://github.com/bigcommerce/catalyst/commit/d52d6f67deef8b957040ee40ee16ca6563510f7c) Thanks [@arvinpoddar](https://github.com/arvinpoddar)! - Switch to using `ReactRuntimeCore` instead of `ReactRuntime`, avoiding the bundling of unused dependencies from some Makeswift builtin components. Also bumps to latest `@makeswift/runtime`.
+
+- [#2621](https://github.com/bigcommerce/catalyst/pull/2621) [`eb2d4e1`](https://github.com/bigcommerce/catalyst/commit/eb2d4e16e61c5822111fa50d8bc27db86cd5e9c4) Thanks [@agurtovoy](https://github.com/agurtovoy)! - Fix locale switcher on localized Makeswift pages with different paths
+
 ## 1.2.0
 
 ### Minor Changes

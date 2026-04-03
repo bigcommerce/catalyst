@@ -29,7 +29,7 @@ export function Maintenance({
   contactEmail,
 }: Props) {
   return (
-    <SectionLayout className={className}>
+    <SectionLayout className={className} containerSize="2xl">
       <div className="mx-auto my-auto max-w-3xl px-4 @xl:px-6 @4xl:px-8">
         {Boolean(logo) && (
           <div className="mb-20">

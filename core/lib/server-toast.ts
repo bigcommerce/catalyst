@@ -35,7 +35,7 @@ async function setToastCookie(data: ServerToastData) {
     sameSite: 'strict',
     path: '/',
     partitioned: true,
-    maxAge: 0,
+    maxAge: 1,
   });
 }
 

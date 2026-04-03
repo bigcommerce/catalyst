@@ -10,9 +10,9 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
 const ResetPasswordMutation = graphql(`
-  mutation ResetPasswordMutation($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
+  mutation ResetPasswordMutation($input: RequestResetPasswordInput!) {
     customer {
-      requestResetPassword(input: $input, reCaptchaV2: $reCaptcha) {
+      requestResetPassword(input: $input) {
         __typename
         errors {
           __typename
@@ -28,8 +28,6 @@ const ResetPasswordMutation = graphql(`
 export const resetPassword = async (
   _lastResult: { lastResult: SubmissionResult | null; successMessage?: string },
   formData: FormData,
-  // TODO: add recaptcha token
-  // reCaptchaToken,
 ): Promise<{ lastResult: SubmissionResult | null; successMessage?: string }> => {
   const t = await getTranslations('Auth.Login.ForgotPassword');
 
@@ -47,7 +45,6 @@ export const resetPassword = async (
           email: submission.value.email,
           path: '/change-password',
         },
-        // ...(reCaptchaToken && { reCaptchaV2: { token: reCaptchaToken } }),
       },
       fetchOptions: {
         cache: 'no-store',

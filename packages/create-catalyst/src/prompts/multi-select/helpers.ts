@@ -1,19 +1,19 @@
 import { Separator } from '@inquirer/core';
 import figures from '@inquirer/figures';
-import chalk from 'chalk';
+import { colorize } from 'consola/utils';
 
 import { Choice, Item, NormalizedChoice, SelectTheme } from './types';
 
 export const selectTheme: SelectTheme = {
   helpMode: 'auto',
   icon: {
-    checked: chalk.green(figures.circleFilled),
+    checked: colorize('green', figures.circleFilled),
     unchecked: figures.circle,
     cursor: figures.pointer,
   },
   style: {
-    description: (text: string) => chalk.cyan(text),
-    disabledChoice: (text: string) => chalk.dim(`- ${text}`),
+    description: (text: string) => colorize('cyan', text),
+    disabledChoice: (text: string) => colorize('dim', `- ${text}`),
     renderSelectedChoices: (selectedChoices) =>
       selectedChoices.map((choice) => choice.short).join(', '),
   },

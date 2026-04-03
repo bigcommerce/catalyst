@@ -20,16 +20,27 @@ export const LayoutQuery = graphql(
   [HeaderFragment, FooterFragment],
 );
 
+const GiftCertificatesEnabledFragment = graphql(`
+  fragment GiftCertificatesEnabledFragment on Settings {
+    giftCertificates(currencyCode: $currencyCode) {
+      isEnabled
+    }
+  }
+`);
+
 export const GetLinksAndSectionsQuery = graphql(
   `
-    query GetLinksAndSectionsQuery {
+    query GetLinksAndSectionsQuery($currencyCode: currencyCode) {
       site {
+        settings {
+          ...GiftCertificatesEnabledFragment
+        }
         ...HeaderLinksFragment
         ...FooterSectionsFragment
       }
     }
   `,
-  [HeaderLinksFragment, FooterSectionsFragment],
+  [HeaderLinksFragment, FooterSectionsFragment, GiftCertificatesEnabledFragment],
 );
 
 const HomePageQuery = graphql(

@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { getLocale as getServerLocale } from 'next-intl/server';
 
 import { getChannelIdFromLocale } from '../channels.config';
-import { backendUserAgent } from '../userAgent';
+import { backendUserAgent } from '../user-agent';
 
 const getLocale = async () => {
   try {

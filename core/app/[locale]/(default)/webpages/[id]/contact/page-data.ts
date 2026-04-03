@@ -24,14 +24,6 @@ const ContactPageQuery = graphql(
           }
         }
       }
-      site {
-        settings {
-          reCaptcha {
-            isEnabledOnStorefront
-            siteKey
-          }
-        }
-      }
     }
   `,
   [BreadcrumbsWebPageFragment],

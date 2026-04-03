@@ -30,6 +30,12 @@ export const FooterFragment = graphql(`
 
 export const FooterSectionsFragment = graphql(`
   fragment FooterSectionsFragment on Site {
+    settings {
+      giftCertificates(currencyCode: $currencyCode) {
+        currencyCode
+        isEnabled
+      }
+    }
     content {
       pages(filters: { parentEntityIds: [0] }) {
         edges {

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect } from 'react';
+import { createContext, PropsWithChildren, useContext, useEffect } from 'react';
 
 import { type Analytics } from '../types';
 
@@ -8,10 +8,12 @@ const AnalyticsContext = createContext<Analytics | null>(null);
 
 interface AnalyticsProviderProps {
   analytics: Analytics | null;
-  children: React.ReactNode;
 }
 
-export const AnalyticsProvider = ({ children, analytics }: AnalyticsProviderProps) => {
+export const AnalyticsProvider = ({
+  children,
+  analytics,
+}: PropsWithChildren<AnalyticsProviderProps>) => {
   useEffect(() => {
     analytics?.initialize();
   }, [analytics]);
