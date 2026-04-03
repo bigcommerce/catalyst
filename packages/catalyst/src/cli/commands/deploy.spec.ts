@@ -399,6 +399,7 @@ describe('autoDetectSecrets', () => {
     vi.stubEnv('BIGCOMMERCE_STOREFRONT_TOKEN', 'token456');
     vi.stubEnv('BIGCOMMERCE_API_HOST', 'api.bigcommerce.com');
     vi.stubEnv('BIGCOMMERCE_GRAPHQL_API_DOMAIN', 'graphql.bigcommerce.com');
+    vi.stubEnv('AUTH_SECRET', 'secret789');
 
     const result = autoDetectSecrets([]);
 
@@ -408,6 +409,7 @@ describe('autoDetectSecrets', () => {
       { type: 'secret', key: 'BIGCOMMERCE_STOREFRONT_TOKEN', value: 'token456' },
       { type: 'secret', key: 'BIGCOMMERCE_API_HOST', value: 'api.bigcommerce.com' },
       { type: 'secret', key: 'BIGCOMMERCE_GRAPHQL_API_DOMAIN', value: 'graphql.bigcommerce.com' },
+      { type: 'secret', key: 'AUTH_SECRET', value: 'secret789' },
     ]);
 
     vi.unstubAllEnvs();

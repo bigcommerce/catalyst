@@ -184,6 +184,7 @@ const AUTO_DETECT_SECRETS = [
   { key: 'BIGCOMMERCE_STOREFRONT_TOKEN', warnIfMissing: true },
   { key: 'BIGCOMMERCE_API_HOST', warnIfMissing: false },
   { key: 'BIGCOMMERCE_GRAPHQL_API_DOMAIN', warnIfMissing: false },
+  { key: 'AUTH_SECRET', warnIfMissing: false },
 ];
 
 export const autoDetectSecrets = (
