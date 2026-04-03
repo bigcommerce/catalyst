@@ -20,3 +20,4 @@ bigcommerce-graphql.d.ts
 coverage/
 .history
 .unlighthouse
+.bigcommerce

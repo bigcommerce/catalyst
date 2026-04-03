@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- [#2563](https://github.com/bigcommerce/catalyst/pull/2563) [`707ec24`](https://github.com/bigcommerce/catalyst/commit/707ec24745b6a0040551328d64657ff40df4e252) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Replace usage of Date.now with performance.now for compatibility with upcoming Next.js Composable Cache feature
+
+- [#2565](https://github.com/bigcommerce/catalyst/pull/2565) [`a27054f`](https://github.com/bigcommerce/catalyst/commit/a27054f4f22013707d40a100b15122c22354c956) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Truncate performance.now to 2 decimal places
+
 ## 1.0.0
 
 ### Major Changes
@@ -11,7 +19,6 @@
 - [#2370](https://github.com/bigcommerce/catalyst/pull/2370) [`20b8788`](https://github.com/bigcommerce/catalyst/commit/20b87882e089438c6183e83a506267e432a4f741) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Remove the `xAuthToken` config parameter from `@bigcommerce/catalyst-client`. The client no longer has any dependency on a BigCommerce access token, now that we have replaced the `/v2/shipping/zones` REST API call with an appropriate GraphQL field (`site.settings.shipping.supportedShippingDestinations`).
 
   Migration:
-
   1. If you are using the version of the client published to NPM, simply ensure you are using at least `@bigcommerce/catalyst-client@0.16.0` or higher.
   2. If you are using the client in your pnpm workspace, simply remove the `xAuthToken` references in `packages/client/src/client.ts` as well as the `fetchShippingZones` method.
   3. Remove the reference to `xAuthToken` in `core/client/index.ts`

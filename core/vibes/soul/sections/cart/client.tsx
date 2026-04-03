@@ -9,11 +9,13 @@ import {
   startTransition,
   useActionState,
   useEffect,
+  useMemo,
   useOptimistic,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
@@ -130,6 +132,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   cart: Cart<LineItem>;
   couponCode?: CouponCode;
   shipping?: Shipping;
+  lineItemActionPendingLabel?: string;
 }
 
 const defaultEmptyState = {
@@ -171,6 +174,7 @@ export function CartClient<LineItem extends CartLineItem>({
   incrementLineItemLabel,
   deleteLineItemLabel,
   lineItemAction,
+  lineItemActionPendingLabel = 'You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.',
   checkoutAction,
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
@@ -180,7 +184,7 @@ export function CartClient<LineItem extends CartLineItem>({
   const events = useEvents();
   const isAddToQuoteEnabled = useB2BQuoteEnabled();
 
-  const [state, formAction] = useActionState(lineItemAction, {
+  const [state, formAction, isLineItemActionPending] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
     lastResult: null,
   });
@@ -194,6 +198,86 @@ export function CartClient<LineItem extends CartLineItem>({
       });
     }
   }, [form.errors]);
+
+  // Prevent page unload when line item action is pending
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (isLineItemActionPending) {
+        event.preventDefault();
+        // eslint-disable-next-line @typescript-eslint/no-deprecated
+        event.returnValue = ''; // Chrome requires returnValue to be set
+
+        return ''; // For older browsers
+      }
+    };
+
+    if (isLineItemActionPending) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isLineItemActionPending]);
+
+  // Prevent client-side navigation when line item action is pending
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (isLineItemActionPending && event.target instanceof HTMLElement) {
+        const link = event.target.closest('a[href]');
+
+        if (
+          link instanceof HTMLAnchorElement &&
+          link.href &&
+          !link.href.startsWith('mailto:') &&
+          !link.href.startsWith('tel:')
+        ) {
+          // eslint-disable-next-line no-alert
+          const shouldNavigate = window.confirm(lineItemActionPendingLabel);
+
+          if (!shouldNavigate) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        isLineItemActionPending &&
+        (event.key === 'Enter' || event.key === ' ') &&
+        event.target instanceof HTMLElement
+      ) {
+        const link = event.target.closest('a[href]');
+
+        if (
+          link instanceof HTMLAnchorElement &&
+          link.href &&
+          !link.href.startsWith('mailto:') &&
+          !link.href.startsWith('tel:')
+        ) {
+          // eslint-disable-next-line no-alert
+          const shouldNavigate = window.confirm(lineItemActionPendingLabel);
+
+          if (!shouldNavigate) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }
+    };
+
+    if (isLineItemActionPending) {
+      document.addEventListener('click', handleClick, true);
+      document.addEventListener('keydown', handleKeyDown, true);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClick, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
+  }, [isLineItemActionPending, lineItemActionPendingLabel]);
 
   const [optimisticLineItems, setOptimisticLineItems] = useOptimistic<CartLineItem[], FormData>(
     state.lineItems,
@@ -231,7 +315,10 @@ export function CartClient<LineItem extends CartLineItem>({
     },
   );
 
-  const optimisticQuantity = optimisticLineItems.reduce((total, item) => total + item.quantity, 0);
+  const optimisticQuantity = useMemo(
+    () => optimisticLineItems.reduce((total, item) => total + item.quantity, 0),
+    [optimisticLineItems],
+  );
 
   if (optimisticQuantity === 0) {
     return <CartEmptyState {...emptyState} />;
@@ -250,7 +337,11 @@ export function CartClient<LineItem extends CartLineItem>({
               {cart.summaryItems.map((summaryItem, index) => (
                 <div className="flex justify-between py-4" key={index}>
                   <dt>{summaryItem.label}</dt>
-                  <dd>{summaryItem.value}</dd>
+                  {isLineItemActionPending ? (
+                    <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
+                  ) : (
+                    <dd>{summaryItem.value}</dd>
+                  )}
                 </div>
               ))}
 
@@ -269,11 +360,19 @@ export function CartClient<LineItem extends CartLineItem>({
             )}
             <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
-              <dl>{cart.total}</dl>
+              {isLineItemActionPending ? (
+                <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
+              ) : (
+                <dd>{cart.total}</dd>
+              )}
             </div>
           </dl>
           <div className="flex flex-col gap-4">
-            <CheckoutButton action={checkoutAction} className="mt-4 w-full">
+            <CheckoutButton
+              action={checkoutAction}
+              className="mt-4 w-full"
+              isCartUpdatePending={isLineItemActionPending}
+            >
               {checkoutLabel}
               <ArrowRight size={20} strokeWidth={1} />
             </CheckoutButton>
@@ -458,10 +557,12 @@ function CounterForm({
 
 function CheckoutButton({
   action,
+  isCartUpdatePending,
   ...props
-}: { action: Action<SubmissionResult | null, FormData> } & ComponentPropsWithoutRef<
-  typeof Button
->) {
+}: {
+  action: Action<SubmissionResult | null, FormData>;
+  isCartUpdatePending: boolean;
+} & ComponentPropsWithoutRef<typeof Button>) {
   const [lastResult, formAction] = useActionState(action, null);
 
   const [form] = useForm({ lastResult });
@@ -476,13 +577,23 @@ function CheckoutButton({
 
   return (
     <form action={formAction}>
-      <SubmitButton {...props} />
+      <SubmitButton {...props} isCartUpdatePending={isCartUpdatePending} />
     </form>
   );
 }
 
-function SubmitButton(props: ComponentPropsWithoutRef<typeof Button>) {
+function SubmitButton({
+  isCartUpdatePending,
+  ...props
+}: { isCartUpdatePending: boolean } & ComponentPropsWithoutRef<typeof Button>) {
   const { pending } = useFormStatus();
 
-  return <Button {...props} disabled={pending} loading={pending} type="submit" />;
+  return (
+    <Button
+      {...props}
+      disabled={pending || isCartUpdatePending}
+      loading={pending || isCartUpdatePending}
+      type="submit"
+    />
+  );
 }
