@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.0.0-alpha.3
+
+### Minor Changes
+
+- [#2972](https://github.com/bigcommerce/catalyst/pull/2972) [`e681933`](https://github.com/bigcommerce/catalyst/commit/e681933ebbe798198e4c1b8f6f20f67dc4ec36ad) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Auto-detect environment variables as deploy secrets.
+
 ## 1.0.0-alpha.2
 
 ### Patch Changes
