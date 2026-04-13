@@ -6,7 +6,8 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
-import { getTranslations } from 'next-intl/server';
+import { unstable_cache } from 'next/cache';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -46,34 +47,63 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const getFooterSections = cache(
-  async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+const getCachedFooterSections = unstable_cache(
+  async (locale: string, currencyCode?: CurrencyCode) => {
     const { data: response } = await client.fetch({
       document: GetLinksAndSectionsQuery,
-      customerAccessToken,
       variables: { currencyCode },
-      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+      locale,
       validateCustomerAccessToken: false,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return readFragment(FooterSectionsFragment, response).site;
   },
+  ['footer-sections'],
+  { revalidate },
 );
 
-const getFooterData = cache(async () => {
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getFooterSections = cache(
+  async (locale: string, customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+    if (customerAccessToken) {
+      const { data: response } = await client.fetch({
+        document: GetLinksAndSectionsQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        locale,
+        validateCustomerAccessToken: false,
+        fetchOptions: { cache: 'no-store' },
+      });
 
-  return readFragment(FooterFragment, response).site;
+      return readFragment(FooterSectionsFragment, response).site;
+    }
+
+    return getCachedFooterSections(locale, currencyCode);
+  },
+);
+
+const getCachedFooterData = unstable_cache(
+  async (locale: string) => {
+    const { data: response } = await client.fetch({
+      document: LayoutQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return readFragment(FooterFragment, response).site;
+  },
+  ['footer-data'],
+  { revalidate },
+);
+
+const getFooterData = cache(async (locale: string) => {
+  return getCachedFooterData(locale);
 });
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
-  const data = await getFooterData();
+  const locale = await getLocale();
+  const data = await getFooterData(locale);
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
@@ -96,7 +126,7 @@ export const Footer = async () => {
   const streamableSections = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
-    const sectionsData = await getFooterSections(customerAccessToken, currencyCode);
+    const sectionsData = await getFooterSections(locale, customerAccessToken, currencyCode);
 
     return [
       {

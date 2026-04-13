@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -47,34 +48,64 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 });
 
-const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
-  const { data: response } = await client.fetch({
-    document: GetLinksAndSectionsQuery,
-    customerAccessToken,
-    variables: { currencyCode },
-    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-    validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getCachedHeaderLinks = unstable_cache(
+  async (locale: string, currencyCode?: CurrencyCode) => {
+    const { data: response } = await client.fetch({
+      document: GetLinksAndSectionsQuery,
+      variables: { currencyCode },
+      locale,
+      validateCustomerAccessToken: false,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return readFragment(HeaderLinksFragment, response).site;
-});
+    return readFragment(HeaderLinksFragment, response).site;
+  },
+  ['header-links'],
+  { revalidate },
+);
 
-const getHeaderData = cache(async () => {
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getHeaderLinks = cache(
+  async (locale: string, customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+    if (customerAccessToken) {
+      const { data: response } = await client.fetch({
+        document: GetLinksAndSectionsQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        locale,
+        validateCustomerAccessToken: false,
+        fetchOptions: { cache: 'no-store' },
+      });
 
-  return readFragment(HeaderFragment, response).site;
+      return readFragment(HeaderLinksFragment, response).site;
+    }
+
+    return getCachedHeaderLinks(locale, currencyCode);
+  },
+);
+
+const getCachedHeaderData = unstable_cache(
+  async (locale: string) => {
+    const { data: response } = await client.fetch({
+      document: LayoutQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return readFragment(HeaderFragment, response).site;
+  },
+  ['header-data'],
+  { revalidate },
+);
+
+const getHeaderData = cache(async (locale: string) => {
+  return getCachedHeaderData(locale);
 });
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
 
-  const data = await getHeaderData();
+  const data = await getHeaderData(locale);
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
@@ -101,7 +132,8 @@ export const Header = async () => {
     ]);
     // const customerAccessToken = await getSessionCustomerAccessToken();
     // const currencyCode = await getPreferredCurrencyCode();
-    const categoryTree = (await getHeaderLinks(customerAccessToken, currencyCode)).categoryTree;
+    const headerLinks = await getHeaderLinks(locale, customerAccessToken, currencyCode);
+    const categoryTree = headerLinks.categoryTree;
 
     /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
@@ -128,8 +160,8 @@ export const Header = async () => {
       getSessionCustomerAccessToken(),
       getPreferredCurrencyCode(),
     ]);
-    const giftCertificateSettings = (await getHeaderLinks(customerAccessToken, currencyCode))
-      .settings?.giftCertificates;
+    const headerLinksData = await getHeaderLinks(locale, customerAccessToken, currencyCode);
+    const giftCertificateSettings = headerLinksData.settings?.giftCertificates;
 
     return giftCertificateSettings?.isEnabled ?? false;
   });

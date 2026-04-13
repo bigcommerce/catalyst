@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -77,15 +78,35 @@ const HomePageQuery = graphql(
   [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
 );
 
-export const getPageData = cache(
-  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+const getCachedPageData = unstable_cache(
+  async (locale: string, currencyCode?: CurrencyCode) => {
     const { data } = await client.fetch({
       document: HomePageQuery,
-      customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data;
+  },
+  ['home-page-data'],
+  { revalidate },
+);
+
+export const getPageData = cache(
+  async (locale: string, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: HomePageQuery,
+        customerAccessToken,
+        variables: { currencyCode },
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data;
+    }
+
+    return getCachedPageData(locale, currencyCode);
   },
 );

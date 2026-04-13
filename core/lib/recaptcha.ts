@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -24,22 +25,30 @@ export const ReCaptchaSettingsQuery = graphql(`
   }
 `);
 
+const getCachedReCaptchaSettings = unstable_cache(
+  async (): Promise<ReCaptchaSettings | null> => {
+    const { data } = await client.fetch({
+      document: ReCaptchaSettingsQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const reCaptcha = data.site.settings?.reCaptcha;
+
+    if (!reCaptcha?.siteKey) {
+      return null;
+    }
+
+    return {
+      isEnabledOnStorefront: reCaptcha.isEnabledOnStorefront,
+      siteKey: reCaptcha.siteKey,
+    };
+  },
+  ['recaptcha-settings'],
+  { revalidate },
+);
+
 export const getReCaptchaSettings = cache(async (): Promise<ReCaptchaSettings | null> => {
-  const { data } = await client.fetch({
-    document: ReCaptchaSettingsQuery,
-    fetchOptions: { next: { revalidate } },
-  });
-
-  const reCaptcha = data.site.settings?.reCaptcha;
-
-  if (!reCaptcha?.siteKey) {
-    return null;
-  }
-
-  return {
-    isEnabledOnStorefront: reCaptcha.isEnabledOnStorefront,
-    siteKey: reCaptcha.siteKey,
-  };
+  return getCachedReCaptchaSettings();
 });
 
 export const getRecaptchaSiteKey = cache(async (): Promise<string | undefined> => {

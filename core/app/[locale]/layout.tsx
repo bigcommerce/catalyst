@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
+import { unstable_cache } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -53,15 +54,29 @@ const RootLayoutMetadataQuery = graphql(
   [WebAnalyticsFragment, ScriptsFragment],
 );
 
-const fetchRootLayoutMetadata = cache(async () => {
-  return await client.fetch({
-    document: RootLayoutMetadataQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedRootLayoutMetadata = unstable_cache(
+  async (locale: string) => {
+    return await client.fetch({
+      document: RootLayoutMetadataQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
+  },
+  ['root-layout-metadata'],
+  { revalidate },
+);
+
+const fetchRootLayoutMetadata = cache(async (locale: string) => {
+  return getCachedRootLayoutMetadata(locale);
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { data } = await fetchRootLayoutMetadata();
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const { data } = await fetchRootLayoutMetadata(locale);
 
   const storeName = data.site.settings?.storeName ?? '';
 
@@ -119,7 +134,7 @@ interface Props extends PropsWithChildren {
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
-  const rootData = await fetchRootLayoutMetadata();
+  const rootData = await fetchRootLayoutMetadata(locale);
   const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
