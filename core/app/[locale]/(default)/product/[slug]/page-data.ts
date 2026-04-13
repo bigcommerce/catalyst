@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -154,16 +155,36 @@ const ProductPageMetadataQuery = graphql(`
   }
 `);
 
-export const getProductPageMetadata = cache(
-  async (entityId: number, customerAccessToken?: string) => {
+const getCachedProductPageMetadata = unstable_cache(
+  async (locale: string, entityId: number) => {
     const { data } = await client.fetch({
       document: ProductPageMetadataQuery,
       variables: { entityId },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
+  },
+  ['product-page-metadata'],
+  { revalidate },
+);
+
+export const getProductPageMetadata = cache(
+  async (locale: string, entityId: number, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: ProductPageMetadataQuery,
+        variables: { entityId },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product;
+    }
+
+    return getCachedProductPageMetadata(locale, entityId);
   },
 );
 
@@ -200,16 +221,38 @@ const ProductQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getCachedProduct = unstable_cache(
+  async (locale: string, entityId: number) => {
+    const { data } = await client.fetch({
+      document: ProductQuery,
+      variables: { entityId },
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return data.site;
-});
+    return data.site;
+  },
+  ['product-data'],
+  { revalidate },
+);
+
+export const getProduct = cache(
+  async (locale: string, entityId: number, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: ProductQuery,
+        variables: { entityId },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site;
+    }
+
+    return getCachedProduct(locale, entityId);
+  },
+);
 
 const StreamableProductVariantInventoryBySkuQuery = graphql(`
   query ProductVariantBySkuQuery($productId: Int!, $sku: String!) {
@@ -249,16 +292,36 @@ const StreamableProductVariantInventoryBySkuQuery = graphql(`
 
 type VariantInventoryVariables = VariablesOf<typeof StreamableProductVariantInventoryBySkuQuery>;
 
-export const getStreamableProductVariantInventory = cache(
-  async (variables: VariantInventoryVariables, customerAccessToken?: string) => {
+const getCachedStreamableProductVariantInventory = unstable_cache(
+  async (locale: string, variables: VariantInventoryVariables) => {
     const { data } = await client.fetch({
       document: StreamableProductVariantInventoryBySkuQuery,
       variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product?.variants;
+  },
+  ['product-variant-inventory'],
+  { revalidate: 60 },
+);
+
+export const getStreamableProductVariantInventory = cache(
+  async (locale: string, variables: VariantInventoryVariables, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: StreamableProductVariantInventoryBySkuQuery,
+        variables,
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product?.variants;
+    }
+
+    return getCachedStreamableProductVariantInventory(locale, variables);
   },
 );
 
@@ -322,16 +385,36 @@ const StreamableProductQuery = graphql(
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
 
-export const getStreamableProduct = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+const getCachedStreamableProduct = unstable_cache(
+  async (locale: string, variables: Variables) => {
     const { data } = await client.fetch({
       document: StreamableProductQuery,
       variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
+  },
+  ['streamable-product'],
+  { revalidate },
+);
+
+export const getStreamableProduct = cache(
+  async (locale: string, variables: Variables, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: StreamableProductQuery,
+        variables,
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product;
+    }
+
+    return getCachedStreamableProduct(locale, variables);
   },
 );
 
@@ -365,16 +448,36 @@ const StreamableProductInventoryQuery = graphql(
 
 type ProductInventoryVariables = VariablesOf<typeof StreamableProductQuery>;
 
-export const getStreamableProductInventory = cache(
-  async (variables: ProductInventoryVariables, customerAccessToken?: string) => {
+const getCachedStreamableProductInventory = unstable_cache(
+  async (locale: string, variables: ProductInventoryVariables) => {
     const { data } = await client.fetch({
       document: StreamableProductInventoryQuery,
       variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
+  },
+  ['streamable-product-inventory'],
+  { revalidate: 60 },
+);
+
+export const getStreamableProductInventory = cache(
+  async (locale: string, variables: ProductInventoryVariables, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: StreamableProductInventoryQuery,
+        variables,
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product;
+    }
+
+    return getCachedStreamableProductInventory(locale, variables);
   },
 );
 
@@ -409,16 +512,36 @@ const ProductPricingAndRelatedProductsQuery = graphql(
   [PricingFragment, FeaturedProductsCarouselFragment],
 );
 
-export const getProductPricingAndRelatedProducts = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+const getCachedProductPricingAndRelatedProducts = unstable_cache(
+  async (locale: string, variables: Variables) => {
     const { data } = await client.fetch({
       document: ProductPricingAndRelatedProductsQuery,
       variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
+  },
+  ['product-pricing-related'],
+  { revalidate },
+);
+
+export const getProductPricingAndRelatedProducts = cache(
+  async (locale: string, variables: Variables, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: ProductPricingAndRelatedProductsQuery,
+        variables,
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.product;
+    }
+
+    return getCachedProductPricingAndRelatedProducts(locale, variables);
   },
 );
 
@@ -440,12 +563,33 @@ const InventorySettingsQuery = graphql(`
   }
 `);
 
-export const getStreamableInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: InventorySettingsQuery,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getCachedInventorySettings = unstable_cache(
+  async (locale: string) => {
+    const { data } = await client.fetch({
+      document: InventorySettingsQuery,
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return data.site.settings?.inventory;
-});
+    return data.site.settings?.inventory;
+  },
+  ['inventory-settings'],
+  { revalidate },
+);
+
+export const getStreamableInventorySettingsQuery = cache(
+  async (locale: string, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const { data } = await client.fetch({
+        document: InventorySettingsQuery,
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return data.site.settings?.inventory;
+    }
+
+    return getCachedInventorySettings(locale);
+  },
+);

@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const productId = Number(slug);
 
-  const product = await getProductPageMetadata(productId, customerAccessToken);
+  const product = await getProductPageMetadata(locale, productId, customerAccessToken);
 
   if (!product) {
     return notFound();
@@ -78,7 +78,7 @@ export default async function Product({ params, searchParams }: Props) {
   const productId = Number(slug);
 
   const [{ product: baseProduct, settings }, recaptchaSiteKey] = await Promise.all([
-    getProduct(productId, customerAccessToken),
+    getProduct(locale, productId, customerAccessToken),
     getRecaptchaSiteKey(),
   ]);
 
@@ -107,7 +107,7 @@ export default async function Product({ params, searchParams }: Props) {
       useDefaultOptionSelections: true,
     };
 
-    const product = await getStreamableProduct(variables, customerAccessToken);
+    const product = await getStreamableProduct(locale, variables, customerAccessToken);
 
     if (!product) {
       return notFound();
@@ -123,7 +123,7 @@ export default async function Product({ params, searchParams }: Props) {
       entityId: Number(productId),
     };
 
-    const product = await getStreamableProductInventory(variables, customerAccessToken);
+    const product = await getStreamableProductInventory(locale, variables, customerAccessToken);
 
     if (!product) {
       return notFound();
@@ -144,7 +144,11 @@ export default async function Product({ params, searchParams }: Props) {
       sku: product.sku,
     };
 
-    const variants = await getStreamableProductVariantInventory(variables, customerAccessToken);
+    const variants = await getStreamableProductVariantInventory(
+      locale,
+      variables,
+      customerAccessToken,
+    );
 
     if (!variants) {
       return undefined;
@@ -174,7 +178,7 @@ export default async function Product({ params, searchParams }: Props) {
       currencyCode,
     };
 
-    return await getProductPricingAndRelatedProducts(variables, customerAccessToken);
+    return await getProductPricingAndRelatedProducts(locale, variables, customerAccessToken);
   });
 
   const streamablePrices = Streamable.from(async () => {
@@ -242,7 +246,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableInventorySettings = Streamable.from(async () => {
-    return await getStreamableInventorySettingsQuery(customerAccessToken);
+    return await getStreamableInventorySettingsQuery(locale, customerAccessToken);
   });
 
   const getBackorderAvailabilityPrompt = ({
