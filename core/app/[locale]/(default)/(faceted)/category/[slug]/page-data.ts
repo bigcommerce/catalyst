@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -58,13 +59,35 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsCategoryFragment],
 );
 
-export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
-  const response = await client.fetch({
-    document: CategoryPageQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getCachedCategoryPageData = unstable_cache(
+  async (locale: string, entityId: number) => {
+    const response = await client.fetch({
+      document: CategoryPageQuery,
+      variables: { entityId },
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return response.data.site;
-});
+    return response.data.site;
+  },
+  ['category-page-data'],
+  { revalidate },
+);
+
+export const getCategoryPageData = cache(
+  async (locale: string, entityId: number, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const response = await client.fetch({
+        document: CategoryPageQuery,
+        variables: { entityId },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return response.data.site;
+    }
+
+    return getCachedCategoryPageData(locale, entityId);
+  },
+);

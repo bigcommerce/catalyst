@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { VariablesOf } from 'gql.tada';
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -42,8 +43,8 @@ const CompareProductsQuery = graphql(`
 
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
-export const getCompareProducts = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+const getCachedCompareProducts = unstable_cache(
+  async (locale: string, variables: Variables) => {
     const parsedVariables = CompareProductsSchema.parse(variables);
 
     if (parsedVariables.entityIds.length === 0) {
@@ -53,10 +54,36 @@ export const getCompareProducts = cache(
     const response = await client.fetch({
       document: CompareProductsQuery,
       variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      locale,
+      fetchOptions: { cache: 'no-store' },
     });
 
     return removeEdgesAndNodes(response.data.site.products);
+  },
+  ['compare-products-faceted'],
+  { revalidate },
+);
+
+export const getCompareProducts = cache(
+  async (locale: string, variables: Variables, customerAccessToken?: string) => {
+    if (customerAccessToken) {
+      const parsedVariables = CompareProductsSchema.parse(variables);
+
+      if (parsedVariables.entityIds.length === 0) {
+        return [];
+      }
+
+      const response = await client.fetch({
+        document: CompareProductsQuery,
+        variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return removeEdgesAndNodes(response.data.site.products);
+    }
+
+    return getCachedCompareProducts(locale, variables);
   },
 );

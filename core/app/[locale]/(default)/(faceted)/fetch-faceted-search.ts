@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -178,8 +179,28 @@ interface ProductSearch {
   filters: SearchProductsFiltersInput;
 }
 
+const getCachedProductSearchResults = unstable_cache(
+  async (locale: string, search: ProductSearch, currencyCode?: CurrencyCode) => {
+    const { limit = 9, after, before, sort, filters } = search;
+    const filterArgs = { filters, sort };
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+    const response = await client.fetch({
+      document: GetProductSearchResultsQuery,
+      variables: { ...filterArgs, ...paginationArgs, currencyCode },
+      locale,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    return response;
+  },
+  ['product-search-results'],
+  { revalidate: 300 },
+);
+
 const getProductSearchResults = cache(
   async (
+    locale: string,
     { limit = 9, after, before, sort, filters }: ProductSearch,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
@@ -187,12 +208,23 @@ const getProductSearchResults = cache(
     const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-    const response = await client.fetch({
-      document: GetProductSearchResultsQuery,
-      variables: { ...filterArgs, ...paginationArgs, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
-    });
+    let response;
+
+    if (customerAccessToken) {
+      response = await client.fetch({
+        document: GetProductSearchResultsQuery,
+        variables: { ...filterArgs, ...paginationArgs, currencyCode },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+    } else {
+      response = await getCachedProductSearchResults(
+        locale,
+        { limit, after, before, sort, filters },
+        currencyCode,
+      );
+    }
 
     const { site } = response.data;
 
@@ -406,6 +438,7 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
 export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (
+    locale: string,
     params: z.input<typeof PublicSearchParamsSchema>,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
@@ -413,6 +446,7 @@ export const fetchFacetedSearch = cache(
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
     return getProductSearchResults(
+      locale,
       {
         after,
         before,

@@ -32,9 +32,14 @@ const getCachedCategory = cache((categoryId: number) => {
 const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsLoader = cache(
-  async (categoryId: number, customerAccessToken?: string) => {
+  async (locale: string, categoryId: number, customerAccessToken?: string) => {
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(
+      locale,
+      cachedCategory,
+      undefined,
+      customerAccessToken,
+    );
     const categoryFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
@@ -75,7 +80,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const categoryId = Number(slug);
 
-  const { category } = await getCategoryPageData(categoryId, customerAccessToken);
+  const { category } = await getCategoryPageData(locale, categoryId, customerAccessToken);
 
   if (!category) {
     return notFound();
@@ -107,6 +112,7 @@ export default async function Category(props: Props) {
   const categoryId = Number(slug);
 
   const { category, settings, categoryTree } = await getCategoryPageData(
+    locale,
     categoryId,
     customerAccessToken,
   );
@@ -130,12 +136,14 @@ export default async function Category(props: Props) {
     const currencyCode = await getPreferredCurrencyCode();
 
     const loadSearchParams = await createCategorySearchParamsLoader(
+      locale,
       categoryId,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
+      locale,
       {
         ...searchParams,
         ...parsedSearchParams,
@@ -182,12 +190,18 @@ export default async function Category(props: Props) {
     const searchParams = await props.searchParams;
 
     const loadSearchParams = await createCategorySearchParamsLoader(
+      locale,
       categoryId,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(
+      locale,
+      cachedCategory,
+      undefined,
+      customerAccessToken,
+    );
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
@@ -234,7 +248,7 @@ export default async function Category(props: Props) {
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProducts(compareIds, customerAccessToken);
+    const products = await getCompareProducts(locale, compareIds, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),

@@ -3,7 +3,8 @@
 import { BigCommerceGQLError, removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { unstable_cache } from 'next/cache';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { SearchResult } from '@/vibes/soul/primitives/navigation';
@@ -83,15 +84,39 @@ export async function search(
 
   const currencyCode = await getPreferredCurrencyCode();
 
-  try {
-    const response = await client.fetch({
-      document: GetQuickSearchResultsQuery,
-      variables: { filters: { searchTerm: submission.value.term }, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+  const locale = await getLocale();
 
-    const { products } = response.data.site.search.searchProducts;
+  const getCachedQuickSearchResults = unstable_cache(
+    async (searchTerm: string, searchCurrencyCode?: string) => {
+      const response = await client.fetch({
+        document: GetQuickSearchResultsQuery,
+        variables: { filters: { searchTerm }, currencyCode: searchCurrencyCode },
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      return response.data.site.search.searchProducts.products;
+    },
+    ['quick-search-results'],
+    { revalidate },
+  );
+
+  try {
+    let products;
+
+    if (customerAccessToken) {
+      const response = await client.fetch({
+        document: GetQuickSearchResultsQuery,
+        variables: { filters: { searchTerm: submission.value.term }, currencyCode },
+        customerAccessToken,
+        locale,
+        fetchOptions: { cache: 'no-store' },
+      });
+
+      products = response.data.site.search.searchProducts.products;
+    } else {
+      products = await getCachedQuickSearchResults(submission.value.term, currencyCode);
+    }
 
     return {
       lastResult: submission.reply(),
