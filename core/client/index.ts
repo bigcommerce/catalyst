@@ -52,9 +52,13 @@ export const client = createClient({
     const requestHeaders: Record<string, string> = {};
     const locale = await getLocale();
 
-    const { getCorrelationId } = await import('./correlation-id');
+    try {
+      const { getCorrelationId } = await import('./correlation-id');
 
-    requestHeaders['X-Correlation-ID'] = getCorrelationId();
+      requestHeaders['X-Correlation-ID'] = getCorrelationId();
+    } catch {
+      // correlation-id imports React.cache which is unavailable during next.config.ts resolution
+    }
 
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
       const { headers } = await import('next/headers');
