@@ -12,6 +12,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { CurrencyCode } from '~/components/header/fragment';
 import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -87,7 +88,7 @@ export async function search(
   const locale = await getLocale();
 
   const getCachedQuickSearchResults = unstable_cache(
-    async (searchTerm: string, searchCurrencyCode?: string) => {
+    async (searchTerm: string, searchCurrencyCode?: CurrencyCode) => {
       const response = await client.fetch({
         document: GetQuickSearchResultsQuery,
         variables: { filters: { searchTerm }, currencyCode: searchCurrencyCode },
