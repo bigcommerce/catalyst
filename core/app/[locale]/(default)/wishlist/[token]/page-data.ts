@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -5,6 +6,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
+import { CurrencyCode } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { WishlistItemFragment } from '~/components/wishlist/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -50,22 +52,36 @@ interface Pagination {
   after?: string | null;
 }
 
+const getCachedPublicWishlist = unstable_cache(
+  async (
+    token: string,
+    limit: number,
+    before: string | null | undefined,
+    after: string | null | undefined,
+    currencyCode?: CurrencyCode,
+  ) => {
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+    const response = await client.fetch({
+      document: PublicWishlistQuery,
+      variables: { ...paginationArgs, currencyCode, token },
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const wishlist = response.data.site.publicWishlist;
+
+    if (!wishlist) {
+      return null;
+    }
+
+    return wishlist;
+  },
+  ['public-wishlist'],
+  { revalidate, tags: [TAGS.customer] },
+);
+
 export const getPublicWishlist = cache(async (token: string, pagination: Pagination) => {
   const { before, after, limit = 9 } = pagination;
   const currencyCode = await getPreferredCurrencyCode();
-  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-  const response = await client.fetch({
-    document: PublicWishlistQuery,
-    variables: { ...paginationArgs, currencyCode, token },
-    // Since the wishlist is public, it's okay that we cache this request
-    fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
-  });
 
-  const wishlist = response.data.site.publicWishlist;
-
-  if (!wishlist) {
-    return null;
-  }
-
-  return wishlist;
+  return getCachedPublicWishlist(token, limit, before, after, currencyCode);
 });

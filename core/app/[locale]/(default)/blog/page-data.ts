@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -72,24 +73,32 @@ interface Pagination {
   after: string | null;
 }
 
-export const getBlog = cache(async () => {
-  const response = await client.fetch({
-    document: BlogQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedBlog = unstable_cache(
+  async () => {
+    const response = await client.fetch({
+      document: BlogQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return response.data.site.content.blog;
+    return response.data.site.content.blog;
+  },
+  ['blog-data'],
+  { revalidate },
+);
+
+export const getBlog = cache(async () => {
+  return getCachedBlog();
 });
 
-export const getBlogPosts = cache(
-  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+const getCachedBlogPosts = unstable_cache(
+  async (tag: string | null, limit: number, before: string | null, after: string | null) => {
     const filterArgs = tag ? { filters: { tags: [tag] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
-      fetchOptions: { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     const { blog } = response.data.site.content;
@@ -98,15 +107,13 @@ export const getBlogPosts = cache(
       return null;
     }
 
-    const format = await getFormatter();
-
     return {
       pageInfo: blog.posts.pageInfo,
       posts: removeEdgesAndNodes(blog.posts).map((post) => ({
         id: String(post.entityId),
         author: post.author,
         content: post.plainTextSummary,
-        date: format.dateTime(new Date(post.publishedDate.utc)),
+        publishedDateUtc: post.publishedDate.utc,
         image: post.thumbnailImage
           ? {
               src: post.thumbnailImage.url,
@@ -115,6 +122,28 @@ export const getBlogPosts = cache(
           : undefined,
         href: post.path,
         title: post.name,
+      })),
+    };
+  },
+  ['blog-posts'],
+  { revalidate },
+);
+
+export const getBlogPosts = cache(
+  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+    const result = await getCachedBlogPosts(tag, limit, before ?? null, after ?? null);
+
+    if (!result) {
+      return null;
+    }
+
+    const format = await getFormatter();
+
+    return {
+      pageInfo: result.pageInfo,
+      posts: result.posts.map((post) => ({
+        ...post,
+        date: format.dateTime(new Date(post.publishedDateUtc)),
       })),
     };
   },

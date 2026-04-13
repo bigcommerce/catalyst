@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { unstable_cache } from 'next/cache';
 import { setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -45,34 +46,42 @@ interface PageLink {
   href: string;
 }
 
+const getCachedWebPageChildren = unstable_cache(
+  async (id: string): Promise<PageLink[]> => {
+    const { data } = await client.fetch({
+      document: WebPageChildrenQuery,
+      variables: { id: decodeURIComponent(id) },
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    if (!data.node) {
+      return [];
+    }
+
+    if (!('children' in data.node)) {
+      return [];
+    }
+
+    const { children } = data.node;
+
+    return removeEdgesAndNodes(children).reduce((acc: PageLink[], child) => {
+      if ('path' in child) {
+        return [...acc, { label: child.name, href: child.path }];
+      }
+
+      if ('link' in child) {
+        return [...acc, { label: child.name, href: child.link }];
+      }
+
+      return acc;
+    }, []);
+  },
+  ['webpage-children'],
+  { revalidate },
+);
+
 const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
-  const { data } = await client.fetch({
-    document: WebPageChildrenQuery,
-    variables: { id: decodeURIComponent(id) },
-    fetchOptions: { next: { revalidate } },
-  });
-
-  if (!data.node) {
-    return [];
-  }
-
-  if (!('children' in data.node)) {
-    return [];
-  }
-
-  const { children } = data.node;
-
-  return removeEdgesAndNodes(children).reduce((acc: PageLink[], child) => {
-    if ('path' in child) {
-      return [...acc, { label: child.name, href: child.path }];
-    }
-
-    if ('link' in child) {
-      return [...acc, { label: child.name, href: child.link }];
-    }
-
-    return acc;
-  }, []);
+  return getCachedWebPageChildren(id);
 });
 
 export default async function WebPageLayout({ params, children }: Props) {

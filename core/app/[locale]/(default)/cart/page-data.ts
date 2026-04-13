@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -336,11 +337,19 @@ const SupportedShippingDestinationsQuery = graphql(`
   }
 `);
 
-export const getShippingCountries = cache(async () => {
-  const { data } = await client.fetch({
-    document: SupportedShippingDestinationsQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+const getCachedShippingCountries = unstable_cache(
+  async () => {
+    const { data } = await client.fetch({
+      document: SupportedShippingDestinationsQuery,
+      fetchOptions: { cache: 'no-store' },
+    });
 
-  return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+    return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+  },
+  ['shipping-countries'],
+  { revalidate },
+);
+
+export const getShippingCountries = cache(async () => {
+  return getCachedShippingCountries();
 });
