@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -59,10 +59,8 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Faceted.Search' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Faceted.Search');
 
   return {
     title: t('title'),
@@ -71,8 +69,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Search(props: Props) {
   const { locale } = await props.params;
-
-  setRequestLocale(locale);
 
   const t = await getTranslations('Faceted');
 

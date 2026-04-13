@@ -1,8 +1,12 @@
 'use client';
 
-import { ComponentPropsWithRef, ComponentRef, forwardRef, useReducer } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import NextLink from 'next/link';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { useRouter } from 'next/navigation';
+import { ComponentPropsWithRef, ComponentRef, forwardRef, Suspense, useReducer } from 'react';
 
-import { Link as NavLink, useRouter } from '../../i18n/routing';
+import { Link as NavLink } from '../../i18n/navigation';
 
 type NextLinkProps = Omit<ComponentPropsWithRef<typeof NavLink>, 'prefetch'>;
 
@@ -13,17 +17,7 @@ interface PrefetchOptions {
 
 type Props = NextLinkProps & PrefetchOptions;
 
-/**
- * This custom `Link` is based on  Next-Intl's `Link` component
- * https://next-intl-docs.vercel.app/docs/routing/navigation#link
- * which adds automatically prefixes for the href with the current locale as necessary
- * and extends with additional prefetching controls, making navigation
- * prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`
- * props, it grants explicit management over when and how prefetching occurs, defaulting to 'hover' for
- * prefetch behavior and 'auto' for prefetch kind. This approach provides a balance between optimizing
- * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
- */
-export const Link = forwardRef<ComponentRef<'a'>, Props>(
+const InnerLink = forwardRef<ComponentRef<'a'>, Props>(
   ({ href, prefetch = 'hover', prefetchKind = 'auto', children, className, ...rest }, ref) => {
     const router = useRouter();
     const [prefetched, setPrefetched] = useReducer(() => true, false);
@@ -64,6 +58,34 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
     );
   },
 );
+
+InnerLink.displayName = 'InnerLink';
+
+/**
+ * This custom `Link` wraps Next-Intl's `Link` component in a Suspense boundary
+ * to support PPR (Partial Prerendering) with cacheComponents. During prerender,
+ * next-intl's Link accesses locale context which is dynamic. The Suspense boundary
+ * provides a static fallback using next/link directly.
+ */
+export const Link = forwardRef<ComponentRef<'a'>, Props>(({ children, ...props }, ref) => {
+  const hrefString = typeof props.href === 'string' ? props.href : (props.href.href ?? '#');
+
+  return (
+    <Suspense
+      fallback={
+        <NextLink className={props.className} href={hrefString} ref={ref}>
+          {children}
+        </NextLink>
+      }
+    >
+      <InnerLink ref={ref} {...props}>
+        {children}
+      </InnerLink>
+    </Suspense>
+  );
+});
+
+Link.displayName = 'Link';
 
 function computePrefetchProp({
   prefetch,

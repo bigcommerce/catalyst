@@ -2,14 +2,12 @@ import { decodeJwt } from 'jose';
 import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, setCartId } from '~/lib/cart';
-import { serverToast } from '~/lib/server-toast';
 
 const LoginMutation = graphql(`
   mutation LoginMutation($email: String!, $password: String!, $cartEntityId: String) {
@@ -86,21 +84,18 @@ const SessionUpdate = z.object({
   }),
 });
 
-async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
-  const t = await getTranslations('Cart');
+// handleLoginCart is in a separate file to avoid pulling next-intl/server
+// (and next/root-params) into the middleware bundle.
+// eslint-disable-next-line @typescript-eslint/no-implied-eval, no-new-func, @typescript-eslint/consistent-type-assertions
+const importHandleLoginCart = new Function('return import("./handle-login-cart")') as () => Promise<
+  typeof import('./handle-login-cart')
+>;
 
-  if (guestCartId === undefined && loginResultCartId !== undefined) {
-    await serverToast.info(t('cartRestored'), { position: 'top-center' });
-  }
+const handleLoginCart = async (guestCartId?: string, loginResultCartId?: string) => {
+  const { handleLoginCart: fn } = await importHandleLoginCart();
 
-  if (loginResultCartId && guestCartId && loginResultCartId !== guestCartId) {
-    await serverToast.info(t('cartCombined'), { position: 'top-center' });
-  }
-
-  if (loginResultCartId) {
-    await setCartId(loginResultCartId);
-  }
-}
+  return fn(guestCartId, loginResultCartId);
+};
 
 async function loginWithPassword(credentials: unknown): Promise<User | null> {
   const { email, password, cartId } = PasswordCredentials.parse(credentials);

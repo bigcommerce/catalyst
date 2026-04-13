@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -27,21 +28,25 @@ interface Props {
   }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Account.Addresses' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Account.Addresses');
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Addresses({ params, searchParams }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
-
+async function AddressesContent({
+  locale,
+  searchParams,
+}: {
+  locale: string;
+  searchParams: Promise<{
+    [key: string]: string | string[] | undefined;
+    before?: string;
+    after?: string;
+  }>;
+}) {
   const [customerAccessToken, t, { before, after }] = await Promise.all([
     getSessionCustomerAccessToken(),
     getTranslations('Account.Addresses'),
@@ -117,5 +122,15 @@ export default async function Addresses({ params, searchParams }: Props) {
       title={t('title')}
       updateLabel={t('update')}
     />
+  );
+}
+
+export default async function Addresses(props: Props) {
+  const { locale } = await props.params;
+
+  return (
+    <Suspense>
+      <AddressesContent locale={locale} searchParams={props.searchParams} />
+    </Suspense>
   );
 }

@@ -1,6 +1,7 @@
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
+import { Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
@@ -78,11 +79,13 @@ async function getPaginationInfo(
   return pageInfoTransformer(wishlists?.pageInfo ?? defaultPageInfo);
 }
 
-export default async function Wishlists({ params, searchParams }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
-
+async function WishlistsContent({
+  locale,
+  searchParams,
+}: {
+  locale: string;
+  searchParams: Promise<SearchParams>;
+}) {
   const [t, isMobile, customerAccessToken, currencyCode] = await Promise.all([
     getTranslations('Wishlist'),
     isMobileUser(),
@@ -153,5 +156,15 @@ export default async function Wishlists({ params, searchParams }: Props) {
         listWishlists(locale, searchParams, t, customerAccessToken, currencyCode),
       )}
     />
+  );
+}
+
+export default async function Wishlists(props: Props) {
+  const { locale } = await props.params;
+
+  return (
+    <Suspense>
+      <WishlistsContent locale={locale} searchParams={props.searchParams} />
+    </Suspense>
   );
 }

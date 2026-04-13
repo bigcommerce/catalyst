@@ -8,7 +8,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
 import { signIn } from '~/auth';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { getCartId } from '~/lib/cart';
 
 export const login = async (

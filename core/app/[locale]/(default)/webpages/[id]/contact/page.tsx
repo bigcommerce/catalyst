@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
 import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
@@ -172,8 +172,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ContactPage({ params, searchParams }: Props) {
   const { id, locale } = await params;
   const { success } = await searchParams;
-
-  setRequestLocale(locale);
 
   const t = await getTranslations('WebPages.ContactUs.Form');
 

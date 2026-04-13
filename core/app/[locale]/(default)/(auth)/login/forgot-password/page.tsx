@@ -1,29 +1,19 @@
 import { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { ForgotPasswordSection } from '@/vibes/soul/sections/forgot-password-section';
 
 import { resetPassword } from './_actions/reset-password';
 
-interface Props {
-  params: Promise<{ locale: string }>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Auth.Login.ForgotPassword' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Auth.Login.ForgotPassword');
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Reset(props: Props) {
-  const { locale } = await props.params;
-
-  setRequestLocale(locale);
-
+export default async function Reset() {
   const t = await getTranslations('Auth.Login.ForgotPassword');
 
   return (

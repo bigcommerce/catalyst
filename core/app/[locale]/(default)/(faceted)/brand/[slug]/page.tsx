@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -96,39 +96,55 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Brand(props: Props) {
-  const [{ locale, slug }, customerAccessToken, t] = await Promise.all([
-    props.params,
-    getSessionCustomerAccessToken(),
-    getTranslations('Faceted'),
-  ]);
+export default async function Brand({ params, searchParams }: Props) {
+  const locale = await getLocale();
+  const t = await getTranslations('Faceted');
 
-  setRequestLocale(locale);
+  // Cached (guest) brand data for the static shell — always uses the cached path
+  // so title, settings, showRating resolve instantly from 'use cache' during PPR.
+  const streamableCachedBrandData = Streamable.from(async () => {
+    const { slug } = await params;
 
-  const brandId = Number(slug);
+    return getBrandPageData(locale, Number(slug));
+  });
 
-  const { brand, settings } = await getBrandPageData(locale, brandId, customerAccessToken);
+  const streamableTitle = Streamable.from(async () => {
+    const { brand } = await streamableCachedBrandData;
 
-  if (!brand) {
-    return notFound();
-  }
+    if (!brand) {
+      return notFound();
+    }
 
-  const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+    return brand.name;
+  });
 
-  const productComparisonsEnabled =
-    settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  const streamableShowRating = Streamable.from(async () => {
+    const { settings } = await streamableCachedBrandData;
+
+    return Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+  });
+
+  const streamableShowCompare = Streamable.from(async () => {
+    const { settings } = await streamableCachedBrandData;
+
+    return settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  });
 
   const streamableFacetedSearch = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
-    const currencyCode = await getPreferredCurrencyCode();
+    const { slug } = await params;
+    const searchParamsResolved = await searchParams;
+    const [customerAccessToken, currencyCode] = await Promise.all([
+      getSessionCustomerAccessToken(),
+      getPreferredCurrencyCode(),
+    ]);
 
     const loadSearchParams = await createBrandSearchParamsLoader(locale, slug, customerAccessToken);
-    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const parsedSearchParams = loadSearchParams?.(searchParamsResolved) ?? {};
 
     const search = await fetchFacetedSearch(
       locale,
       {
-        ...searchParams,
+        ...searchParamsResolved,
         ...parsedSearchParams,
         brand: [slug],
       },
@@ -140,7 +156,7 @@ export default async function Brand(props: Props) {
   });
 
   const streamableProducts = Streamable.from(async () => {
-    const format = await getFormatter();
+    const [format, { settings }] = await Promise.all([getFormatter(), streamableCachedBrandData]);
 
     const search = await streamableFacetedSearch;
     const products = search.products.items;
@@ -170,9 +186,12 @@ export default async function Brand(props: Props) {
   });
 
   const streamableFilters = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
+    const { slug } = await params;
+    const searchParamsResolved = await searchParams;
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
     const loadSearchParams = await createBrandSearchParamsLoader(locale, slug, customerAccessToken);
-    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const parsedSearchParams = loadSearchParams?.(searchParamsResolved) ?? {};
     const cachedBrand = getCachedBrand(slug);
     const categorySearch = await fetchFacetedSearch(
       locale,
@@ -192,20 +211,22 @@ export default async function Brand(props: Props) {
     const transformedFacets = await facetsTransformer({
       refinedFacets,
       allFacets,
-      searchParams: { ...searchParams, ...parsedSearchParams },
+      searchParams: { ...searchParamsResolved, ...parsedSearchParams },
     });
 
     return transformedFacets.filter((facet) => facet != null);
   });
 
   const streamableCompareProducts = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
+    const searchParamsResolved = await searchParams;
+    const showCompare = await streamableShowCompare;
 
-    if (!productComparisonsEnabled) {
+    if (!showCompare) {
       return [];
     }
 
-    const { compare } = compareLoader(searchParams);
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const { compare } = compareLoader(searchParamsResolved);
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
@@ -237,8 +258,8 @@ export default async function Brand(props: Props) {
       rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
       removeLabel={t('Compare.remove')}
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
-      showCompare={productComparisonsEnabled}
-      showRating={showRating}
+      showCompare={streamableShowCompare}
+      showRating={streamableShowRating}
       sortDefaultValue="featured"
       sortLabel={t('Search.title')}
       sortOptions={[
@@ -253,7 +274,7 @@ export default async function Brand(props: Props) {
         { value: 'relevance', label: t('SortBy.relevance') },
       ]}
       sortParamName="sort"
-      title={brand.name}
+      title={streamableTitle}
       totalCount={streamableTotalCount}
     />
   );

@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -103,52 +103,82 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category(props: Props) {
-  const [{ slug, locale }, customerAccessToken, t] = await Promise.all([
-    props.params,
-    getSessionCustomerAccessToken(),
-    getTranslations('Faceted'),
-  ]);
+export default async function Category({ params, searchParams }: Props) {
+  const locale = await getLocale();
+  const t = await getTranslations('Faceted');
 
-  setRequestLocale(locale);
+  // Category data for the static shell. Uses precomputed auth flag:
+  // Cached (guest) category data for the static shell — always uses the cached path
+  // so title, breadcrumbs, settings resolve instantly from 'use cache' during PPR.
+  const streamableCachedCategoryData = Streamable.from(async () => {
+    const { slug } = await params;
 
-  const categoryId = Number(slug);
+    return getCategoryPageData(locale, Number(slug));
+  });
 
-  const { category, settings, categoryTree } = await getCategoryPageData(
-    locale,
-    categoryId,
-    customerAccessToken,
-  );
+  // Auth-dependent category data for personalized content (analytics).
+  const streamableCategoryData = Streamable.from(async () => {
+    const { slug } = await params;
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
-  if (!category) {
-    return notFound();
-  }
+    return getCategoryPageData(locale, Number(slug), customerAccessToken);
+  });
 
-  const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
-    label: name,
-    href: path ?? '#',
-  }));
+  const streamableTitle = Streamable.from(async () => {
+    const { category } = await streamableCachedCategoryData;
 
-  const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+    if (!category) {
+      return notFound();
+    }
 
-  const productComparisonsEnabled =
-    settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+    return category.name;
+  });
+
+  const streamableBreadcrumbs = Streamable.from(async () => {
+    const { category } = await streamableCachedCategoryData;
+
+    if (!category) {
+      return [];
+    }
+
+    return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
+      label: name,
+      href: path ?? '#',
+    }));
+  });
+
+  const streamableShowRating = Streamable.from(async () => {
+    const { settings } = await streamableCachedCategoryData;
+
+    return Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+  });
+
+  const streamableShowCompare = Streamable.from(async () => {
+    const { settings } = await streamableCachedCategoryData;
+
+    return settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  });
 
   const streamableFacetedSearch = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
-    const currencyCode = await getPreferredCurrencyCode();
+    const { slug } = await params;
+    const categoryId = Number(slug);
+    const searchParamsResolved = await searchParams;
+    const [customerAccessToken, currencyCode] = await Promise.all([
+      getSessionCustomerAccessToken(),
+      getPreferredCurrencyCode(),
+    ]);
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       locale,
       categoryId,
       customerAccessToken,
     );
-    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const parsedSearchParams = loadSearchParams?.(searchParamsResolved) ?? {};
 
     const search = await fetchFacetedSearch(
       locale,
       {
-        ...searchParams,
+        ...searchParamsResolved,
         ...parsedSearchParams,
         category: categoryId,
       },
@@ -160,7 +190,10 @@ export default async function Category(props: Props) {
   });
 
   const streamableProducts = Streamable.from(async () => {
-    const format = await getFormatter();
+    const [format, { settings }] = await Promise.all([
+      getFormatter(),
+      streamableCachedCategoryData,
+    ]);
 
     const search = await streamableFacetedSearch;
     const products = search.products.items;
@@ -190,14 +223,18 @@ export default async function Category(props: Props) {
   });
 
   const streamableFilters = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
+    const { slug } = await params;
+    const categoryId = Number(slug);
+    const searchParamsResolved = await searchParams;
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const { categoryTree } = await streamableCachedCategoryData;
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       locale,
       categoryId,
       customerAccessToken,
     );
-    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const parsedSearchParams = loadSearchParams?.(searchParamsResolved) ?? {};
     const cachedCategory = getCachedCategory(categoryId);
     const categorySearch = await fetchFacetedSearch(
       locale,
@@ -217,7 +254,7 @@ export default async function Category(props: Props) {
     const transformedFacets = await facetsTransformer({
       refinedFacets,
       allFacets,
-      searchParams: { ...searchParams, ...parsedSearchParams },
+      searchParams: { ...searchParamsResolved, ...parsedSearchParams },
     });
 
     const filters = transformedFacets.filter((facet) => facet != null);
@@ -241,13 +278,15 @@ export default async function Category(props: Props) {
   });
 
   const streamableCompareProducts = Streamable.from(async () => {
-    const searchParams = await props.searchParams;
+    const searchParamsResolved = await searchParams;
+    const showCompare = await streamableShowCompare;
 
-    if (!productComparisonsEnabled) {
+    if (!showCompare) {
       return [];
     }
 
-    const { compare } = compareLoader(searchParams);
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const { compare } = compareLoader(searchParamsResolved);
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
@@ -266,7 +305,7 @@ export default async function Category(props: Props) {
   return (
     <>
       <ProductsListSection
-        breadcrumbs={breadcrumbs}
+        breadcrumbs={streamableBreadcrumbs}
         compareLabel={t('Compare.compare')}
         compareProducts={streamableCompareProducts}
         emptyStateSubtitle={t('Category.Empty.subtitle')}
@@ -281,8 +320,8 @@ export default async function Category(props: Props) {
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
         removeLabel={t('Compare.remove')}
         resetFiltersLabel={t('FacetedSearch.resetFilters')}
-        showCompare={productComparisonsEnabled}
-        showRating={showRating}
+        showCompare={streamableShowCompare}
+        showRating={streamableShowRating}
         sortDefaultValue="featured"
         sortLabel={t('SortBy.sortBy')}
         sortOptions={[
@@ -297,11 +336,17 @@ export default async function Category(props: Props) {
           { value: 'relevance', label: t('SortBy.relevance') },
         ]}
         sortParamName="sort"
-        title={category.name}
+        title={streamableTitle}
         totalCount={streamableTotalCount}
       />
-      <Stream value={streamableFacetedSearch}>
-        {(search) => <CategoryViewed category={category} products={search.products.items} />}
+      <Stream value={streamableCategoryData}>
+        {({ category }) => (
+          <Stream value={streamableFacetedSearch}>
+            {(search) =>
+              category && <CategoryViewed category={category} products={search.products.items} />
+            }
+          </Stream>
+        )}
       </Stream>
     </>
   );

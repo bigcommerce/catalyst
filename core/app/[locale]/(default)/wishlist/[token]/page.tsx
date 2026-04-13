@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -75,7 +75,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // Even though we don't need paginated data during metadata generation, we should still pass the parameters
   // to make sure we aren't bypassing an existing cache just for the metadata generation.
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const t = await getTranslations({ locale, namespace: 'PublicWishlist' });
+  const t = await getTranslations('PublicWishlist');
   const currencyCode = await getPreferredCurrencyCode();
   const wishlist = await getPublicWishlist(locale, token, searchParamsParsed, currencyCode);
 
@@ -130,11 +130,8 @@ async function getBreadcrumbs(
 }
 
 export default async function PublicWishlist({ params, searchParams }: Props) {
-  const { locale, token } = await params;
+  const locale = await getLocale();
 
-  setRequestLocale(locale);
-
-  const currencyCode = await getPreferredCurrencyCode();
   const t = await getTranslations('Wishlist');
   const pwt = await getTranslations('PublicWishlist');
   const pt = await getTranslations('Product.ProductDetails');
@@ -175,13 +172,21 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
 
   return (
     <WishlistAnalyticsProvider
-      data={Streamable.from(() => getAnalyticsData(locale, token, searchParams, currencyCode))}
+      data={Streamable.from(async () => {
+        const { token } = await params;
+        const currencyCode = await getPreferredCurrencyCode();
+
+        return getAnalyticsData(locale, token, searchParams, currencyCode);
+      })}
     >
       <SectionLayout>
         <Breadcrumbs
-          breadcrumbs={Streamable.from(() =>
-            getBreadcrumbs(locale, token, searchParams, currencyCode),
-          )}
+          breadcrumbs={Streamable.from(async () => {
+            const { token } = await params;
+            const currencyCode = await getPreferredCurrencyCode();
+
+            return getBreadcrumbs(locale, token, searchParams, currencyCode);
+          })}
         />
 
         <WishlistDetails
@@ -189,12 +194,18 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
           className="mt-8"
           emptyStateText={pwt('emptyWishlist')}
           headerActions={wishlistActions}
-          paginationInfo={Streamable.from(() =>
-            getPaginationInfo(locale, token, searchParams, currencyCode),
-          )}
-          wishlist={Streamable.from(() =>
-            getWishlist(locale, token, t, pt, searchParams, currencyCode),
-          )}
+          paginationInfo={Streamable.from(async () => {
+            const { token } = await params;
+            const currencyCode = await getPreferredCurrencyCode();
+
+            return getPaginationInfo(locale, token, searchParams, currencyCode);
+          })}
+          wishlist={Streamable.from(async () => {
+            const { token } = await params;
+            const currencyCode = await getPreferredCurrencyCode();
+
+            return getWishlist(locale, token, t, pt, searchParams, currencyCode);
+          })}
         />
       </SectionLayout>
     </WishlistAnalyticsProvider>

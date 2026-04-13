@@ -35,7 +35,7 @@ import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Link } from '~/components/link';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter } from '~/i18n/navigation';
 import { useSearch } from '~/lib/search';
 
 interface Link {

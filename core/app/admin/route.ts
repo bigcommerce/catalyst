@@ -1,5 +1,5 @@
 import { defaultLocale } from '~/i18n/locales';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 
 const canonicalDomain: string = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 const BIGCOMMERCE_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;

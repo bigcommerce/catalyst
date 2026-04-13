@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -75,8 +75,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WebPage({ params }: Props) {
   const { locale, id } = await params;
-
-  setRequestLocale(locale);
 
   return (
     <WebPageContent

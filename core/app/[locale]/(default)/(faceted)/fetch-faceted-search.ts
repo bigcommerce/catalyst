@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 import { z } from 'zod';
 
@@ -179,72 +179,72 @@ interface ProductSearch {
   filters: SearchProductsFiltersInput;
 }
 
-const getCachedProductSearchResults = unstable_cache(
-  async (
-    locale: string,
-    { limit = 9, after, before, sort, filters }: ProductSearch,
-    currencyCode?: CurrencyCode,
-  ) => {
-    const filterArgs = { filters, sort };
-    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+async function getCachedProductSearchResults(
+  locale: string,
+  { limit = 9, after, before, sort, filters }: ProductSearch,
+  currencyCode?: CurrencyCode,
+) {
+  'use cache';
 
-    const response = await client.fetch({
-      document: GetProductSearchResultsQuery,
-      variables: { ...filterArgs, ...paginationArgs, currencyCode },
-      locale,
-      fetchOptions: { cache: 'no-store' },
-    });
+  cacheLife({ revalidate: 300 });
 
-    const { site } = response.data;
-    const searchResults = site.search.searchProducts;
+  const filterArgs = { filters, sort };
+  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
-    const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
-      ...product,
-    }));
+  const response = await client.fetch({
+    document: GetProductSearchResultsQuery,
+    variables: { ...filterArgs, ...paginationArgs, currencyCode },
+    locale,
+    fetchOptions: { cache: 'no-store' },
+  });
 
-    return {
-      facets: {
-        items: removeEdgesAndNodes(searchResults.filters).map((node) => {
-          switch (node.__typename) {
-            case 'BrandSearchFilter':
-              return {
-                ...node,
-                brands: removeEdgesAndNodes(node.brands),
-              };
+  const { site } = response.data;
+  const searchResults = site.search.searchProducts;
 
-            case 'CategorySearchFilter':
-              return {
-                ...node,
-                categories: removeEdgesAndNodes(node.categories),
-              };
+  const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
+    ...product,
+  }));
 
-            case 'ProductAttributeSearchFilter':
-              return {
-                ...node,
-                attributes: removeEdgesAndNodes(node.attributes),
-              };
+  return {
+    facets: {
+      items: removeEdgesAndNodes(searchResults.filters).map((node) => {
+        switch (node.__typename) {
+          case 'BrandSearchFilter':
+            return {
+              ...node,
+              brands: removeEdgesAndNodes(node.brands),
+            };
 
-            case 'RatingSearchFilter':
-              return {
-                ...node,
-                ratings: removeEdgesAndNodes(node.ratings),
-              };
+          case 'CategorySearchFilter':
+            return {
+              ...node,
+              categories: removeEdgesAndNodes(node.categories),
+            };
 
-            default:
-              return node;
-          }
-        }),
-      },
-      products: {
-        collectionInfo: searchResults.products.collectionInfo,
-        pageInfo: searchResults.products.pageInfo,
-        items,
-      },
-    };
-  },
-  ['get-product-search-results'],
-  { revalidate: 300 },
-);
+          case 'ProductAttributeSearchFilter':
+            return {
+              ...node,
+              attributes: removeEdgesAndNodes(node.attributes),
+            };
+
+          case 'RatingSearchFilter':
+            return {
+              ...node,
+              ratings: removeEdgesAndNodes(node.ratings),
+            };
+
+          default:
+            return node;
+        }
+      }),
+    },
+    products: {
+      collectionInfo: searchResults.products.collectionInfo,
+      pageInfo: searchResults.products.pageInfo,
+      items,
+    },
+  };
+}
 
 const getProductSearchResults = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.

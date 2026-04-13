@@ -16,25 +16,15 @@ export const client = createClient({
   getChannelId: (defaultChannelId: string, locale?: string) => {
     return getChannelIdFromLocale(locale) ?? defaultChannelId;
   },
+  // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-unused-vars
   beforeRequest: async (fetchOptions) => {
     // We can't serialize a `Headers` object within this method so we have to opt into using a plain object
     const requestHeaders: Record<string, string> = {};
 
-    if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
-      try {
-        // headers() is a dynamic API unavailable inside unstable_cache; skip IP forwarding in that context
-        const { headers } = await import('next/headers');
-
-        const ipAddress = (await headers()).get('X-Forwarded-For');
-
-        if (ipAddress) {
-          requestHeaders['X-Forwarded-For'] = ipAddress;
-          requestHeaders['True-Client-IP'] = ipAddress;
-        }
-      } catch {
-        // Not in a request context (e.g. inside unstable_cache); IP forwarding not available
-      }
-    }
+    // Note: IP forwarding via headers() was removed because headers() cannot be called inside
+    // 'use cache' contexts (throws an uncatchable error in Next.js 16 with cacheComponents).
+    // Since cached responses are shared across users, IP forwarding is not meaningful there.
+    // For authenticated (non-cached) requests, IP forwarding should be handled at the middleware level.
 
     requestHeaders['X-Correlation-ID'] = getCorrelationId();
 

@@ -24,7 +24,9 @@ const GetFaviconQuery = graphql(`
   }
 `);
 
-export const GET = async () => {
+async function getFaviconData() {
+  'use cache';
+
   const { data } = await client.fetch({
     document: GetFaviconQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
@@ -33,19 +35,24 @@ export const GET = async () => {
   const faviconUrl = data.site.settings?.faviconUrl;
 
   if (!faviconUrl) {
-    return new Response(null, {
-      status: 404,
-    });
+    return null;
   }
 
-  // fetch the favicon URL and return the data directly (will be statically cached at build time)
-  const faviconData = await fetch(faviconUrl).then((res) => res.arrayBuffer());
+  const faviconBuffer = await fetch(faviconUrl).then((res) =>
+    res.arrayBuffer().then((buf) => Buffer.from(buf).toString('base64')),
+  );
 
-  return new Response(faviconData, {
-    headers: {
-      'Content-Type': 'image/x-icon',
-    },
+  return faviconBuffer;
+}
+
+export const GET = async () => {
+  const faviconData = await getFaviconData();
+
+  if (!faviconData) {
+    return new Response(null, { status: 404 });
+  }
+
+  return new Response(Buffer.from(faviconData, 'base64'), {
+    headers: { 'Content-Type': 'image/x-icon' },
   });
 };
-
-export const dynamic = 'force-static';

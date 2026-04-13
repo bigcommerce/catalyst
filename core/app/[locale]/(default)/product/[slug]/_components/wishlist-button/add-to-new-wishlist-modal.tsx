@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { Modal } from '~/components/modal';
 import { NewWishlistModal } from '~/components/wishlist/modals/new';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter } from '~/i18n/navigation';
 
 import { addToNewWishlist } from '../../_actions/wishlist-action';
 

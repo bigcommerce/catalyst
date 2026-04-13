@@ -1,12 +1,13 @@
 import { ResultOf } from 'gql.tada';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { GiftCertificatePurchaseSection } from '@/vibes/soul/sections/gift-certificate-purchase-section';
 import { GiftCertificateSettingsFragment } from '~/app/[locale]/(default)/gift-certificates/purchase/fragment';
 import { ExistingResultType } from '~/client/util';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -147,12 +148,10 @@ function getExpiryDate(
   }
 }
 
-export default async function GiftCertificatePurchasePage({ params }: Props) {
-  const { locale } = await params;
-
+async function GiftCertificatePurchaseContent({ locale }: { locale: string }) {
   const [t, format, currencyCode] = await Promise.all([
     getTranslations({ locale, namespace: 'GiftCertificates' }),
-    getFormatter(),
+    getFormatter({ locale }),
     getPreferredCurrencyCode(),
   ]);
   const data = await getGiftCertificatePurchaseData(locale, currencyCode);
@@ -192,5 +191,15 @@ export default async function GiftCertificatePurchasePage({ params }: Props) {
       subtitle={data.storeName}
       title={t('Purchase.title')}
     />
+  );
+}
+
+export default async function GiftCertificatePurchasePage(props: Props) {
+  const { locale } = await props.params;
+
+  return (
+    <Suspense>
+      <GiftCertificatePurchaseContent locale={locale} />
+    </Suspense>
   );
 }

@@ -19,7 +19,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 import { WishlistMutationError } from '~/components/wishlist/error';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { serverToast } from '~/lib/server-toast';
 
 const VariantIdFromSkuQuery = graphql(`

@@ -1,10 +1,10 @@
 /* eslint-disable react/jsx-no-bind */
 import { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { ResetPasswordSection } from '@/vibes/soul/sections/reset-password-section';
 import { getChangePasswordQuery } from '~/app/[locale]/(default)/(auth)/change-password/page-data';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 
 import { changePassword } from './_actions/change-password';
 
@@ -16,10 +16,8 @@ interface Props {
   }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Auth.ChangePassword' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Auth.ChangePassword');
 
   return {
     title: t('title'),
@@ -28,8 +26,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ChangePassword({ params, searchParams }: Props) {
   const { locale } = await params;
-
-  setRequestLocale(locale);
 
   const { c: customerEntityId, t: token } = await searchParams;
   const t = await getTranslations('Auth.ChangePassword');

@@ -1,7 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -15,21 +16,15 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Account.Settings' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Account.Settings');
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Settings({ params }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
-
+async function SettingsContent() {
   const t = await getTranslations('Account.Settings');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -69,5 +64,15 @@ export default async function Settings({ params }: Props) {
       updateAccountSubmitLabel={t('cta')}
       updateNewsletterSubscriptionAction={updateNewsletterSubscriptionActionWithCustomerInfo}
     />
+  );
+}
+
+export default async function Settings(props: Props) {
+  await props.params;
+
+  return (
+    <Suspense>
+      <SettingsContent />
+    </Suspense>
   );
 }

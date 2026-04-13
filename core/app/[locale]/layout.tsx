@@ -1,13 +1,17 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { clsx } from 'clsx';
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { setRequestLocale } from 'next-intl/server';
+import { getLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { cache, PropsWithChildren } from 'react';
+import { cache, PropsWithChildren, Suspense } from 'react';
 
+import '~/globals.css';
+
+import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
 import { client } from '~/client';
@@ -54,16 +58,16 @@ const RootLayoutMetadataQuery = graphql(
   [WebAnalyticsFragment, ScriptsFragment],
 );
 
-const getCachedRootLayoutMetadata = unstable_cache(
-  async () => {
-    return await client.fetch({
-      document: RootLayoutMetadataQuery,
-      fetchOptions: { cache: 'no-store' },
-    });
-  },
-  ['root-layout-metadata'],
-  { revalidate },
-);
+async function getCachedRootLayoutMetadata() {
+  'use cache';
+
+  cacheLife({ revalidate });
+
+  return await client.fetch({
+    document: RootLayoutMetadataQuery,
+    fetchOptions: { cache: 'no-store' },
+  });
+}
 
 const fetchRootLayoutMetadata = cache(async () => getCachedRootLayoutMetadata());
 
@@ -123,19 +127,25 @@ interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
 
+async function ToastNotifications() {
+  const toastNotificationCookieData = await getToastNotification();
+
+  if (!toastNotificationCookieData) {
+    return null;
+  }
+
+  return <CookieNotifications {...toastNotificationCookieData} />;
+}
+
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
+  const localeFromIntl = await getLocale();
 
   const rootData = await fetchRootLayoutMetadata();
-  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
   }
-
-  // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
-  setRequestLocale(locale);
 
   const scripts = scriptsTransformer(rootData.data.site.content.scripts);
   const isCookieConsentEnabled =
@@ -143,37 +153,39 @@ export default async function RootLayout({ params, children }: Props) {
   const privacyPolicyUrl = rootData.data.site.settings?.privacy?.privacyPolicyUrl;
 
   return (
-    <>
-      <NextIntlClientProvider>
-        <ConsentManager
-          isCookieConsentEnabled={isCookieConsentEnabled}
-          privacyPolicyUrl={privacyPolicyUrl}
-          scripts={scripts}
-        >
-          <NuqsAdapter>
-            <AnalyticsProvider
-              channelId={rootData.data.channel.entityId}
-              isCookieConsentEnabled={isCookieConsentEnabled}
-              settings={rootData.data.site.settings}
-            >
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
-        </ConsentManager>
-      </NextIntlClientProvider>
-      <VercelComponents />
-      <ContainerQueryPolyfill />
-    </>
+    <html className={clsx(fonts.map((f) => f.variable))} lang={localeFromIntl}>
+      <body className="flex min-h-screen flex-col">
+        <NextIntlClientProvider>
+          <ConsentManager
+            isCookieConsentEnabled={isCookieConsentEnabled}
+            privacyPolicyUrl={privacyPolicyUrl}
+            scripts={scripts}
+          >
+            <NuqsAdapter>
+              <AnalyticsProvider
+                channelId={rootData.data.channel.entityId}
+                isCookieConsentEnabled={isCookieConsentEnabled}
+                settings={rootData.data.site.settings}
+              >
+                <Providers>
+                  <Suspense>
+                    <ToastNotifications />
+                  </Suspense>
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+          </ConsentManager>
+        </NextIntlClientProvider>
+        <VercelComponents />
+        <Suspense>
+          <ContainerQueryPolyfill />
+        </Suspense>
+      </body>
+    </html>
   );
 }
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
-
-export const fetchCache = 'default-cache';

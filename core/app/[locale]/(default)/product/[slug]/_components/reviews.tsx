@@ -1,12 +1,12 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
-import { auth } from '~/auth';
+import { auth, getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
@@ -65,20 +65,20 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getCachedReviews = unstable_cache(
-  async (locale: string, productId: number, paginationArgs: object) => {
-    const { data } = await client.fetch({
-      document: ReviewsQuery,
-      variables: { ...paginationArgs, entityId: productId },
-      locale,
-      fetchOptions: { next: { revalidate } },
-    });
+async function getCachedReviews(locale: string, productId: number, paginationArgs: object) {
+  'use cache';
 
-    return data.site.product;
-  },
-  ['get-reviews'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: ReviewsQuery,
+    variables: { ...paginationArgs, entityId: productId },
+    locale,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return data.site.product;
+}
 
 const getReviews = cache(
   async (
@@ -106,7 +106,6 @@ const getReviews = cache(
 interface Props {
   productId: number;
   locale: string;
-  customerAccessToken?: string;
   searchParams: Promise<SearchParams>;
   streamableImages: Streamable<{
     images: Array<{ src: string; alt: string }>;
@@ -119,7 +118,6 @@ interface Props {
 export const Reviews = async ({
   productId,
   locale,
-  customerAccessToken,
   searchParams,
   streamableProduct,
   streamableImages,
@@ -135,6 +133,8 @@ export const Reviews = async ({
       [PaginationSearchParamNames.BEFORE]: before,
     } = paginationSearchParams;
     const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
+
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
     return getReviews(locale, productId, paginationArgs, customerAccessToken);
   });

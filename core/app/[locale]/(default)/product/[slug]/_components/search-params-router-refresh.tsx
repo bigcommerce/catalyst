@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { SearchParams } from 'nuqs';
 import { useEffect } from 'react';
 
-import { useRouter } from '~/i18n/routing';
+import { useRouter } from '~/i18n/navigation';
 
 // Not-so-great workaround for https://github.com/vercel/next.js/issues/59407
 export const SearchParamsRouterRefresh = ({

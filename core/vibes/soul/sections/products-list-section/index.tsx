@@ -30,7 +30,7 @@ interface Props {
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
-  showRating?: boolean;
+  showRating?: Streamable<boolean>;
   rangeFilterApplyLabel?: Streamable<string>;
   sortLabel?: Streamable<string | null>;
   sortPlaceholder?: Streamable<string | null>;

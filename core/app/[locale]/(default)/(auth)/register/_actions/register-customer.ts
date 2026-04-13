@@ -12,7 +12,7 @@ import { signIn } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { getCartId } from '~/lib/cart';
 import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 

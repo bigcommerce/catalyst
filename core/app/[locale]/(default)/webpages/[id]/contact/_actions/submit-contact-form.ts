@@ -10,7 +10,7 @@ import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
 import { Field, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
 const inputSchema = z.object({

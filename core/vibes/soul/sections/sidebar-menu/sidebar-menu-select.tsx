@@ -1,7 +1,7 @@
 'use client';
 
 import { Select } from '@/vibes/soul/form/select';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter } from '~/i18n/navigation';
 
 export function SidebarMenuSelect({ links }: { links: Array<{ href: string; label: string }> }) {
   const pathname = usePathname();

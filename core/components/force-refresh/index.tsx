@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { useRouter } from '~/i18n/routing';
+import { useRouter } from '~/i18n/navigation';
 import { FORCE_REFRESH_COOKIE, getCookieValue, setCookie } from '~/lib/client-cookies';
 
 export const ForceRefresh = () => {

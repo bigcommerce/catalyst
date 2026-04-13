@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 
 import { GiftCertificatesSection } from '@/vibes/soul/sections/gift-certificates-section';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -15,7 +16,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+  const t = await getTranslations('GiftCertificates');
 
   return {
     title: t('title') || 'Gift certificates',
@@ -23,11 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function GiftCertificates(props: Props) {
-  const { locale } = await props.params;
-
-  setRequestLocale(locale);
-
+async function GiftCertificatesContent({ locale }: { locale: string }) {
   const t = await getTranslations('GiftCertificates');
   const format = await getFormatter();
   const currencyCode = await getPreferredCurrencyCode();
@@ -53,5 +50,15 @@ export default async function GiftCertificates(props: Props) {
       purchaseLabel={t('purchaseLabel')}
       title={t('title')}
     />
+  );
+}
+
+export default async function GiftCertificates(props: Props) {
+  const { locale } = await props.params;
+
+  return (
+    <Suspense>
+      <GiftCertificatesContent locale={locale} />
+    </Suspense>
   );
 }

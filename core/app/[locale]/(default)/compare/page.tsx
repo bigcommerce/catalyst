@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -41,7 +41,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'Compare' });
+  const t = await getTranslations('Compare');
 
   return {
     title: t('title'),
@@ -51,8 +51,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Compare(props: Props) {
   const { locale } = await props.params;
-
-  setRequestLocale(locale);
 
   const t = await getTranslations('Compare');
 

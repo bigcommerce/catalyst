@@ -40,20 +40,23 @@ const baseUrl = parseUrl(
   process.env.NEXTAUTH_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || '',
 );
 
-export const GET = async () => {
+async function getRobotsTxtContent() {
+  'use cache';
+
   const { data } = await client.fetch({
     document: RobotsTxtQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
-    fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
+    fetchOptions: { cache: 'no-store' },
   });
 
-  const robotsTxt = `${data.site.settings?.robotsTxt ?? ''}\nSitemap: ${baseUrl.origin}/sitemap.xml\n`;
+  return data.site.settings?.robotsTxt ?? '';
+}
+
+export const GET = async () => {
+  const robotsTxtContent = await getRobotsTxtContent();
+  const robotsTxt = `${robotsTxtContent}\nSitemap: ${baseUrl.origin}/sitemap.xml\n`;
 
   return new Response(robotsTxt, {
-    headers: {
-      'Content-Type': 'text/plain; charset=UTF-8',
-    },
+    headers: { 'Content-Type': 'text/plain; charset=UTF-8' },
   });
 };
-
-export const dynamic = 'force-static';

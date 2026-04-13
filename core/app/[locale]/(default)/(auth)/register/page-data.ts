@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -62,40 +62,40 @@ interface Props {
   };
 }
 
-const getCachedRegisterCustomerQuery = unstable_cache(
-  async (locale: string, { address, customer }: Props) => {
-    const response = await client.fetch({
-      document: RegisterCustomerQuery,
-      variables: {
-        addressFilters: address?.filters,
-        addressSortBy: address?.sortBy,
-        customerFilters: customer?.filters,
-        customerSortBy: customer?.sortBy,
-      },
-      fetchOptions: { cache: 'no-store' },
-      locale,
-    });
+async function getCachedRegisterCustomerQuery(locale: string, { address, customer }: Props) {
+  'use cache';
 
-    const addressFields = response.data.site.settings?.formFields.shippingAddress;
-    const customerFields = response.data.site.settings?.formFields.customer;
-    const countries = response.data.geography.countries;
-    const passwordComplexitySettings =
-      response.data.site.settings?.customers?.passwordComplexitySettings;
+  cacheLife({ revalidate });
 
-    if (!addressFields || !customerFields) {
-      return null;
-    }
+  const response = await client.fetch({
+    document: RegisterCustomerQuery,
+    variables: {
+      addressFilters: address?.filters,
+      addressSortBy: address?.sortBy,
+      customerFilters: customer?.filters,
+      customerSortBy: customer?.sortBy,
+    },
+    fetchOptions: { cache: 'no-store' },
+    locale,
+  });
 
-    return {
-      addressFields,
-      customerFields,
-      countries,
-      passwordComplexitySettings,
-    };
-  },
-  ['get-register-customer-query'],
-  { revalidate },
-);
+  const addressFields = response.data.site.settings?.formFields.shippingAddress;
+  const customerFields = response.data.site.settings?.formFields.customer;
+  const countries = response.data.geography.countries;
+  const passwordComplexitySettings =
+    response.data.site.settings?.customers?.passwordComplexitySettings;
+
+  if (!addressFields || !customerFields) {
+    return null;
+  }
+
+  return {
+    addressFields,
+    customerFields,
+    countries,
+    passwordComplexitySettings,
+  };
+}
 
 export const getRegisterCustomerQuery = cache(async (locale: string, props: Props) => {
   return getCachedRegisterCustomerQuery(locale, props);

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { Field } from '@/vibes/soul/form/dynamic-form/schema';
 import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
@@ -24,10 +24,8 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Auth.Register' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Auth.Register');
 
   return {
     title: t('title'),
@@ -47,8 +45,6 @@ function removeExlusiveOffersField(field: Field | Field[]): boolean {
 
 export default async function Register({ params }: Props) {
   const { locale } = await params;
-
-  setRequestLocale(locale);
 
   const t = await getTranslations('Auth.Register');
 

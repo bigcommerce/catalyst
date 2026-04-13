@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import React from 'react';
 
 import { Link } from '~/components/link';
-import { usePathname } from '~/i18n/routing';
+import { usePathname } from '~/i18n/navigation';
 
 export function SidebarMenuLink({
   className,

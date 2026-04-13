@@ -221,15 +221,9 @@ function WishlistDetailSkeleton({
     <section className={clsx('w-full animate-pulse @container', className)}>
       <header className="mb-4 flex flex-col gap-4 @lg:flex-row @lg:justify-between">
         <div className="flex flex-1 gap-2">
-          {prevHref != null &&
-            prevHref !== '' &&
-            (prevHref ? (
-              <ButtonLink href={prevHref} shape="circle" size="small" variant="ghost">
-                <ArrowLeft />
-              </ButtonLink>
-            ) : (
-              <Skeleton.Box className="h-10 w-10 rounded-full" />
-            ))}
+          {prevHref != null && prevHref !== '' && (
+            <Skeleton.Box className="h-10 w-10 rounded-full" />
+          )}
           <div className="flex flex-1 flex-col gap-2">
             <Skeleton.Text
               characterCount={12}

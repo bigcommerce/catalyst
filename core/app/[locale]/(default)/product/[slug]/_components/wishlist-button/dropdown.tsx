@@ -5,7 +5,7 @@ import { CheckIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
 import { DropdownMenu, DropdownMenuItem } from '@/vibes/soul/primitives/dropdown-menu';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter } from '~/i18n/navigation';
 
 import { WishlistButtonWishlistInfo } from '.';
 

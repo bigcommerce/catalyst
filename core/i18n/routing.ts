@@ -1,4 +1,3 @@
-import { createNavigation } from 'next-intl/navigation';
 import { defineRouting } from 'next-intl/routing';
 
 import { defaultLocale, locales } from './locales';
@@ -18,10 +17,3 @@ export const routing = defineRouting({
   defaultLocale,
   localePrefix,
 });
-
-// Lightweight wrappers around Next.js' navigation APIs
-// that will consider the routing configuration
-// Redirect will append locale prefix even when in default locale
-// More info: https://github.com/amannn/next-intl/issues/1335
-export const { Link, redirect, usePathname, useRouter, permanentRedirect } =
-  createNavigation(routing);

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
@@ -17,21 +17,16 @@ interface Props {
   }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Auth.Login' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Auth.Login');
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Login({ params, searchParams }: Props) {
-  const { locale } = await params;
+export default async function Login({ searchParams }: Props) {
   const { redirectTo = '/account/orders', error } = await searchParams;
-
-  setRequestLocale(locale);
 
   const t = await getTranslations('Auth.Login');
 

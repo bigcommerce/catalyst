@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
@@ -23,10 +23,8 @@ interface Props {
 
 const CHECKOUT_URL = process.env.TRAILING_SLASH !== 'false' ? '/checkout/' : '/checkout';
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-
-  const t = await getTranslations({ locale, namespace: 'Cart' });
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Cart');
 
   return {
     title: t('title'),
@@ -63,8 +61,6 @@ const getAnalyticsData = async (locale: string, cartId: string, customerAccessTo
 // eslint-disable-next-line complexity
 export default async function Cart({ params }: Props) {
   const { locale } = await params;
-
-  setRequestLocale(locale);
 
   const [t, cartId] = await Promise.all([getTranslations('Cart'), getCartId()]);
 

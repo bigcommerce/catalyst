@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -11,7 +11,7 @@ import { ExistingResultType } from '~/client/util';
 import type { CurrencyCode } from '~/components/header/fragment';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { isMobileUser } from '~/lib/user-agent';
 
@@ -120,15 +120,11 @@ async function getPaginationInfo(
 }
 
 export default async function WishlistPage({ params, searchParams }: Props) {
-  const { locale, id } = await params;
+  const locale = await getLocale();
 
-  setRequestLocale(locale);
-
-  const [t, pt, customerAccessToken, currencyCode] = await Promise.all([
+  const [t, pt] = await Promise.all([
     getTranslations('Wishlist'),
     getTranslations('Product.ProductDetails'),
-    getSessionCustomerAccessToken(),
-    getPreferredCurrencyCode(),
   ]);
   const wishlistActions = (wishlist?: Wishlist) => {
     if (!wishlist) {
@@ -138,7 +134,7 @@ export default async function WishlistPage({ params, searchParams }: Props) {
     return (
       <WishlistActions
         actionsTitle={t('actionsTitle')}
-        isMobileUser={isMobileUser()}
+        isMobileUser={Streamable.from(isMobileUser)}
         menuActions={[
           {
             label: t('rename'),
@@ -164,23 +160,41 @@ export default async function WishlistPage({ params, searchParams }: Props) {
 
   return (
     <WishlistAnalyticsProvider
-      data={Streamable.from(() =>
-        getAnalyticsData(locale, id, searchParams, customerAccessToken, currencyCode),
-      )}
+      data={Streamable.from(async () => {
+        const { id } = await params;
+        const [customerAccessToken, currencyCode] = await Promise.all([
+          getSessionCustomerAccessToken(),
+          getPreferredCurrencyCode(),
+        ]);
+
+        return getAnalyticsData(locale, id, searchParams, customerAccessToken, currencyCode);
+      })}
     >
       <WishlistDetails
         action={addWishlistItemToCart}
         emptyStateText={t('emptyWishlist')}
         headerActions={wishlistActions}
-        paginationInfo={Streamable.from(() =>
-          getPaginationInfo(locale, id, searchParams, customerAccessToken, currencyCode),
-        )}
+        paginationInfo={Streamable.from(async () => {
+          const { id } = await params;
+          const [customerAccessToken, currencyCode] = await Promise.all([
+            getSessionCustomerAccessToken(),
+            getPreferredCurrencyCode(),
+          ]);
+
+          return getPaginationInfo(locale, id, searchParams, customerAccessToken, currencyCode);
+        })}
         prevHref="/account/wishlists"
         removeAction={removeWishlistItem}
         removeButtonTitle={t('removeButtonTitle')}
-        wishlist={Streamable.from(() =>
-          getWishlist(id, t, pt, searchParams, locale, customerAccessToken, currencyCode),
-        )}
+        wishlist={Streamable.from(async () => {
+          const { id } = await params;
+          const [customerAccessToken, currencyCode] = await Promise.all([
+            getSessionCustomerAccessToken(),
+            getPreferredCurrencyCode(),
+          ]);
+
+          return getWishlist(id, t, pt, searchParams, locale, customerAccessToken, currencyCode);
+        })}
       />
     </WishlistAnalyticsProvider>
   );

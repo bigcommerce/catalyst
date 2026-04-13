@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -68,32 +68,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Product({ params, searchParams }: Props) {
-  const [{ locale, slug }, customerAccessToken, t, format] = await Promise.all([
-    params,
-    getSessionCustomerAccessToken(),
-    getTranslations('Product'),
-    getFormatter(),
-  ]);
+  const locale = await getLocale();
+  const [t, format] = await Promise.all([getTranslations('Product'), getFormatter()]);
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
+  const recaptchaSiteKey = await getRecaptchaSiteKey();
 
-  setRequestLocale(locale);
+  // Shared streamable that resolves params and fetches product data.
+  // Cached (guest) product data for the static shell — always uses the cached path
+  // so product name, options, settings resolve instantly from 'use cache' during PPR.
+  // Auth-dependent data uses the precompute flag in individual Streamable closures below.
+  const streamableBaseData = Streamable.from(async () => {
+    const { slug } = await params;
+    const productId = Number(slug);
+    const { product, settings } = await getProduct(locale, productId);
 
-  const productId = Number(slug);
+    return { productId, product, settings };
+  });
 
-  const [{ product: baseProduct, settings }, recaptchaSiteKey] = await Promise.all([
-    getProduct(locale, productId, customerAccessToken),
-    getRecaptchaSiteKey(),
-  ]);
+  // Resolve productId from params inside a Streamable for components that need it.
+  const streamableProductId = Streamable.from(async () => {
+    const { productId } = await streamableBaseData;
 
-  const reviewsEnabled = Boolean(settings?.reviews.enabled && !settings.display.showProductRating);
-  const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
-
-  if (!baseProduct) {
-    return notFound();
-  }
+    return productId;
+  });
 
   const streamableProduct = Streamable.from(async () => {
-    const options = await searchParams;
+    const { productId } = await streamableBaseData;
+    const [options, customerAccessToken] = await Promise.all([
+      searchParams,
+      getSessionCustomerAccessToken(),
+    ]);
 
     const optionValueIds = Object.keys(options)
       .map((option) => ({
@@ -105,7 +109,7 @@ export default async function Product({ params, searchParams }: Props) {
       );
 
     const variables = {
-      entityId: Number(productId),
+      entityId: productId,
       optionValueIds,
       useDefaultOptionSelections: true,
     };
@@ -122,8 +126,11 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
 
   const streamableProductInventory = Streamable.from(async () => {
+    const { productId } = await streamableBaseData;
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
     const variables = {
-      entityId: Number(productId),
+      entityId: productId,
     };
 
     const product = await getStreamableProductInventory(locale, variables, customerAccessToken);
@@ -136,11 +143,14 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableProductVariantInventory = Streamable.from(async () => {
+    const { productId } = await streamableBaseData;
     const product = await streamableProductInventory;
 
     if (!product.inventory.hasVariantInventory) {
       return undefined;
     }
+
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
     const variables = {
       productId,
@@ -161,6 +171,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
+    const { productId } = await streamableBaseData;
     const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
@@ -175,11 +186,13 @@ export default async function Product({ params, searchParams }: Props) {
     const currencyCode = await getPreferredCurrencyCode();
 
     const variables = {
-      entityId: Number(productId),
+      entityId: productId,
       optionValueIds,
       useDefaultOptionSelections: true,
       currencyCode,
     };
+
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
     return await getProductPricingAndRelatedProducts(locale, variables, customerAccessToken);
   });
@@ -249,6 +262,8 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableInventorySettings = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
     return await getStreamableInventorySettingsQuery(locale, customerAccessToken);
   });
 
@@ -552,45 +567,80 @@ export default async function Product({ params, searchParams }: Props) {
     return { email: session?.user?.email ?? '', name: obfuscatedName };
   });
 
+  const streamableFields = Streamable.from(async () => {
+    const { product: baseProduct } = await streamableBaseData;
+
+    if (!baseProduct) {
+      return [];
+    }
+
+    return productOptionsTransformer(baseProduct.productOptions);
+  });
+
+  const streamableProductDetail = Streamable.from(async () => {
+    const { product: baseProduct, settings } = await streamableBaseData;
+
+    if (!baseProduct) {
+      return notFound();
+    }
+
+    const reviewsEnabled = Boolean(
+      settings?.reviews.enabled && !settings.display.showProductRating,
+    );
+    const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+
+    return {
+      id: baseProduct.entityId.toString(),
+      title: baseProduct.name,
+      description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
+      href: baseProduct.path,
+      images: streamableImages,
+      price: streamablePrices,
+      reviewsEnabled,
+      showRating,
+      numberOfReviews: baseProduct.reviewSummary.numberOfReviews,
+      subtitle: baseProduct.brand?.name,
+      rating: baseProduct.reviewSummary.averageRating,
+      accordions: streameableAccordions,
+      minQuantity: streamableMinQuantity,
+      maxQuantity: streamableMaxQuantity,
+      stockDisplayData: streamableStockDisplayData,
+      backorderDisplayData: streamableBackorderDisplayData,
+    };
+  });
+
+  const streamableShowRating = Streamable.from(async () => {
+    const { settings } = await streamableBaseData;
+
+    return Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+  });
+
   return (
     <>
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         <ProductDetail
           action={addToCart}
           additionalActions={
-            <WishlistButton
-              formId={detachedWishlistFormId}
-              productId={productId}
-              productSku={streamableProductSku}
-            />
+            <Stream fallback={null} value={streamableProductId}>
+              {(productId) => (
+                <WishlistButton
+                  formId={detachedWishlistFormId}
+                  productId={productId}
+                  productSku={streamableProductSku}
+                />
+              )}
+            </Stream>
           }
           additionalInformationTitle={t('ProductDetails.additionalInformation')}
           ctaDisabled={streameableCtaDisabled}
           ctaLabel={streameableCtaLabel}
           decrementLabel={t('ProductDetails.decreaseQuantity')}
           emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
-          fields={productOptionsTransformer(baseProduct.productOptions)}
+          fields={streamableFields}
           incrementLabel={t('ProductDetails.increaseQuantity')}
           loadMoreImagesAction={getMoreProductImages}
           prefetch={true}
-          product={{
-            id: baseProduct.entityId.toString(),
-            title: baseProduct.name,
-            description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
-            href: baseProduct.path,
-            images: streamableImages,
-            price: streamablePrices,
-            reviewsEnabled,
-            showRating,
-            numberOfReviews: baseProduct.reviewSummary.numberOfReviews,
-            subtitle: baseProduct.brand?.name,
-            rating: baseProduct.reviewSummary.averageRating,
-            accordions: streameableAccordions,
-            minQuantity: streamableMinQuantity,
-            maxQuantity: streamableMaxQuantity,
-            stockDisplayData: streamableStockDisplayData,
-            backorderDisplayData: streamableBackorderDisplayData,
-          }}
+          product={streamableProductDetail}
           quantityLabel={t('ProductDetails.quantity')}
           recaptchaSiteKey={recaptchaSiteKey}
           reviewFormAction={submitReview}
@@ -610,19 +660,26 @@ export default async function Product({ params, searchParams }: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      {showRating && (
-        <div id="reviews">
-          <Reviews
-            customerAccessToken={customerAccessToken}
-            locale={locale}
-            productId={productId}
-            recaptchaSiteKey={recaptchaSiteKey}
-            searchParams={searchParams}
-            streamableImages={streamableImages}
-            streamableProduct={streamableProduct}
-          />
-        </div>
-      )}
+      <Stream fallback={null} value={streamableShowRating}>
+        {(showRating) =>
+          showRating ? (
+            <div id="reviews">
+              <Stream value={streamableProductId}>
+                {(productId) => (
+                  <Reviews
+                    locale={locale}
+                    productId={productId}
+                    recaptchaSiteKey={recaptchaSiteKey}
+                    searchParams={searchParams}
+                    streamableImages={streamableImages}
+                    streamableProduct={streamableProduct}
+                  />
+                )}
+              </Stream>
+            </div>
+          ) : null
+        }
+      </Stream>
 
       <Stream
         fallback={null}
@@ -642,12 +699,16 @@ export default async function Product({ params, searchParams }: Props) {
         )}
       </Stream>
 
-      <WishlistButtonForm
-        formId={detachedWishlistFormId}
-        productId={productId}
-        productSku={streamableProductSku}
-        searchParams={searchParams}
-      />
+      <Stream fallback={null} value={streamableProductId}>
+        {(productId) => (
+          <WishlistButtonForm
+            formId={detachedWishlistFormId}
+            productId={productId}
+            productSku={streamableProductSku}
+            searchParams={searchParams}
+          />
+        )}
+      </Stream>
     </>
   );
 }

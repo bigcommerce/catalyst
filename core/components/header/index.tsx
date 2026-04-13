@@ -1,6 +1,6 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
@@ -48,22 +48,22 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 });
 
-const getCachedHeaderLinks = unstable_cache(
-  async (currencyCode?: CurrencyCode) => {
-    const { data: response } = await client.fetch({
-      document: GetLinksAndSectionsQuery,
-      variables: { currencyCode },
-      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-      validateCustomerAccessToken: false,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedHeaderLinks(currencyCode?: CurrencyCode) {
+  'use cache';
 
-    return readFragment(HeaderLinksFragment, response).site;
-  },
-  ['get-header-links'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data: response } = await client.fetch({
+    document: GetLinksAndSectionsQuery,
+    variables: { currencyCode },
+    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+    validateCustomerAccessToken: false,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return readFragment(HeaderLinksFragment, response).site;
+}
 
 const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
   if (customerAccessToken) {
@@ -81,24 +81,24 @@ const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?:
   return getCachedHeaderLinks(currencyCode);
 });
 
-const getCachedHeaderData = unstable_cache(
-  async () => {
-    const { data: response } = await client.fetch({
-      document: LayoutQuery,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedHeaderData() {
+  'use cache';
 
-    return readFragment(HeaderFragment, response).site;
-  },
-  ['get-header-data'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return readFragment(HeaderFragment, response).site;
+}
 
 const getHeaderData = cache(async () => getCachedHeaderData());
 
 export const Header = async () => {
-  const t = await getTranslations('Components.Header');
   const locale = await getLocale();
+  const t = await getTranslations('Components.Header');
 
   const data = await getHeaderData();
 
@@ -180,33 +180,35 @@ export const Header = async () => {
   });
 
   return (
-    <HeaderSection
-      navigation={{
-        accountHref: '/login',
-        accountLabel: t('Icons.account'),
-        cartHref: '/cart',
-        cartLabel: t('Icons.cart'),
-        giftCertificatesLabel: t('Icons.giftCertificates'),
-        giftCertificatesHref: '/gift-certificates',
-        giftCertificatesEnabled: streamableGiftCertificatesEnabled,
-        searchHref: '/search',
-        searchParamName: 'term',
-        searchAction: search,
-        searchInputPlaceholder: t('Search.inputPlaceholder'),
-        searchSubmitLabel: t('Search.submitLabel'),
-        links: streamableLinks,
-        logo,
-        mobileMenuTriggerLabel: t('toggleNavigation'),
-        openSearchPopupLabel: t('Icons.search'),
-        logoLabel: t('home'),
-        cartCount: streamableCartCount,
-        activeLocaleId: locale,
-        locales,
-        currencies,
-        activeCurrencyId: streamableActiveCurrencyId,
-        currencyAction: switchCurrency,
-        switchCurrencyLabel: t('SwitchCurrency.label'),
-      }}
-    />
+    <Suspense>
+      <HeaderSection
+        navigation={{
+          accountHref: '/login',
+          accountLabel: t('Icons.account'),
+          cartHref: '/cart',
+          cartLabel: t('Icons.cart'),
+          giftCertificatesLabel: t('Icons.giftCertificates'),
+          giftCertificatesHref: '/gift-certificates',
+          giftCertificatesEnabled: streamableGiftCertificatesEnabled,
+          searchHref: '/search',
+          searchParamName: 'term',
+          searchAction: search,
+          searchInputPlaceholder: t('Search.inputPlaceholder'),
+          searchSubmitLabel: t('Search.submitLabel'),
+          links: streamableLinks,
+          logo,
+          mobileMenuTriggerLabel: t('toggleNavigation'),
+          openSearchPopupLabel: t('Icons.search'),
+          logoLabel: t('home'),
+          cartCount: streamableCartCount,
+          activeLocaleId: locale,
+          locales,
+          currencies,
+          activeCurrencyId: streamableActiveCurrencyId,
+          currencyAction: switchCurrency,
+          switchCurrencyLabel: t('SwitchCurrency.label'),
+        }}
+      />
+    </Suspense>
   );
 };

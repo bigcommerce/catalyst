@@ -1,18 +1,10 @@
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
 import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 
-interface Props extends PropsWithChildren {
-  params: Promise<{ locale: string }>;
-}
-
-export default async function Layout({ children, params }: Props) {
-  const { locale } = await params;
-
-  setRequestLocale(locale);
-
+export default async function Layout({ children }: PropsWithChildren) {
   const t = await getTranslations('Account.Layout');
 
   return (

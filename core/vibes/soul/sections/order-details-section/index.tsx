@@ -95,7 +95,7 @@ export interface Order {
 
 export interface OrderDetailsSectionProps {
   order: Streamable<Order>;
-  title?: string;
+  title?: Streamable<string>;
   orderSummaryLabel?: string;
   shipmentAddressLabel?: string;
   shipmentMethodLabel?: string;
@@ -141,9 +141,9 @@ export function OrderDetailsSection({
     <div className="font-[family-name:var(--order-details-section-font-family,var(--font-family-body))] text-[var(--order-details-text-primary,hsl(var(--foreground)))] @container">
       <Stream
         fallback={<OrderDetailsSectionSkeleton prevHref={prevHref} />}
-        value={streamableOrder}
+        value={Streamable.all([streamableOrder, title ?? ''])}
       >
-        {(order) => (
+        {([order, resolvedTitle]) => (
           <>
             <div className="flex gap-4 border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] pb-8">
               {prevHref !== '' && (
@@ -154,7 +154,7 @@ export function OrderDetailsSection({
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
                   <h1 className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-4xl">
-                    {title ?? `Order #${order.id}`}
+                    {resolvedTitle || `Order #${order.id}`}
                   </h1>
                   <Badge variant={order.statusColor}>{order.status}</Badge>
                 </div>
@@ -538,11 +538,7 @@ function OrderDetailsSectionSkeleton({
   return (
     <div className="animate-pulse">
       <div className="flex gap-4 border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] pb-8">
-        {prevHref != null && prevHref !== '' && (
-          <ButtonLink href={prevHref} shape="circle" size="small" variant="ghost">
-            <ArrowLeft />
-          </ButtonLink>
-        )}
+        {prevHref != null && prevHref !== '' && <Skeleton.Box className="h-10 w-10 rounded-full" />}
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <Skeleton.Text characterCount={8} className="rounded text-4xl" />

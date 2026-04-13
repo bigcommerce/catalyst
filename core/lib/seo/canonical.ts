@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -46,24 +46,24 @@ const VanityUrlQuery = graphql(`
   }
 `);
 
-const getCachedVanityUrl = unstable_cache(
-  async () => {
-    const { data } = await client.fetch({
-      document: VanityUrlQuery,
-      fetchOptions: { next: { revalidate } },
-    });
+async function getCachedVanityUrl() {
+  'use cache';
 
-    const vanityUrl = data.site.settings?.url.vanityUrl;
+  cacheLife({ revalidate });
 
-    if (!vanityUrl) {
-      throw new Error('Vanity URL not found in site settings');
-    }
+  const { data } = await client.fetch({
+    document: VanityUrlQuery,
+    fetchOptions: { cache: 'no-store' },
+  });
 
-    return vanityUrl;
-  },
-  ['get-vanity-url'],
-  { revalidate },
-);
+  const vanityUrl = data.site.settings?.url.vanityUrl;
+
+  if (!vanityUrl) {
+    throw new Error('Vanity URL not found in site settings');
+  }
+
+  return vanityUrl;
+}
 
 const getVanityUrl = cache(getCachedVanityUrl);
 

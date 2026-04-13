@@ -1,8 +1,14 @@
-import { cache } from 'react';
+let counter = 0;
 
 /**
- * Returns a stable correlation ID for the current request.
- * React.cache ensures the same UUID is returned for all fetches within a
- * single page render, while being unique across renders/requests.
+ * Returns a correlation ID for tracing requests.
+ * Uses a simple counter to avoid crypto.randomUUID() and Date.now() which
+ * trigger Next.js cacheComponents prerender errors for accessing dynamic
+ * values before uncached data.
+ *
+ * @returns {string} A unique correlation ID string.
  */
-export const getCorrelationId = cache((): string => crypto.randomUUID());
+export function getCorrelationId(): string {
+  // eslint-disable-next-line no-plusplus
+  return `req-${(counter++).toString(36)}`;
+}

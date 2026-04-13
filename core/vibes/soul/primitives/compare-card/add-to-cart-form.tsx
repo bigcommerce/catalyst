@@ -7,7 +7,7 @@ import { requestFormReset } from 'react-dom';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { useEvents } from '~/components/analytics/events';
-import { useRouter } from '~/i18n/routing';
+import { useRouter } from '~/i18n/navigation';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 

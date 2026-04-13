@@ -11,7 +11,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 interface ProductListProps {
   products: Streamable<Product[]>;
-  showRating?: boolean;
+  showRating?: Streamable<boolean>;
   compareProducts?: Streamable<Product[]>;
   className?: string;
   colorScheme?: 'light' | 'dark';
@@ -72,6 +72,7 @@ export function ProductList({
         streamableCompareProducts,
         streamableRemoveLabel,
         streamableMaxCompareLimitMessage,
+        showRating ?? false,
       ])}
     >
       {([
@@ -81,6 +82,7 @@ export function ProductList({
         compareProducts,
         removeLabel,
         maxCompareLimitMessage,
+        resolvedShowRating,
       ]) => {
         if (products.length === 0) {
           return (
@@ -110,7 +112,7 @@ export function ProductList({
                     key={product.id}
                     product={product}
                     showCompare={showCompare}
-                    showRating={showRating}
+                    showRating={resolvedShowRating}
                   />
                 ))}
               </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -28,7 +28,7 @@ const searchParamsCache = createSearchParamsCache({
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'Blog' });
+  const t = await getTranslations('Blog');
   const blog = await getBlog(locale);
 
   const description =
@@ -73,36 +73,38 @@ async function getPaginationInfo(locale: string, searchParamsPromise: Promise<Se
 export default async function Blog(props: Props) {
   const { locale } = await props.params;
 
-  setRequestLocale(locale);
-
   const t = await getTranslations('Blog');
 
-  const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
-  const { tag } = searchParamsParsed;
   const blog = await getBlog(locale);
 
   if (!blog) {
     return notFound();
   }
 
-  const tagCrumb = tag ? [{ label: tag, href: '#' }] : [];
+  const streamableBreadcrumbs = Streamable.from(async () => {
+    const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
+    const { tag } = searchParamsParsed;
+    const tagCrumb = tag ? [{ label: tag, href: '#' }] : [];
+
+    return [
+      {
+        label: t('home'),
+        href: '/',
+      },
+      {
+        label: blog.name,
+        href: tag ? blog.path : '#',
+      },
+      ...tagCrumb,
+    ];
+  });
 
   return (
     <FeaturedBlogPostList
-      breadcrumbs={[
-        {
-          label: t('home'),
-          href: '/',
-        },
-        {
-          label: blog.name,
-          href: tag ? blog.path : '#',
-        },
-        ...tagCrumb,
-      ]}
+      breadcrumbs={streamableBreadcrumbs}
       description={blog.description}
-      emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
-      emptyStateTitle={Streamable.from(getEmptyStateTitle)}
+      emptyStateSubtitle={Streamable.from(() => getEmptyStateSubtitle())}
+      emptyStateTitle={Streamable.from(() => getEmptyStateTitle())}
       paginationInfo={Streamable.from(() => getPaginationInfo(locale, props.searchParams))}
       placeholderCount={6}
       posts={Streamable.from(() => listBlogPosts(locale, props.searchParams))}

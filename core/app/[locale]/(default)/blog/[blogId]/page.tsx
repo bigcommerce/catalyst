@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
@@ -43,7 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
-  const [format, { blogId, locale }] = await Promise.all([getFormatter(), props.params]);
+  const { blogId, locale } = await props.params;
+  const format = await getFormatter();
 
   const variables = cachedBlogPageDataVariables(blogId);
 
@@ -72,7 +73,8 @@ async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
 }
 
 async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
-  const [t, { blogId, locale }] = await Promise.all([getTranslations('Blog'), props.params]);
+  const { blogId, locale } = await props.params;
+  const t = await getTranslations('Blog');
 
   const variables = cachedBlogPageDataVariables(blogId);
 
@@ -99,11 +101,7 @@ async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   ];
 }
 
-export default async function Blog(props: Props) {
-  const { locale } = await props.params;
-
-  setRequestLocale(locale);
-
+export default function Blog(props: Props) {
   return (
     <BlogPostContent blogPost={getBlogPost(props)} breadcrumbs={getBlogPostBreadcrumbs(props)} />
   );

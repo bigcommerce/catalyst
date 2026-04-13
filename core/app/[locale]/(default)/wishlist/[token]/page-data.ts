@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -51,24 +51,30 @@ interface Pagination {
   after?: string | null;
 }
 
-const getCachedPublicWishlist = unstable_cache(
-  async (locale: string, token: string, pagination: Pagination, currencyCode?: CurrencyCode) => {
-    const { before, after, limit = 9 } = pagination;
-    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
-    const response = await client.fetch({
-      document: PublicWishlistQuery,
-      variables: { ...paginationArgs, currencyCode, token },
-      locale,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedPublicWishlist(
+  locale: string,
+  token: string,
+  pagination: Pagination,
+  currencyCode?: CurrencyCode,
+) {
+  'use cache';
 
-    const wishlist = response.data.site.publicWishlist;
+  cacheLife({ revalidate });
+  cacheTag(TAGS.customer);
 
-    return wishlist;
-  },
-  ['get-public-wishlist'],
-  { revalidate, tags: [TAGS.customer] },
-);
+  const { before, after, limit = 9 } = pagination;
+  const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+  const response = await client.fetch({
+    document: PublicWishlistQuery,
+    variables: { ...paginationArgs, currencyCode, token },
+    locale,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  const wishlist = response.data.site.publicWishlist;
+
+  return wishlist;
+}
 
 export const getPublicWishlist = cache(
   async (locale: string, token: string, pagination: Pagination, currencyCode?: CurrencyCode) => {

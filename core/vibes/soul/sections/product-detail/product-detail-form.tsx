@@ -31,7 +31,7 @@ import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { useEvents } from '~/components/analytics/events';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter } from '~/i18n/navigation';
 
 import { revalidateCart } from './actions/revalidate-cart';
 import { Field, schema, SchemaRawShape } from './schema';

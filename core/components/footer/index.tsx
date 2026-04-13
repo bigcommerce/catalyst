@@ -6,9 +6,9 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
-import { cache, JSX } from 'react';
+import { cache, JSX, Suspense } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
@@ -29,6 +29,8 @@ import { MastercardIcon } from './payment-icons/mastercard';
 import { PayPalIcon } from './payment-icons/paypal';
 import { VisaIcon } from './payment-icons/visa';
 
+const currentYear = new Date().getFullYear();
+
 const paymentIcons = [
   <AmazonIcon key="amazon" />,
   <AmericanExpressIcon key="americanExpress" />,
@@ -47,22 +49,22 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const getCachedFooterSections = unstable_cache(
-  async (currencyCode?: CurrencyCode) => {
-    const { data: response } = await client.fetch({
-      document: GetLinksAndSectionsQuery,
-      variables: { currencyCode },
-      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-      validateCustomerAccessToken: false,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedFooterSections(currencyCode?: CurrencyCode) {
+  'use cache';
 
-    return readFragment(FooterSectionsFragment, response).site;
-  },
-  ['get-footer-sections'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data: response } = await client.fetch({
+    document: GetLinksAndSectionsQuery,
+    variables: { currencyCode },
+    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+    validateCustomerAccessToken: false,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return readFragment(FooterSectionsFragment, response).site;
+}
 
 const getFooterSections = cache(
   async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
@@ -82,18 +84,18 @@ const getFooterSections = cache(
   },
 );
 
-const getCachedFooterData = unstable_cache(
-  async () => {
-    const { data: response } = await client.fetch({
-      document: LayoutQuery,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedFooterData() {
+  'use cache';
 
-    return readFragment(FooterFragment, response).site;
-  },
-  ['get-footer-data'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return readFragment(FooterFragment, response).site;
+}
 
 const getFooterData = cache(async () => getCachedFooterData());
 
@@ -103,7 +105,7 @@ export const Footer = async () => {
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
-  const copyright = `© ${new Date().getFullYear()} ${data.settings?.storeName} – Powered by BigCommerce`;
+  const copyright = `© ${currentYear} ${data.settings?.storeName} – Powered by BigCommerce`;
 
   const contactInformation = data.settings?.contact
     ? {
@@ -160,16 +162,18 @@ export const Footer = async () => {
   });
 
   return (
-    <FooterSection
-      contactInformation={contactInformation}
-      contactTitle={t('contactUs')}
-      copyright={copyright}
-      logo={logo}
-      logoHref="/"
-      logoLabel={t('home')}
-      paymentIcons={paymentIcons}
-      sections={streamableSections}
-      socialMediaLinks={socialMediaLinks}
-    />
+    <Suspense>
+      <FooterSection
+        contactInformation={contactInformation}
+        contactTitle={t('contactUs')}
+        copyright={copyright}
+        logo={logo}
+        logoHref="/"
+        logoLabel={t('home')}
+        paymentIcons={paymentIcons}
+        sections={streamableSections}
+        socialMediaLinks={socialMediaLinks}
+      />
+    </Suspense>
   );
 };

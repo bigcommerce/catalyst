@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cacheLife } from 'next/cache';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -339,19 +339,19 @@ const SupportedShippingDestinationsQuery = graphql(`
   }
 `);
 
-const getCachedShippingCountries = unstable_cache(
-  async (locale: string) => {
-    const { data } = await client.fetch({
-      document: SupportedShippingDestinationsQuery,
-      locale,
-      fetchOptions: { cache: 'no-store' },
-    });
+async function getCachedShippingCountries(locale: string) {
+  'use cache';
 
-    return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
-  },
-  ['get-shipping-countries'],
-  { revalidate },
-);
+  cacheLife({ revalidate });
+
+  const { data } = await client.fetch({
+    document: SupportedShippingDestinationsQuery,
+    locale,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+}
 
 export const getShippingCountries = cache(async (locale: string) => {
   return getCachedShippingCountries(locale);
