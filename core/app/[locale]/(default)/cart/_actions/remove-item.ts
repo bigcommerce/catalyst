@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -28,6 +28,7 @@ export async function removeItem({
   lineItemEntityId,
 }: Omit<DeleteCartLineItemInput, 'cartEntityId'>) {
   const t = await getTranslations('Cart.Errors');
+  const locale = await getLocale();
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -43,6 +44,7 @@ export async function removeItem({
 
   const response = await client.fetch({
     document: DeleteCartLineItemMutation,
+    locale,
     variables: {
       input: {
         cartEntityId: cartId,

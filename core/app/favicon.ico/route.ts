@@ -28,6 +28,7 @@ export const GET = async () => {
   const { data } = await client.fetch({
     document: GetFaviconQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
+    locale: '',
   });
 
   const faviconUrl = data.site.settings?.faviconUrl;

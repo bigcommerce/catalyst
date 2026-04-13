@@ -4,7 +4,7 @@ import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -21,6 +21,7 @@ interface State {
 export async function newWishlist(prevState: Awaited<State>, formData: FormData): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const t = await getTranslations('Wishlist');
+  const locale = await getLocale();
   const schema = newWishlistSchema({ required_error: t('Errors.nameRequired') });
   const submission = parseWithZod(formData, { schema });
 
@@ -44,6 +45,7 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
 
     const response = await client.fetch({
       document: CreateWishlistMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: { input: { name: wishlistName, isPublic, items: wishlistItems } },

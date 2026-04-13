@@ -55,6 +55,7 @@ export default async function Maintenance({ params }: Props) {
 
   const { data } = await client.fetch({
     document: MaintenancePageQuery,
+    locale,
   });
 
   const storeSettings = data.site.settings;

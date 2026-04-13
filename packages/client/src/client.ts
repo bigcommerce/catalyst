@@ -85,7 +85,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    locale?: string;
+    locale: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -97,7 +97,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    locale?: string;
+    locale: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;

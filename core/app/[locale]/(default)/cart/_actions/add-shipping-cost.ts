@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -31,9 +32,11 @@ export const addShippingCost = async ({
   shippingOptionEntityId,
 }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: SelectCheckoutShippingOptionMutation,
+    locale,
     variables: {
       input: {
         checkoutEntityId,

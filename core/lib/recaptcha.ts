@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -26,9 +27,10 @@ export const ReCaptchaSettingsQuery = graphql(`
 `);
 
 const getCachedReCaptchaSettings = unstable_cache(
-  async (): Promise<ReCaptchaSettings | null> => {
+  async (locale: string): Promise<ReCaptchaSettings | null> => {
     const { data } = await client.fetch({
       document: ReCaptchaSettingsQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -48,7 +50,9 @@ const getCachedReCaptchaSettings = unstable_cache(
 );
 
 export const getReCaptchaSettings = cache(async (): Promise<ReCaptchaSettings | null> => {
-  return getCachedReCaptchaSettings();
+  const locale = await getLocale();
+
+  return getCachedReCaptchaSettings(locale);
 });
 
 export const getRecaptchaSiteKey = cache(async (): Promise<string | undefined> => {

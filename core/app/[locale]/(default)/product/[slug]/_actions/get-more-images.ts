@@ -1,6 +1,7 @@
 'use server';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -37,9 +38,11 @@ export async function getMoreProductImages(
   pageInfo: { hasNextPage: boolean; endCursor: string | null };
 }> {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const { data } = await client.fetch({
     document: MoreProductImagesQuery,
+    locale,
     variables: { entityId: productId, first: limit, after: cursor },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },

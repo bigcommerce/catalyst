@@ -1,3 +1,4 @@
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -69,6 +70,7 @@ interface Props {
 
 export const getAccountSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: AccountSettingsQuery,
@@ -78,6 +80,7 @@ export const getAccountSettingsQuery = cache(async ({ address, customer }: Props
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
+    locale,
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     customerAccessToken,
   });

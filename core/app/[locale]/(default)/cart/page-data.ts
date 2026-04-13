@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -298,11 +299,13 @@ type Variables = VariablesOf<typeof CartPageQuery>;
 
 export const getCart = async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables,
     customerAccessToken,
+    locale,
     fetchOptions: {
       cache: 'no-store',
       next: {
@@ -338,9 +341,10 @@ const SupportedShippingDestinationsQuery = graphql(`
 `);
 
 const getCachedShippingCountries = unstable_cache(
-  async () => {
+  async (locale: string) => {
     const { data } = await client.fetch({
       document: SupportedShippingDestinationsQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -351,5 +355,7 @@ const getCachedShippingCountries = unstable_cache(
 );
 
 export const getShippingCountries = cache(async () => {
-  return getCachedShippingCountries();
+  const locale = await getLocale();
+
+  return getCachedShippingCountries(locale);
 });

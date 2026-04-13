@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -157,6 +158,7 @@ const CustomerOrderDetails = graphql(
 
 export const getCustomerOrderDetails = cache(async (id: number) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: CustomerOrderDetails,
@@ -165,6 +167,7 @@ export const getCustomerOrderDetails = cache(async (id: number) => {
         entityId: id,
       },
     },
+    locale,
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     customerAccessToken,
     errorPolicy: 'auth',

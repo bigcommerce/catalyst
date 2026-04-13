@@ -1,7 +1,7 @@
 import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
@@ -202,6 +202,7 @@ export async function createAddress(
   formData: FormData,
 ): Promise<State> {
   const t = await getTranslations('Account.Addresses');
+  const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema });
@@ -218,6 +219,7 @@ export async function createAddress(
 
     const response = await client.fetch({
       document: AddCustomerAddressMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: {

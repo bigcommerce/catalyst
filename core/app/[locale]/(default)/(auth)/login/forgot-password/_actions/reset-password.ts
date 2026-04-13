@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/forgot-password-section/schema';
 import { client } from '~/client';
@@ -30,6 +30,7 @@ export const resetPassword = async (
   formData: FormData,
 ): Promise<{ lastResult: SubmissionResult | null; successMessage?: string }> => {
   const t = await getTranslations('Auth.Login.ForgotPassword');
+  const locale = await getLocale();
 
   const submission = parseWithZod(formData, { schema });
 
@@ -40,6 +41,7 @@ export const resetPassword = async (
   try {
     const response = await client.fetch({
       document: ResetPasswordMutation,
+      locale,
       variables: {
         input: {
           email: submission.value.email,

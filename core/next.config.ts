@@ -32,7 +32,7 @@ const SettingsQuery = graphql(`
 `);
 
 async function writeSettingsToBuildConfig() {
-  const { data } = await client.fetch({ document: SettingsQuery });
+  const { data } = await client.fetch({ document: SettingsQuery, locale: '' });
 
   const cdnEnvHostnames = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME;
 

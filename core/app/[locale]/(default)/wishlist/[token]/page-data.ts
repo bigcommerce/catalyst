@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -58,12 +59,14 @@ const getCachedPublicWishlist = unstable_cache(
     limit: number,
     before: string | null | undefined,
     after: string | null | undefined,
-    currencyCode?: CurrencyCode,
+    currencyCode: CurrencyCode | undefined,
+    locale: string,
   ) => {
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
     const response = await client.fetch({
       document: PublicWishlistQuery,
       variables: { ...paginationArgs, currencyCode, token },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -82,6 +85,7 @@ const getCachedPublicWishlist = unstable_cache(
 export const getPublicWishlist = cache(async (token: string, pagination: Pagination) => {
   const { before, after, limit = 9 } = pagination;
   const currencyCode = await getPreferredCurrencyCode();
+  const locale = await getLocale();
 
-  return getCachedPublicWishlist(token, limit, before, after, currencyCode);
+  return getCachedPublicWishlist(token, limit, before, after, currencyCode, locale);
 });

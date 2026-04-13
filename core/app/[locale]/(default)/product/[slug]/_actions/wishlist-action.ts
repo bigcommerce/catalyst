@@ -102,8 +102,11 @@ interface WishlistRemoveMutationVariables {
 }
 
 async function getVariantIdFromSku(productId: number, sku: string, customerAccessToken?: string) {
+  const locale = await getLocale();
+
   const { data } = await client.fetch({
     document: VariantIdFromSkuQuery,
+    locale,
     variables: { productId, sku },
     customerAccessToken,
     fetchOptions: { cache: 'no-store' },
@@ -122,8 +125,11 @@ async function addToDefaultWishlist(
   productId: number,
   variantId?: number,
 ) {
+  const locale = await getLocale();
+
   const { data } = await client.fetch({
     document: CreateWishlistMutation,
+    locale,
     variables: {
       input: {
         name: wishlistName,
@@ -141,8 +147,11 @@ async function addToDefaultWishlist(
 }
 
 async function addToWishlist(customerAccessToken: string, variables: WishlistAddMutationVariables) {
+  const locale = await getLocale();
+
   const { data } = await client.fetch({
     document: AddToWishlistMutation,
+    locale,
     variables,
     customerAccessToken,
     fetchOptions: { cache: 'no-store' },
@@ -157,8 +166,11 @@ async function removeFromWishlist(
   customerAccessToken: string,
   variables: WishlistRemoveMutationVariables,
 ) {
+  const locale = await getLocale();
+
   const { data } = await client.fetch({
     document: DeleteWishlistItemsMutation,
+    locale,
     variables,
     customerAccessToken,
     fetchOptions: { cache: 'no-store' },

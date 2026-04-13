@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -45,9 +46,11 @@ export const addCheckoutShippingConsignments = async ({
   lineItems,
 }: AddProps) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: AddCheckoutShippingConsignmentsMutation,
+    locale,
     variables: {
       input: {
         checkoutEntityId,
@@ -113,9 +116,11 @@ export const updateCheckoutShippingConsignment = async ({
   lineItems,
 }: UpdateProps) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: UpdateCheckoutShippingConsignmentMutation,
+    locale,
     variables: {
       input: {
         checkoutEntityId,

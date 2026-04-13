@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -72,12 +73,14 @@ interface Pagination {
 export const getCustomerAddresses = cache(
   async ({ before = '', after = '', limit = 10 }: Pagination) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
+    const locale = await getLocale();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: GetCustomerAddressesQuery,
       variables: { ...paginationArgs },
       customerAccessToken,
+      locale,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     });
 

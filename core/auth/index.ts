@@ -2,7 +2,7 @@ import { decodeJwt } from 'jose';
 import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session';
@@ -104,10 +104,12 @@ async function handleLoginCart(guestCartId?: string, loginResultCartId?: string)
 
 async function loginWithPassword(credentials: unknown): Promise<User | null> {
   const { email, password, cartId } = PasswordCredentials.parse(credentials);
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: LoginMutation,
     variables: { email, password, cartEntityId: cartId },
+    locale,
     fetchOptions: {
       cache: 'no-store',
     },
@@ -137,6 +139,7 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
 
 async function loginWithJwt(credentials: unknown): Promise<User | null> {
   const { jwt, cartId } = JwtCredentials.parse(credentials);
+  const locale = await getLocale();
 
   const claims = decodeJwt(jwt);
   const channelId = claims.channel_id?.toString() ?? process.env.BIGCOMMERCE_CHANNEL_ID;
@@ -145,6 +148,7 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     document: LoginWithTokenMutation,
     variables: { jwt, cartEntityId: cartId },
     channelId,
+    locale,
     fetchOptions: {
       cache: 'no-store',
     },
@@ -267,12 +271,14 @@ const config = {
 
       if (customerAccessToken) {
         try {
+          const locale = await getLocale();
           const logoutResponse = await client.fetch({
             document: LogoutMutation,
             variables: {
               cartEntityId,
             },
             customerAccessToken,
+            locale,
             fetchOptions: {
               cache: 'no-store',
             },

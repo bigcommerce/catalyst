@@ -4,7 +4,7 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidatePath, revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
@@ -35,8 +35,11 @@ const UpdateCartCurrencyMutation = graphql(`
 `);
 
 const updateCartCurrency = async (cartId: string, currencyCode: CurrencyCode) => {
+  const locale = await getLocale();
+
   const result = await client.fetch({
     document: UpdateCartCurrencyMutation,
+    locale,
     variables: { input: { data: { currencyCode }, cartEntityId: cartId } },
   });
   const newCartId = result.data.cart.updateCartCurrency?.cart?.entityId;

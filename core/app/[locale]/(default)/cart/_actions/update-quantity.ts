@@ -1,7 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -41,6 +41,7 @@ export const updateQuantity = async ({
   selectedOptions,
 }: UpdateProductQuantityParams) => {
   const t = await getTranslations('Cart.Errors');
+  const locale = await getLocale();
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -68,6 +69,7 @@ export const updateQuantity = async ({
 
   const response = await client.fetch({
     document: UpdateCartLineItemMutation,
+    locale,
     variables: {
       input: {
         cartEntityId: cartId,

@@ -1,3 +1,5 @@
+import { getLocale } from 'next-intl/server';
+
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
@@ -44,11 +46,13 @@ interface ProductViewedEvent {
 }
 
 export async function sendVisitStartedEvent({ initiator, request }: VisitStartedEvent) {
+  const locale = await getLocale();
   const input = { commonInput: preareCommonInput(initiator, request) };
 
   return client.fetch({
     document: VisitStartedMutation,
     variables: { input },
+    locale,
     fetchOptions: { cache: 'no-store' },
   });
 }
@@ -58,6 +62,7 @@ export async function sendProductViewedEvent({
   initiator,
   request,
 }: ProductViewedEvent) {
+  const locale = await getLocale();
   const input = {
     commonInput: preareCommonInput(initiator, request),
     productInput: { productEntityId: Number(productId) },
@@ -66,6 +71,7 @@ export async function sendProductViewedEvent({
   return await client.fetch({
     document: ProductViewedMutation,
     variables: { input },
+    locale,
     fetchOptions: { cache: 'no-store' },
   });
 }

@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { setRequestLocale } from 'next-intl/server';
+import { getLocale, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
@@ -47,10 +47,11 @@ interface PageLink {
 }
 
 const getCachedWebPageChildren = unstable_cache(
-  async (id: string): Promise<PageLink[]> => {
+  async (id: string, locale: string): Promise<PageLink[]> => {
     const { data } = await client.fetch({
       document: WebPageChildrenQuery,
       variables: { id: decodeURIComponent(id) },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -81,7 +82,9 @@ const getCachedWebPageChildren = unstable_cache(
 );
 
 const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
-  return getCachedWebPageChildren(id);
+  const locale = await getLocale();
+
+  return getCachedWebPageChildren(id, locale);
 });
 
 export default async function WebPageLayout({ params, children }: Props) {

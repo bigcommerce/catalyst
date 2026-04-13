@@ -4,7 +4,7 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
@@ -74,6 +74,7 @@ export const updateNewsletterSubscription = async (
   formData: FormData,
 ) => {
   const t = await getTranslations('Account.Settings.NewsletterSubscription');
+  const locale = await getLocale();
 
   const submission = parseWithZod(formData, { schema: updateNewsletterSubscriptionSchema });
 
@@ -87,6 +88,7 @@ export const updateNewsletterSubscription = async (
     if (submission.value.intent === 'subscribe') {
       const response = await client.fetch({
         document: SubscribeToNewsletterMutation,
+        locale,
         variables: {
           input: {
             email: customerInfo.email,
@@ -100,6 +102,7 @@ export const updateNewsletterSubscription = async (
     } else {
       const response = await client.fetch({
         document: UnsubscribeFromNewsletterMutation,
+        locale,
         variables: {
           input: {
             email: customerInfo.email,

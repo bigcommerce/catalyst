@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -55,10 +55,12 @@ const getWishlistButtonData = cache(async (productId: number, customerAccessToke
     return null;
   }
 
+  const locale = await getLocale();
   const { data } = await client.fetch({
     document: WishlistButtonQuery,
     variables: { productId, first: wishlistButtonLimit },
     customerAccessToken,
+    locale,
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
   });
 

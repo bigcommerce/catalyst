@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -47,9 +48,10 @@ const VanityUrlQuery = graphql(`
 `);
 
 const getCachedVanityUrl = unstable_cache(
-  async () => {
+  async (locale: string) => {
     const { data } = await client.fetch({
       document: VanityUrlQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -66,7 +68,9 @@ const getCachedVanityUrl = unstable_cache(
 );
 
 const getVanityUrl = cache(async () => {
-  return getCachedVanityUrl();
+  const locale = await getLocale();
+
+  return getCachedVanityUrl(locale);
 });
 
 export async function getMetadataAlternates(options: CanonicalUrlOptions) {

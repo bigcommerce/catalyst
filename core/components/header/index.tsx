@@ -33,10 +33,12 @@ const GetCartCountQuery = graphql(`
 `);
 
 const getCartCount = cache(async (cartId: string, customerAccessToken?: string) => {
+  const locale = await getLocale();
   const response = await client.fetch({
     document: GetCartCountQuery,
     variables: { cartId },
     customerAccessToken,
+    locale,
     fetchOptions: {
       cache: 'no-store',
       next: {

@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { updateAccountSchema } from '@/vibes/soul/sections/account-settings/schema';
 import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings/update-account-form';
@@ -45,6 +45,7 @@ const UpdateCustomerMutation = graphql(`
 
 export const updateCustomer: UpdateAccountAction = async (prevState, formData) => {
   const t = await getTranslations('Account.Settings');
+  const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema: updateAccountSchema });
@@ -59,6 +60,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
   try {
     const response = await client.fetch({
       document: UpdateCustomerMutation,
+      locale,
       customerAccessToken,
       variables: {
         input: submission.value,

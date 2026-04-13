@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -104,10 +105,12 @@ export const getCustomerOrders = cache(
         ...(filterByStatus && { status: filterByStatus }),
       },
     };
+    const locale = await getLocale();
     const response = await client.fetch({
       document: CustomerAllOrders,
       variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
+      locale,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
       errorPolicy: 'auth',
     });

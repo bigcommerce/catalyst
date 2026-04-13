@@ -1,7 +1,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { schema } from '@/vibes/soul/sections/address-list-section/schema';
@@ -46,6 +46,7 @@ function parseDeleteAddressInput(
 
 export async function deleteAddress(prevState: Awaited<State>, formData: FormData): Promise<State> {
   const t = await getTranslations('Account.Addresses');
+  const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema });
@@ -62,6 +63,7 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
 
     const response = await client.fetch({
       document: DeleteCustomerAddressMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: {

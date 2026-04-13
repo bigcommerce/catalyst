@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -30,9 +31,11 @@ interface Props {
 
 export const removeGiftCertificate = async ({ checkoutEntityId, giftCertificateCode }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: UnapplyCheckoutGiftCertificateMutation,
+    locale,
     variables: {
       unapplyCheckoutGiftCertificateInput: {
         checkoutEntityId,

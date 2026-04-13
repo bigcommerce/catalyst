@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 import { z } from 'zod';
 
@@ -106,10 +106,12 @@ export async function addGiftCertificateToCart<F extends Field>(
   formData: FormData,
 ): Promise<State> {
   const t = await getTranslations('GiftCertificates.Purchase');
+  const locale = await getLocale();
   const format = await getFormatter();
   const currencyCode = await getPreferredCurrencyCode();
   const settingsResp = await client.fetch({
     document: GiftCertificateSettingsQuery,
+    locale,
     variables: { currencyCode },
   });
 

@@ -4,7 +4,7 @@ import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -25,6 +25,7 @@ export async function removeWishlistItem(
 ): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const t = await getTranslations('Wishlist');
+  const locale = await getLocale();
   const submission = parseWithZod(formData, { schema: removeWishlistItemSchema });
 
   if (submission.status !== 'success') {
@@ -48,6 +49,7 @@ export async function removeWishlistItem(
 
     const response = await client.fetch({
       document: DeleteWishlistItemsMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: { wishlistId, itemIds: [wishlistItemId] },

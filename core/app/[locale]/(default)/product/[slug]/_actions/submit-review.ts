@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -35,6 +35,7 @@ export async function submitReview(
   payload: FormData,
 ) {
   const t = await getTranslations('Product.Reviews.Form');
+  const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
   const submission = parseWithZod(payload, { schema });
 
@@ -57,6 +58,7 @@ export async function submitReview(
   try {
     const response = await client.fetch({
       document: AddProductReviewMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: {

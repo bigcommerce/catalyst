@@ -1,3 +1,4 @@
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -42,10 +43,12 @@ export const getCustomerWishlist = cache(async (entityId: number, pagination: Pa
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+  const locale = await getLocale();
   const response = await client.fetch({
     document: WishlistDetailsQuery,
     variables: { ...paginationArgs, currencyCode, entityId },
     customerAccessToken,
+    locale,
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
   });
 

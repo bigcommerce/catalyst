@@ -2,7 +2,7 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 
 import { GiftCertificateData } from '@/vibes/soul/sections/gift-certificate-balance-section';
 import { giftCertificateCodeSchema } from '@/vibes/soul/sections/gift-certificate-balance-section/schema';
@@ -59,6 +59,7 @@ export async function getGiftCertificateByCode(
   formData: FormData,
 ): Promise<State> {
   const t = await getTranslations('GiftCertificates.CheckBalance');
+  const locale = await getLocale();
   const format = await getFormatter();
   const schema = giftCertificateCodeSchema({ required_error: t('Errors.codeRequired') });
   const submission = parseWithZod(formData, { schema });
@@ -74,6 +75,7 @@ export async function getGiftCertificateByCode(
     const { code } = schema.parse(submission.value);
     const response = await client.fetch({
       document: GetGiftCertificateByCodeQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
       variables: { code },
     });

@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -26,9 +27,10 @@ const ChangePasswordQuery = graphql(`
 `);
 
 const getCachedChangePasswordQuery = unstable_cache(
-  async () => {
+  async (locale: string) => {
     const response = await client.fetch({
       document: ChangePasswordQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -44,5 +46,7 @@ const getCachedChangePasswordQuery = unstable_cache(
 );
 
 export const getChangePasswordQuery = cache(async () => {
-  return getCachedChangePasswordQuery();
+  const locale = await getLocale();
+
+  return getCachedChangePasswordQuery(locale);
 });

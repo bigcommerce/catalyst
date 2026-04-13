@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
@@ -35,6 +35,7 @@ export async function changePassword(
   formData: FormData,
 ) {
   const t = await getTranslations('Auth.ChangePassword');
+  const locale = await getLocale();
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
@@ -44,6 +45,7 @@ export async function changePassword(
   try {
     const response = await client.fetch({
       document: ChangePasswordMutation,
+      locale,
       variables: {
         input: {
           token,

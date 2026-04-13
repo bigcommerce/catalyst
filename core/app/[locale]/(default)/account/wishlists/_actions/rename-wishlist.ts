@@ -4,7 +4,7 @@ import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -24,6 +24,7 @@ export async function renameWishlist(
 ): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const t = await getTranslations('Wishlist');
+  const locale = await getLocale();
   const schema = renameWishlistSchema({ required_error: t('Errors.nameRequired') });
   const submission = parseWithZod(formData, { schema });
 
@@ -46,6 +47,7 @@ export async function renameWishlist(
 
     const response = await client.fetch({
       document: UpdateWishlistMutation,
+      locale,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
       variables: { wishlistId, input: { name: wishlistName } },

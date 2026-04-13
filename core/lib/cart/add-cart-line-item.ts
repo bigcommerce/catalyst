@@ -1,3 +1,5 @@
+import { getLocale } from 'next-intl/server';
+
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -22,11 +24,13 @@ export const addCartLineItem = async (
   data: AddCartLineItemsInput['data'],
 ) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   return await client.fetch({
     document: AddCartLineItemMutation,
     variables: { input: { cartEntityId, data } },
     customerAccessToken,
+    locale,
     fetchOptions: { cache: 'no-store' },
   });
 };

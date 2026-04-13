@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { getFormatter } from 'next-intl/server';
+import { getFormatter, getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -74,9 +74,10 @@ interface Pagination {
 }
 
 const getCachedBlog = unstable_cache(
-  async () => {
+  async (locale: string) => {
     const response = await client.fetch({
       document: BlogQuery,
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -87,17 +88,26 @@ const getCachedBlog = unstable_cache(
 );
 
 export const getBlog = cache(async () => {
-  return getCachedBlog();
+  const locale = await getLocale();
+
+  return getCachedBlog(locale);
 });
 
 const getCachedBlogPosts = unstable_cache(
-  async (tag: string | null, limit: number, before: string | null, after: string | null) => {
+  async (
+    tag: string | null,
+    limit: number,
+    before: string | null,
+    after: string | null,
+    locale: string,
+  ) => {
     const filterArgs = tag ? { filters: { tags: [tag] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -131,7 +141,8 @@ const getCachedBlogPosts = unstable_cache(
 
 export const getBlogPosts = cache(
   async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
-    const result = await getCachedBlogPosts(tag, limit, before ?? null, after ?? null);
+    const locale = await getLocale();
+    const result = await getCachedBlogPosts(tag, limit, before ?? null, after ?? null, locale);
 
     if (!result) {
       return null;

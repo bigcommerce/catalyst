@@ -3,7 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/primitives/inline-email-form/schema';
 import { client } from '~/client';
@@ -35,6 +35,7 @@ export const subscribe = async (
   formData: FormData,
 ) => {
   const t = await getTranslations('Components.Subscribe');
+  const locale = await getLocale();
   const subscribeSchema = schema({
     requiredMessage: t('Errors.emailRequired'),
     invalidMessage: t('Errors.invalidEmail'),
@@ -48,6 +49,7 @@ export const subscribe = async (
   try {
     const response = await client.fetch({
       document: SubscribeToNewsletterMutation,
+      locale,
       variables: {
         input: {
           email: submission.value.email,

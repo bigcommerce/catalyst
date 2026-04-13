@@ -373,6 +373,7 @@ export async function registerCustomer<F extends Field>(
     const input = parseRegisterCustomerInput(submission.value, fields);
     const response = await client.fetch({
       document: RegisterCustomerMutation,
+      locale,
       variables: {
         input,
         reCaptchaV2:

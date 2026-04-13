@@ -85,6 +85,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
       channelId,
+      locale,
     });
 
     if (

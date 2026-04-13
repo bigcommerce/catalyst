@@ -70,6 +70,7 @@ const getRoute = async (path: string, channelId?: string) => {
     variables: { path },
     fetchOptions: { next: { revalidate } },
     channelId,
+    locale: '',
   });
 
   return response.data.site.route;
@@ -90,6 +91,7 @@ const getRawWebPageContent = async (id: string) => {
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
+    locale: '',
   });
 
   const node = response.data.node;
@@ -116,6 +118,7 @@ const getStoreStatus = async (channelId?: string) => {
     document: GetStoreStatusQuery,
     fetchOptions: { next: { revalidate: 300 } },
     channelId,
+    locale: '',
   });
 
   return data.site.settings?.status;

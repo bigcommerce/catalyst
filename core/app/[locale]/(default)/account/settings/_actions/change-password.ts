@@ -2,7 +2,7 @@
 
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { ChangePasswordAction } from '@/vibes/soul/sections/account-settings/change-password-form';
@@ -41,6 +41,7 @@ const schema = z.object({
 
 export const changePassword: ChangePasswordAction = async (prevState, formData) => {
   const t = await getTranslations('Account.Settings');
+  const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
   const submission = parseWithZod(formData, { schema });
 
@@ -56,6 +57,7 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
   try {
     const response = await client.fetch({
       document: CustomerChangePasswordMutation,
+      locale,
       variables: {
         input,
       },

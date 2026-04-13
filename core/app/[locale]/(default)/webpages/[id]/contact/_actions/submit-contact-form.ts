@@ -88,6 +88,7 @@ export async function submitContactForm<F extends Field>(
     const input = parseContactFormInput(submission.value);
     const response = await client.fetch({
       document: SubmitContactUsMutation,
+      locale,
       variables: {
         input,
         reCaptchaV2:

@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { unstable_cache } from 'next/cache';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -66,10 +66,11 @@ const ReviewsQuery = graphql(
 );
 
 const getCachedReviews = unstable_cache(
-  async (productId: number, paginationArgs: object) => {
+  async (productId: number, paginationArgs: object, locale: string) => {
     const { data } = await client.fetch({
       document: ReviewsQuery,
       variables: { ...paginationArgs, entityId: productId },
+      locale,
       fetchOptions: { cache: 'no-store' },
     });
 
@@ -80,7 +81,9 @@ const getCachedReviews = unstable_cache(
 );
 
 const getReviews = cache(async (productId: number, paginationArgs: object) => {
-  return getCachedReviews(productId, paginationArgs);
+  const locale = await getLocale();
+
+  return getCachedReviews(productId, paginationArgs, locale);
 });
 
 interface Props {
