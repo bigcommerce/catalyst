@@ -24,7 +24,10 @@ consola.log(colorize('cyanBright', `◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.ver
 program
   .name(PACKAGE_INFO.name)
   .version(PACKAGE_INFO.version)
-  .description('CLI tool for Catalyst development')
+  .summary('CLI tool for Catalyst development')
+  .description(
+    'CLI tool for Catalyst development.\n\nConfiguration priority: flags > env file (--env-path) > process.env > .bigcommerce/project.json.\nRun `catalyst <command> --help` for details on a specific command.',
+  )
   .addOption(
     new Option(
       '--env-path <path>',

@@ -233,6 +233,18 @@ export const tailLogs = async (
 
 const tail = new Command('tail')
   .description('Tail live logs from your deployed application.')
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst logs tail
+
+  # Tail logs with request format
+  $ catalyst logs tail --format request
+
+  # Tail logs as raw JSON (useful for piping to other tools)
+  $ catalyst logs tail --format json`,
+  )
   .addOption(storeHashOption().makeOptionMandatory())
   .addOption(accessTokenOption().makeOptionMandatory())
   .addOption(apiHostOption())
@@ -263,6 +275,12 @@ const tail = new Command('tail')
 
 const query = new Command('query')
   .description('Query historical logs from your deployed application.')
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst logs query`,
+  )
   .addOption(storeHashOption().makeOptionMandatory())
   .addOption(accessTokenOption().makeOptionMandatory())
   .addOption(apiHostOption())
