@@ -21,7 +21,12 @@ export async function getCustomerGroupId() {
   });
 
   if (errors) {
-    throw new Error(errors.map((error) => error.message).join(', '));
+    // eslint-disable-next-line no-console
+    console.error(
+      'Failed to fetch customer group:',
+      errors.map((error) => error.message).join(', '),
+    );
+    throw new Error('Failed to fetch customer group.');
   }
 
   return { data };

@@ -25,7 +25,10 @@ export async function GET(): Promise<NextResponse> {
   );
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch customer groups: ${response.statusText}`);
+    // eslint-disable-next-line no-console
+    console.error(`Failed to fetch customer groups: ${response.status} ${response.statusText}`);
+
+    return NextResponse.json(null, { status: 500 });
   }
 
   // `/v2/customer_groups` endpoint returns a `204 No Content` response if there are no customer groups

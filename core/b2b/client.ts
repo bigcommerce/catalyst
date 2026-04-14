@@ -67,10 +67,9 @@ export async function loginWithB2B({ customerId, customerAccessToken }: LoginWit
   if (!response.ok) {
     const errorMessage = ErrorResponse.parse(await response.json()).detail;
 
-    // Use the resolved `apiHost` variable in the error message for accuracy
-    throw new Error(
-      `Failed to login with ${apiHost}. Status: ${response.status}, Message: ${errorMessage}`
-    );
+    // eslint-disable-next-line no-console
+    console.error(`B2B login failed. Host: ${apiHost}, Status: ${response.status}, Message: ${errorMessage}`);
+    throw new Error('Failed to authenticate with B2B API.');
   }
 
   return B2BTokenResponseSchema.parse(await response.json()).data.token[0];
