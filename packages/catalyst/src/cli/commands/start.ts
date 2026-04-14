@@ -9,6 +9,12 @@ export const start = new Command('start')
   .description(
     'Start a local preview of your Catalyst storefront using the OpenNext Cloudflare adapter.',
   )
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst start`,
+  )
   .action(async () => {
     const envLocal = join(process.cwd(), '.env.local');
     const devVars = join(process.cwd(), '.bigcommerce', '.dev.vars');
