@@ -76,6 +76,18 @@ export async function buildCatalystProject(projectUuid: string): Promise<void> {
 }
 
 export const build = new Command('build')
+  .description(
+    'Build your Catalyst project using the OpenNext/Cloudflare build pipeline. Also runs a Wrangler dry-run to generate deployment artifacts.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst build
+
+  # Include project UUID
+  $ catalyst build --project-uuid <UUID>`,
+  )
   .addOption(
     new Option(
       '--project-uuid <uuid>',

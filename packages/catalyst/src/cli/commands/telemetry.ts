@@ -8,6 +8,22 @@ const telemetryService = getTelemetry();
 let isEnabled = telemetryService.isEnabled();
 
 export const telemetry = new Command('telemetry')
+  .description(
+    'View or change CLI telemetry collection status. Enabling telemetry helps BigCommerce support diagnose and troubleshoot errors you encounter when using the CLI.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Show telemetry status
+  $ catalyst telemetry
+
+  # Enable telemetry collection
+  $ catalyst telemetry enable
+
+  # Disable telemetry collection
+  $ catalyst telemetry --disable`,
+  )
   .addArgument(new Argument('[arg]').choices(['disable', 'enable', 'status']))
   .addOption(new Option('--enable', `Enables CLI telemetry collection.`).conflicts('disable'))
   .option('--disable', `Disables CLI telemetry collection.`)

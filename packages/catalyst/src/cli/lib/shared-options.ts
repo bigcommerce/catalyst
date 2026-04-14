@@ -17,7 +17,8 @@ export const accessTokenOption = () =>
 export const apiHostOption = () =>
   new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
     .env('BIGCOMMERCE_API_HOST')
-    .default('api.bigcommerce.com');
+    .default('api.bigcommerce.com')
+    .hideHelp();
 
 export const projectUuidOption = () =>
   new Option(

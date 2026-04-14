@@ -8,6 +8,12 @@ import { getTelemetry } from '../lib/telemetry';
 
 const list = new Command('list')
   .description('List BigCommerce infrastructure projects for your store.')
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst project list`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -23,7 +29,8 @@ const list = new Command('list')
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
       .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
+      .default('api.bigcommerce.com')
+      .hideHelp(),
   )
   .action(async (options) => {
     const config = getProjectConfig();
@@ -55,6 +62,12 @@ const create = new Command('create')
   .description(
     'Create a new BigCommerce infrastructure project and link it to your local Catalyst project.',
   )
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst project create`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -70,7 +83,8 @@ const create = new Command('create')
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
       .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
+      .default('api.bigcommerce.com')
+      .hideHelp(),
   )
   .action(async (options) => {
     const config = getProjectConfig();
@@ -99,6 +113,16 @@ export const link = new Command('link')
   .description(
     'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
   )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Link interactively (prompts to select or create)
+  $ catalyst project link
+
+  # Link using a project UUID directly
+  $ catalyst project link --project-uuid <UUID>`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -114,7 +138,8 @@ export const link = new Command('link')
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
       .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
+      .default('api.bigcommerce.com')
+      .hideHelp(),
   )
   .option(
     '--project-uuid <uuid>',
