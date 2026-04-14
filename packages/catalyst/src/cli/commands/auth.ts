@@ -40,6 +40,14 @@ async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost
 
 const whoami = new Command('whoami')
   .description('Verify stored credentials and display store/project info.')
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst auth whoami
+
+  Logged in to My Store (abc123), connected to project my-project (43eba682-0c48-11f1-9bd5-827a48b0ce1e)`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -55,7 +63,8 @@ const whoami = new Command('whoami')
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
       .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
+      .default('api.bigcommerce.com')
+      .hideHelp(),
   )
   .action(async (options) => {
     try {
@@ -110,7 +119,19 @@ const whoami = new Command('whoami')
   });
 
 const login = new Command('login')
-  .description('Authenticate via browser using the OAuth device code flow.')
+  .description(
+    'Authenticate via browser using the OAuth device code flow. If already logged in, displays current credentials and suggests running `catalyst auth logout` to re-authenticate.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Login via browser (recommended)
+  $ catalyst auth login
+
+  # Login with existing credentials (skips browser flow)
+  $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -126,7 +147,8 @@ const login = new Command('login')
   .addOption(
     new Option('--login-url <url>', 'BigCommerce login URL.')
       .env('BIGCOMMERCE_LOGIN_URL')
-      .default(DEFAULT_LOGIN_URL),
+      .default(DEFAULT_LOGIN_URL)
+      .hideHelp(),
   )
   .action(async (options) => {
     try {
@@ -183,6 +205,12 @@ const login = new Command('login')
 
 const logout = new Command('logout')
   .description('Remove stored credentials for the current project.')
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst auth logout`,
+  )
   .action(() => {
     try {
       const config = getProjectConfig();
