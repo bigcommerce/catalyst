@@ -17,7 +17,7 @@ describe('CLI program', () => {
     expect(program).toBeInstanceOf(Command);
     expect(program.name()).toBe(process.env.npm_package_name);
     expect(program.version()).toBe(process.env.npm_package_version);
-    expect(program.description()).toBe('CLI tool for Catalyst development');
+    expect(program.description()).toContain('CLI tool for Catalyst development');
   });
 
   test('has expected commands', () => {

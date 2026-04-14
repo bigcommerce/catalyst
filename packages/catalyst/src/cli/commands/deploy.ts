@@ -370,6 +370,12 @@ export const fetchProject = async (
 
 export const deploy = new Command('deploy')
   .description('Deploy your application to Cloudflare.')
+  .addHelpText(
+    'after',
+    `
+Example:
+  $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -385,7 +391,8 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
       .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com'),
+      .default('api.bigcommerce.com')
+      .hideHelp(),
   )
   .addOption(
     new Option(
