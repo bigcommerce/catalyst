@@ -41,11 +41,11 @@ export const client = createClient({
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
-  getChannelId: async (defaultChannelId: string) => {
-    const locale = await getLocale();
+  getChannelId: async (defaultChannelId: string, locale?: string) => {
+    const resolvedLocale = locale ?? (await getLocale());
 
     // We use the default channelId as a fallback, but it is not ideal in some scenarios.
-    return getChannelIdFromLocale(locale) ?? defaultChannelId;
+    return getChannelIdFromLocale(resolvedLocale) ?? defaultChannelId;
   },
   beforeRequest: async (fetchOptions) => {
     // We can't serialize a `Headers` object within this method so we have to opt into using a plain object
@@ -53,12 +53,16 @@ export const client = createClient({
     const locale = await getLocale();
 
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
-      const { headers } = await import('next/headers');
-      const ipAddress = (await headers()).get('X-Forwarded-For');
+      try {
+        const { headers } = await import('next/headers');
+        const ipAddress = (await headers()).get('X-Forwarded-For');
 
-      if (ipAddress) {
-        requestHeaders['X-Forwarded-For'] = ipAddress;
-        requestHeaders['True-Client-IP'] = ipAddress;
+        if (ipAddress) {
+          requestHeaders['X-Forwarded-For'] = ipAddress;
+          requestHeaders['True-Client-IP'] = ipAddress;
+        }
+      } catch {
+        // headers() is unavailable inside unstable_cache / 'use cache' contexts
       }
     }
 

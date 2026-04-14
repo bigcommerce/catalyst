@@ -49,7 +49,7 @@ type GraphQLErrorPolicy = 'none' | 'all' | 'auth' | 'ignore';
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
-  private getChannelId: (defaultChannelId: string) => Promise<string> | string;
+  private getChannelId: (defaultChannelId: string, locale?: string) => Promise<string> | string;
   private beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
   ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
@@ -85,6 +85,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -96,6 +97,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -106,6 +108,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
+    locale,
     errorPolicy = 'none',
     validateCustomerAccessToken = true,
   }: {
@@ -114,6 +117,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
@@ -126,6 +130,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       channelId,
       operationInfo.name,
       operationInfo.type,
+      locale,
     );
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
@@ -143,6 +148,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
         ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
         ...Object.fromEntries(new Headers(headers).entries()),
+        ...(locale && { 'Accept-Language': locale }),
       },
       body: JSON.stringify({
         query,
@@ -210,8 +216,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.text();
   }
 
-  private async getCanonicalUrl(channelId?: string) {
-    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
+  private async getCanonicalUrl(channelId?: string, locale?: string) {
+    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId, locale));
 
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;
   }
@@ -220,8 +226,9 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     channelId?: string,
     operationName?: string,
     operationType?: string,
+    locale?: string,
   ) {
-    const baseUrl = new URL(`${await this.getCanonicalUrl(channelId)}/graphql`);
+    const baseUrl = new URL(`${await this.getCanonicalUrl(channelId, locale)}/graphql`);
 
     if (operationName) {
       baseUrl.searchParams.set('operation', operationName);
