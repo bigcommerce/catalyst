@@ -46,9 +46,6 @@ export const resetPassword = async (
           path: '/change-password',
         },
       },
-      fetchOptions: {
-        cache: 'no-store',
-      },
     });
 
     const result = response.data.customer.requestResetPassword;

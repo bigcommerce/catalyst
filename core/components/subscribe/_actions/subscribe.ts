@@ -53,9 +53,6 @@ export const subscribe = async (
           email: submission.value.email,
         },
       },
-      fetchOptions: {
-        cache: 'no-store',
-      },
     });
 
     const errors = response.data.newsletter.subscribe.errors;

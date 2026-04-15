@@ -6,7 +6,6 @@ import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 interface Props extends React.PropsWithChildren {
   params: Promise<{ locale: string; id: string }>;
@@ -49,7 +48,6 @@ const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
   const { data } = await client.fetch({
     document: WebPageChildrenQuery,
     variables: { id: decodeURIComponent(id) },
-    fetchOptions: { next: { revalidate } },
   });
 
   if (!data.node) {

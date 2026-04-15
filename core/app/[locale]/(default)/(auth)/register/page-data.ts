@@ -72,7 +72,6 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
-    fetchOptions: { cache: 'no-store' },
     customerAccessToken,
   });
 

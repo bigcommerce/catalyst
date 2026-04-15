@@ -3,7 +3,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 
@@ -69,7 +68,6 @@ export const getComparedProducts = cache(
         currencyCode,
       },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return removeEdgesAndNodes(data.site.products);

@@ -5,7 +5,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 const BlogQuery = graphql(`
   query BlogQuery {
@@ -75,7 +74,6 @@ interface Pagination {
 export const getBlog = cache(async () => {
   const response = await client.fetch({
     document: BlogQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return response.data.site.content.blog;
@@ -89,7 +87,6 @@ export const getBlogPosts = cache(
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
-      fetchOptions: { next: { revalidate } },
     });
 
     const { blog } = response.data.site.content;

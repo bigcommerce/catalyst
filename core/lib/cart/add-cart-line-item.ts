@@ -27,6 +27,5 @@ export const addCartLineItem = async (
     document: AddCartLineItemMutation,
     variables: { input: { cartEntityId, data } },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 };

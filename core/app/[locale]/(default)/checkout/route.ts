@@ -82,7 +82,6 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
         referer: req.headers.get('referer') ?? '',
         userAgent: req.headers.get('user-agent') ?? '',
       },
-      fetchOptions: { cache: 'no-store' },
       customerAccessToken,
       channelId,
     });

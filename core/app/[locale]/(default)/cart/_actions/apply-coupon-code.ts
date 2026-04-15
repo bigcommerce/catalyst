@@ -40,7 +40,6 @@ export const applyCouponCode = async ({ checkoutEntityId, couponCode }: Props) =
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const checkout = response.data.checkout.applyCheckoutCoupon?.checkout;

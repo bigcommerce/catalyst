@@ -63,7 +63,6 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
     const response = await client.fetch({
       document: DeleteCustomerAddressMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: {
         input,
       },

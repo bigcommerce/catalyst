@@ -219,7 +219,6 @@ export async function createAddress(
     const response = await client.fetch({
       document: AddCustomerAddressMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: {
         input,
       },

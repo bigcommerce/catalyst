@@ -63,7 +63,6 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
       variables: {
         input: submission.value,
       },
-      fetchOptions: { cache: 'no-store' },
     });
 
     const result = response.data.customer.updateCustomer;

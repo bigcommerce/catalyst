@@ -58,7 +58,6 @@ export async function submitReview(
     const response = await client.fetch({
       document: AddProductReviewMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: {
         input: {
           review: {

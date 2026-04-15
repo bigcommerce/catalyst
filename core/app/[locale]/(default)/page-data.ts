@@ -2,7 +2,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { FooterFragment, FooterSectionsFragment } from '~/components/footer/fragment';
@@ -83,7 +82,6 @@ export const getPageData = cache(
       document: HomePageQuery,
       customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data;

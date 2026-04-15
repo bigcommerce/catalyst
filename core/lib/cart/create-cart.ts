@@ -31,6 +31,5 @@ export const createCart = async (data: CreateCartInput) => {
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 };

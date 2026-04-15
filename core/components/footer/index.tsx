@@ -15,7 +15,6 @@ import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -55,7 +54,6 @@ const getFooterSections = cache(
       // Since this query is needed on every page, it's a good idea not to validate the customer access token.
       // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
       validateCustomerAccessToken: false,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return readFragment(FooterSectionsFragment, response).site;
@@ -65,7 +63,6 @@ const getFooterSections = cache(
 const getFooterData = cache(async () => {
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return readFragment(FooterFragment, response).site;

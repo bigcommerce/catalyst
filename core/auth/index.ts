@@ -108,9 +108,6 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
   const response = await client.fetch({
     document: LoginMutation,
     variables: { email, password, cartEntityId: cartId },
-    fetchOptions: {
-      cache: 'no-store',
-    },
   });
 
   if (response.errors && response.errors.length > 0) {
@@ -145,9 +142,6 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     document: LoginWithTokenMutation,
     variables: { jwt, cartEntityId: cartId },
     channelId,
-    fetchOptions: {
-      cache: 'no-store',
-    },
   });
 
   if (response.errors && response.errors.length > 0) {
@@ -273,9 +267,6 @@ const config = {
               cartEntityId,
             },
             customerAccessToken,
-            fetchOptions: {
-              cache: 'no-store',
-            },
           });
 
           // If the logout is successful, we want to establish a new anonymous session.

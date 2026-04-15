@@ -42,7 +42,6 @@ export const applyGiftCertificate = async ({ checkoutEntityId, giftCertificateCo
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const checkout = response.data.checkout.applyCheckoutGiftCertificate?.checkout;

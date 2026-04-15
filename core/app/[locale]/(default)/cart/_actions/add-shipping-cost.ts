@@ -44,7 +44,6 @@ export const addShippingCost = async ({
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const result = response.data.checkout.selectCheckoutShippingOption?.checkout;

@@ -7,8 +7,6 @@ import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, readFragment } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
@@ -36,12 +34,6 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
     document: GetCartCountQuery,
     variables: { cartId },
     customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart],
-      },
-    },
   });
 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
@@ -55,7 +47,6 @@ const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?:
     // Since this query is needed on every page, it's a good idea not to validate the customer access token.
     // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
     validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return readFragment(HeaderLinksFragment, response).site;
@@ -64,7 +55,6 @@ const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?:
 const getHeaderData = cache(async () => {
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return readFragment(HeaderFragment, response).site;

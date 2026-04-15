@@ -5,7 +5,6 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 const MoreProductImagesQuery = graphql(`
   query MoreProductImagesQuery($entityId: Int!, $first: Int!, $after: String!) {
@@ -42,7 +41,6 @@ export async function getMoreProductImages(
     document: MoreProductImagesQuery,
     variables: { entityId: productId, first: limit, after: cursor },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   const images = removeEdgesAndNodes(data.site.product?.images ?? { edges: [] });

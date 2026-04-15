@@ -1,7 +1,6 @@
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
 
 const ValidateCartQuery = graphql(`
   query ValidateCartQuery($cartId: String) {
@@ -20,12 +19,6 @@ export async function validateCartId(cartId?: string) {
     document: ValidateCartQuery,
     variables: { cartId },
     customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart],
-      },
-    },
   });
 
   return response.data.site.cart;

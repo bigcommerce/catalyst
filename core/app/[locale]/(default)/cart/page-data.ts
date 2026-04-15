@@ -3,8 +3,6 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { TAGS } from '~/client/tags';
 
 export const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -302,12 +300,6 @@ export const getCart = async (variables: Variables) => {
     document: CartPageQuery,
     variables,
     customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart, TAGS.checkout],
-      },
-    },
   });
 
   return data;
@@ -339,7 +331,6 @@ const SupportedShippingDestinationsQuery = graphql(`
 export const getShippingCountries = cache(async () => {
   const { data } = await client.fetch({
     document: SupportedShippingDestinationsQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];

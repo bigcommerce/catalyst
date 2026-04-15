@@ -4,7 +4,6 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
 
 import { OrderGiftCertificateItemFragment, OrderItemFragment } from '../fragment';
 
@@ -165,7 +164,6 @@ export const getCustomerOrderDetails = cache(async (id: number) => {
         entityId: id,
       },
     },
-    fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     customerAccessToken,
     errorPolicy: 'auth',
   });

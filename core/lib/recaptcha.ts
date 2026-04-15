@@ -4,7 +4,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 import { RECAPTCHA_TOKEN_FORM_KEY, type ReCaptchaSettings } from './recaptcha/constants';
 
@@ -27,7 +26,6 @@ export const ReCaptchaSettingsQuery = graphql(`
 export const getReCaptchaSettings = cache(async (): Promise<ReCaptchaSettings | null> => {
   const { data } = await client.fetch({
     document: ReCaptchaSettingsQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   const reCaptcha = data.site.settings?.reCaptcha;

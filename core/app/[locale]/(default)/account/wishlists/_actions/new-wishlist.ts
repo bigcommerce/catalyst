@@ -45,7 +45,6 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
     const response = await client.fetch({
       document: CreateWishlistMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: { input: { name: wishlistName, isPublic, items: wishlistItems } },
     });
 

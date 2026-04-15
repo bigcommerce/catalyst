@@ -2,7 +2,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
@@ -33,7 +32,6 @@ export const getGiftCertificatePurchaseData = cache(async (currencyCode?: Curren
   const response = await client.fetch({
     document: GiftCertificatePurchaseSettingsQuery,
     variables: { currencyCode },
-    fetchOptions: { next: { revalidate } },
   });
 
   return {

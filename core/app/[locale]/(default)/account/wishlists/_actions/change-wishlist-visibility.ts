@@ -49,7 +49,6 @@ export async function toggleWishlistVisibility(
     const response = await client.fetch({
       document: UpdateWishlistMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: { wishlistId, input: { isPublic } },
     });
 

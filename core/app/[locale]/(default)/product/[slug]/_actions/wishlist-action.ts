@@ -106,7 +106,6 @@ async function getVariantIdFromSku(productId: number, sku: string, customerAcces
     document: VariantIdFromSkuQuery,
     variables: { productId, sku },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   if (!data.site.product?.variants) {
@@ -132,7 +131,6 @@ async function addToDefaultWishlist(
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   if (!data.wishlist.createWishlist?.result) {
@@ -145,7 +143,6 @@ async function addToWishlist(customerAccessToken: string, variables: WishlistAdd
     document: AddToWishlistMutation,
     variables,
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   if (!data.wishlist.addWishlistItems?.result) {
@@ -161,7 +158,6 @@ async function removeFromWishlist(
     document: DeleteWishlistItemsMutation,
     variables,
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   if (!data.wishlist.deleteWishlistItems?.result) {

@@ -78,7 +78,6 @@ export const updateQuantity = async ({
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const cart = response.data.cart.updateCartLineItem?.cart;

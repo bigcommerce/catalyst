@@ -2,7 +2,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { defaultLocale, locales } from '~/i18n/locales';
 
 interface CanonicalUrlOptions {
@@ -48,7 +47,6 @@ const VanityUrlQuery = graphql(`
 const getVanityUrl = cache(async () => {
   const { data } = await client.fetch({
     document: VanityUrlQuery,
-    fetchOptions: { next: { revalidate } },
   });
 
   const vanityUrl = data.site.settings?.url.vanityUrl;

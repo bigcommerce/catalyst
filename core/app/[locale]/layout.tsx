@@ -11,7 +11,6 @@ import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ConsentManager } from '~/components/consent-manager';
@@ -56,7 +55,6 @@ const RootLayoutMetadataQuery = graphql(
 const fetchRootLayoutMetadata = cache(async () => {
   return await client.fetch({
     document: RootLayoutMetadataQuery,
-    fetchOptions: { next: { revalidate } },
   });
 });
 

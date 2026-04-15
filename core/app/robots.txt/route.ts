@@ -44,7 +44,6 @@ export const GET = async () => {
   const { data } = await client.fetch({
     document: RobotsTxtQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
-    fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
   });
 
   const robotsTxt = `${data.site.settings?.robotsTxt ?? ''}\nSitemap: ${baseUrl.origin}/sitemap.xml\n`;

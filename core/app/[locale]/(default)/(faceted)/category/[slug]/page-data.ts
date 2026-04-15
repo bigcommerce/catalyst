@@ -2,7 +2,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
@@ -63,7 +62,6 @@ export const getCategoryPageData = cache(async (entityId: number, customerAccess
     document: CategoryPageQuery,
     variables: { entityId },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return response.data.site;

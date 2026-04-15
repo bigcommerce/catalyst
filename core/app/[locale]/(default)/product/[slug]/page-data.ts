@@ -3,7 +3,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { ProductVariantsInventoryFragment } from '~/components/product-variants-inventory/fragment';
 
@@ -160,7 +159,6 @@ export const getProductPageMetadata = cache(
       document: ProductPageMetadataQuery,
       variables: { entityId },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data.site.product;
@@ -205,7 +203,6 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
     document: ProductQuery,
     variables: { entityId },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return data.site;
@@ -255,7 +252,6 @@ export const getStreamableProductVariantInventory = cache(
       document: StreamableProductVariantInventoryBySkuQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product?.variants;
@@ -328,7 +324,6 @@ export const getStreamableProduct = cache(
       document: StreamableProductQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data.site.product;
@@ -371,7 +366,6 @@ export const getStreamableProductInventory = cache(
       document: StreamableProductInventoryQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product;
@@ -415,7 +409,6 @@ export const getProductPricingAndRelatedProducts = cache(
       document: ProductPricingAndRelatedProductsQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data.site.product;
@@ -444,7 +437,6 @@ export const getStreamableInventorySettingsQuery = cache(async (customerAccessTo
   const { data } = await client.fetch({
     document: InventorySettingsQuery,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return data.site.settings?.inventory;

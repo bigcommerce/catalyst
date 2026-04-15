@@ -49,7 +49,6 @@ export async function removeWishlistItem(
     const response = await client.fetch({
       document: DeleteWishlistItemsMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: { wishlistId, itemIds: [wishlistItemId] },
     });
 

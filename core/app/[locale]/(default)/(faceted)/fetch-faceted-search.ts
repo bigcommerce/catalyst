@@ -191,7 +191,6 @@ const getProductSearchResults = cache(
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs, currencyCode },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
 
     const { site } = response.data;

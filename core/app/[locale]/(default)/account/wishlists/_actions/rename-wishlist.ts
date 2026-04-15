@@ -47,7 +47,6 @@ export async function renameWishlist(
     const response = await client.fetch({
       document: UpdateWishlistMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: { wishlistId, input: { name: wishlistName } },
     });
 

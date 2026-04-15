@@ -2,7 +2,6 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 const BrandPageQuery = graphql(`
   query BrandPageQuery($entityId: Int!) {
@@ -43,7 +42,6 @@ export const getBrandPageData = cache(async (entityId: number, customerAccessTok
     document: BrandPageQuery,
     variables: { entityId },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return response.data.site;

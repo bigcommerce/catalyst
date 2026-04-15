@@ -49,7 +49,6 @@ export async function sendVisitStartedEvent({ initiator, request }: VisitStarted
   return client.fetch({
     document: VisitStartedMutation,
     variables: { input },
-    fetchOptions: { cache: 'no-store' },
   });
 }
 
@@ -66,7 +65,6 @@ export async function sendProductViewedEvent({
   return await client.fetch({
     document: ProductViewedMutation,
     variables: { input },
-    fetchOptions: { cache: 'no-store' },
   });
 }
 

@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
@@ -68,7 +67,6 @@ const getRoute = async (path: string, channelId?: string) => {
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
-    fetchOptions: { next: { revalidate } },
     channelId,
   });
 
@@ -114,7 +112,6 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
     channelId,
   });
 

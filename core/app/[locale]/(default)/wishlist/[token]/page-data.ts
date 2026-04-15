@@ -3,8 +3,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { TAGS } from '~/client/tags';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { WishlistItemFragment } from '~/components/wishlist/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -57,8 +55,6 @@ export const getPublicWishlist = cache(async (token: string, pagination: Paginat
   const response = await client.fetch({
     document: PublicWishlistQuery,
     variables: { ...paginationArgs, currencyCode, token },
-    // Since the wishlist is public, it's okay that we cache this request
-    fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
   });
 
   const wishlist = response.data.site.publicWishlist;

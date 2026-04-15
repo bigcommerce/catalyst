@@ -74,7 +74,6 @@ export async function getGiftCertificateByCode(
     const { code } = schema.parse(submission.value);
     const response = await client.fetch({
       document: GetGiftCertificateByCodeQuery,
-      fetchOptions: { cache: 'no-store' },
       variables: { code },
     });
 

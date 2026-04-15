@@ -93,7 +93,6 @@ export async function submitContactForm<F extends Field>(
         reCaptchaV2:
           recaptchaValidation.token != null ? { token: recaptchaValidation.token } : undefined,
       },
-      fetchOptions: { cache: 'no-store' },
     });
 
     const result = response.data.submitContactUs;

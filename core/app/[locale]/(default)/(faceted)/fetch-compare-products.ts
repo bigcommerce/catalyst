@@ -5,7 +5,6 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 import { MAX_COMPARE_LIMIT } from '../compare/page-data';
 
@@ -54,7 +53,6 @@ export const getCompareProducts = cache(
       document: CompareProductsQuery,
       variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return removeEdgesAndNodes(response.data.site.products);

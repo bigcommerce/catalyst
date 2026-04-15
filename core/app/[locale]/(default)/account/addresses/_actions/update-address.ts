@@ -232,7 +232,6 @@ export async function updateAddress(
     const response = await client.fetch({
       document: UpdateCustomerAddressMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
       variables: {
         input,
       },

@@ -51,9 +51,6 @@ export async function changePassword(
           newPassword: submission.value.password,
         },
       },
-      fetchOptions: {
-        cache: 'no-store',
-      },
     });
 
     const result = response.data.customer.resetPassword;

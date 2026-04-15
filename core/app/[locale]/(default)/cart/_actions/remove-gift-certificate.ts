@@ -42,7 +42,6 @@ export const removeGiftCertificate = async ({ checkoutEntityId, giftCertificateC
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const checkout = response.data.checkout.unapplyCheckoutGiftCertificate?.checkout;

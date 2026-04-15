@@ -50,7 +50,6 @@ export async function removeItem({
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
   });
 
   const cart = response.data.cart.deleteCartLineItem?.cart;
