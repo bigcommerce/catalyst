@@ -29,8 +29,16 @@ export const handlers = [
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
       data: [
-        { uuid: 'a23f5785-fd99-4a94-9fb3-945551623923', name: 'Project One' },
-        { uuid: 'b23f5785-fd99-4a94-9fb3-945551623924', name: 'Project Two' },
+        {
+          uuid: 'a23f5785-fd99-4a94-9fb3-945551623923',
+          name: 'Project One',
+          deployed_url: 'https://project-one.catalyst-sandbox.store',
+        },
+        {
+          uuid: 'b23f5785-fd99-4a94-9fb3-945551623924',
+          name: 'Project Two',
+          deployed_url: null,
+        },
       ],
     }),
   ),
