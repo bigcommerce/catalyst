@@ -86,12 +86,8 @@ Example:
 
       consola.log(`${p.name} (${p.uuid})${marker}`);
 
-      if (p.deployed_url) {
-        const url = p.deployed_url.startsWith('https://')
-          ? p.deployed_url
-          : `https://${p.deployed_url}`;
-
-        consola.log(`  ${colorize('blue', url)}`);
+      if (p.deployment_url) {
+        consola.log(`  ${colorize('blue', `https://${p.deployment_url}`)}`);
       } else {
         consola.log('  (not deployed)');
       }

@@ -32,12 +32,12 @@ export const handlers = [
         {
           uuid: 'a23f5785-fd99-4a94-9fb3-945551623923',
           name: 'Project One',
-          deployed_url: 'https://project-one.catalyst-sandbox.store',
+          deployment_url: 'project-one.catalyst-sandbox.store',
         },
         {
           uuid: 'b23f5785-fd99-4a94-9fb3-945551623924',
           name: 'Project Two',
-          deployed_url: null,
+          deployment_url: null,
         },
       ],
     }),
