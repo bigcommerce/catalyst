@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
@@ -7,6 +8,9 @@ import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { cache, PropsWithChildren } from 'react';
 
+import '../../globals.css';
+
+import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
 import { client } from '~/client';
@@ -136,32 +140,34 @@ export default async function RootLayout({ params, children }: Props) {
   const privacyPolicyUrl = rootData.data.site.settings?.privacy?.privacyPolicyUrl;
 
   return (
-    <>
-      <NextIntlClientProvider>
-        <ConsentManager
-          isCookieConsentEnabled={isCookieConsentEnabled}
-          privacyPolicyUrl={privacyPolicyUrl}
-          scripts={scripts}
-        >
-          <NuqsAdapter>
-            <AnalyticsProvider
-              channelId={rootData.data.channel.entityId}
-              isCookieConsentEnabled={isCookieConsentEnabled}
-              settings={rootData.data.site.settings}
-            >
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
-        </ConsentManager>
-      </NextIntlClientProvider>
-      <VercelComponents />
-      <ContainerQueryPolyfill />
-    </>
+    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <body className="flex min-h-screen flex-col">
+        <NextIntlClientProvider>
+          <ConsentManager
+            isCookieConsentEnabled={isCookieConsentEnabled}
+            privacyPolicyUrl={privacyPolicyUrl}
+            scripts={scripts}
+          >
+            <NuqsAdapter>
+              <AnalyticsProvider
+                channelId={rootData.data.channel.entityId}
+                isCookieConsentEnabled={isCookieConsentEnabled}
+                settings={rootData.data.site.settings}
+              >
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+          </ConsentManager>
+        </NextIntlClientProvider>
+        <VercelComponents />
+        <ContainerQueryPolyfill />
+      </body>
+    </html>
   );
 }
 
