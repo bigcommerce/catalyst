@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import { execa } from 'execa';
+import { join } from 'node:path';
 import { expect, test, vi } from 'vitest';
 
 import { program } from '../program';
@@ -25,7 +26,7 @@ test('calls execa with Next.js development server', async () => {
   await program.parseAsync(['node', 'catalyst', 'dev', '-p', '3001']);
 
   expect(execa).toHaveBeenCalledWith(
-    'node_modules/.bin/next',
+    join('node_modules', '.bin', 'next'),
     ['dev', '-p', '3001'],
     expect.objectContaining({
       stdio: 'inherit',
