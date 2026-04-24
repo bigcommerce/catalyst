@@ -205,7 +205,7 @@
                 "shipping": "Frakt",
                 "tax": "Beskatta",
                 "orderSummary": "Beställningssammanfattning",
-                "paymentMethodsLabel": "{antal, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
+                "paymentMethodsLabel": "{count, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
                 "paymentEndingInLabel": "Slutar på",
                 "PaymentMethods": {
                     "creditCard": "Kreditkort",

@@ -1,0 +1,73 @@
+name: Native Hosting
+
+on:
+  push:
+    branches: [canary]
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Catalyst CLI
+        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@1.17.3
+        working-directory: core
+
+      - name: Convert proxy.ts to middleware.ts
+        working-directory: core
+        run: |
+          mv proxy.ts middleware.ts
+          sed -i 's/export const proxy/export const middleware/' middleware.ts
+          sed -i "s/export const config = {/export const config = {\n  runtime: 'experimental-edge',/" middleware.ts
+
+      - name: Build monorepo packages
+        run: pnpm --filter "./packages/*" build
+
+      - name: Generate GraphQL types
+        run: pnpm run generate
+        working-directory: core
+        env:
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+
+      - name: Build
+        run: pnpm exec catalyst build
+        working-directory: core
+        env:
+          # CLI env vars
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          # App env vars (needed by Next.js build for GraphQL calls in next.config.ts)
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+
+      - name: Deploy
+        run: |
+          pnpm exec catalyst deploy --prebuilt \
+            --secret BIGCOMMERCE_STORE_HASH=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }} \
+            --secret BIGCOMMERCE_STOREFRONT_TOKEN=${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }} \
+            --secret BIGCOMMERCE_CHANNEL_ID=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }} \
+            --secret AUTH_SECRET=${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        working-directory: core
+        env:
+          CATALYST_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          CATALYST_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}

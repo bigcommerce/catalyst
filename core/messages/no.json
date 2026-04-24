@@ -521,7 +521,7 @@
             "currentStock": "{antall, nummer} på lager",
             "backorderQuantity": "{antall, nummer} vil være restordre",
             "loadingMoreImages": "Laster inn flere bilder",
-            "imagesLoaded": "{antall, flertall, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
+            "imagesLoaded": "{count, plural, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",

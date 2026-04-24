@@ -7,20 +7,15 @@ on:
 env:
   VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}
-  cancel-in-progress: true
-
 jobs:
   detect-provider:
     name: Detect Deployment Provider
     runs-on: ubuntu-latest
     outputs:
       provider: ${{ steps.detect.outputs.provider }}
-      is-preview: ${{ steps.detect.outputs.is-preview }}
       production-url: ${{ steps.detect.outputs.production-url }}
-      is-canary-branch: ${{ steps.detect.outputs.is-canary-branch }}
       branch-label: ${{ steps.detect.outputs.branch-label }}
+      is-preview: ${{ steps.detect.outputs.is-preview }}
     steps:
       - uses: actions/checkout@v4
 
@@ -30,13 +25,17 @@ jobs:
           CREATOR="${{ github.event.deployment_status.creator.login }}"
           ENVIRONMENT="${{ github.event.deployment.environment }}"
 
+          if [[ "$ENVIRONMENT" == "Preview" ]]; then
+            echo "is-preview=true" >> $GITHUB_OUTPUT
+          else
+            echo "is-preview=false" >> $GITHUB_OUTPUT
+          fi
+
           if [[ "$CREATOR" == "vercel[bot]" ]]; then
             echo "provider=vercel" >> $GITHUB_OUTPUT
+            PKG_NAME=$(node -p "require('./core/package.json').name")
+
             if [[ "$ENVIRONMENT" == "Preview" ]]; then
-              echo "is-preview=true" >> $GITHUB_OUTPUT
-              echo "is-canary-branch=false" >> $GITHUB_OUTPUT
-              echo "branch-label=" >> $GITHUB_OUTPUT
-              PKG_NAME=$(node -p "require('./core/package.json').name")
               case "$PKG_NAME" in
                 "@bigcommerce/catalyst-core")
                   echo "production-url=https://canary.catalyst-demo.site/" >> $GITHUB_OUTPUT ;;
@@ -46,20 +45,16 @@ jobs:
                   echo "::warning::No production URL configured for package: $PKG_NAME. Skipping comparison."
                   echo "production-url=" >> $GITHUB_OUTPUT ;;
               esac
+              echo "branch-label=" >> $GITHUB_OUTPUT
             else
-              PKG_NAME=$(node -p "require('./core/package.json').name")
-              echo "is-preview=false" >> $GITHUB_OUTPUT
               case "$PKG_NAME" in
                 "@bigcommerce/catalyst-core")
-                  echo "is-canary-branch=true" >> $GITHUB_OUTPUT
                   echo "branch-label=canary" >> $GITHUB_OUTPUT
                   echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
                 "@bigcommerce/catalyst-makeswift")
-                  echo "is-canary-branch=true" >> $GITHUB_OUTPUT
                   echo "branch-label=integrations/makeswift" >> $GITHUB_OUTPUT
                   echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
                 *)
-                  echo "is-canary-branch=false" >> $GITHUB_OUTPUT
                   echo "branch-label=" >> $GITHUB_OUTPUT
                   echo "production-url=" >> $GITHUB_OUTPUT ;;
               esac
@@ -67,24 +62,15 @@ jobs:
 
           elif [[ "$CREATOR" == "cloudflare-pages[bot]" ]]; then
             echo "provider=cloudflare" >> $GITHUB_OUTPUT
-            echo "is-canary-branch=false" >> $GITHUB_OUTPUT
+            echo "::warning::Cloudflare production URL not yet configured. Skipping comparison."
+            echo "production-url=" >> $GITHUB_OUTPUT
             echo "branch-label=" >> $GITHUB_OUTPUT
-            if [[ "$ENVIRONMENT" == "Preview" ]]; then
-              echo "is-preview=true" >> $GITHUB_OUTPUT
-              echo "::warning::Cloudflare production URL not yet configured. Skipping comparison."
-              echo "production-url=" >> $GITHUB_OUTPUT
-            else
-              echo "is-preview=false" >> $GITHUB_OUTPUT
-              echo "production-url=" >> $GITHUB_OUTPUT
-            fi
 
           else
             echo "::warning::Unknown deployment provider: $CREATOR. Skipping audits."
             echo "provider=unknown" >> $GITHUB_OUTPUT
-            echo "is-preview=false" >> $GITHUB_OUTPUT
-            echo "is-canary-branch=false" >> $GITHUB_OUTPUT
-            echo "branch-label=" >> $GITHUB_OUTPUT
             echo "production-url=" >> $GITHUB_OUTPUT
+            echo "branch-label=" >> $GITHUB_OUTPUT
           fi
 
   unlighthouse-audit-preview:
@@ -92,12 +78,12 @@ jobs:
     needs: [detect-provider]
     if: needs.detect-provider.outputs.is-preview == 'true'
     runs-on: ubuntu-latest
+    concurrency:
+      group: regression-preview-${{ github.event.deployment.ref }}-${{ matrix.device }}
+      cancel-in-progress: true
     strategy:
       matrix:
         device: [desktop, mobile]
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}-${{ matrix.device }}
-      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v4
@@ -130,14 +116,14 @@ jobs:
   unlighthouse-audit-production:
     name: Unlighthouse Audit Production (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
     needs: [detect-provider]
-    if: (needs.detect-provider.outputs.is-preview == 'true' && needs.detect-provider.outputs.production-url != '') || needs.detect-provider.outputs.is-canary-branch == 'true'
+    if: needs.detect-provider.outputs.production-url != ''
     runs-on: ubuntu-latest
+    concurrency:
+      group: regression-production-${{ github.event.deployment.environment == 'Preview' && github.event.deployment.ref || github.event.deployment.sha }}-${{ matrix.device }}
+      cancel-in-progress: ${{ github.event.deployment.environment == 'Preview' }}
     strategy:
       matrix:
         device: [desktop, mobile]
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-production-${{ matrix.device }}
-      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v4
@@ -210,7 +196,7 @@ jobs:
   unlighthouse-report:
     name: Unlighthouse Report (${{ needs.detect-provider.outputs.provider }}) — ${{ needs.detect-provider.outputs.branch-label }}
     needs: [detect-provider, unlighthouse-audit-production]
-    if: needs.detect-provider.outputs.is-canary-branch == 'true'
+    if: needs.detect-provider.outputs.is-preview == 'false' && needs.detect-provider.outputs.production-url != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
