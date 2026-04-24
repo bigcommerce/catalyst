@@ -138,7 +138,7 @@
             "searchResults": "Resultados de búsqueda para",
             "subCategories": "Categorías",
             "Breadcrumbs": {
-                "home": "Página de inicio",
+                "home": "Inicio",
                 "search": "Buscar"
             },
             "Empty": {
@@ -348,7 +348,7 @@
     },
     "Blog": {
         "title": "Blog",
-        "home": "Página de inicio",
+        "home": "Inicio",
         "Empty": {
             "title": "No se encontraron publicaciones de blog",
             "subtitle": "Vuelve a consultar más tarde para obtener más contenido"
@@ -522,10 +522,10 @@
     },
     "WebPages": {
         "Normal": {
-            "home": "Página de inicio"
+            "home": "Inicio"
         },
         "ContactUs": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "Form": {
                 "success": "Gracias por ponerte en contacto. Nos comunicaremos contigo pronto.",
                 "successCta": "Seguir comprando",
@@ -560,7 +560,7 @@
     },
     "Components": {
         "Header": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "toggleNavigation": "Alternar navegación",
             "Icons": {
                 "account": "Perfil",
@@ -585,7 +585,7 @@
             }
         },
         "Footer": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "contactUs": "Contacto",
             "socialMediaLinks": "Enlaces a redes sociales",
             "categories": "Categorías",
