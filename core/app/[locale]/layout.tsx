@@ -1,3 +1,4 @@
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
@@ -23,7 +24,11 @@ import { ScriptsFragment } from '~/components/consent-manager/scripts-fragment';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
 import { routing } from '~/i18n/routing';
+import { SiteTheme } from '~/lib/makeswift/components/site-theme';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 import { getToastNotification } from '~/lib/server-toast';
+
+import '~/lib/makeswift/components';
 
 const RootLayoutMetadataQuery = graphql(
   `
@@ -125,6 +130,7 @@ export default async function RootLayout({ params, children }: Props) {
 
   const rootData = await fetchRootLayoutMetadata();
   const toastNotificationCookieData = await getToastNotification();
+  const siteVersion = await getSiteVersion();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -140,34 +146,39 @@ export default async function RootLayout({ params, children }: Props) {
   const privacyPolicyUrl = rootData.data.site.settings?.privacy?.privacyPolicyUrl;
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
-          <ConsentManager
-            isCookieConsentEnabled={isCookieConsentEnabled}
-            privacyPolicyUrl={privacyPolicyUrl}
-            scripts={scripts}
-          >
-            <NuqsAdapter>
-              <AnalyticsProvider
-                channelId={rootData.data.channel.entityId}
-                isCookieConsentEnabled={isCookieConsentEnabled}
-                settings={rootData.data.site.settings}
-              >
-                <Providers>
-                  {toastNotificationCookieData && (
-                    <CookieNotifications {...toastNotificationCookieData} />
-                  )}
-                  {children}
-                </Providers>
-              </AnalyticsProvider>
-            </NuqsAdapter>
-          </ConsentManager>
-        </NextIntlClientProvider>
-        <VercelComponents />
-        <ContainerQueryPolyfill />
-      </body>
-    </html>
+    <MakeswiftProvider locale={locale} siteVersion={siteVersion}>
+      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+        <head>
+          <SiteTheme />
+        </head>
+        <body className="flex min-h-screen flex-col">
+          <NextIntlClientProvider>
+            <ConsentManager
+              isCookieConsentEnabled={isCookieConsentEnabled}
+              privacyPolicyUrl={privacyPolicyUrl}
+              scripts={scripts}
+            >
+              <NuqsAdapter>
+                <AnalyticsProvider
+                  channelId={rootData.data.channel.entityId}
+                  isCookieConsentEnabled={isCookieConsentEnabled}
+                  settings={rootData.data.site.settings}
+                >
+                  <Providers>
+                    {toastNotificationCookieData && (
+                      <CookieNotifications {...toastNotificationCookieData} />
+                    )}
+                    {children}
+                  </Providers>
+                </AnalyticsProvider>
+              </NuqsAdapter>
+            </ConsentManager>
+          </NextIntlClientProvider>
+          <VercelComponents />
+          <ContainerQueryPolyfill />
+        </body>
+      </html>
+    </MakeswiftProvider>
   );
 }
 
