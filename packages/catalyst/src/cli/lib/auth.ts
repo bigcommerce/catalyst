@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const DEVICE_OAUTH_CLIENT_ID = 's1q4io7mah2lm1i6uwp9yl1eit80n3b';
+export const DEVICE_OAUTH_CLIENT_ID = 'b8063bu6hhml4e0lqh22yut63atsbyv';
 export const DEVICE_OAUTH_SCOPES = [
   'store_v2_information',
   'store_infrastructure_deployments_manage',

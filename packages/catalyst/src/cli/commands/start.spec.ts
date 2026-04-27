@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { execa } from 'execa';
 import { existsSync, lstatSync, symlinkSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
@@ -44,7 +45,13 @@ test('calls execa with OpenNext production optimized server', async () => {
 
   expect(execa).toHaveBeenCalledWith(
     'pnpm',
-    ['exec', 'opennextjs-cloudflare', 'preview', '--config', '.bigcommerce/wrangler.jsonc'],
+    [
+      'exec',
+      'opennextjs-cloudflare',
+      'preview',
+      '--config',
+      join('.bigcommerce', 'wrangler.jsonc'),
+    ],
     expect.objectContaining({
       stdio: 'inherit',
       cwd: process.cwd(),
