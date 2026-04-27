@@ -9,7 +9,7 @@ interface AuthConfig {
 
 export class Auth {
   private client: Https;
-  private readonly DEVICE_OAUTH_CLIENT_ID = 's1q4io7mah2lm1i6uwp9yl1eit80n3b';
+  private readonly DEVICE_OAUTH_CLIENT_ID = 'b8063bu6hhml4e0lqh22yut63atsbyv';
 
   constructor({ baseUrl }: AuthConfig) {
     this.client = new Https({ baseUrl });
