@@ -124,7 +124,7 @@ describe('waitForDeviceToken', () => {
 
 describe('constants', () => {
   test('DEVICE_OAUTH_CLIENT_ID matches create-catalyst', () => {
-    expect(DEVICE_OAUTH_CLIENT_ID).toBe('s1q4io7mah2lm1i6uwp9yl1eit80n3b');
+    expect(DEVICE_OAUTH_CLIENT_ID).toBe('b8063bu6hhml4e0lqh22yut63atsbyv');
   });
 
   test('DEVICE_OAUTH_SCOPES contains expected scopes', () => {
