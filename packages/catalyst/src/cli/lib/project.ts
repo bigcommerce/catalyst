@@ -14,7 +14,7 @@ const fetchProjectsSchema = z.object({
     z.object({
       uuid: z.string(),
       name: z.string(),
-      deployment_url: z.string().nullable(),
+      deployment_urls: z.array(z.string()),
     }),
   ),
 });
@@ -22,7 +22,7 @@ const fetchProjectsSchema = z.object({
 export interface ProjectListItem {
   uuid: string;
   name: string;
-  deployment_url: string | null;
+  deployment_urls: string[];
 }
 
 function projectsUrl(storeHash: string, apiHost: string) {

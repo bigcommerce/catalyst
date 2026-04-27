@@ -299,6 +299,9 @@ describe('project list', () => {
     expect(consola.log).toHaveBeenCalledWith(
       expect.stringContaining('https://project-one.catalyst-sandbox.store'),
     );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://vanity.project-one.example.com'),
+    );
     expect(consola.log).toHaveBeenCalledWith('Project Two (b23f5785-fd99-4a94-9fb3-945551623924)');
     expect(consola.log).toHaveBeenCalledWith('  (not deployed)');
     expect(exitMock).toHaveBeenCalledWith(0);

@@ -86,10 +86,12 @@ Example:
 
       consola.log(`${p.name} (${p.uuid})${marker}`);
 
-      if (p.deployment_url) {
-        consola.log(`  ${colorize('blue', `https://${p.deployment_url}`)}`);
-      } else {
+      if (p.deployment_urls.length === 0) {
         consola.log('  (not deployed)');
+      } else {
+        p.deployment_urls.forEach((hostname) => {
+          consola.log(`  ${colorize('blue', `https://${hostname}`)}`);
+        });
       }
 
       consola.log('');
