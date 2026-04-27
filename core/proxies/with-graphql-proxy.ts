@@ -1,13 +1,25 @@
+import { createClient } from '@bigcommerce/catalyst-client';
 import { NextResponse, URLPattern } from 'next/server';
 import { z } from 'zod';
 
 import { auth } from '~/auth';
-import { client } from '~/client';
+import { backendUserAgent } from '~/user-agent';
 
 import { type ProxyFactory } from './compose-proxies';
 
 const ALLOWED_REQUESTERS = ['checkout-sdk-js'];
 const graphqlPathPattern = new URLPattern({ pathname: '/graphql' });
+
+// Dedicated client configured with the unauthenticated storefront token.
+// Overriding the Authorization header via fetchOptions doesn't work because
+// catalyst-client merges headers in a way that produces a duplicated, comma-
+// joined Authorization value.
+const unauthenticatedClient = createClient({
+  storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN ?? '',
+  storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
+  channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
+  backendUserAgentExtensions: backendUserAgent,
+});
 
 const bodySchema = z.object({
   query: z.unknown(),
@@ -47,15 +59,11 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
         // Get customer access token if authenticated
         const customerAccessToken = req.auth?.user?.customerAccessToken;
 
-        // Proxy the request using the existing client with an unauthenticated storefront token
-        const response = await client.fetch({
+        const response = await unauthenticatedClient.fetch({
           document: query,
           variables,
           customerAccessToken,
           fetchOptions: {
-            headers: {
-              Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN}`,
-            },
             next: { revalidate: 0 },
           },
         });
