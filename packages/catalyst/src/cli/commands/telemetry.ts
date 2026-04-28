@@ -8,6 +8,7 @@ const telemetryService = getTelemetry();
 let isEnabled = telemetryService.isEnabled();
 
 export const telemetry = new Command('telemetry')
+  .configureHelp({ showGlobalOptions: true })
   .description(
     'View or change CLI telemetry collection status. Enabling telemetry helps BigCommerce support diagnose and troubleshoot errors you encounter when using the CLI.',
   )

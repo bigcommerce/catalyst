@@ -7,6 +7,7 @@ import { resolveCredentials } from '../lib/resolve-credentials';
 import { getTelemetry } from '../lib/telemetry';
 
 const list = new Command('list')
+  .configureHelp({ showGlobalOptions: true })
   .description('List BigCommerce infrastructure projects for your store.')
   .addHelpText(
     'after',
@@ -59,6 +60,7 @@ Example:
   });
 
 const create = new Command('create')
+  .configureHelp({ showGlobalOptions: true })
   .description(
     'Create a new BigCommerce infrastructure project and link it to your local Catalyst project.',
   )
@@ -110,6 +112,7 @@ Example:
   });
 
 export const link = new Command('link')
+  .configureHelp({ showGlobalOptions: true })
   .description(
     'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
   )
@@ -221,6 +224,7 @@ Examples:
   });
 
 export const project = new Command('project')
+  .configureHelp({ showGlobalOptions: true })
   .description('Manage your BigCommerce infrastructure project.')
   .addCommand(create)
   .addCommand(list)

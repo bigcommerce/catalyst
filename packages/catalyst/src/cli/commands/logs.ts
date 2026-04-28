@@ -232,6 +232,7 @@ export const tailLogs = async (
 };
 
 const tail = new Command('tail')
+  .configureHelp({ showGlobalOptions: true })
   .description('Tail live logs from your deployed application.')
   .addHelpText(
     'after',
@@ -274,6 +275,7 @@ Examples:
   });
 
 const query = new Command('query')
+  .configureHelp({ showGlobalOptions: true })
   .description('Query historical logs from your deployed application.')
   .addHelpText(
     'after',
@@ -292,6 +294,7 @@ Example:
   });
 
 export const logs = new Command('logs')
+  .configureHelp({ showGlobalOptions: true })
   .description('View logs from your deployed application.')
   .addCommand(tail, { isDefault: true })
   .addCommand(query);
