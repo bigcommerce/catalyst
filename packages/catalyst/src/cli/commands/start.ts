@@ -6,6 +6,7 @@ import { join, relative } from 'node:path';
 import { consola } from '../lib/logger';
 
 export const start = new Command('start')
+  .configureHelp({ showGlobalOptions: true })
   .description(
     'Start a local preview of your Catalyst storefront using the OpenNext Cloudflare adapter.',
   )
