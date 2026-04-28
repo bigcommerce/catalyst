@@ -369,6 +369,7 @@ export const fetchProject = async (
 };
 
 export const deploy = new Command('deploy')
+  .configureHelp({ showGlobalOptions: true })
   .description('Deploy your application to Cloudflare.')
   .addHelpText(
     'after',
