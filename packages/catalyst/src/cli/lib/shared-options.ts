@@ -6,13 +6,13 @@ export const storeHashOption = () =>
   new Option(
     '--store-hash <hash>',
     'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-  ).env('BIGCOMMERCE_STORE_HASH');
+  ).env('CATALYST_STORE_HASH');
 
 export const accessTokenOption = () =>
   new Option(
     '--access-token <token>',
     'BigCommerce access token. Can be found after creating a store-level API account.',
-  ).env('BIGCOMMERCE_ACCESS_TOKEN');
+  ).env('CATALYST_ACCESS_TOKEN');
 
 export const apiHostOption = () =>
   new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
