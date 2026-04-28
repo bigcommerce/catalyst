@@ -39,6 +39,7 @@ async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost
 }
 
 const whoami = new Command('whoami')
+  .configureHelp({ showGlobalOptions: true })
   .description('Verify stored credentials and display store/project info.')
   .addHelpText(
     'after',
@@ -119,6 +120,7 @@ Example:
   });
 
 const login = new Command('login')
+  .configureHelp({ showGlobalOptions: true })
   .description(
     'Authenticate via browser using the OAuth device code flow. If already logged in, displays current credentials and suggests running `catalyst auth logout` to re-authenticate.',
   )
@@ -204,6 +206,7 @@ Examples:
   });
 
 const logout = new Command('logout')
+  .configureHelp({ showGlobalOptions: true })
   .description('Remove stored credentials for the current project.')
   .addHelpText(
     'after',
@@ -239,6 +242,7 @@ Example:
   });
 
 export const auth = new Command('auth')
+  .configureHelp({ showGlobalOptions: true })
   .description('Manage authentication for the BigCommerce CLI.')
   .addCommand(whoami)
   .addCommand(login)
