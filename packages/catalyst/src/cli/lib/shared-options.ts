@@ -24,7 +24,7 @@ export const projectUuidOption = () =>
   new Option(
     '--project-uuid <uuid>',
     'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
-  ).env('BIGCOMMERCE_PROJECT_UUID');
+  ).env('CATALYST_PROJECT_UUID');
 
 export const resolveProjectUuid = (options: { projectUuid?: string }) => {
   const config = getProjectConfig();
