@@ -13,8 +13,12 @@ import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { getAvailableLocales } from '../utils/localization';
 import { login, storeCredentials } from '../utils/login';
+import { promptForCommerceHostingProject } from '../utils/prompt-commerce-hosting-project';
+import { setupCommerceHosting } from '../utils/setup-commerce-hosting';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
+
+type HostingMode = 'self-hosted' | 'commerce';
 
 interface Channel {
   id: number;
@@ -271,7 +275,7 @@ async function setupProject(options: {
     };
 
     await input({
-      message: 'What is the name of your project?',
+      message: 'What do you want to name your project directory?',
       default: 'my-catalyst-app',
       validate: validateProjectName,
     });
@@ -281,6 +285,145 @@ async function setupProject(options: {
   if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
   return { projectName, projectDir };
+}
+
+type HostingResolution =
+  | { mode: 'self-hosted' }
+  | { mode: 'commerce'; projectUuid: string; accessToken: string };
+
+async function resolveProjectsAccess(
+  cliApi: CliApi,
+  hostingFlag: HostingMode | undefined,
+): Promise<boolean | null> {
+  try {
+    return await cliApi.hasProjectsAccess();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'unknown error';
+
+    if (hostingFlag === 'commerce') {
+      console.error(
+        colorize(
+          'red',
+          `\nFailed to verify Infrastructure Projects API access: ${message}\nPlease try again.\n`,
+        ),
+      );
+      process.exit(1);
+    }
+
+    console.warn(
+      colorize(
+        'yellow',
+        `\nCould not verify Infrastructure Projects API access: ${message}\nDefaulting to self-hosted. Re-run create-catalyst if you intended to use Commerce-hosted.\n`,
+      ),
+    );
+
+    return null;
+  }
+}
+
+async function shouldUseCommerceHosting(
+  hostingFlag: HostingMode | undefined,
+  hasAccess: boolean,
+): Promise<boolean> {
+  if (hostingFlag === 'commerce') return true;
+
+  if (hostingFlag === undefined && hasAccess) {
+    return select({
+      message: 'How would you like to host your Catalyst storefront?',
+      choices: [
+        {
+          name: 'Self-hosted',
+          value: false,
+          description:
+            'Use standard next dev / build / start. You will host the app yourself and deploy it to a provider of your choice.',
+        },
+        {
+          name: 'Commerce-hosted',
+          value: true,
+          description:
+            'Use catalyst dev / build / deploy. Commerce will host the app and handle deployment for you.',
+        },
+      ],
+    });
+  }
+
+  return false;
+}
+
+async function resolveHostingMode({
+  hostingFlag,
+  storeHash,
+  accessToken,
+  cliApiOrigin,
+  apiHostname,
+  defaultProjectName,
+  autoUseProjectName,
+  useExistingOnCollision,
+}: {
+  hostingFlag?: HostingMode;
+  storeHash?: string;
+  accessToken?: string;
+  cliApiOrigin: string;
+  apiHostname: string;
+  defaultProjectName: string;
+  autoUseProjectName?: boolean;
+  useExistingOnCollision?: boolean;
+}): Promise<HostingResolution> {
+  if (hostingFlag === 'self-hosted') {
+    return { mode: 'self-hosted' };
+  }
+
+  if (!storeHash || !accessToken) {
+    if (hostingFlag === 'commerce') {
+      console.error(
+        colorize(
+          'red',
+          '\n--hosting commerce requires store credentials (store hash and access token)\n',
+        ),
+      );
+      process.exit(1);
+    }
+
+    return { mode: 'self-hosted' };
+  }
+
+  const cliApi = new CliApi({
+    origin: cliApiOrigin,
+    storeHash,
+    accessToken,
+    apiHostname,
+  });
+
+  const hasAccess = await resolveProjectsAccess(cliApi, hostingFlag);
+
+  if (hasAccess === null) {
+    return { mode: 'self-hosted' };
+  }
+
+  if (hostingFlag === 'commerce' && !hasAccess) {
+    console.error(
+      colorize(
+        'red',
+        '\nThis store does not have access to the Infrastructure Projects API. Contact support@bigcommerce.com to enable it.\n',
+      ),
+    );
+    process.exit(1);
+  }
+
+  const useCommerceHosting = await shouldUseCommerceHosting(hostingFlag, hasAccess);
+
+  if (!useCommerceHosting) {
+    return { mode: 'self-hosted' };
+  }
+
+  const project = await promptForCommerceHostingProject(
+    cliApi,
+    defaultProjectName,
+    autoUseProjectName,
+    useExistingOnCollision,
+  );
+
+  return { mode: 'commerce', projectUuid: project.uuid, accessToken };
 }
 
 function checkRequiredTools() {
@@ -317,6 +460,16 @@ export const create = new Command('create')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
   .addOption(
+    new Option(
+      '--hosting <mode>',
+      'Hosting mode: "self-hosted" or "commerce" for Commerce Hosting.',
+    ).choices(['self-hosted', 'commerce'] as const),
+  )
+  .option(
+    '--use-existing',
+    'Only used with --hosting commerce and --project-name. When the named project already exists on the store, reuse it instead of prompting. Has no effect without --hosting commerce.',
+  )
+  .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
       .hideHelp(),
@@ -329,6 +482,15 @@ export const create = new Command('create')
   // eslint-disable-next-line complexity
   .action(async (options) => {
     const { ghRef, repository } = options;
+
+    if (options.useExisting && options.hosting !== 'commerce') {
+      console.warn(
+        colorize(
+          'yellow',
+          '\nWarning: --use-existing has no effect without --hosting commerce. Ignoring.\n',
+        ),
+      );
+    }
 
     checkRequiredTools();
 
@@ -363,6 +525,16 @@ export const create = new Command('create')
       envVars.BIGCOMMERCE_STOREFRONT_API_TOKEN = storefrontToken;
     } else {
       if (!storeHash || !accessToken) {
+        if (options.hosting === 'commerce') {
+          console.error(
+            colorize(
+              'red',
+              '\n--hosting commerce requires store credentials (store hash and access token)\n',
+            ),
+          );
+          process.exit(1);
+        }
+
         // Create project without credentials
         console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
         cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
@@ -418,6 +590,7 @@ export const create = new Command('create')
           origin: options.cliApiOrigin,
           storeHash,
           accessToken,
+          apiHostname: `api.${options.bigcommerceHostname}`,
         });
 
         // If we have channelId but no storefrontToken, just get the init data
@@ -523,9 +696,34 @@ export const create = new Command('create')
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
+    const hosting = await resolveHostingMode({
+      hostingFlag: options.hosting,
+      storeHash,
+      accessToken,
+      cliApiOrigin: options.cliApiOrigin,
+      apiHostname: `api.${options.bigcommerceHostname}`,
+      defaultProjectName: projectName,
+      autoUseProjectName: !!options.projectName,
+      useExistingOnCollision: options.useExisting,
+    });
+
+    if (hosting.mode === 'commerce') {
+      envVars.BIGCOMMERCE_ACCESS_TOKEN = hosting.accessToken;
+    }
+
     // Create the project with all necessary configuration
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
     cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
+
+    if (hosting.mode === 'commerce') {
+      setupCommerceHosting({
+        projectDir,
+        projectUuid: hosting.projectUuid,
+        storeHash,
+        accessToken: hosting.accessToken,
+      });
+    }
+
     await installDependencies(projectDir);
 
     // Write env vars
@@ -540,6 +738,14 @@ export const create = new Command('create')
       colorize('green', `\nSuccess! Created '${projectName}' at '${projectDir}'\n`),
       '\nNext steps:\n',
       colorize('yellow', `\ncd ${projectName} && pnpm run dev\n`),
+      ...(hosting.mode === 'commerce'
+        ? [
+            colorize(
+              'yellow',
+              `\nRun 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce hosting.\n`,
+            ),
+          ]
+        : []),
     );
   });
 

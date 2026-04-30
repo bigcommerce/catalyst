@@ -109,6 +109,7 @@ export const init = new Command('init')
       origin: options.cliApiOrigin,
       storeHash,
       accessToken,
+      apiHostname: `api.${options.bigcommerceHostname}`,
     });
 
     const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
