@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+### Patch Changes
+
+- [#2993](https://github.com/bigcommerce/catalyst/pull/2993) [`ed76224`](https://github.com/bigcommerce/catalyst/commit/ed7622453edc667a3582646074e0ccb72eb7b714) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update the client id to the new one.
+
 ## 1.0.2
 
 ### Patch Changes
