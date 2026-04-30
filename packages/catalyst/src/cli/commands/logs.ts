@@ -3,6 +3,8 @@ import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
 import { consola } from '../lib/logger';
+import { getProjectConfig } from '../lib/project-config';
+import { resolveCredentials } from '../lib/resolve-credentials';
 import {
   accessTokenOption,
   apiHostOption,
@@ -246,8 +248,8 @@ Examples:
   # Tail logs as raw JSON (useful for piping to other tools)
   $ catalyst logs tail --format json`,
   )
-  .addOption(storeHashOption().makeOptionMandatory())
-  .addOption(accessTokenOption().makeOptionMandatory())
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(projectUuidOption())
   .addOption(
@@ -257,17 +259,14 @@ Examples:
   )
   .action(async (options) => {
     try {
-      await telemetry.identify(options.storeHash);
+      const config = getProjectConfig();
+      const { storeHash, accessToken } = resolveCredentials(options, config);
+
+      await telemetry.identify(storeHash);
 
       const projectUuid = resolveProjectUuid(options);
 
-      await tailLogs(
-        projectUuid,
-        options.storeHash,
-        options.accessToken,
-        options.apiHost,
-        options.format,
-      );
+      await tailLogs(projectUuid, storeHash, accessToken, options.apiHost, options.format);
     } catch (error) {
       consola.error(error);
       process.exit(1);
@@ -283,12 +282,15 @@ const query = new Command('query')
 Example:
   $ catalyst logs query`,
   )
-  .addOption(storeHashOption().makeOptionMandatory())
-  .addOption(accessTokenOption().makeOptionMandatory())
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(projectUuidOption())
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  .action((_options) => {
+  .action((options) => {
+    const config = getProjectConfig();
+
+    resolveCredentials(options, config);
+
     consola.error('The query command is not yet implemented.');
     process.exit(1);
   });
