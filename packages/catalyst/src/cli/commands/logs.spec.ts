@@ -1,15 +1,22 @@
 import { Command } from 'commander';
+import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 import { consola } from '../lib/logger';
+import { mkTempDir } from '../lib/mk-temp-dir';
+import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 import { program } from '../program';
 
 import { logs, parseSSEEvent, tailLogs } from './logs';
 
 let exitMock: MockInstance;
 let stdoutWriteMock: MockInstance;
+
+let tmpDir: string;
+let cleanup: () => Promise<void>;
+let config: Conf<ProjectConfigSchema>;
 
 const projectUuid = '6b202364-10f3-11f1-8bc7-fe9b9d8b14ab';
 const storeHash = 'test-store';
@@ -69,15 +76,28 @@ const callTailLogs = async (format: Parameters<typeof tailLogs>[4], events?: str
   });
 };
 
-beforeAll(() => {
+beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   exitMock = vi.spyOn(process, 'exit').mockImplementation(() => null as never);
   stdoutWriteMock = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
+
+  [tmpDir, cleanup] = await mkTempDir();
+
+  vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+
+  config = getProjectConfig();
 });
 
 afterEach(() => {
   vi.clearAllMocks();
+  config.delete('storeHash');
+  config.delete('accessToken');
+  config.delete('projectUuid');
+});
+
+afterAll(async () => {
+  await cleanup();
 });
 
 describe('command configuration', () => {
@@ -486,6 +506,39 @@ describe('retry and reconnect', () => {
   });
 });
 
+describe('credential resolution', () => {
+  test('falls back to project.json for storeHash and accessToken', async () => {
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    server.use(createOneShotLogHandler([`data: ${JSON.stringify(validLogEvent)}\n\n`]));
+
+    await program.parseAsync(['node', 'catalyst', 'logs', 'tail', '--project-uuid', projectUuid]);
+
+    expect(consola.info).toHaveBeenCalledWith('Tailing logs...');
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('hello world'));
+  });
+
+  test('exits with error when no credentials are provided', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    await program.parseAsync(['node', 'catalyst', 'logs', 'tail', '--project-uuid', projectUuid]);
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
+    expect(consola.info).toHaveBeenCalledWith(
+      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
+    );
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+});
+
 describe('query subcommand', () => {
   test('exits with error as not yet implemented', async () => {
     await program.parseAsync([
@@ -500,6 +553,24 @@ describe('query subcommand', () => {
     ]);
 
     expect(consola.error).toHaveBeenCalledWith('The query command is not yet implemented.');
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('exits with missing credentials error when none are provided', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    await expect(program.parseAsync(['node', 'catalyst', 'logs', 'query'])).rejects.toThrow(
+      'Missing credentials',
+    );
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 });
