@@ -32,12 +32,15 @@ export const handlers = [
         {
           uuid: 'a23f5785-fd99-4a94-9fb3-945551623923',
           name: 'Project One',
-          deployment_urls: ['project-one.catalyst-sandbox.store', 'vanity.project-one.example.com'],
+          deployment_hostnames: [
+            'project-one.catalyst-sandbox.store',
+            'vanity.project-one.example.com',
+          ],
         },
         {
           uuid: 'b23f5785-fd99-4a94-9fb3-945551623924',
           name: 'Project Two',
-          deployment_urls: [],
+          deployment_hostnames: [],
         },
       ],
     }),
@@ -52,14 +55,14 @@ export const handlers = [
           controller.enqueue(
             encoder.encode(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_url":null}`,
+              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_url":null,"deployment_hostnames":[]}`,
             ),
           );
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_url":null}`,
+                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_url":null,"deployment_hostnames":[]}`,
               ),
             );
           }, 10);
@@ -67,7 +70,7 @@ export const handlers = [
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_url":"https://example.com"}`,
+                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_url":"example.com","deployment_hostnames":["example.com"]}`,
               ),
             );
             controller.close();

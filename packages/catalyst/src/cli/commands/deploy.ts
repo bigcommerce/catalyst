@@ -78,7 +78,11 @@ const DeploymentStatusSchema = z.object({
       progress: z.number(),
     })
     .nullable(),
-  deployment_url: z.string().nullable(),
+  // Deprecated by ignition; prefer `deployment_hostnames`. Kept here so
+  // older ignition builds (that haven't shipped the rename yet) still
+  // parse cleanly during the transition window.
+  deployment_url: z.string().nullable().optional(),
+  deployment_hostnames: z.array(z.string()).optional(),
   error: z
     .object({
       code: z.number(),
@@ -298,7 +302,7 @@ export const getDeploymentStatus = async (
 
   const decoder = new TextDecoder();
   let done = false;
-  let deploymentUrl: string | undefined;
+  let deploymentHostname: string | undefined;
 
   while (!done) {
     // eslint-disable-next-line no-await-in-loop
@@ -334,8 +338,12 @@ export const getDeploymentStatus = async (
           spinner.text = STEPS[data.event.step];
         }
 
-        if (data.deployment_url) {
-          deploymentUrl = data.deployment_url;
+        // Prefer the new plural field; fall back to the deprecated singular
+        // for older ignition builds during the transition window.
+        if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
+          deploymentHostname = data.deployment_hostnames[0];
+        } else if (data.deployment_url) {
+          deploymentHostname = data.deployment_url;
         }
       });
     }
@@ -345,10 +353,10 @@ export const getDeploymentStatus = async (
 
   spinner.success('Deployment completed successfully.');
 
-  if (deploymentUrl) {
-    const url = deploymentUrl.startsWith('https://') ? deploymentUrl : `https://${deploymentUrl}`;
-
-    consola.success(`View your deployment at: ${colorize('blue', url)}`);
+  if (deploymentHostname) {
+    consola.success(
+      `View your deployment at: ${colorize('blue', `https://${deploymentHostname}`)}`,
+    );
   }
 };
 
