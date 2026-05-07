@@ -38,7 +38,7 @@ Examples:
       telemetryService.setEnabled(false);
 
       if (isEnabled) {
-        consola.success('Your preference has been saved to .bigcommerce/project.json');
+        consola.success('Your preference has been saved.');
       } else {
         consola.info(`Catalyst CLI telemetry collection is already disabled.`);
       }

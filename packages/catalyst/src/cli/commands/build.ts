@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
 const WRANGLER_VERSION = '4.24.3';
@@ -96,6 +97,23 @@ Examples:
     ).env('CATALYST_PROJECT_UUID'),
   )
   .action(async (options) => {
+    // Project must be transformed (middleware swapped in, OpenNext dep installed)
+    // before the OpenNext build pipeline can run. If it isn't, fall through to
+    // `next build` so this command works for self-hosted Catalyst projects too.
+    const state = getProjectState();
+
+    if (!state.isTransformed) {
+      consola.info('Project is not set up for Commerce Hosting — running `next build`.');
+      consola.info('To deploy to Commerce Hosting, run `catalyst deploy`.');
+
+      await execa('pnpm', ['exec', 'next', 'build'], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+
+      return;
+    }
+
     const config = getProjectConfig();
     const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
