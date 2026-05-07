@@ -4,6 +4,7 @@ import { existsSync, lstatSync, symlinkSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 import { consola } from '../lib/logger';
+import { getProjectState } from '../lib/project-state';
 
 export const start = new Command('start')
   .configureHelp({ showGlobalOptions: true })
@@ -17,6 +18,22 @@ Example:
   $ catalyst start`,
   )
   .action(async () => {
+    // Project must be transformed before the OpenNext preview can run. If it
+    // isn't, fall through to `next start` so this command works for self-hosted
+    // Catalyst projects too.
+    const state = getProjectState();
+
+    if (!state.isTransformed) {
+      consola.info('Project is not set up for Commerce Hosting — running `next start`.');
+
+      await execa('pnpm', ['exec', 'next', 'start'], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
+
+      return;
+    }
+
     const envLocal = join(process.cwd(), '.env.local');
     const devVars = join(process.cwd(), '.bigcommerce', '.dev.vars');
 
