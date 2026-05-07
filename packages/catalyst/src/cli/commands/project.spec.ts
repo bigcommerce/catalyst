@@ -1,15 +1,65 @@
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
-import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  MockInstance,
+  test,
+  vi,
+} from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
+import { setupCommerceHosting } from '../lib/commerce-hosting';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
 import { program } from '../program';
 
 import { link, project } from './project';
+
+vi.mock('../lib/project-state', () => ({
+  getProjectState: vi.fn(),
+}));
+
+vi.mock('../lib/install-dependencies', () => ({
+  installDependencies: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('../lib/commerce-hosting', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../lib/commerce-hosting')>();
+
+  return {
+    ...actual,
+    setupCommerceHosting: vi.fn(),
+  };
+});
+
+const transformedState = {
+  projectUuid: 'abc-123',
+  hasMiddleware: true,
+  hasProxy: false,
+  hasOpenNextDep: true,
+  isLinked: true,
+  isTransformed: true,
+  isFullySetUp: true,
+};
+
+const untransformedState = {
+  projectUuid: undefined,
+  hasMiddleware: false,
+  hasProxy: true,
+  hasOpenNextDep: false,
+  isLinked: false,
+  isTransformed: false,
+  isFullySetUp: false,
+};
 
 let exitMock: MockInstance;
 
@@ -58,6 +108,12 @@ beforeAll(async () => {
   vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
 
   config = getProjectConfig();
+});
+
+beforeEach(() => {
+  // Default to a fully-transformed project so existing tests skip the
+  // post-link Commerce Hosting setup prompt. Override per-test as needed.
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
 });
 
 afterEach(() => {
@@ -229,6 +285,46 @@ describe('project list', () => {
     expect(consola.log).toHaveBeenCalledWith('Project One (a23f5785-fd99-4a94-9fb3-945551623923)');
     expect(consola.log).toHaveBeenCalledWith('Project Two (b23f5785-fd99-4a94-9fb3-945551623924)');
     expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('marks the currently linked project with [linked]', async () => {
+    config.set('projectUuid', projectUuid2);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'list',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    const logCalls = vi.mocked(consola.log).mock.calls.map(([msg]) => String(msg));
+
+    const linkedLine = logCalls.find((line) => line.includes(projectUuid2));
+    const otherLine = logCalls.find((line) => line.includes(projectUuid1));
+
+    expect(linkedLine).toContain('[linked]');
+    expect(otherLine).not.toContain('[linked]');
+  });
+
+  test('does not mark any project when nothing is linked', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'list',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    const logCalls = vi.mocked(consola.log).mock.calls.map(([msg]) => String(msg));
+
+    expect(logCalls.every((line) => !line.includes('[linked]'))).toBe(true);
   });
 
   test('with insufficient credentials exits with error', async () => {
@@ -511,6 +607,70 @@ describe('project link', () => {
     consolaPromptMock.mockRestore();
   });
 
+  test('marks the currently linked project with [linked] in the select prompt', async () => {
+    config.set('projectUuid', projectUuid2);
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (_message, opts) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        const linkedOption = options.find((o) => o.value === projectUuid2);
+        const otherOption = options.find((o) => o.value === projectUuid1);
+
+        expect(linkedOption?.label).toContain('[linked]');
+        expect(otherOption?.label).not.toContain('[linked]');
+
+        return Promise.resolve(projectUuid2);
+      });
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'link',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('exits gracefully with guidance when user declines to create from empty list', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({ data: [] }),
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve(false));
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow('No infrastructure project linked');
+
+    expect(consola.info).toHaveBeenCalledWith(
+      "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
   test('errors when infrastructure projects API is not found', async () => {
     server.use(
       http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
@@ -536,6 +696,79 @@ describe('project link', () => {
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+  });
+
+  describe('post-link Commerce Hosting setup prompt', () => {
+    test('does not prompt when project is already transformed', async () => {
+      const consolaPromptMock = vi.spyOn(consola, 'prompt');
+
+      vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+      await program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--project-uuid',
+        projectUuid1,
+      ]);
+
+      const promptMessages = consolaPromptMock.mock.calls.map(([msg]) => msg);
+
+      expect(promptMessages).not.toContain(
+        expect.stringContaining('not fully set up for Commerce Hosting'),
+      );
+
+      consolaPromptMock.mockRestore();
+    });
+
+    test('prompts and runs setup when user accepts', async () => {
+      vi.mocked(getProjectState).mockReturnValue(untransformedState);
+
+      const consolaPromptMock = vi.spyOn(consola, 'prompt').mockImplementation(async (message) => {
+        expect(message).toContain('not fully set up for Commerce Hosting');
+
+        return Promise.resolve(true);
+      });
+
+      await program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--project-uuid',
+        projectUuid1,
+      ]);
+
+      expect(setupCommerceHosting).toHaveBeenCalledWith(
+        expect.objectContaining({ projectUuid: projectUuid1 }),
+      );
+      expect(installDependencies).toHaveBeenCalled();
+
+      consolaPromptMock.mockRestore();
+    });
+
+    test('skips setup when user declines', async () => {
+      vi.mocked(getProjectState).mockReturnValue(untransformedState);
+
+      const consolaPromptMock = vi
+        .spyOn(consola, 'prompt')
+        .mockImplementation(async () => Promise.resolve(false));
+
+      await program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'link',
+        '--project-uuid',
+        projectUuid1,
+      ]);
+
+      expect(setupCommerceHosting).not.toHaveBeenCalled();
+      expect(installDependencies).not.toHaveBeenCalled();
+
+      consolaPromptMock.mockRestore();
+    });
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {

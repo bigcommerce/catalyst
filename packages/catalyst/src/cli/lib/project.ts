@@ -2,6 +2,13 @@ import { z } from 'zod';
 
 import { getTelemetry } from './telemetry';
 
+export class InfrastructureProjectValidationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InfrastructureProjectValidationError';
+  }
+}
+
 const fetchProjectsSchema = z.object({
   data: z.array(
     z.object({
@@ -16,21 +23,44 @@ export interface ProjectListItem {
   name: string;
 }
 
+function projectsUrl(storeHash: string, apiHost: string) {
+  return `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`;
+}
+
+function authHeaders(accessToken: string) {
+  return {
+    'X-Auth-Token': accessToken,
+    'X-Correlation-Id': getTelemetry().correlationId,
+  };
+}
+
+export async function hasProjectsAccess(
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<boolean> {
+  const response = await fetch(projectsUrl(storeHash, apiHost), {
+    method: 'GET',
+    headers: authHeaders(accessToken),
+  });
+
+  if (response.status === 200) return true;
+  if (response.status === 403) return false;
+
+  throw new Error(
+    `GET /v3/infrastructure/projects failed: ${response.status} ${response.statusText}`,
+  );
+}
+
 export async function fetchProjects(
   storeHash: string,
   accessToken: string,
   apiHost: string,
 ): Promise<ProjectListItem[]> {
-  const response = await fetch(
-    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
-    {
-      method: 'GET',
-      headers: {
-        'X-Auth-Token': accessToken,
-        'X-Correlation-Id': getTelemetry().correlationId,
-      },
-    },
-  );
+  const response = await fetch(projectsUrl(storeHash, apiHost), {
+    method: 'GET',
+    headers: authHeaders(accessToken),
+  });
 
   if (response.status === 403) {
     throw new Error(
@@ -65,28 +95,51 @@ export interface CreateProjectResult {
   date_modified: Date;
 }
 
+const validationErrorBodySchema = z.object({
+  title: z.string().optional(),
+  detail: z.string().optional(),
+  errors: z.record(z.string(), z.string()).optional(),
+});
+
+function extractValidationMessage(body: unknown): string | null {
+  const parsed = validationErrorBodySchema.safeParse(body);
+
+  if (!parsed.success) return null;
+
+  const { title, detail, errors } = parsed.data;
+
+  if (errors && Object.keys(errors).length > 0) {
+    return Object.values(errors).join('; ');
+  }
+
+  return detail ?? title ?? null;
+}
+
 export async function createProject(
   name: string,
   storeHash: string,
   accessToken: string,
   apiHost: string,
 ): Promise<CreateProjectResult> {
-  const response = await fetch(
-    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
-    {
-      method: 'POST',
-      headers: {
-        'X-Auth-Token': accessToken,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'X-Correlation-Id': getTelemetry().correlationId,
-      },
-      body: JSON.stringify({ name }),
+  const response = await fetch(projectsUrl(storeHash, apiHost), {
+    method: 'POST',
+    headers: {
+      ...authHeaders(accessToken),
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     },
-  );
+    body: JSON.stringify({ name }),
+  });
 
-  if (response.status === 502) {
-    throw new Error('Failed to create project, is the name already in use?');
+  if (response.status === 400 || response.status === 422) {
+    const body: unknown = await response.json().catch(() => null);
+    const fallback =
+      response.status === 422
+        ? "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)"
+        : response.statusText;
+    const message = extractValidationMessage(body) ?? fallback;
+
+    throw new InfrastructureProjectValidationError(message);
   }
 
   if (response.status === 403) {
@@ -95,10 +148,9 @@ export async function createProject(
     );
   }
 
-  if (response.status === 422) {
-    throw new Error(
-      "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
-    );
+  // TODO: TRAC-592 - remove this check once the API returns proper 400/422 with validation messages for duplicate names instead of 502
+  if (response.status === 502) {
+    throw new Error('Failed to create project, is the name already in use?');
   }
 
   if (!response.ok) {
