@@ -298,11 +298,10 @@ function getFieldSchema(
       if (field.required !== true) fieldSchema = fieldSchema.optional();
 
       break;
-
+    
     case 'checkbox-group':
-      fieldSchema = z.string().array();
-
-      if (field.required === true) fieldSchema = fieldSchema.nonempty();
+      fieldSchema =
+        field.required === true ? z.string().array().nonempty() : z.string().array().optional();
 
       break;
 
