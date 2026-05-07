@@ -4,7 +4,7 @@ import { randomBytes, randomUUID } from 'node:crypto';
 
 import PACKAGE_INFO from '../../../package.json';
 
-import { getProjectConfig, ProjectConfigSchema } from './project-config';
+import { getUserConfig, UserConfigSchema } from './user-config';
 
 const TELEMETRY_KEY_ENABLED = 'telemetry.enabled';
 const TELEMETRY_KEY_ID = `telemetry.anonymousId`;
@@ -15,7 +15,7 @@ export class Telemetry {
   readonly startTime: number;
   commandName = 'unknown';
 
-  private projectConfig: Conf<ProjectConfigSchema>;
+  private userConfig: Conf<UserConfigSchema>;
   private CATALYST_TELEMETRY_DISABLED: string | undefined;
 
   private readonly projectName = 'catalyst-cli';
@@ -24,7 +24,7 @@ export class Telemetry {
   constructor() {
     this.CATALYST_TELEMETRY_DISABLED = process.env.CATALYST_TELEMETRY_DISABLED;
 
-    this.projectConfig = getProjectConfig();
+    this.userConfig = getUserConfig();
 
     this.correlationId = randomUUID();
     this.startTime = Date.now();
@@ -86,18 +86,18 @@ export class Telemetry {
   setEnabled = (_enabled: boolean) => {
     const enabled = Boolean(_enabled);
 
-    this.projectConfig.set('telemetry.enabled', enabled);
+    this.userConfig.set('telemetry.enabled', enabled);
   };
 
   isEnabled() {
     return (
       !this.CATALYST_TELEMETRY_DISABLED &&
-      this.projectConfig.get<typeof TELEMETRY_KEY_ENABLED, boolean>(TELEMETRY_KEY_ENABLED, true)
+      this.userConfig.get<typeof TELEMETRY_KEY_ENABLED, boolean>(TELEMETRY_KEY_ENABLED, true)
     );
   }
 
   private getAnonymousId(): string {
-    const val = this.projectConfig.get<typeof TELEMETRY_KEY_ID, string>(TELEMETRY_KEY_ID);
+    const val = this.userConfig.get<typeof TELEMETRY_KEY_ID, string>(TELEMETRY_KEY_ID);
 
     if (val) {
       return val;
@@ -105,7 +105,7 @@ export class Telemetry {
 
     const generated = randomBytes(32).toString('hex');
 
-    this.projectConfig.set(TELEMETRY_KEY_ID, generated);
+    this.userConfig.set(TELEMETRY_KEY_ID, generated);
 
     return generated;
   }

@@ -306,6 +306,9 @@ importers:
 
   packages/catalyst:
     dependencies:
+      '@inquirer/prompts':
+        specifier: ^7.5.3
+        version: 7.5.3(@types/node@22.15.30)
       '@opennextjs/cloudflare':
         specifier: 1.17.3
         version: 1.17.3(encoding@0.1.13)(next@16.1.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.5(react@19.1.5))(react@19.1.5))(wrangler@4.31.0)
@@ -324,15 +327,30 @@ importers:
       consola:
         specifier: ^3.4.2
         version: 3.4.2
+      cross-spawn:
+        specifier: ^7.0.6
+        version: 7.0.6
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
       execa:
         specifier: ^9.6.0
         version: 9.6.0
+      fs-extra:
+        specifier: ^11.3.0
+        version: 11.3.0
+      lodash.kebabcase:
+        specifier: ^4.1.1
+        version: 4.1.1
+      nypm:
+        specifier: ^0.5.4
+        version: 0.5.4
       open:
         specifier: ^10.1.0
         version: 10.1.2
+      std-env:
+        specifier: ^3.9.0
+        version: 3.9.0
       yocto-spinner:
         specifier: ^1.0.0
         version: 1.0.0
@@ -352,6 +370,15 @@ importers:
       '@types/adm-zip':
         specifier: ^0.5.7
         version: 0.5.7
+      '@types/cross-spawn':
+        specifier: ^6.0.6
+        version: 6.0.6
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/lodash.kebabcase':
+        specifier: ^4.1.9
+        version: 4.1.9
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30
@@ -8452,7 +8479,6 @@ packages:
   puppeteer@24.10.0:
     resolution: {integrity: sha512-Oua9VkGpj0S2psYu5e6mCer6W9AU9POEQh22wRgSXnLXASGH+MwLUVWgLCLeP9QPHHcJ7tySUlg4Sa9OJmaLpw==}
     engines: {node: '>=18'}
-    deprecated: < 24.15.0 is no longer supported
     hasBin: true
 
   pure-rand@6.1.0:

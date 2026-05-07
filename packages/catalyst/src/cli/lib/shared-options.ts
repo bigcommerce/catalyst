@@ -5,13 +5,13 @@ import { getProjectConfig } from './project-config';
 export const storeHashOption = () =>
   new Option(
     '--store-hash <hash>',
-    'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
+    'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json or .env when not provided.',
   ).env('CATALYST_STORE_HASH');
 
 export const accessTokenOption = () =>
   new Option(
     '--access-token <token>',
-    'BigCommerce access token. Can be found after creating a store-level API account.',
+    'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json or .env when not provided.',
   ).env('CATALYST_ACCESS_TOKEN');
 
 export const apiHostOption = () =>
@@ -23,7 +23,7 @@ export const apiHostOption = () =>
 export const projectUuidOption = () =>
   new Option(
     '--project-uuid <uuid>',
-    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
+    'BigCommerce infrastructure project UUID. Read from .bigcommerce/project.json or .env when not provided.',
   ).env('CATALYST_PROJECT_UUID');
 
 export const resolveProjectUuid = (options: { projectUuid?: string }) => {
