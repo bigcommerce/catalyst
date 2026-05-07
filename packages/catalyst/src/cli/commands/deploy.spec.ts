@@ -17,9 +17,12 @@ import {
 
 import { server } from '../../../tests/mocks/node';
 import { textHistory } from '../../../tests/mocks/spinner';
+import { setupCommerceHosting } from '../lib/commerce-hosting';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
 import { program } from '../program';
 
 import { buildCatalystProject } from './build';
@@ -41,6 +44,36 @@ vi.mock('./build', async (importOriginal) => {
 
   return { ...actual, buildCatalystProject: vi.fn() };
 });
+
+// Default to a transformed project so the deploy flow's transformation guard
+// is a no-op for tests that don't care about it. Tests that exercise the
+// guard override this per-case via `vi.mocked(getProjectState).mockReturnValueOnce(...)`.
+vi.mock('../lib/project-state', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../lib/project-state')>();
+
+  return {
+    ...actual,
+    getProjectState: vi.fn(() => ({
+      projectUuid: 'mock-uuid',
+      hasMiddleware: true,
+      hasProxy: false,
+      hasOpenNextDep: true,
+      isLinked: true,
+      isTransformed: true,
+      isFullySetUp: true,
+    })),
+  };
+});
+
+vi.mock('../lib/commerce-hosting', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../lib/commerce-hosting')>();
+
+  return { ...actual, setupCommerceHosting: vi.fn() };
+});
+
+vi.mock('../lib/install-dependencies', () => ({
+  installDependencies: vi.fn(),
+}));
 
 let exitMock: MockInstance;
 
@@ -285,6 +318,136 @@ describe('deployment and event streaming', () => {
     expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
 
     expect(textHistory).toEqual(['Fetching...', 'Processing...']);
+  });
+});
+
+describe('linked project verification', () => {
+  test('proceeds when the linked project still exists on the server', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--dry-run',
+    ]);
+
+    expect(consola.info).not.toHaveBeenCalledWith('No project is currently linked.');
+    expect(consola.warn).not.toHaveBeenCalledWith(expect.stringContaining('no longer exists'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prompts for a new project when the linked uuid no longer exists', async () => {
+    const config = getProjectConfig();
+    const staleUuid = '00000000-0000-0000-0000-000000000000';
+
+    config.set('projectUuid', staleUuid);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve(projectUuid));
+
+    await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining(`The linked project (${staleUuid}) no longer exists`),
+    );
+    expect(consola.success).toHaveBeenCalledWith('Linked project "Project One".');
+    expect(config.get('projectUuid')).toBe(projectUuid);
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('prompts for a project when none is linked yet', async () => {
+    const config = getProjectConfig();
+
+    config.delete('projectUuid');
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve(projectUuid));
+
+    await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
+
+    expect(consola.info).toHaveBeenCalledWith('No project is currently linked.');
+    expect(consola.success).toHaveBeenCalledWith('Linked project "Project One".');
+    expect(config.get('projectUuid')).toBe(projectUuid);
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('offers to create when no projects exist on the store', async () => {
+    const config = getProjectConfig();
+
+    config.delete('projectUuid');
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({ data: [] }),
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (message) => {
+        expect(message).toContain('There are not any hosting projects that you can link to yet');
+
+        return Promise.resolve(true);
+      })
+      .mockImplementationOnce(async (message) => {
+        expect(message).toBe('Enter a name for the new project:');
+
+        return Promise.resolve('My New Project');
+      });
+
+    await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
+
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('exits gracefully with guidance when user declines to create', async () => {
+    const config = getProjectConfig();
+
+    config.delete('projectUuid');
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({ data: [] }),
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve(false));
+
+    await expect(program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run'])).rejects.toThrow(
+      'No infrastructure project linked',
+    );
+
+    expect(consola.info).toHaveBeenCalledWith(
+      "When you're ready to create a project, run `catalyst project create` or re-run `catalyst deploy`.",
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
   });
 });
 
@@ -559,5 +722,98 @@ describe('--prebuilt flag', () => {
     process.chdir(tmpDir);
     await rm(join(resolvedDir, '.bigcommerce'), { recursive: true });
     await emptyDistCleanup();
+  });
+});
+
+describe('transformation guard', () => {
+  const untransformedState = {
+    projectUuid: undefined,
+    hasMiddleware: false,
+    hasProxy: true,
+    hasOpenNextDep: false,
+    isLinked: false,
+    isTransformed: false,
+    isFullySetUp: false,
+  };
+
+  test('runs setupCommerceHosting + installDependencies when project is not transformed', async () => {
+    vi.mocked(getProjectState).mockReturnValueOnce(untransformedState);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(consola.prompt).toHaveBeenCalledWith(
+      expect.stringContaining('not yet set up for Commerce Hosting deployments'),
+      expect.objectContaining({ type: 'confirm' }),
+    );
+    expect(setupCommerceHosting).toHaveBeenCalledWith({
+      projectDir: dirname(tmpDir),
+      projectUuid,
+      storeHash,
+      accessToken,
+    });
+    expect(installDependencies).toHaveBeenCalledWith(dirname(tmpDir));
+  });
+
+  test('exits gracefully when user declines to run setup', async () => {
+    vi.mocked(getProjectState).mockReturnValueOnce(untransformedState);
+    vi.mocked(consola.prompt).mockResolvedValueOnce(false);
+
+    // In production, process.exit halts. In tests it's mocked, so we can only
+    // verify the user-visible signals: the guidance log and the exit code.
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(consola.info).toHaveBeenCalledWith(
+      "When you're ready to deploy, re-run `catalyst deploy` to complete setup.",
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('skips setup when project is already transformed', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(setupCommerceHosting).not.toHaveBeenCalled();
+    expect(installDependencies).not.toHaveBeenCalled();
   });
 });

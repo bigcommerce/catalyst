@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
+import { getProjectState } from '../lib/project-state';
 import { program } from '../program';
 
 import { start } from './start';
@@ -20,12 +21,37 @@ vi.mock('execa', () => ({
   __esModule: true,
 }));
 
+vi.mock('../lib/project-state', () => ({
+  getProjectState: vi.fn(),
+}));
+
+const transformedState = {
+  projectUuid: 'abc-123',
+  hasMiddleware: true,
+  hasProxy: false,
+  hasOpenNextDep: true,
+  isLinked: true,
+  isTransformed: true,
+  isFullySetUp: true,
+};
+
+const untransformedState = {
+  projectUuid: undefined,
+  hasMiddleware: false,
+  hasProxy: true,
+  hasOpenNextDep: false,
+  isLinked: false,
+  isTransformed: false,
+  isFullySetUp: false,
+};
+
 beforeAll(() => {
   consola.wrapAll();
 });
 
 beforeEach(() => {
   consola.mockTypes(() => vi.fn());
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
 });
 
 afterEach(() => {
@@ -91,5 +117,18 @@ test('warns when .env.local does not exist', async () => {
 
   await program.parseAsync(['node', 'catalyst', 'start']);
 
+  expect(symlinkSync).not.toHaveBeenCalled();
+});
+
+test('falls through to `next start` when project is not transformed', async () => {
+  vi.mocked(getProjectState).mockReturnValue(untransformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'start']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'pnpm',
+    ['exec', 'next', 'start'],
+    expect.objectContaining({ stdio: 'inherit', cwd: process.cwd() }),
+  );
   expect(symlinkSync).not.toHaveBeenCalled();
 });

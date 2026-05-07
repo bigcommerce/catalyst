@@ -7,10 +7,6 @@ export interface ProjectConfigSchema {
   framework: 'catalyst';
   storeHash?: string;
   accessToken?: string;
-  telemetry: {
-    enabled: boolean;
-    anonymousId: string;
-  };
 }
 
 export function getProjectConfig() {
@@ -27,13 +23,6 @@ export function getProjectConfig() {
       },
       storeHash: { type: 'string' },
       accessToken: { type: 'string' },
-      telemetry: {
-        type: 'object',
-        properties: {
-          enabled: { type: 'boolean' },
-          anonymousId: { type: 'string' },
-        },
-      },
     },
   });
 }

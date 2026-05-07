@@ -2,14 +2,27 @@ import AdmZip from 'adm-zip';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 import { access, readdir, readFile } from 'node:fs/promises';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import {
+  NoLinkedProjectError,
+  selectOrCreateInfrastructureProject,
+  setupCommerceHosting,
+} from '../lib/commerce-hosting';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
 import { resolveCredentials } from '../lib/resolve-credentials';
+import {
+  accessTokenOption,
+  apiHostOption,
+  projectUuidOption,
+  storeHashOption,
+} from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
 import { buildCatalystProject } from './build';
@@ -377,30 +390,10 @@ export const deploy = new Command('deploy')
 Example:
   $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json when not provided.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json when not provided.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
-  .addOption(
-    new Option(
-      '--project-uuid <uuid>',
-      'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
-    ).env('CATALYST_PROJECT_UUID'),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
   .addOption(
     new Option(
       '--secret <value>',
@@ -418,15 +411,88 @@ Example:
     const config = getProjectConfig();
     const { storeHash, accessToken } = resolveCredentials(options, config);
     const telemetry = getTelemetry();
-    const projectUuid = options.projectUuid ?? config.get('projectUuid');
-
-    if (!projectUuid) {
-      throw new Error(
-        'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
-      );
-    }
 
     await telemetry.identify(storeHash);
+
+    // Resolve a *valid* projectUuid before doing any expensive build/upload
+    // work. If the linked UUID no longer exists on the server (e.g. project
+    // deleted out from under us), prompt the user to pick a new one rather
+    // than failing mid-deploy.
+    const linkedProjectUuid = options.projectUuid ?? config.get('projectUuid');
+    let projectUuid: string;
+
+    const promptForProject = async (): Promise<{ uuid: string; name: string }> => {
+      try {
+        return await selectOrCreateInfrastructureProject({
+          storeHash,
+          accessToken,
+          apiHost: options.apiHost,
+        });
+      } catch (error) {
+        if (error instanceof NoLinkedProjectError) {
+          consola.info(
+            "When you're ready to create a project, run `catalyst project create` or re-run `catalyst deploy`.",
+          );
+          process.exit(0);
+        }
+
+        throw error;
+      }
+    };
+
+    if (linkedProjectUuid) {
+      const existing = await fetchProject(
+        linkedProjectUuid,
+        storeHash,
+        accessToken,
+        options.apiHost,
+      );
+
+      if (existing) {
+        projectUuid = linkedProjectUuid;
+      } else {
+        consola.warn(
+          `The linked project (${linkedProjectUuid}) no longer exists on this store. It may have been deleted.`,
+        );
+
+        const selected = await promptForProject();
+
+        projectUuid = selected.uuid;
+        config.set('projectUuid', projectUuid);
+        consola.success(`Linked project "${selected.name}".`);
+      }
+    } else {
+      consola.info('No project is currently linked.');
+
+      const selected = await promptForProject();
+
+      projectUuid = selected.uuid;
+      config.set('projectUuid', projectUuid);
+      consola.success(`Linked project "${selected.name}".`);
+    }
+
+    // The OpenNext build pipeline requires the project to be transformed
+    // (proxy.ts → middleware.ts, @opennextjs/cloudflare installed). Run setup
+    // here so first-run `catalyst deploy` works on a fresh self-hosted scaffold
+    // without forcing the user to re-run after a separate setup step.
+    if (!getProjectState().isTransformed) {
+      const shouldSetup = await consola.prompt(
+        'Your project is not yet set up for Commerce Hosting deployments. Would you like to run the Commerce Hosting setup now?',
+        { type: 'confirm', initial: true },
+      );
+
+      if (!shouldSetup) {
+        consola.info("When you're ready to deploy, re-run `catalyst deploy` to complete setup.");
+        process.exit(0);
+      }
+
+      const projectDir = dirname(process.cwd());
+
+      setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
+      consola.success('Commerce Hosting setup complete.');
+
+      await installDependencies(projectDir);
+    }
 
     if (options.prebuilt) {
       const distDir = join(process.cwd(), '.bigcommerce', 'dist');

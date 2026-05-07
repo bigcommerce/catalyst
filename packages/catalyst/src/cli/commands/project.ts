@@ -1,10 +1,54 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
+import { colorize } from 'consola/utils';
+import { dirname } from 'node:path';
 
+import {
+  NoLinkedProjectError,
+  selectOrCreateInfrastructureProject,
+  setupCommerceHosting,
+} from '../lib/commerce-hosting';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { createProject, fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
 import { resolveCredentials } from '../lib/resolve-credentials';
+import {
+  accessTokenOption,
+  apiHostOption,
+  projectUuidOption,
+  storeHashOption,
+} from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
+
+// `catalyst project link` runs from inside `core/`, so the project root (which
+// `setupCommerceHosting` and `installDependencies` expect) is one level up.
+async function offerCommerceHostingSetup(
+  projectUuid: string,
+  credentials?: { storeHash: string; accessToken: string },
+) {
+  if (getProjectState().isTransformed) return;
+
+  const shouldSetup = await consola.prompt(
+    'Your project has been linked, but is not fully set up for Commerce Hosting deployments yet. Would you like to run the setup now?',
+    { type: 'confirm', initial: true },
+  );
+
+  if (!shouldSetup) return;
+
+  const projectDir = dirname(process.cwd());
+
+  setupCommerceHosting({
+    projectDir,
+    projectUuid,
+    storeHash: credentials?.storeHash,
+    accessToken: credentials?.accessToken,
+  });
+
+  consola.success('Commerce Hosting setup complete.');
+
+  await installDependencies(projectDir);
+}
 
 const list = new Command('list')
   .configureHelp({ showGlobalOptions: true })
@@ -15,24 +59,9 @@ const list = new Command('list')
 Example:
   $ catalyst project list`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .action(async (options) => {
     const config = getProjectConfig();
     const { storeHash, accessToken } = resolveCredentials(options, config);
@@ -52,8 +81,12 @@ Example:
       return;
     }
 
+    const linkedProjectUuid = config.get('projectUuid');
+
     projects.forEach((p) => {
-      consola.log(`${p.name} (${p.uuid})`);
+      const marker = p.uuid === linkedProjectUuid ? ` ${colorize('green', '[linked]')}` : '';
+
+      consola.log(`${p.name} (${p.uuid})${marker}`);
     });
 
     process.exit(0);
@@ -70,24 +103,9 @@ const create = new Command('create')
 Example:
   $ catalyst project create`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .action(async (options) => {
     const config = getProjectConfig();
     const { storeHash, accessToken } = resolveCredentials(options, config);
@@ -126,28 +144,10 @@ Examples:
   # Link using a project UUID directly
   $ catalyst project link --project-uuid <UUID>`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
-  .option(
-    '--project-uuid <uuid>',
-    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
   .action(async (options) => {
     const config = getProjectConfig();
 
@@ -168,6 +168,7 @@ Examples:
 
     if (options.projectUuid) {
       writeProjectConfig(options.projectUuid);
+      await offerCommerceHostingSetup(options.projectUuid);
 
       process.exit(0);
 
@@ -178,47 +179,29 @@ Examples:
 
     await getTelemetry().identify(storeHash);
 
-    consola.start('Fetching projects...');
+    let selected;
 
-    const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+    try {
+      selected = await selectOrCreateInfrastructureProject(
+        { storeHash, accessToken, apiHost: options.apiHost },
+        config.get('projectUuid'),
+      );
+    } catch (error) {
+      if (error instanceof NoLinkedProjectError) {
+        consola.info(
+          "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
+        );
+        process.exit(0);
 
-    consola.success('Projects fetched.');
+        // Unreachable in production; prevents continuation when process.exit is mocked in tests.
+        throw error;
+      }
 
-    const promptOptions = [
-      ...projects.map((proj) => ({
-        label: proj.name,
-        value: proj.uuid,
-        hint: proj.uuid,
-      })),
-      {
-        label: 'Create a new project',
-        value: 'create',
-        hint: 'Create a new infrastructure project for this BigCommerce store.',
-      },
-    ];
-
-    let projectUuid = await consola.prompt(
-      'Select a project or create a new project (Press <enter> to select).',
-      {
-        type: 'select',
-        options: promptOptions,
-        cancel: 'reject',
-      },
-    );
-
-    if (projectUuid === 'create') {
-      const newProjectName = await consola.prompt('Enter a name for the new project:', {
-        type: 'text',
-      });
-
-      const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
-
-      projectUuid = data.uuid;
-
-      consola.success(`Project "${data.name}" created successfully.`);
+      throw error;
     }
 
-    writeProjectConfig(projectUuid, { storeHash, accessToken });
+    writeProjectConfig(selected.uuid, { storeHash, accessToken });
+    await offerCommerceHostingSetup(selected.uuid, { storeHash, accessToken });
 
     process.exit(0);
   });
