@@ -9,7 +9,7 @@ import {
 } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
-import { createProject, fetchProjects } from '../lib/project';
+import { createProject, deleteProject, fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
 import { resolveCredentials } from '../lib/resolve-credentials';
@@ -206,9 +206,124 @@ Examples:
     process.exit(0);
   });
 
+const del = new Command('delete')
+  .configureHelp({ showGlobalOptions: true })
+  .description(
+    'Permanently delete a BigCommerce infrastructure project. This action is irreversible.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Select a project to delete interactively
+  $ catalyst project delete
+
+  # Delete a specific project (still prompts for confirmation)
+  $ catalyst project delete --project-uuid <UUID>
+
+  # Skip the confirmation prompt
+  $ catalyst project delete --project-uuid <UUID> --force`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--force', 'Skip the confirmation prompt before deleting.')
+  .action(async (options) => {
+    const config = getProjectConfig();
+    const { storeHash, accessToken } = resolveCredentials(options, config);
+
+    await getTelemetry().identify(storeHash);
+
+    let targetUuid: string | undefined = options.projectUuid;
+    let targetName: string | undefined;
+
+    if (!targetUuid) {
+      consola.start('Fetching projects...');
+
+      const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+
+      consola.success('Projects fetched.');
+
+      if (projects.length === 0) {
+        consola.info('No projects found.');
+        process.exit(0);
+
+        return;
+      }
+
+      const linkedProjectUuid = config.get('projectUuid');
+
+      const selected = await consola.prompt(
+        'Select a project to delete (Press <enter> to select).',
+        {
+          type: 'select',
+          options: [
+            ...projects.map((p) => ({
+              label:
+                p.uuid === linkedProjectUuid
+                  ? `${p.name} ${colorize('green', '[linked]')}`
+                  : p.name,
+              value: p.uuid,
+              hint: p.uuid,
+            })),
+            { label: 'Cancel', value: 'cancel', hint: 'Exit without deleting any project.' },
+          ],
+          cancel: 'reject',
+        },
+      );
+
+      if (selected === 'cancel') {
+        consola.info('Aborted. No project was deleted.');
+        process.exit(0);
+
+        return;
+      }
+
+      const matched = projects.find((p) => p.uuid === selected);
+
+      if (!matched) {
+        throw new Error(`Selected project ${String(selected)} not found in fetched list.`);
+      }
+
+      targetUuid = matched.uuid;
+      targetName = matched.name;
+    }
+
+    if (!options.force) {
+      const label = targetName ? `"${targetName}" (${targetUuid})` : targetUuid;
+
+      const confirmed = await consola.prompt(
+        `Are you sure you want to delete project ${label}? This action is irreversible and will permanently destroy the project and all of its data.`,
+        { type: 'confirm', initial: false },
+      );
+
+      if (!confirmed) {
+        consola.info('Aborted. No project was deleted.');
+        process.exit(0);
+
+        return;
+      }
+    }
+
+    consola.start(`Deleting project ${targetUuid}...`);
+
+    await deleteProject(targetUuid, storeHash, accessToken, options.apiHost);
+
+    consola.success(`Project ${targetUuid} deleted.`);
+
+    if (config.get('projectUuid') === targetUuid) {
+      config.delete('projectUuid');
+      consola.info('Removed project UUID from .bigcommerce/project.json.');
+    }
+
+    process.exit(0);
+  });
+
 export const project = new Command('project')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage your BigCommerce infrastructure project.')
   .addCommand(create)
   .addCommand(list)
-  .addCommand(link);
+  .addCommand(link)
+  .addCommand(del);
