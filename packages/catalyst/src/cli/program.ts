@@ -2,12 +2,14 @@ import { Option } from '@commander-js/extra-typings';
 import { Command } from 'commander';
 import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
+import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import PACKAGE_INFO from '../../package.json';
 
 import { auth } from './commands/auth';
 import { build } from './commands/build';
+import { create } from './commands/create';
 import { deploy } from './commands/deploy';
 import { logs } from './commands/logs';
 import { project } from './commands/project';
@@ -16,6 +18,22 @@ import { telemetry } from './commands/telemetry';
 import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
+
+// Auto-load .env.local from cwd if present, matching Next.js convention.
+// `--env-path` (loaded later via argParser) overrides anything we load here.
+const defaultEnvPath = resolve(process.cwd(), '.env.local');
+
+if (existsSync(defaultEnvPath)) {
+  config({ path: defaultEnvPath });
+}
+
+// CATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH so freshly-scaffolded
+// projects work without duplicating the same value under two names. Aliasing
+// here means every command's `.env('CATALYST_STORE_HASH')` binding picks it up
+// without per-command changes.
+if (!process.env.CATALYST_STORE_HASH && process.env.BIGCOMMERCE_STORE_HASH) {
+  process.env.CATALYST_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
+}
 
 export const program = new Command();
 
@@ -26,7 +44,7 @@ program
   .version(PACKAGE_INFO.version)
   .summary('CLI tool for Catalyst development')
   .description(
-    'CLI tool for Catalyst development.\n\nConfiguration priority: flags > env file (--env-path) > process.env > .bigcommerce/project.json.\nRun `catalyst <command> --help` for details on a specific command.',
+    'CLI tool for Catalyst development.\n\nConfiguration priority: flags > env file (--env-path) > process.env > .env.local (auto-loaded from cwd) > .bigcommerce/project.json.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
   )
   .configureHelp({ showGlobalOptions: true })
   .addOption(
@@ -62,6 +80,7 @@ program
     }),
   )
   .addCommand(version)
+  .addCommand(create)
   .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
