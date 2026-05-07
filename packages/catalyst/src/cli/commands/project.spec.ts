@@ -131,7 +131,7 @@ afterAll(async () => {
 });
 
 describe('project', () => {
-  test('has create, link, and list subcommands', () => {
+  test('has create, link, list, and delete subcommands', () => {
     expect(project).toBeInstanceOf(Command);
     expect(project.name()).toBe('project');
     expect(project.description()).toBe('Manage your BigCommerce infrastructure project.');
@@ -152,6 +152,19 @@ describe('project', () => {
 
     expect(listCmd).toBeDefined();
     expect(listCmd?.description()).toContain('List BigCommerce infrastructure projects');
+
+    const deleteCmd = project.commands.find((cmd) => cmd.name() === 'delete');
+
+    expect(deleteCmd).toBeDefined();
+    expect(deleteCmd?.description()).toContain(
+      'Permanently delete a BigCommerce infrastructure project',
+    );
+    expect(deleteCmd?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--force' }),
+      ]),
+    );
   });
 });
 
@@ -784,5 +797,349 @@ describe('project link', () => {
     );
 
     expect(exitMock).toHaveBeenCalledWith(1);
+  });
+});
+
+describe('project delete', () => {
+  test('with --project-uuid and --force deletes without prompting', async () => {
+    const consolaPromptMock = vi.spyOn(consola, 'prompt');
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--project-uuid',
+      projectUuid1,
+      '--force',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consolaPromptMock).not.toHaveBeenCalled();
+    expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+    expect(consola.start).toHaveBeenCalledWith(`Deleting project ${projectUuid1}...`);
+    expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid1} deleted.`);
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('with --project-uuid prompts for confirmation and deletes on accept', async () => {
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async (message, opts) => {
+        expect(message).toContain('Are you sure you want to delete project');
+        expect(message).toContain(projectUuid1);
+        expect(message).toContain('irreversible');
+        expect(opts).toMatchObject({ type: 'confirm' });
+
+        return Promise.resolve(true);
+      });
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--project-uuid',
+      projectUuid1,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consolaPromptMock).toHaveBeenCalledTimes(1);
+    expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid1} deleted.`);
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('aborts when user declines the confirmation prompt', async () => {
+    let deleteRequested = false;
+
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
+        () => {
+          deleteRequested = true;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve(false));
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--project-uuid',
+      projectUuid1,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(deleteRequested).toBe(false);
+    expect(consola.info).toHaveBeenCalledWith('Aborted. No project was deleted.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('without --project-uuid fetches projects and prompts to select one', async () => {
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (message, opts) => {
+        expect(message).toContain('Select a project to delete');
+
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        expect(options).toHaveLength(3);
+        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
+        expect(options[1]).toMatchObject({ label: 'Project Two', value: projectUuid2 });
+        expect(options[2]).toMatchObject({ label: 'Cancel', value: 'cancel' });
+
+        return Promise.resolve(projectUuid2);
+      })
+      .mockImplementationOnce(async (message) => {
+        expect(message).toContain('"Project Two"');
+        expect(message).toContain(projectUuid2);
+
+        return Promise.resolve(true);
+      });
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+    expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
+    expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid2} deleted.`);
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('marks the currently linked project with [linked] in the select prompt', async () => {
+    config.set('projectUuid', projectUuid2);
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (_message, opts) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        const linkedOption = options.find((o) => o.value === projectUuid2);
+        const otherOption = options.find((o) => o.value === projectUuid1);
+
+        expect(linkedOption?.label).toContain('[linked]');
+        expect(otherOption?.label).not.toContain('[linked]');
+
+        return Promise.resolve(projectUuid1);
+      })
+      .mockImplementationOnce(async () => Promise.resolve(true));
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('aborts when user selects Cancel from the project list', async () => {
+    let deleteRequested = false;
+
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
+        () => {
+          deleteRequested = true;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementation(async () => Promise.resolve('cancel'));
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consolaPromptMock).toHaveBeenCalledTimes(1);
+    expect(deleteRequested).toBe(false);
+    expect(consola.info).toHaveBeenCalledWith('Aborted. No project was deleted.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('exits cleanly when there are no projects to delete', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({ data: [] }),
+      ),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consola.info).toHaveBeenCalledWith('No projects found.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('clears linked projectUuid from config when the deleted project was linked', async () => {
+    config.set('projectUuid', projectUuid1);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--project-uuid',
+      projectUuid1,
+      '--force',
+    ]);
+
+    expect(config.get('projectUuid')).toBeUndefined();
+    expect(consola.info).toHaveBeenCalledWith(
+      'Removed project UUID from .bigcommerce/project.json.',
+    );
+  });
+
+  test('preserves linked projectUuid when a different project is deleted', async () => {
+    config.set('projectUuid', projectUuid2);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'delete',
+      '--project-uuid',
+      projectUuid1,
+      '--force',
+    ]);
+
+    expect(config.get('projectUuid')).toBe(projectUuid2);
+    expect(consola.info).not.toHaveBeenCalledWith(
+      'Removed project UUID from .bigcommerce/project.json.',
+    );
+  });
+
+  test('with insufficient credentials exits with error', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    await expect(program.parseAsync(['node', 'catalyst', 'project', 'delete'])).rejects.toThrow(
+      'Missing credentials',
+    );
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('throws when API returns 404', async () => {
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
+        () => HttpResponse.json({}, { status: 404 }),
+      ),
+    );
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'delete',
+        '--project-uuid',
+        projectUuid1,
+        '--force',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow(`Project ${projectUuid1} not found.`);
+  });
+
+  test('throws when API returns 403', async () => {
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
+        () => HttpResponse.json({}, { status: 403 }),
+      ),
+    );
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'delete',
+        '--project-uuid',
+        projectUuid1,
+        '--force',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow(
+      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    );
   });
 });
