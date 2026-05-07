@@ -138,4 +138,10 @@ export const handlers = [
       },
     }),
   ),
+
+  // Handler for deleteProject
+  http.delete(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
+    () => new HttpResponse(null, { status: 204 }),
+  ),
 ];

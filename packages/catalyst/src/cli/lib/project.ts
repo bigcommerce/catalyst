@@ -163,3 +163,29 @@ export async function createProject(
 
   return data;
 }
+
+export async function deleteProject(
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<void> {
+  const response = await fetch(`${projectsUrl(storeHash, apiHost)}/${projectUuid}`, {
+    method: 'DELETE',
+    headers: authHeaders(accessToken),
+  });
+
+  if (response.status === 403) {
+    throw new Error(
+      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    );
+  }
+
+  if (response.status === 404) {
+    throw new Error(`Project ${projectUuid} not found.`);
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete project: ${response.statusText}`);
+  }
+}
