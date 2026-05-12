@@ -9,7 +9,7 @@ import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-const WRANGLER_VERSION = '4.24.3';
+const WRANGLER_VERSION = '4.90.0';
 
 export async function buildCatalystProject(projectUuid: string): Promise<void> {
   const coreDir = process.cwd();
