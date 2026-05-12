@@ -1,5 +1,15 @@
 # @bigcommerce/catalyst
 
+## 1.0.0-alpha.4
+
+### Patch Changes
+
+- [`de04f42`](https://github.com/bigcommerce/catalyst/commit/de04f42696b30b675bec2625eefa1e825b4a97ba) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add built-in help text to all CLI commands so `catalyst <command> --help` is the canonical reference.
+
+- [`e740158`](https://github.com/bigcommerce/catalyst/commit/e7401583603aae85d4adef23b4b72eeb96e11907) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Show the global `--env-path` option in every subcommand's `--help` output.
+
+- [`e5b4dee`](https://github.com/bigcommerce/catalyst/commit/e5b4dee1fc108d648b6110707b572c1fc9bc2e7c) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update the CLI with the new client id.
+
 ## 1.0.0-alpha.3
 
 ### Minor Changes
