@@ -78,10 +78,6 @@ const DeploymentStatusSchema = z.object({
       progress: z.number(),
     })
     .nullable(),
-  // Deprecated by ignition; prefer `deployment_hostnames`. Kept here so
-  // older ignition builds (that haven't shipped the rename yet) still
-  // parse cleanly during the transition window.
-  deployment_url: z.string().nullable().optional(),
   deployment_hostnames: z.array(z.string()).optional(),
   error: z
     .object({
@@ -338,12 +334,8 @@ export const getDeploymentStatus = async (
           spinner.text = STEPS[data.event.step];
         }
 
-        // Prefer the new plural field; fall back to the deprecated singular
-        // for older ignition builds during the transition window.
         if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
           deploymentHostname = data.deployment_hostnames[0];
-        } else if (data.deployment_url) {
-          deploymentHostname = data.deployment_url;
         }
       });
     }
