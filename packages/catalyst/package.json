@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/catalyst",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "type": "module",
   "bin": {
     "catalyst": "dist/cli.js"
@@ -22,6 +22,7 @@
     "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
   },
   "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
     "@inquirer/prompts": "^7.5.3",
     "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
@@ -42,7 +43,6 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@commander-js/extra-typings": "^14.0.0",
     "@types/adm-zip": "^0.5.7",
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
