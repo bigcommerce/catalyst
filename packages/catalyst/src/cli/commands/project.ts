@@ -77,6 +77,8 @@ Example:
     if (projects.length === 0) {
       consola.info('No projects found.');
       process.exit(0);
+
+      return;
     }
 
     const linkedProjectUuid = config.get('projectUuid');
@@ -179,6 +181,8 @@ Examples:
       await offerCommerceHostingSetup(options.projectUuid);
 
       process.exit(0);
+
+      return;
     }
 
     const { storeHash, accessToken } = resolveCredentials(options, config);
@@ -198,6 +202,9 @@ Examples:
           "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
         );
         process.exit(0);
+
+        // Unreachable in production; prevents continuation when process.exit is mocked in tests.
+        throw error;
       }
 
       throw error;
@@ -251,6 +258,8 @@ Examples:
       if (projects.length === 0) {
         consola.info('No projects found.');
         process.exit(0);
+
+        return;
       }
 
       const linkedProjectUuid = config.get('projectUuid');
@@ -277,6 +286,8 @@ Examples:
       if (selected === 'cancel') {
         consola.info('Aborted. No project was deleted.');
         process.exit(0);
+
+        return;
       }
 
       const matched = projects.find((p) => p.uuid === selected);
@@ -300,6 +311,8 @@ Examples:
       if (!confirmed) {
         consola.info('Aborted. No project was deleted.');
         process.exit(0);
+
+        return;
       }
     }
 
