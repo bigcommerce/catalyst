@@ -11,6 +11,9 @@
   "changesets": [
     "alpha-release-notes",
     "auto-detect-deploy-secrets",
-    "fix-env-var-names"
+    "cli-built-in-help-text",
+    "cli-show-env-path-in-help",
+    "fix-env-var-names",
+    "wise-worms-hear"
   ]
 }
