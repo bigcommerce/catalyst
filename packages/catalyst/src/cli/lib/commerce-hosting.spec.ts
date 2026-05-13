@@ -85,7 +85,7 @@ describe('promptAndCreateCommerceHostingProject', () => {
 
     const result = await promptAndCreateCommerceHostingProject(API, []);
 
-    expect(result).toEqual({ uuid: 'u', name: 'my-project' });
+    expect(result).toEqual({ uuid: 'u', name: 'my-project', deployment_hostnames: [] });
     expect(createProjectSpy).toHaveBeenCalledTimes(1);
     expect(createProjectSpy).toHaveBeenCalledWith(
       'my-project',
@@ -118,7 +118,7 @@ describe('promptAndCreateCommerceHostingProject', () => {
 
     const result = await promptAndCreateCommerceHostingProject(API, []);
 
-    expect(result).toEqual({ uuid: 'u', name: 'good-name' });
+    expect(result).toEqual({ uuid: 'u', name: 'good-name', deployment_hostnames: [] });
     expect(inputMock).toHaveBeenCalledTimes(2);
     expect(createProjectSpy).toHaveBeenCalledTimes(2);
   });
@@ -136,7 +136,7 @@ describe('promptAndCreateCommerceHostingProject', () => {
 
     const result = await promptAndCreateCommerceHostingProject(API, []);
 
-    expect(result).toEqual({ uuid: 'u', name: 'good' });
+    expect(result).toEqual({ uuid: 'u', name: 'good', deployment_hostnames: [] });
     expect(inputMock).toHaveBeenCalledTimes(3);
     expect(createProjectSpy).toHaveBeenCalledTimes(3);
   });
@@ -234,7 +234,7 @@ describe('promptForCommerceHostingProject', () => {
 
     const result = await promptForCommerceHostingProject(API, 'fresh');
 
-    expect(result).toEqual({ uuid: 'u', name: 'fresh' });
+    expect(result).toEqual({ uuid: 'u', name: 'fresh', deployment_hostnames: [] });
     expect(selectMock).not.toHaveBeenCalled();
     expect(inputMock).not.toHaveBeenCalled();
     expect(createProjectSpy).toHaveBeenCalledWith(
@@ -247,14 +247,14 @@ describe('promptForCommerceHostingProject', () => {
 
   it('silently auto-creates with the supplied default name when other projects exist but none conflict', async () => {
     fetchProjectsSpy.mockResolvedValue([
-      { uuid: 'aaa', name: 'unrelated-one' },
-      { uuid: 'bbb', name: 'unrelated-two' },
+      { uuid: 'aaa', name: 'unrelated-one', deployment_hostnames: [] },
+      { uuid: 'bbb', name: 'unrelated-two', deployment_hostnames: [] },
     ]);
     createProjectSpy.mockResolvedValueOnce(createdProject('new', 'my-store'));
 
     const result = await promptForCommerceHostingProject(API, 'my-store');
 
-    expect(result).toEqual({ uuid: 'new', name: 'my-store' });
+    expect(result).toEqual({ uuid: 'new', name: 'my-store', deployment_hostnames: [] });
     expect(selectMock).not.toHaveBeenCalled();
     expect(inputMock).not.toHaveBeenCalled();
     expect(createProjectSpy).toHaveBeenCalledWith(
@@ -267,26 +267,28 @@ describe('promptForCommerceHostingProject', () => {
 
   it('returns a selected existing project without calling create', async () => {
     const existing = [
-      { uuid: 'aaa', name: 'first' },
-      { uuid: 'bbb', name: 'second' },
+      { uuid: 'aaa', name: 'first', deployment_hostnames: [] },
+      { uuid: 'bbb', name: 'second', deployment_hostnames: [] },
     ];
 
     fetchProjectsSpy.mockResolvedValue(existing);
 
     selectMock
       .mockResolvedValueOnce('select-from-list')
-      .mockResolvedValueOnce({ uuid: 'bbb', name: 'second' });
+      .mockResolvedValueOnce({ uuid: 'bbb', name: 'second', deployment_hostnames: [] });
 
     const result = await promptForCommerceHostingProject(API, 'first');
 
-    expect(result).toEqual({ uuid: 'bbb', name: 'second' });
+    expect(result).toEqual({ uuid: 'bbb', name: 'second', deployment_hostnames: [] });
     expect(createProjectSpy).not.toHaveBeenCalled();
     expect(inputMock).not.toHaveBeenCalled();
     expect(selectMock).toHaveBeenCalledTimes(2);
   });
 
   it('routes to the create flow when the default name conflicts and the user chooses to create a new project', async () => {
-    fetchProjectsSpy.mockResolvedValue([{ uuid: 'aaa', name: 'default-name' }]);
+    fetchProjectsSpy.mockResolvedValue([
+      { uuid: 'aaa', name: 'default-name', deployment_hostnames: [] },
+    ]);
     createProjectSpy.mockResolvedValueOnce(createdProject('new', 'new-proj'));
 
     selectMock.mockResolvedValueOnce('create');
@@ -294,7 +296,7 @@ describe('promptForCommerceHostingProject', () => {
 
     const result = await promptForCommerceHostingProject(API, 'default-name');
 
-    expect(result).toEqual({ uuid: 'new', name: 'new-proj' });
+    expect(result).toEqual({ uuid: 'new', name: 'new-proj', deployment_hostnames: [] });
     expect(createProjectSpy).toHaveBeenCalledWith(
       'new-proj',
       API.storeHash,
@@ -306,8 +308,8 @@ describe('promptForCommerceHostingProject', () => {
 
   it('shows the conflict-aware message and three choices when a conflict exists', async () => {
     fetchProjectsSpy.mockResolvedValue([
-      { uuid: 'aaa', name: 'My-Store' },
-      { uuid: 'bbb', name: 'other-project' },
+      { uuid: 'aaa', name: 'My-Store', deployment_hostnames: [] },
+      { uuid: 'bbb', name: 'other-project', deployment_hostnames: [] },
     ]);
 
     selectMock.mockResolvedValueOnce('create');
@@ -327,9 +329,12 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('returns the conflicting project directly when the user picks Use "<name>"', async () => {
-    const conflict = { uuid: 'aaa', name: 'My-Store' };
+    const conflict = { uuid: 'aaa', name: 'My-Store', deployment_hostnames: [] };
 
-    fetchProjectsSpy.mockResolvedValue([conflict, { uuid: 'bbb', name: 'other-project' }]);
+    fetchProjectsSpy.mockResolvedValue([
+      conflict,
+      { uuid: 'bbb', name: 'other-project', deployment_hostnames: [] },
+    ]);
 
     selectMock.mockResolvedValueOnce('use-named');
 
@@ -342,8 +347,8 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('shows all projects (including the conflict) and a "Create a new project" option in the list', async () => {
-    const conflict = { uuid: 'aaa', name: 'My-Store' };
-    const other = { uuid: 'bbb', name: 'other-project' };
+    const conflict = { uuid: 'aaa', name: 'My-Store', deployment_hostnames: [] };
+    const other = { uuid: 'bbb', name: 'other-project', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([conflict, other]);
 
@@ -368,8 +373,8 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('routes to the create flow when the user picks "Create a new project" from the list', async () => {
-    const conflict = { uuid: 'aaa', name: 'My-Store' };
-    const other = { uuid: 'bbb', name: 'other-project' };
+    const conflict = { uuid: 'aaa', name: 'My-Store', deployment_hostnames: [] };
+    const other = { uuid: 'bbb', name: 'other-project', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([conflict, other]);
     createProjectSpy.mockResolvedValueOnce(createdProject('new', 'fresh-name'));
@@ -379,7 +384,7 @@ describe('promptForCommerceHostingProject', () => {
 
     const result = await promptForCommerceHostingProject(API, 'my-store');
 
-    expect(result).toEqual({ uuid: 'new', name: 'fresh-name' });
+    expect(result).toEqual({ uuid: 'new', name: 'fresh-name', deployment_hostnames: [] });
     expect(createProjectSpy).toHaveBeenCalledWith(
       'fresh-name',
       API.storeHash,
@@ -389,7 +394,7 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('omits Select from my projects when the conflict is the only existing project', async () => {
-    const conflict = { uuid: 'aaa', name: 'My-Store' };
+    const conflict = { uuid: 'aaa', name: 'My-Store', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([conflict]);
 
@@ -407,12 +412,14 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('skips all prompts and creates with the supplied name when autoUseDefaultName is true', async () => {
-    fetchProjectsSpy.mockResolvedValue([{ uuid: 'other', name: 'unrelated' }]);
+    fetchProjectsSpy.mockResolvedValue([
+      { uuid: 'other', name: 'unrelated', deployment_hostnames: [] },
+    ]);
     createProjectSpy.mockResolvedValueOnce(createdProject('u', 'auto-name'));
 
     const result = await promptForCommerceHostingProject(API, 'auto-name', true);
 
-    expect(result).toEqual({ uuid: 'u', name: 'auto-name' });
+    expect(result).toEqual({ uuid: 'u', name: 'auto-name', deployment_hostnames: [] });
     expect(fetchProjectsSpy).toHaveBeenCalled();
     expect(selectMock).not.toHaveBeenCalled();
     expect(inputMock).not.toHaveBeenCalled();
@@ -425,7 +432,7 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('returns the existing project when --project-name collides and the user picks Yes', async () => {
-    const existing = { uuid: 'aaa', name: 'taken-name' };
+    const existing = { uuid: 'aaa', name: 'taken-name', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([existing]);
 
@@ -447,7 +454,7 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('reuses the existing project without prompting when --use-existing is passed', async () => {
-    const existing = { uuid: 'aaa', name: 'taken-name' };
+    const existing = { uuid: 'aaa', name: 'taken-name', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([existing]);
 
@@ -459,7 +466,9 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('exits without prompting in non-interactive environments when --use-existing is not passed', async () => {
-    fetchProjectsSpy.mockResolvedValue([{ uuid: 'aaa', name: 'taken-name' }]);
+    fetchProjectsSpy.mockResolvedValue([
+      { uuid: 'aaa', name: 'taken-name', deployment_hostnames: [] },
+    ]);
 
     const exitSpy = vi.spyOn(process, 'exit').mockImplementation((code) => {
       throw new Error(`process.exit(${String(code)})`);
@@ -480,7 +489,7 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('detects --project-name collision case-insensitively and reports the stored name', async () => {
-    const existing = { uuid: 'aaa', name: 'MyProject' };
+    const existing = { uuid: 'aaa', name: 'MyProject', deployment_hostnames: [] };
 
     fetchProjectsSpy.mockResolvedValue([existing]);
 
@@ -502,7 +511,9 @@ describe('promptForCommerceHostingProject', () => {
   });
 
   it('exits when --project-name collides and the user picks No', async () => {
-    fetchProjectsSpy.mockResolvedValue([{ uuid: 'aaa', name: 'taken-name' }]);
+    fetchProjectsSpy.mockResolvedValue([
+      { uuid: 'aaa', name: 'taken-name', deployment_hostnames: [] },
+    ]);
 
     selectMock.mockResolvedValueOnce(false);
 
