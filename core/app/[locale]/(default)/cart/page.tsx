@@ -108,7 +108,7 @@ export default async function Cart({ params }: Props) {
       return {
         typename: item.__typename,
         id: item.entityId,
-        title: item.name,
+        title: t('GiftCertificate.giftCertificate'),
         subtitle: `${t('GiftCertificate.to')}: ${item.recipient.name} (${item.recipient.email})${item.message ? `, ${t('GiftCertificate.message')}: ${item.message}` : ''}`,
         quantity: 1,
         price: format.number(item.amount.value, {
