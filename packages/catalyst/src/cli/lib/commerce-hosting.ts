@@ -130,7 +130,8 @@ async function promptForNewProjectName(api: CommerceHostingApiContext): Promise<
 
   consola.success(`Project "${data.name}" created successfully.`);
 
-  return { uuid: data.uuid, name: data.name };
+  // Newly created — provisioning is async, hostnames not registered yet.
+  return { uuid: data.uuid, name: data.name, deployment_hostnames: [] };
 }
 
 // Generic "select an existing project, or create a new one" prompt — used by
@@ -322,7 +323,7 @@ export async function promptAndCreateCommerceHostingProject(
 
     consola.success(`Commerce Hosting project "${created.name}" created successfully`);
 
-    return { uuid: created.uuid, name: created.name };
+    return { uuid: created.uuid, name: created.name, deployment_hostnames: [] };
   } catch (error) {
     if (error instanceof InfrastructureProjectValidationError) {
       consola.error(error.message);
@@ -381,7 +382,7 @@ async function autoCreateCommerceHostingProject(
 
     consola.success(`Commerce Hosting project "${created.name}" created successfully`);
 
-    return { uuid: created.uuid, name: created.name };
+    return { uuid: created.uuid, name: created.name, deployment_hostnames: [] };
   } catch (error) {
     if (error instanceof InfrastructureProjectValidationError) {
       consola.error(
