@@ -234,7 +234,7 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":null,"event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
                 ),
               );
               setTimeout(() => {
@@ -244,7 +244,7 @@ describe('deployment and event streaming', () => {
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":null,"event":{"step":"finalizing","progress":99}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
                   ),
                 );
                 controller.close();
@@ -288,13 +288,13 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":null,"event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
                 ),
               );
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","deployment_url":null,"event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
                   ),
                 );
               }, 10);

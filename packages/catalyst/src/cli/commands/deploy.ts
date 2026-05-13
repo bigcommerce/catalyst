@@ -78,7 +78,7 @@ const DeploymentStatusSchema = z.object({
       progress: z.number(),
     })
     .nullable(),
-  deployment_url: z.string().nullable(),
+  deployment_hostnames: z.array(z.string()).optional(),
   error: z
     .object({
       code: z.number(),
@@ -298,7 +298,7 @@ export const getDeploymentStatus = async (
 
   const decoder = new TextDecoder();
   let done = false;
-  let deploymentUrl: string | undefined;
+  let deploymentHostname: string | undefined;
 
   while (!done) {
     // eslint-disable-next-line no-await-in-loop
@@ -334,8 +334,8 @@ export const getDeploymentStatus = async (
           spinner.text = STEPS[data.event.step];
         }
 
-        if (data.deployment_url) {
-          deploymentUrl = data.deployment_url;
+        if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
+          deploymentHostname = data.deployment_hostnames[0];
         }
       });
     }
@@ -345,10 +345,10 @@ export const getDeploymentStatus = async (
 
   spinner.success('Deployment completed successfully.');
 
-  if (deploymentUrl) {
-    const url = deploymentUrl.startsWith('https://') ? deploymentUrl : `https://${deploymentUrl}`;
-
-    consola.success(`View your deployment at: ${colorize('blue', url)}`);
+  if (deploymentHostname) {
+    consola.success(
+      `View your deployment at: ${colorize('blue', `https://${deploymentHostname}`)}`,
+    );
   }
 };
 
