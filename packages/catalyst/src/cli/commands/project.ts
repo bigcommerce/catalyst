@@ -87,6 +87,16 @@ Example:
       const marker = p.uuid === linkedProjectUuid ? ` ${colorize('green', '[linked]')}` : '';
 
       consola.log(`${p.name} (${p.uuid})${marker}`);
+
+      if (p.deployment_hostnames.length === 0) {
+        consola.log('  (not deployed)');
+      } else {
+        p.deployment_hostnames.forEach((hostname) => {
+          consola.log(`  ${colorize('blue', `https://${hostname}`)}`);
+        });
+      }
+
+      consola.log('');
     });
 
     process.exit(0);
