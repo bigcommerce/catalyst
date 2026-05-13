@@ -302,7 +302,11 @@ function getFieldSchema(
     case 'checkbox-group':
       fieldSchema = z.string().array();
 
-      if (field.required === true) fieldSchema = fieldSchema.nonempty();
+      if (field.required === true) {
+        fieldSchema = fieldSchema.nonempty();
+      } else {
+        fieldSchema = fieldSchema.optional();
+      }
 
       break;
 

@@ -26,7 +26,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Catalyst CLI
-        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@1.17.3
+        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@latest
         working-directory: core
 
       - name: Convert proxy.ts to middleware.ts

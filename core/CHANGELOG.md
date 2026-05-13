@@ -6,6 +6,10 @@
 
 - [#2952](https://github.com/bigcommerce/catalyst/pull/2952) [`66d2a7d`](https://github.com/bigcommerce/catalyst/commit/66d2a7dfab653762da4986b55a7c92fa4ab9b6c6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade `@makeswift/runtime` from `0.26.3` to `0.26.4`.
 
+- [#3007](https://github.com/bigcommerce/catalyst/pull/3007) [`13b3c2e`](https://github.com/bigcommerce/catalyst/commit/13b3c2e5c85bf47a07e999315a8f12988ab96d3f) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Bump Next.js and React to address security vulnerabilities
+  - `next`: ~16.1.6 → ~16.2.6 — fixes middleware bypass, SSRF, XSS, and cache poisoning CVEs
+  - `react` / `react-dom`: 19.1.5 → 19.1.7 — fixes GHSA-rv78-f8rc-xrxh (DoS via OOM/CPU exhaustion on server function endpoints)
+
 ## 1.6.2
 
 ### Patch Changes

@@ -18,7 +18,7 @@
 **Catalyst** is the composable, fully customizable headless commerce framework for
 [BigCommerce](https://www.bigcommerce.com/). Catalyst is built with [Next.js](https://nextjs.org/), uses
 our [React](https://react.dev/) storefront components, and is backed by the
-[GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
+[GraphQL Storefront API](https://docs.bigcommerce.com/developer/docs/storefront/guides/graphql-storefront-api/overview).
 
 By choosing Catalyst, you'll have a fully-functional storefront within a few seconds, and spend zero time on wiring
 up APIs or building SEO, Accessibility, and Performance-optimized ecommerce components you've probably written many
@@ -32,9 +32,9 @@ times before. You can instead go straight to work building your brand and making
 
 <p align="center">
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
- <a href="https://developer.bigcommerce.com/community">🤗 BigCommerce Developer Community</a> •
+ <a href="https://docs.bigcommerce.com/developer/community/connect">🤗 BigCommerce Developer Community</a> •
  <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a> •
- <a href="/docs">💡 Docs in this repo</a>
+ <a href="https://docs.bigcommerce.com/developer/docs/storefront/catalyst/overview">💡 Documentation</a>
 </p>
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
@@ -43,7 +43,7 @@ times before. You can instead go straight to work building your brand and making
 
 The easiest way to deploy your Catalyst Storefront is to use the [One-Click Catalyst App](https://login.bigcommerce.com/deep-links/app/53284) available in the BigCommerce App Marketplace.
 
-Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.catalyst.dev/docs/getting-started) for more details.
+Check out the [Commerce One-Click Catalyst Documentation](https://docs.bigcommerce.com/developer/docs/storefront/catalyst/getting-started/workflows/one-click-catalyst) for more details.
 
 ## Getting Started
 
@@ -73,7 +73,6 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 ## Resources
 
-- [Catalyst Documentation](https://catalyst.dev/docs/)
-- [GraphQL Storefront API Playground](https://developer.bigcommerce.com/graphql-storefront/playground)
-- [GraphQL Storefront API Explorer](https://developer.bigcommerce.com/graphql-storefront/explorer)
-- [BigCommerce DevDocs](https://developer.bigcommerce.com/docs/build)
+- [Catalyst Documentation](https://docs.bigcommerce.com/developer/docs/storefront/catalyst/overview)
+- [GraphQL Storefront API Playground](https://docs.bigcommerce.com/developer/docs/storefront/guides/graphql-storefront-api/overview#accessing-the-graphql-storefront-playground)
+- [BigCommerce DevDocs](https://docs.bigcommerce.com/developer/docs/overview/quick-start)
