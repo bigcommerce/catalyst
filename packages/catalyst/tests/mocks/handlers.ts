@@ -29,8 +29,19 @@ export const handlers = [
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
       data: [
-        { uuid: 'a23f5785-fd99-4a94-9fb3-945551623923', name: 'Project One' },
-        { uuid: 'b23f5785-fd99-4a94-9fb3-945551623924', name: 'Project Two' },
+        {
+          uuid: 'a23f5785-fd99-4a94-9fb3-945551623923',
+          name: 'Project One',
+          deployment_hostnames: [
+            'project-one.catalyst-sandbox.store',
+            'vanity.project-one.example.com',
+          ],
+        },
+        {
+          uuid: 'b23f5785-fd99-4a94-9fb3-945551623924',
+          name: 'Project Two',
+          deployment_hostnames: [],
+        },
       ],
     }),
   ),
@@ -44,14 +55,14 @@ export const handlers = [
           controller.enqueue(
             encoder.encode(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_url":null}`,
+              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_hostnames":[]}`,
             ),
           );
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_url":null}`,
+                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_hostnames":[]}`,
               ),
             );
           }, 10);
@@ -59,7 +70,7 @@ export const handlers = [
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_url":"https://example.com"}`,
+                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}`,
               ),
             );
             controller.close();
