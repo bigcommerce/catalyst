@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { updateChannelSiteUrl } from '../lib/channels';
 import {
   NoLinkedProjectError,
   selectOrCreateInfrastructureProject,
@@ -268,7 +269,7 @@ export const getDeploymentStatus = async (
   storeHash: string,
   accessToken: string,
   apiHost: string,
-) => {
+): Promise<string | undefined> => {
   consola.info('Fetching deployment status...');
 
   const spinner = yoctoSpinner().start('Fetching...');
@@ -346,10 +347,14 @@ export const getDeploymentStatus = async (
   spinner.success('Deployment completed successfully.');
 
   if (deploymentHostname) {
-    consola.success(
-      `View your deployment at: ${colorize('blue', `https://${deploymentHostname}`)}`,
-    );
+    const url = `https://${deploymentHostname}`;
+
+    consola.success(`View your deployment at: ${colorize('blue', url)}`);
+
+    return url;
   }
+
+  return undefined;
 };
 
 export const fetchProject = async (
@@ -394,6 +399,14 @@ Example:
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(projectUuidOption())
+  .addOption(
+    new Option(
+      '--update-site-url <channelId>',
+      "BigCommerce channel ID whose site URL should be updated with this deployment's URL. When omitted, no channel is updated.",
+    )
+      .env('CATALYST_UPDATE_SITE_URL')
+      .argParser((value: string) => Number(value)),
+  )
   .addOption(
     new Option(
       '--secret <value>',
@@ -545,5 +558,34 @@ Example:
       environmentVariables,
     );
 
-    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
+    const deploymentUrl = await getDeploymentStatus(
+      deploymentUuid,
+      storeHash,
+      accessToken,
+      options.apiHost,
+    );
+
+    const channelId: number | undefined = options.updateSiteUrl;
+
+    if (!channelId) {
+      return;
+    }
+
+    if (!deploymentUrl) {
+      consola.warn('Skipping channel site URL update: deployment did not return a URL.');
+
+      return;
+    }
+
+    try {
+      await updateChannelSiteUrl(channelId, deploymentUrl, storeHash, accessToken, options.apiHost);
+      consola.success(`Updated channel ${channelId} site URL to ${deploymentUrl}.`);
+    } catch (error) {
+      consola.warn(
+        `Failed to update channel site URL: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      consola.info(
+        'Update it manually in the control panel, or re-run after `catalyst auth login` if the token is missing the store_channel_settings scope.',
+      );
+    }
   });

@@ -58,6 +58,14 @@ const eligibilityResponseSchema = z.object({
   }),
 });
 
+const channelSiteSchema = z.object({
+  data: z.object({
+    id: z.number(),
+    url: z.string(),
+    channel_id: z.number(),
+  }),
+});
+
 export interface ChannelInit {
   storefrontToken: string;
   envVars: Record<string, string>;
@@ -172,4 +180,47 @@ export async function fetchAvailableChannels(
   }
 
   return channelsResponseSchema.parse(await response.json()).data;
+}
+
+export interface ChannelSite {
+  id: number;
+  url: string;
+  channelId: number;
+}
+
+export async function updateChannelSiteUrl(
+  channelId: number,
+  siteUrl: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<ChannelSite> {
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/channels/${channelId}/site`,
+    {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': accessToken,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Correlation-Id': getTelemetry().correlationId,
+      },
+      body: JSON.stringify({ url: siteUrl }),
+    },
+  );
+
+  if (response.status === 401 || response.status === 403) {
+    throw new Error(
+      `Failed to update channel site (${response.status}). Re-run \`catalyst auth login\` to refresh your access token with the store_channel_settings scope.`,
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to update channel site: ${response.status} ${response.statusText}`);
+  }
+
+  const res: unknown = await response.json();
+  const { data } = channelSiteSchema.parse(res);
+
+  return { id: data.id, url: data.url, channelId: data.channel_id };
 }

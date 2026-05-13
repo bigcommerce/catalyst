@@ -817,3 +817,84 @@ describe('transformation guard', () => {
     expect(installDependencies).not.toHaveBeenCalled();
   });
 });
+
+describe('--update-site-url', () => {
+  const channelId = 7;
+
+  function deployArgs(extra: string[] = []) {
+    return [
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      ...extra,
+    ];
+  }
+
+  test('PUTs the deployment URL to the given channel', async () => {
+    let putBody: unknown;
+    let receivedChannelId: string | undefined;
+
+    server.use(
+      http.put(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site',
+        async ({ request, params }) => {
+          putBody = await request.json();
+          receivedChannelId = String(params.channelId);
+
+          return HttpResponse.json({
+            data: { id: 1, url: 'https://example.com', channel_id: channelId },
+          });
+        },
+      ),
+    );
+
+    await program.parseAsync(deployArgs(['--update-site-url', String(channelId)]));
+
+    expect(receivedChannelId).toBe(String(channelId));
+    expect(putBody).toEqual({ url: 'https://example.com' });
+    expect(consola.success).toHaveBeenCalledWith(
+      `Updated channel ${channelId} site URL to https://example.com.`,
+    );
+  });
+
+  test('does not call the channel site API when the flag is omitted', async () => {
+    let putCalled = false;
+
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () => {
+        putCalled = true;
+
+        return HttpResponse.json({}, { status: 200 });
+      }),
+    );
+
+    await program.parseAsync(deployArgs());
+
+    expect(putCalled).toBe(false);
+    expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('Updated channel'));
+  });
+
+  test('soft-fails with a warning when the update API returns an error', async () => {
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({}, { status: 401 }),
+      ),
+    );
+
+    await program.parseAsync(deployArgs(['--update-site-url', String(channelId)]));
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to update channel site URL'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst auth login'));
+  });
+});

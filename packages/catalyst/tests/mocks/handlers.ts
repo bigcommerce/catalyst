@@ -155,4 +155,12 @@ export const handlers = [
     'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid',
     () => new HttpResponse(null, { status: 204 }),
   ),
+
+  // Default handler for updateChannelSiteUrl — succeeds with a generic
+  // payload. Tests that need to assert error handling should override.
+  http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+    HttpResponse.json({
+      data: { id: 1, url: 'https://example.com', channel_id: 1 },
+    }),
+  ),
 ];
