@@ -1,6 +1,7 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -64,10 +65,11 @@ const GetRouteQuery = graphql(`
   }
 `);
 
-const getRoute = async (path: string, channelId?: string) => {
+const getRoute = async (path: string, channelId?: string, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
+    customerAccessToken,
     fetchOptions: { next: { revalidate } },
     channelId,
   });
@@ -86,10 +88,12 @@ const getRawWebPageContentQuery = graphql(`
   }
 `);
 
-const getRawWebPageContent = async (id: string) => {
+const getRawWebPageContent = async (id: string, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
+    fetchOptions: { next: { revalidate } },
+    customerAccessToken,
   });
 
   const node = response.data.node;
@@ -240,7 +244,11 @@ function normalizeForCompare(url: URL): string {
 const sameInternalUrl = (a: URL, b: URL) =>
   a.origin === b.origin && normalizeForCompare(a) === normalizeForCompare(b);
 
-const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+const getRouteInfo = async (
+  request: NextRequest,
+  event: NextFetchEvent,
+  customerAccessToken?: string,
+) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
@@ -261,6 +269,19 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
       statusCache = await updateStatusCache(channelId, event);
     }
 
+    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+    const status = parsedStatus.success ? parsedStatus.data.status : undefined;
+
+    // The KV route cache is shared across customers and isn't namespaced by
+    // identity. Authenticated requests bypass it entirely so customer-specific
+    // route resolutions can't leak across users in either direction.
+    if (customerAccessToken) {
+      return {
+        route: await getRoute(pathname, channelId, customerAccessToken),
+        status,
+      };
+    }
+
     if (routeCache && routeCache.expiryTime < Date.now()) {
       event.waitUntil(updateRouteCache(pathname, channelId, event));
     } else if (!routeCache) {
@@ -268,11 +289,10 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
-    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
 
     return {
       route: parsedRoute.success ? parsedRoute.data.route : undefined,
-      status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      status,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -286,142 +306,145 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 };
 
 export const withRoutes: ProxyFactory = () => {
-  // eslint-disable-next-line complexity
-  return async (request, event) => {
-    const locale = request.headers.get('x-bc-locale') ?? '';
+  return (request, event) =>
+    // eslint-disable-next-line complexity
+    auth(async (req) => {
+      const locale = req.headers.get('x-bc-locale') ?? '';
+      const customerAccessToken = req.auth?.user?.customerAccessToken;
 
-    const { route, status } = await getRouteInfo(request, event);
+      const { route, status } = await getRouteInfo(req, event, customerAccessToken);
 
-    if (status === 'MAINTENANCE') {
-      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
-    }
+      if (status === 'MAINTENANCE') {
+        // 503 status code not working - https://github.com/vercel/next.js/issues/50155
+        return NextResponse.rewrite(new URL(`/${locale}/maintenance`, req.url), { status: 503 });
+      }
 
-    const redirectConfig = {
-      // Use 301 status code as it is more universally supported by crawlers
-      status: 301,
-      nextConfig: {
-        // Preserve the trailing slash if it was present in the original URL
-        // BigCommerce by default returns the trailing slash.
-        trailingSlash: process.env.TRAILING_SLASH !== 'false',
-      },
-    };
+      const redirectConfig = {
+        // Use 301 status code as it is more universally supported by crawlers
+        status: 301,
+        nextConfig: {
+          // Preserve the trailing slash if it was present in the original URL
+          // BigCommerce by default returns the trailing slash.
+          trailingSlash: process.env.TRAILING_SLASH !== 'false',
+        },
+      };
 
-    if (route?.redirect) {
-      // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
-      const fromPathSearchParams = new URL(route.redirect.fromPath, request.url).search;
-      const searchParams = fromPathSearchParams.length > 0 ? '' : request.nextUrl.search;
+      if (route?.redirect) {
+        // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
+        const fromPathSearchParams = new URL(route.redirect.fromPath, req.url).search;
+        const searchParams = fromPathSearchParams.length > 0 ? '' : req.nextUrl.search;
 
-      switch (route.redirect.to.__typename) {
-        case 'BlogPostRedirect':
-        case 'BrandRedirect':
-        case 'CategoryRedirect':
-        case 'PageRedirect':
-        case 'ProductRedirect': {
-          // For dynamic redirects, assume an internal redirect and construct the URL from the path
-          const redirectUrl = new URL(route.redirect.to.path + searchParams, request.url);
+        switch (route.redirect.to.__typename) {
+          case 'BlogPostRedirect':
+          case 'BrandRedirect':
+          case 'CategoryRedirect':
+          case 'PageRedirect':
+          case 'ProductRedirect': {
+            // For dynamic redirects, assume an internal redirect and construct the URL from the path
+            const redirectUrl = new URL(route.redirect.to.path + searchParams, req.url);
 
-          if (sameInternalUrl(request.nextUrl, redirectUrl)) {
-            break;
-          }
-
-          return NextResponse.redirect(redirectUrl, redirectConfig);
-        }
-
-        case 'ManualRedirect': {
-          // For manual redirects, to.url will be a relative path if it is an internal redirect and an absolute URL if it is an external redirect.
-          // URL constructor will correctly handle both cases.
-          // If the manual redirect is an external URL, we should not carry query params.
-          const redirectUrl = new URL(route.redirect.to.url, request.url);
-
-          if (redirectUrl.origin === request.nextUrl.origin) {
-            redirectUrl.search = searchParams;
-
-            if (sameInternalUrl(request.nextUrl, redirectUrl)) {
+            if (sameInternalUrl(req.nextUrl, redirectUrl)) {
               break;
             }
+
+            return NextResponse.redirect(redirectUrl, redirectConfig);
           }
 
-          return NextResponse.redirect(redirectUrl, redirectConfig);
+          case 'ManualRedirect': {
+            // For manual redirects, to.url will be a relative path if it is an internal redirect and an absolute URL if it is an external redirect.
+            // URL constructor will correctly handle both cases.
+            // If the manual redirect is an external URL, we should not carry query params.
+            const redirectUrl = new URL(route.redirect.to.url, req.url);
+
+            if (redirectUrl.origin === req.nextUrl.origin) {
+              redirectUrl.search = searchParams;
+
+              if (sameInternalUrl(req.nextUrl, redirectUrl)) {
+                break;
+              }
+            }
+
+            return NextResponse.redirect(redirectUrl, redirectConfig);
+          }
+
+          default: {
+            // If for some reason the redirect type is not recognized, use the toUrl as a fallback
+            return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+          }
+        }
+      }
+
+      const node = route?.node;
+      let url: string;
+
+      switch (node?.__typename) {
+        case 'Brand': {
+          url = `/${locale}/brand/${node.entityId}`;
+          break;
+        }
+
+        case 'Category': {
+          url = `/${locale}/category/${node.entityId}`;
+          break;
+        }
+
+        case 'Product': {
+          url = `/${locale}/product/${node.entityId}`;
+
+          const isPrefetch = req.headers.get('Next-Router-Prefetch') === '1';
+          const isRSC = req.headers.get('RSC') === '1';
+
+          if (!isPrefetch && !isRSC) {
+            event.waitUntil(recordProductVisit(req, node.entityId));
+          }
+
+          break;
+        }
+
+        case 'NormalPage': {
+          url = `/${locale}/webpages/${node.id}/normal/`;
+          break;
+        }
+
+        case 'ContactPage': {
+          url = `/${locale}/webpages/${node.id}/contact/`;
+          break;
+        }
+
+        case 'RawHtmlPage': {
+          const { htmlBody } = await getRawWebPageContent(node.id, customerAccessToken);
+
+          return new NextResponse(htmlBody, {
+            headers: { 'content-type': 'text/html' },
+          });
+        }
+
+        case 'Blog': {
+          url = `/${locale}/blog`;
+          break;
+        }
+
+        case 'BlogPost': {
+          url = `/${locale}/blog/${node.entityId}`;
+          break;
         }
 
         default: {
-          // If for some reason the redirect type is not recognized, use the toUrl as a fallback
-          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+          const { pathname } = new URL(req.url);
+
+          const cleanPathName = clearLocaleFromPath(pathname, locale);
+
+          url = `/${locale}${cleanPathName}`;
         }
       }
-    }
 
-    const node = route?.node;
-    let url: string;
+      const rewriteUrl = new URL(url, req.url);
 
-    switch (node?.__typename) {
-      case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}`;
-        break;
-      }
+      rewriteUrl.search = req.nextUrl.search;
 
-      case 'Category': {
-        url = `/${locale}/category/${node.entityId}`;
-        break;
-      }
-
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}`;
-
-        const isPrefetch = request.headers.get('Next-Router-Prefetch') === '1';
-        const isRSC = request.headers.get('RSC') === '1';
-
-        if (!isPrefetch && !isRSC) {
-          event.waitUntil(recordProductVisit(request, node.entityId));
-        }
-
-        break;
-      }
-
-      case 'NormalPage': {
-        url = `/${locale}/webpages/${node.id}/normal/`;
-        break;
-      }
-
-      case 'ContactPage': {
-        url = `/${locale}/webpages/${node.id}/contact/`;
-        break;
-      }
-
-      case 'RawHtmlPage': {
-        const { htmlBody } = await getRawWebPageContent(node.id);
-
-        return new NextResponse(htmlBody, {
-          headers: { 'content-type': 'text/html' },
-        });
-      }
-
-      case 'Blog': {
-        url = `/${locale}/blog`;
-        break;
-      }
-
-      case 'BlogPost': {
-        url = `/${locale}/blog/${node.entityId}`;
-        break;
-      }
-
-      default: {
-        const { pathname } = new URL(request.url);
-
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        url = `/${locale}${cleanPathName}`;
-      }
-    }
-
-    const rewriteUrl = new URL(url, request.url);
-
-    rewriteUrl.search = request.nextUrl.search;
-
-    return NextResponse.rewrite(rewriteUrl);
-  };
+      return NextResponse.rewrite(rewriteUrl);
+      // @ts-expect-error auth() overload expects middleware return type, but we return NextResponse directly for the proxy
+    })(request, event);
 };
 
 async function recordProductVisit(request: Request, productId: number) {
