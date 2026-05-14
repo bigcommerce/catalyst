@@ -3,6 +3,7 @@
 // eslint-disable-next-line import/no-named-as-default
 import DOMPurify from 'dompurify';
 import { useFormatter } from 'next-intl';
+import { useEffect, useState } from 'react';
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
 import { FragmentOf } from '~/client/graphql';
@@ -16,6 +17,16 @@ interface Props {
 
 export const ProductReviewSchema = ({ reviews, productId }: Props) => {
   const format = useFormatter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // DOMPurify requires a browser DOM, so we skip SSR and only render on the client.
+  if (!mounted) {
+    return null;
+  }
 
   const productReviewSchema: WithContext<ProductSchemaType> = {
     '@context': 'https://schema.org',
@@ -43,7 +54,9 @@ export const ProductReviewSchema = ({ reviews, productId }: Props) => {
 
   return (
     <script
-      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(JSON.stringify(productReviewSchema)) }}
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(JSON.stringify(productReviewSchema)),
+      }}
       type="application/ld+json"
     />
   );

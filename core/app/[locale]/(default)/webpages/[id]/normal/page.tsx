@@ -45,7 +45,7 @@ async function getWebPageBreadcrumbs(
   const t = await getTranslations('WebPages.Normal');
 
   const webpage = await getWebPage(id, customerAccessToken);
-  const [, ...rest] = webpage.breadcrumbs.reverse();
+  const [, ...rest] = [...webpage.breadcrumbs].reverse();
   const breadcrumbs = [
     {
       label: t('home'),
