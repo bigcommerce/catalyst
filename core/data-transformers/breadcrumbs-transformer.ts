@@ -22,7 +22,7 @@ export const breadcrumbsTransformer = (breadcrumbs: BreadcrumbsResult['breadcrum
 };
 
 export function truncateBreadcrumbs(breadcrumbs: Breadcrumb[], length: number): Breadcrumb[] {
-  if (breadcrumbs.length < length) {
+  if (breadcrumbs.length <= length) {
     return breadcrumbs;
   }
 
