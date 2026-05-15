@@ -13,7 +13,7 @@ import {
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
-const updateSiteUrl = new Command('update-site-url')
+const update = new Command('update')
   .configureHelp({ showGlobalOptions: true })
   .description(
     "Update a BigCommerce channel's site URL to point at one of your project's deployment hostnames.",
@@ -23,10 +23,10 @@ const updateSiteUrl = new Command('update-site-url')
     `
 Examples:
   # Pick a channel and hostname interactively
-  $ catalyst channel update-site-url
+  $ catalyst channel update
 
   # Skip both prompts
-  $ catalyst channel update-site-url --channel-id 123 --hostname my-storefront.example.com`,
+  $ catalyst channel update --channel-id 123 --hostname my-storefront.example.com`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -62,7 +62,7 @@ Examples:
     } catch (error) {
       if (error instanceof NoLinkedProjectError) {
         consola.info(
-          "When you're ready to create a project, run `catalyst project create` or re-run `catalyst channel update-site-url`.",
+          "When you're ready to create a project, run `catalyst project create` or re-run `catalyst channel update`.",
         );
         process.exit(0);
 
@@ -79,4 +79,4 @@ Examples:
 export const channel = new Command('channel')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage BigCommerce channels.')
-  .addCommand(updateSiteUrl);
+  .addCommand(update);

@@ -73,18 +73,18 @@ afterAll(async () => {
 });
 
 describe('channel', () => {
-  test('has the update-site-url subcommand', () => {
+  test('has the update subcommand', () => {
     expect(channel).toBeInstanceOf(Command);
     expect(channel.name()).toBe('channel');
 
-    const updateSiteUrl = channel.commands.find((cmd) => cmd.name() === 'update-site-url');
+    const update = channel.commands.find((cmd) => cmd.name() === 'update');
 
-    expect(updateSiteUrl).toBeDefined();
-    expect(updateSiteUrl?.description()).toContain('Update a BigCommerce channel');
+    expect(update).toBeDefined();
+    expect(update?.description()).toContain('Update a BigCommerce channel');
   });
 });
 
-describe('channel update-site-url', () => {
+describe('channel update', () => {
   test('happy path: prompts for channel and hostname, then PUTs', async () => {
     let putBody: unknown;
     let putChannelId: string | undefined;
@@ -116,7 +116,7 @@ describe('channel update-site-url', () => {
       'node',
       'catalyst',
       'channel',
-      'update-site-url',
+      'update',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -146,7 +146,7 @@ describe('channel update-site-url', () => {
       'node',
       'catalyst',
       'channel',
-      'update-site-url',
+      'update',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -183,7 +183,7 @@ describe('channel update-site-url', () => {
       'node',
       'catalyst',
       'channel',
-      'update-site-url',
+      'update',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -215,7 +215,7 @@ describe('channel update-site-url', () => {
       'node',
       'catalyst',
       'channel',
-      'update-site-url',
+      'update',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -242,7 +242,7 @@ describe('channel update-site-url', () => {
         'node',
         'catalyst',
         'channel',
-        'update-site-url',
+        'update',
         '--store-hash',
         storeHash,
         '--access-token',
