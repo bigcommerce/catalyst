@@ -156,6 +156,18 @@ export const handlers = [
     () => new HttpResponse(null, { status: 204 }),
   ),
 
+  // Default handler for fetchAvailableChannels — returns two storefront
+  // channels so the picker has something to render. Tests that need an
+  // empty list or different channel shapes should override with `server.use(...)`.
+  http.get('https://:apiHost/stores/:storeHash/v3/channels', () =>
+    HttpResponse.json({
+      data: [
+        { id: 1, name: 'Default Storefront', platform: 'bigcommerce' },
+        { id: 2, name: 'Catalyst Storefront', platform: 'catalyst' },
+      ],
+    }),
+  ),
+
   // Default handler for updateChannelSiteUrl — succeeds with a generic
   // payload. Tests that need to assert error handling should override.
   http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>

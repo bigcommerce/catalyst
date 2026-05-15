@@ -819,8 +819,6 @@ describe('transformation guard', () => {
 });
 
 describe('--update-site-url', () => {
-  const channelId = 7;
-
   function deployArgs(extra: string[] = []) {
     return [
       'node',
@@ -839,31 +837,78 @@ describe('--update-site-url', () => {
     ];
   }
 
-  test('PUTs the deployment URL to the given channel', async () => {
+  test('triggers the interactive flow and PUTs the chosen hostname after deploy', async () => {
     let putBody: unknown;
-    let receivedChannelId: string | undefined;
+    let putChannelId: string | undefined;
 
     server.use(
       http.put(
         'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site',
         async ({ request, params }) => {
           putBody = await request.json();
-          receivedChannelId = String(params.channelId);
+          putChannelId = String(params.channelId);
 
           return HttpResponse.json({
-            data: { id: 1, url: 'https://example.com', channel_id: channelId },
+            data: {
+              id: 1,
+              url: 'https://project-one.catalyst-sandbox.store',
+              channel_id: 2,
+            },
           });
         },
       ),
     );
 
-    await program.parseAsync(deployArgs(['--update-site-url', String(channelId)]));
+    // Override the default consola.prompt stub (always-true in beforeEach) with
+    // the channel and hostname selections the interactive flow will ask for.
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('2')
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
-    expect(receivedChannelId).toBe(String(channelId));
-    expect(putBody).toEqual({ url: 'https://example.com' });
+    await program.parseAsync(deployArgs(['--update-site-url']));
+
+    expect(putChannelId).toBe('2');
+    expect(putBody).toEqual({ url: 'https://project-one.catalyst-sandbox.store' });
     expect(consola.success).toHaveBeenCalledWith(
-      `Updated channel ${channelId} site URL to https://example.com.`,
+      expect.stringContaining('Updated channel "Catalyst Storefront" (2) site URL'),
     );
+  });
+
+  test('places the freshly-deployed hostname first in the hostname prompt', async () => {
+    let hostnameOptions: Array<{ label: string; value: string }> | undefined;
+
+    // Project Two has no hostnames by default; use Project One whose handler
+    // already returns the two seeded hostnames. Inject the freshly-deployed
+    // hostname into Project One's list so preferHostname has something to match.
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({
+          data: [
+            {
+              uuid: projectUuid,
+              name: 'Project One',
+              deployment_hostnames: [
+                'project-one.catalyst-sandbox.store',
+                'example.com', // the just-deployed hostname (per the SSE default)
+              ],
+            },
+          ],
+        }),
+      ),
+    );
+
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('2') // channel
+      .mockImplementationOnce((_message, opts) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        hostnameOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        return Promise.resolve('example.com');
+      });
+
+    await program.parseAsync(deployArgs(['--update-site-url']));
+
+    expect(hostnameOptions?.[0]).toMatchObject({ value: 'example.com' });
   });
 
   test('does not call the channel site API when the flag is omitted', async () => {
@@ -890,7 +935,11 @@ describe('--update-site-url', () => {
       ),
     );
 
-    await program.parseAsync(deployArgs(['--update-site-url', String(channelId)]));
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('1')
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+
+    await program.parseAsync(deployArgs(['--update-site-url']));
 
     expect(consola.warn).toHaveBeenCalledWith(
       expect.stringContaining('Failed to update channel site URL'),
