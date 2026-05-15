@@ -150,7 +150,7 @@ describe('runChannelSiteUrlFlow', () => {
     let hostnameOptions: Array<{ label: string; value: string }> | undefined;
 
     vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('1') // channel
+      .mockResolvedValueOnce('2') // channel (the catalyst one)
       .mockImplementationOnce((_message, opts) => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         hostnameOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
@@ -169,10 +169,13 @@ describe('runChannelSiteUrlFlow', () => {
     expect(hostnameOptions?.[0]).toMatchObject({ value: 'vanity.project-one.example.com' });
   });
 
-  test('throws when no storefront channels are available', async () => {
+  test('throws when no Catalyst channels are available', async () => {
     server.use(
       http.get('https://:apiHost/stores/:storeHash/v3/channels', () =>
-        HttpResponse.json({ data: [] }),
+        HttpResponse.json({
+          // Only non-Catalyst channels — filtered out, so the picker is empty.
+          data: [{ id: 1, name: 'Default Storefront', platform: 'bigcommerce' }],
+        }),
       ),
     );
 
@@ -183,14 +186,39 @@ describe('runChannelSiteUrlFlow', () => {
         apiHost,
         projectUuid: linkedProjectUuid,
       }),
-    ).rejects.toThrow('No available storefront channels found');
+    ).rejects.toThrow('No Catalyst channels found on this store');
+  });
+
+  test('filters non-Catalyst channels out of the picker', async () => {
+    let channelOptions: Array<{ label: string; value: string }> | undefined;
+
+    vi.spyOn(consola, 'prompt')
+      .mockImplementationOnce((_message, opts) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        channelOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        return Promise.resolve('2');
+      })
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+
+    await runChannelSiteUrlFlow({
+      storeHash,
+      accessToken,
+      apiHost,
+      projectUuid: linkedProjectUuid,
+    });
+
+    // The default handler returns one bigcommerce + one catalyst channel; only
+    // the catalyst one should appear in the picker.
+    expect(channelOptions).toHaveLength(1);
+    expect(channelOptions?.[0]).toMatchObject({ label: 'Catalyst Storefront', value: '2' });
   });
 
   test('throws when the project has no deployment hostnames', async () => {
     // Project Two in the default handler has deployment_hostnames: []
     const projectTwo = 'b23f5785-fd99-4a94-9fb3-945551623924';
 
-    vi.spyOn(consola, 'prompt').mockResolvedValueOnce('1');
+    vi.spyOn(consola, 'prompt').mockResolvedValueOnce('2');
 
     await expect(
       runChannelSiteUrlFlow({

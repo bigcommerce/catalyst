@@ -60,24 +60,29 @@ async function resolveChannel(
 
   consola.success('Channels fetched.');
 
-  if (channels.length === 0) {
+  // Only Catalyst-platform channels can meaningfully be pointed at a Catalyst
+  // deployment hostname; other storefront platforms (Stencil, etc.) are
+  // filtered out so the picker stays focused.
+  const catalystChannels = channels.filter((c: Channel) => c.platform === 'catalyst');
+
+  if (catalystChannels.length === 0) {
     throw new Error(
-      'No available storefront channels found. Create one in the BigCommerce control panel and try again.',
+      'No Catalyst channels found on this store. Create one with `catalyst create` and try again.',
     );
   }
 
   const selectedId = await consola.prompt('Select the channel to update.', {
     type: 'select',
-    options: channels.map((c: Channel) => ({
+    options: catalystChannels.map((c: Channel) => ({
       label: c.name,
       value: String(c.id),
-      hint: `${c.platform} • id: ${c.id}`,
+      hint: `id: ${c.id}`,
     })),
     cancel: 'reject',
   });
 
   const id = Number(selectedId);
-  const matched = channels.find((c) => c.id === id);
+  const matched = catalystChannels.find((c) => c.id === id);
 
   return { id, name: matched?.name };
 }

@@ -139,7 +139,7 @@ describe('channel update-site-url', () => {
 
     const promptMock = vi
       .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('1')
+      .mockResolvedValueOnce('2')
       .mockResolvedValueOnce('vanity.project-one.example.com');
 
     await program.parseAsync([
@@ -234,7 +234,7 @@ describe('channel update-site-url', () => {
     );
 
     vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('1')
+      .mockResolvedValueOnce('2')
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await expect(

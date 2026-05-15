@@ -936,7 +936,7 @@ describe('--update-site-url', () => {
     );
 
     vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('1')
+      .mockResolvedValueOnce('2')
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await program.parseAsync(deployArgs(['--update-site-url']));
