@@ -2,6 +2,7 @@ import { useFormatter } from 'next-intl';
 
 import { ResultOf } from '~/client/graphql';
 import { ProductCard as ComponentProductCard } from '~/components/ui/product-card';
+import { PromotionCalloutList } from '~/components/ui/promotion-callout';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { AddToCart } from './add-to-cart';
@@ -24,7 +25,7 @@ export const ProductCard = ({
 }: Props) => {
   const format = useFormatter();
 
-  const { name, entityId, defaultImage, brand, path, prices } = product;
+  const { name, entityId, defaultImage, brand, path, prices, featuredPromotions } = product;
 
   const price = pricesTransformer(prices, format);
 
@@ -38,6 +39,11 @@ export const ProductCard = ({
       imageSize={imageSize}
       name={name}
       price={price}
+      promotionCallout={
+        featuredPromotions.length > 0 ? (
+          <PromotionCalloutList callouts={featuredPromotions} className="mt-1" variant="compact" />
+        ) : undefined
+      }
       showCompare={showCompare}
       subtitle={brand?.name}
     />

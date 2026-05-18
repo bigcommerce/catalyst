@@ -32,6 +32,7 @@ interface Product {
   price?: Price;
   subtitle?: string;
   badge?: string;
+  promotionCallout?: ReactNode;
 }
 
 interface Props extends Product {
@@ -54,6 +55,7 @@ const ProductCard = ({
   showCompare = true,
   subtitle,
   name,
+  promotionCallout,
   ...props
 }: Props) => (
   <div className={cn('group relative flex flex-col overflow-visible', className)} {...props}>
@@ -115,6 +117,7 @@ const ProductCard = ({
 
         {showCompare && <Compare id={id} image={image} name={name} />}
       </div>
+      {promotionCallout}
     </div>
     {addToCart}
   </div>

@@ -1,3 +1,4 @@
+import { FeaturedPromotionsFragment } from '~/client/fragments/featured-promotions';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 
@@ -23,7 +24,8 @@ export const ProductCardFragment = graphql(
       }
       ...AddToCartFragment
       ...PricingFragment
+      ...FeaturedPromotionsFragment
     }
   `,
-  [AddToCartFragment, PricingFragment],
+  [AddToCartFragment, PricingFragment, FeaturedPromotionsFragment],
 );

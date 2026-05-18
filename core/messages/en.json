@@ -411,6 +411,9 @@
         "ratingRange": "out of 5 stars.",
         "reviewsNumber": "Number of reviews:"
       }
+    },
+    "PromotionCallout": {
+      "more": "+{count} more"
     }
   },
   "WebPages": {

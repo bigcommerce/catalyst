@@ -1,9 +1,11 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useFormatter, useTranslations } from 'next-intl';
 
+import { FeaturedPromotionsFragment } from '~/client/fragments/featured-promotions';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
+import { PromotionCalloutList } from '~/components/ui/promotion-callout';
 
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
@@ -17,6 +19,7 @@ export const DetailsFragment = graphql(
       ...ProductSchemaFragment
       ...ProductFormFragment
       ...ProductItemFragment
+      ...FeaturedPromotionsFragment
       entityId
       name
       sku
@@ -51,6 +54,7 @@ export const DetailsFragment = graphql(
     ProductSchemaFragment,
     ProductFormFragment,
     ProductItemFragment,
+    FeaturedPromotionsFragment,
     PricingFragment,
   ],
 );
@@ -140,6 +144,14 @@ export const Details = ({ product }: Props) => {
             </>
           )}
         </div>
+      )}
+
+      {product.featuredPromotions.length > 0 && (
+        <PromotionCalloutList
+          callouts={product.featuredPromotions}
+          className="mb-6"
+          variant="full"
+        />
       )}
 
       <ProductForm data={product} />

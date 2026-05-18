@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
+import { FeaturedPromotionsFragment } from '~/client/fragments/featured-promotions';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -30,6 +31,7 @@ const ProductPageQuery = graphql(
           ...ProductItemFragment
           ...DescriptionFragment
           ...WarrantyFragment
+          ...FeaturedPromotionsFragment
           entityId
           name
           defaultImage {
@@ -59,6 +61,7 @@ const ProductPageQuery = graphql(
     ProductItemFragment,
     DescriptionFragment,
     WarrantyFragment,
+    FeaturedPromotionsFragment,
   ],
 );
 

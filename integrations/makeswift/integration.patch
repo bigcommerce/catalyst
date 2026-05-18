@@ -225,6 +225,7 @@ index 00000000..c2c1d9a6
 +import { ResultOf } from '~/client/graphql';
 +import { ProductCardCarouselFragment } from '~/components/product-card-carousel/fragment';
 +import { ProductCard } from '~/components/ui/product-card';
++import { PromotionCalloutList } from '~/components/ui/promotion-callout';
 +import { runtime } from '~/lib/makeswift/runtime';
 +
 +import { Carousel } from './carousel';
@@ -266,6 +267,11 @@ index 00000000..c2c1d9a6
 +        imageSize="square"
 +        key={product.entityId}
 +        name={product.name}
++        promotionCallout={
++          product.featuredPromotions.length > 0 ? (
++            <PromotionCalloutList callouts={product.featuredPromotions} className="mt-1" variant="compact" />
++          ) : undefined
++        }
 +        showCompare={false}
 +        subtitle={product.brand?.name}
 +      />
