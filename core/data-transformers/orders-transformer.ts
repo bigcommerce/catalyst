@@ -1,4 +1,4 @@
-import { getFormatter } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Order } from '@/vibes/soul/sections/order-list';
 import { getCustomerOrders } from '~/app/[locale]/(default)/account/orders/page-data';
@@ -7,6 +7,7 @@ import { ExistingResultType } from '~/client/util';
 export const ordersTransformer = (
   orders: ExistingResultType<typeof getCustomerOrders>['orders'],
   format: ExistingResultType<typeof getFormatter>,
+  tGiftCertificate: ExistingResultType<typeof getTranslations<'Cart.GiftCertificate'>>,
 ): Order[] => {
   return orders.map((order) => {
     const lineItems =
@@ -45,12 +46,17 @@ export const ordersTransformer = (
     const giftCertificates =
       order.consignments.email?.flatMap((consignment) => {
         return consignment.lineItems.map((lineItem) => {
+          const formattedAmount = format.number(lineItem.salePrice.value, {
+            style: 'currency',
+            currency: lineItem.salePrice.currencyCode,
+          });
+
           return {
             id: lineItem.entityId.toString(),
             href: '#',
-            title: lineItem.name,
-            price: '',
-            totalPrice: '',
+            title: tGiftCertificate('giftCertificate'),
+            price: formattedAmount,
+            totalPrice: formattedAmount,
             image: undefined,
           };
         });
