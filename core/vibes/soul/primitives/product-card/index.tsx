@@ -2,6 +2,10 @@ import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import {
+  PromotionCallout,
+  PromotionCalloutItem,
+} from '@/vibes/soul/primitives/promotion-callout';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
@@ -21,6 +25,7 @@ export interface Product {
   rating?: number;
   inventoryMessage?: string;
   numberOfReviews?: number;
+  promotionCallouts?: PromotionCalloutItem[];
 }
 
 export interface ProductCardProps {
@@ -34,6 +39,7 @@ export interface ProductCardProps {
   compareParamName?: string;
   product: Product;
   showRating?: boolean;
+  promotionCalloutsMoreLabel?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -70,6 +76,7 @@ export function ProductCard({
     inventoryMessage,
     rating,
     numberOfReviews,
+    promotionCallouts,
   },
   showRating = false,
   colorScheme = 'light',
@@ -78,6 +85,7 @@ export function ProductCard({
   aspectRatio = '5:6',
   compareLabel,
   compareParamName,
+  promotionCalloutsMoreLabel,
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: ProductCardProps) {
@@ -165,6 +173,14 @@ export function ProductCard({
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            {promotionCallouts != null && promotionCallouts.length > 0 && (
+              <PromotionCallout
+                callouts={promotionCallouts}
+                className="mt-1"
+                collapsed
+                moreLabel={promotionCalloutsMoreLabel}
+              />
+            )}
             {showRating && typeof rating === 'number' && rating > 0 && (
               <Rating className="mb-2 mt-1" numberOfReviews={numberOfReviews} rating={rating} />
             )}

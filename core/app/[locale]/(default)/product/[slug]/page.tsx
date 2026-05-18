@@ -431,6 +431,15 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  const streamablePromotionCallouts = Streamable.from(async () => {
+    return (
+      baseProduct.featuredPromotions?.map((p) => ({
+        id: p.entityId.toString(),
+        text: p.text,
+      })) ?? []
+    );
+  });
+
   const streameableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -583,6 +592,7 @@ export default async function Product({ params, searchParams }: Props) {
             maxQuantity: streamableMaxQuantity,
             stockDisplayData: streamableStockDisplayData,
             backorderDisplayData: streamableBackorderDisplayData,
+            promotionCallouts: streamablePromotionCallouts,
           }}
           quantityLabel={t('ProductDetails.quantity')}
           recaptchaSiteKey={recaptchaSiteKey}

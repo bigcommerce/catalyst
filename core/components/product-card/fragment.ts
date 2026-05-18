@@ -46,6 +46,10 @@ export const ProductCardFragment = graphql(
           }
         }
       }
+      featuredPromotions {
+        entityId
+        text
+      }
       ...PricingFragment
     }
   `,

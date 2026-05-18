@@ -4,6 +4,10 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import {
+  PromotionCallout,
+  PromotionCalloutItem,
+} from '@/vibes/soul/primitives/promotion-callout';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import {
@@ -48,6 +52,7 @@ interface ProductDetailProduct {
   maxQuantity?: Streamable<number | null>;
   stockDisplayData?: Streamable<StockDisplayData | null>;
   backorderDisplayData?: Streamable<BackorderDisplayData | null>;
+  promotionCallouts?: Streamable<PromotionCalloutItem[]>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -201,6 +206,17 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
+                  {product.promotionCallouts != null && (
+                    <div className="group/promotion-callouts mb-3">
+                      <Stream fallback={null} value={product.promotionCallouts}>
+                        {(callouts) =>
+                          callouts.length > 0 ? (
+                            <PromotionCallout callouts={callouts} />
+                          ) : null
+                        }
+                      </Stream>
+                    </div>
+                  )}
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(imagesData) => (
