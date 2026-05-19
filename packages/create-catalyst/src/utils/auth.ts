@@ -1,7 +1,5 @@
-import { z } from 'zod';
-
 import { Https } from './https';
-import { parse } from './parse';
+import { DeviceCodeSchema, DeviceCodeSuccessSchema, parse } from './parse';
 
 interface AuthConfig {
   baseUrl: string;
@@ -33,14 +31,6 @@ export class Auth {
       }),
     });
 
-    const DeviceCodeSchema = z.object({
-      device_code: z.string(),
-      user_code: z.string(),
-      verification_uri: z.string(),
-      expires_in: z.number(),
-      interval: z.number(),
-    });
-
     return parse(await response.json(), DeviceCodeSchema);
   }
 
@@ -57,13 +47,6 @@ export class Auth {
     if (response.status !== 200) {
       throw new Error('Device code not yet verified');
     }
-
-    const DeviceCodeSuccessSchema = z.object({
-      access_token: z.string(),
-      store_hash: z.string(),
-      context: z.string(),
-      api_uri: z.string().url(),
-    });
 
     return parse(await response.json(), DeviceCodeSuccessSchema);
   }

@@ -1,22 +1,15 @@
 import { Command } from '@commander-js/extra-typings';
 import { exec as execCb } from 'child_process';
-import { parse } from 'dotenv';
+import { parse as parseDotenv } from 'dotenv';
 import { outputFileSync, writeJsonSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { coerce, compare } from 'semver';
 import { promisify } from 'util';
 import { z } from 'zod';
 
+import { type Manifest, PackageDependenciesSchema } from '../utils/parse';
+
 const exec = promisify(execCb);
-
-export const ManifestSchema = z.object({
-  name: z.string(),
-  dependencies: z.object({ add: z.array(z.string()) }),
-  devDependencies: z.object({ add: z.array(z.string()) }),
-  environmentVariables: z.array(z.string()),
-});
-
-type Manifest = z.infer<typeof ManifestSchema>;
 
 export const integration = new Command('integration')
   .argument('<integration-name>', 'Formatted name of the integration')
@@ -57,11 +50,6 @@ export const integration = new Command('integration')
       })
       .reverse();
 
-    const PackageDependenciesSchema = z.object({
-      dependencies: z.object({}).passthrough(),
-      devDependencies: z.object({}).passthrough(),
-    });
-
     const getPackageDeps = async (ref: string) => {
       const { stdout } = await exec(`git show ${ref}:core/package.json`);
 
@@ -87,7 +75,10 @@ export const integration = new Command('integration')
     const { stdout: latestCoreEnv } = await exec(`git show ${latestCoreTag}:core/.env.example`);
     const { stdout: integrationEnv } = await exec(`git show ${sourceRef}:core/.env.example`);
 
-    manifest.environmentVariables = diffObjectKeys(parse(integrationEnv), parse(latestCoreEnv));
+    manifest.environmentVariables = diffObjectKeys(
+      parseDotenv(integrationEnv),
+      parseDotenv(latestCoreEnv),
+    );
 
     const { stdout: integrationDiff } = await exec(
       `git diff ${latestCoreTag}...${sourceRef} -- ':(exclude)core/package.json' ':(exclude)pnpm-lock.yaml'`,
