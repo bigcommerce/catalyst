@@ -11,11 +11,7 @@ export const getConsentCookie = async () => {
 
   if (!cookie) return null;
 
-  try {
-    const consent = parseCompactFormat(cookie);
+  const result = ConsentCookieSchema.safeParse(parseCompactFormat(cookie));
 
-    return ConsentCookieSchema.parse(consent);
-  } catch {
-    return null;
-  }
+  return result.success ? result.data : null;
 };
