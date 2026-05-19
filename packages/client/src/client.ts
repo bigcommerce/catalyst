@@ -130,20 +130,36 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
+    // Build headers via a Headers object so that case-insensitive overrides work as expected.
+    const requestHeaders = new Headers({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.config.storefrontToken}`,
+      'User-Agent': this.backendUserAgent,
+    });
+
+    if (customerAccessToken) {
+      requestHeaders.set('X-Bc-Customer-Access-Token', customerAccessToken);
+    }
+
+    if (validateCustomerAccessToken) {
+      requestHeaders.set('X-Bc-Error-On-Invalid-Customer-Access-Token', 'true');
+    }
+
+    if (this.trustedProxySecret) {
+      requestHeaders.set('X-BC-Trusted-Proxy-Secret', this.trustedProxySecret);
+    }
+
+    new Headers(additionalFetchHeaders).forEach((value, key) => {
+      requestHeaders.set(key, value);
+    });
+
+    new Headers(headers).forEach((value, key) => {
+      requestHeaders.set(key, value);
+    });
+
     const response = await fetch(graphqlUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.config.storefrontToken}`,
-        'User-Agent': this.backendUserAgent,
-        ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
-        ...(validateCustomerAccessToken && {
-          'X-Bc-Error-On-Invalid-Customer-Access-Token': 'true',
-        }),
-        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
-        ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
-        ...Object.fromEntries(new Headers(headers).entries()),
-      },
+      headers: requestHeaders,
       body: JSON.stringify({
         query,
         ...(variables && { variables }),
