@@ -1,18 +1,15 @@
 import { z } from 'zod';
 
-const fetchProjectsSchema = z.object({
-  data: z.array(
-    z.object({
-      uuid: z.string(),
-      name: z.string(),
-    }),
-  ),
+const projectListItemSchema = z.object({
+  uuid: z.string(),
+  name: z.string(),
 });
 
-export interface ProjectListItem {
-  uuid: string;
-  name: string;
-}
+const fetchProjectsSchema = z.object({
+  data: z.array(projectListItemSchema),
+});
+
+export type ProjectListItem = z.infer<typeof projectListItemSchema>;
 
 export async function fetchProjects(
   storeHash: string,
@@ -46,21 +43,18 @@ export async function fetchProjects(
   return data;
 }
 
-const createProjectSchema = z.object({
-  data: z.object({
-    uuid: z.string(),
-    name: z.string(),
-    date_created: z.coerce.date(),
-    date_modified: z.coerce.date(),
-  }),
+const createProjectResultSchema = z.object({
+  uuid: z.string(),
+  name: z.string(),
+  date_created: z.coerce.date(),
+  date_modified: z.coerce.date(),
 });
 
-export interface CreateProjectResult {
-  uuid: string;
-  name: string;
-  date_created: Date;
-  date_modified: Date;
-}
+const createProjectSchema = z.object({
+  data: createProjectResultSchema,
+});
+
+export type CreateProjectResult = z.infer<typeof createProjectResultSchema>;
 
 export async function createProject(
   name: string,
