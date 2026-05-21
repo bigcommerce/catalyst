@@ -127,43 +127,40 @@ export default async function Cart({ params }: Props) {
 
     let inventoryMessages;
 
-    if (item.__typename === 'CartPhysicalItem') {
-      if (item.stockPosition?.quantityOutOfStock === item.quantity) {
-        inventoryMessages = {
-          outOfStockMessage: data.site.settings?.inventory?.showOutOfStockMessage
-            ? data.site.settings.inventory.defaultOutOfStockMessage
+    if (item.stockPosition?.quantityOutOfStock === item.quantity) {
+      inventoryMessages = {
+        outOfStockMessage: data.site.settings?.inventory?.showOutOfStockMessage
+          ? data.site.settings.inventory.defaultOutOfStockMessage
+          : undefined,
+      };
+    } else {
+      inventoryMessages = {
+        quantityReadyToShipMessage:
+          data.site.settings?.inventory?.showQuantityOnHand && !!item.stockPosition?.quantityOnHand
+            ? t('quantityReadyToShip', {
+                quantity: Number(item.stockPosition.quantityOnHand),
+              })
             : undefined,
-        };
-      } else {
-        inventoryMessages = {
-          quantityReadyToShipMessage:
-            data.site.settings?.inventory?.showQuantityOnHand &&
-            !!item.stockPosition?.quantityOnHand
-              ? t('quantityReadyToShip', {
-                  quantity: Number(item.stockPosition.quantityOnHand),
-                })
-              : undefined,
-          quantityBackorderedMessage:
-            data.site.settings?.inventory?.showQuantityOnBackorder &&
-            !!item.stockPosition?.quantityBackordered
-              ? t('quantityOnBackorder', {
-                  quantity: Number(item.stockPosition.quantityBackordered),
-                })
-              : undefined,
-          quantityOutOfStockMessage:
-            data.site.settings?.inventory?.showOutOfStockMessage &&
-            !!item.stockPosition?.quantityOutOfStock
-              ? t('partiallyAvailable', {
-                  quantity: item.quantity - Number(item.stockPosition.quantityOutOfStock),
-                })
-              : undefined,
-          backorderMessage:
-            data.site.settings?.inventory?.showBackorderMessage &&
-            !!item.stockPosition?.quantityBackordered
-              ? (item.stockPosition.backorderMessage ?? undefined)
-              : undefined,
-        };
-      }
+        quantityBackorderedMessage:
+          data.site.settings?.inventory?.showQuantityOnBackorder &&
+          !!item.stockPosition?.quantityBackordered
+            ? t('quantityOnBackorder', {
+                quantity: Number(item.stockPosition.quantityBackordered),
+              })
+            : undefined,
+        quantityOutOfStockMessage:
+          data.site.settings?.inventory?.showOutOfStockMessage &&
+          !!item.stockPosition?.quantityOutOfStock
+            ? t('partiallyAvailable', {
+                quantity: item.quantity - Number(item.stockPosition.quantityOutOfStock),
+              })
+            : undefined,
+        backorderMessage:
+          data.site.settings?.inventory?.showBackorderMessage &&
+          !!item.stockPosition?.quantityBackordered
+            ? (item.stockPosition.backorderMessage ?? undefined)
+            : undefined,
+      };
     }
 
     return {

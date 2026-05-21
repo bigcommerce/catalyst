@@ -2,9 +2,7 @@ import { useTranslations } from 'next-intl';
 
 import { Slideshow as SlideshowSection } from '~/vibes/soul/sections/slideshow';
 
-import SlideBg01 from './slide-bg-01.jpg';
-import SlideBg02 from './slide-bg-02.jpg';
-import SlideBg03 from './slide-bg-03.jpg';
+import SlideBg01 from './commercia-slide.png';
 
 export function Slideshow() {
   const t = useTranslations('Home.Slideshow');
@@ -21,32 +19,6 @@ export function Slideshow() {
       cta: {
         href: '/shop-all',
         label: t('Slide01.cta'),
-      },
-    },
-    {
-      title: t('Slide02.title'),
-      image: {
-        src: SlideBg02.src,
-        alt: t('Slide02.alt'),
-        blurDataUrl: SlideBg02.blurDataURL,
-      },
-      description: t('Slide02.description'),
-      cta: {
-        href: '/shop-all',
-        label: t('Slide02.cta'),
-      },
-    },
-    {
-      title: t('Slide03.title'),
-      image: {
-        src: SlideBg03.src,
-        alt: t('Slide03.alt'),
-        blurDataUrl: SlideBg03.blurDataURL,
-      },
-      description: t('Slide03.description'),
-      cta: {
-        href: '/shop-all',
-        label: t('Slide03.cta'),
       },
     },
   ];
