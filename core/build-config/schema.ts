@@ -5,6 +5,7 @@ export const buildConfigSchema = z.object({
     z.object({
       code: z.string(),
       isDefault: z.boolean(),
+      path: z.string().nullable(),
     }),
   ),
   urls: z.object({

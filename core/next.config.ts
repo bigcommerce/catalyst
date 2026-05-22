@@ -25,6 +25,7 @@ const SettingsQuery = graphql(`
         locales {
           code
           isDefault
+          path
         }
       }
     }
