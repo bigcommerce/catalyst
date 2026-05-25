@@ -444,6 +444,8 @@
         "otherDetails": "Övrig information",
         "noOtherDetails": "Det finns inga övriga detaljer.",
         "viewOptions": "Visa alternativ",
+        "showMore": "Visa mer",
+        "showLess": "Visa mindre",
         "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
         "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
         "unknownError": "Okänt fel. Försök igen senare."

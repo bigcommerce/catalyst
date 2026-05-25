@@ -444,6 +444,8 @@
         "otherDetails": "Otros detalles",
         "noOtherDetails": "No hay otros detalles.",
         "viewOptions": "Opciones de visualización",
+        "showMore": "Mostrar más",
+        "showLess": "Mostrar menos",
         "successMessage": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>",
         "missingCart": "Carrito no encontrado. Vuelva a intentarlo más tarde.",
         "unknownError": "Error desconocido. Vuelva a intentarlo más tarde."
