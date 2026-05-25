@@ -5,6 +5,7 @@ import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { prefixes } from '~/i18n/locales';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
@@ -218,12 +219,17 @@ const updateStatusCache = async (
 };
 
 const clearLocaleFromPath = (path: string, locale: string) => {
-  if (path === `/${locale}` || path === `/${locale}/`) {
+  // The root locale has no prefix in the URL; there's nothing to strip.
+  const prefix = prefixes[locale];
+
+  if (!prefix) return path;
+
+  if (path === prefix || path === `${prefix}/`) {
     return '/';
   }
 
-  if (path.startsWith(`/${locale}/`)) {
-    return path.replace(`/${locale}`, '');
+  if (path.startsWith(`${prefix}/`)) {
+    return path.replace(prefix, '');
   }
 
   return path;
