@@ -19,7 +19,7 @@ import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/co
 import { installDependencies } from '../lib/install-dependencies';
 import { getAvailableLocales } from '../lib/localization';
 import { consola } from '../lib/logger';
-import { login } from '../lib/login';
+import { login, LoginAbortedError } from '../lib/login';
 import { hasProjectsAccess, type ProjectListItem } from '../lib/project';
 import { setupCoreProject } from '../lib/setup-core-project';
 import { accessTokenOption, storeHashOption } from '../lib/shared-options';
@@ -333,10 +333,25 @@ Examples:
     // access token. Device login covers the missing pieces; the user picks the
     // store during the OAuth flow regardless of any partial flags they passed.
     if (!storeHash || !accessToken) {
-      const credentials = await login(options.loginUrl);
+      const apiHost = `api.${options.bigcommerceHostname}`;
 
-      storeHash = credentials.storeHash;
-      accessToken = credentials.accessToken;
+      try {
+        const credentials = await login(options.loginUrl, apiHost);
+
+        storeHash = credentials.storeHash;
+        accessToken = credentials.accessToken;
+      } catch (error) {
+        if (error instanceof LoginAbortedError) {
+          consola.info(
+            'Login aborted. Re-run `catalyst create` when you have your credentials ready.',
+          );
+          process.exit(0);
+
+          return;
+        }
+
+        throw error;
+      }
     }
 
     const useCommerceHosting = options.hosting === 'commerce';
