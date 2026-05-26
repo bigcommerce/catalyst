@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   NoLinkedProjectError,
   selectOrCreateInfrastructureProject,
@@ -268,7 +269,7 @@ export const getDeploymentStatus = async (
   storeHash: string,
   accessToken: string,
   apiHost: string,
-) => {
+): Promise<string | undefined> => {
   consola.info('Fetching deployment status...');
 
   const spinner = yoctoSpinner().start('Fetching...');
@@ -350,6 +351,8 @@ export const getDeploymentStatus = async (
       `View your deployment at: ${colorize('blue', `https://${deploymentHostname}`)}`,
     );
   }
+
+  return deploymentHostname;
 };
 
 export const fetchProject = async (
@@ -394,6 +397,10 @@ Example:
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(projectUuidOption())
+  .option(
+    '--update-site-url',
+    "After a successful deploy, prompt to update a channel's site URL to the new hostname.",
+  )
   .addOption(
     new Option(
       '--secret <value>',
@@ -545,5 +552,33 @@ Example:
       environmentVariables,
     );
 
-    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, options.apiHost);
+    const deploymentHostname = await getDeploymentStatus(
+      deploymentUuid,
+      storeHash,
+      accessToken,
+      options.apiHost,
+    );
+
+    if (!options.updateSiteUrl) {
+      return;
+    }
+
+    try {
+      await runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost: options.apiHost,
+        projectUuid,
+        preferHostname: deploymentHostname,
+      });
+    } catch (error) {
+      // Soft-fail: the deploy already succeeded and the bundle is live. A
+      // non-zero exit here would be misleading.
+      consola.warn(
+        `Failed to update channel site URL: ${error instanceof Error ? error.message : String(error)}`,
+      );
+      consola.info(
+        'Update it manually in the control panel, or re-run `catalyst auth login` if the token is missing the store_channel_settings scope.',
+      );
+    }
   });
