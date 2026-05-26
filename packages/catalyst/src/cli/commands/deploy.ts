@@ -192,38 +192,6 @@ export const parseEnvironmentVariables = (secretOption?: string[]) => {
   });
 };
 
-const AUTO_DETECT_SECRETS = [
-  { key: 'BIGCOMMERCE_STORE_HASH', warnIfMissing: true },
-  { key: 'BIGCOMMERCE_CHANNEL_ID', warnIfMissing: true },
-  { key: 'BIGCOMMERCE_STOREFRONT_TOKEN', warnIfMissing: true },
-  { key: 'BIGCOMMERCE_API_HOST', warnIfMissing: false },
-  { key: 'BIGCOMMERCE_GRAPHQL_API_DOMAIN', warnIfMissing: false },
-  { key: 'AUTH_SECRET', warnIfMissing: false },
-];
-
-export const autoDetectSecrets = (
-  environmentVariables?: Array<{ type: 'secret' | 'plain_text'; key: string; value: string }>,
-) => {
-  const secrets = environmentVariables ?? [];
-  const existingKeys = new Set(secrets.map((s) => s.key));
-
-  AUTO_DETECT_SECRETS.forEach(({ key, warnIfMissing }) => {
-    if (existingKeys.has(key)) {
-      return;
-    }
-
-    const value = process.env[key];
-
-    if (value) {
-      secrets.push({ type: 'secret', key, value });
-    } else if (warnIfMissing) {
-      consola.warn(`${key} is not set in the environment and was not provided via --secret.`);
-    }
-  });
-
-  return secrets;
-};
-
 export const createDeployment = async (
   projectUuid: string,
   uploadUuid: string,
@@ -541,7 +509,7 @@ Example:
 
     await uploadBundleZip(uploadSignature.upload_url);
 
-    const environmentVariables = autoDetectSecrets(parseEnvironmentVariables(options.secret));
+    const environmentVariables = parseEnvironmentVariables(options.secret);
 
     const { deployment_uuid: deploymentUuid } = await createDeployment(
       projectUuid,
