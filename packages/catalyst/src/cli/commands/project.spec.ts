@@ -1,3 +1,4 @@
+import { password } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
@@ -24,6 +25,13 @@ import { program } from '../program';
 
 import { link, project } from './project';
 
+// eslint-disable-next-line import/dynamic-import-chunkname
+vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
+vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('@inquirer/prompts', () => ({
+  password: vi.fn(),
+}));
+
 vi.mock('../lib/project-state', () => ({
   getProjectState: vi.fn(),
 }));
@@ -31,6 +39,8 @@ vi.mock('../lib/project-state', () => ({
 vi.mock('../lib/install-dependencies', () => ({
   installDependencies: vi.fn().mockResolvedValue(undefined),
 }));
+
+const passwordMock = vi.mocked(password);
 
 vi.mock('../lib/commerce-hosting', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../lib/commerce-hosting')>();
@@ -204,26 +214,100 @@ describe('project create', () => {
     consolaPromptMock.mockRestore();
   });
 
-  test('with insufficient credentials exits with error', async () => {
-    // Unset env so Commander doesn't pick up CATALYST_* and trigger the create flow (which would prompt for name)
+  test('runs interactive login when no credentials are provided', async () => {
     const savedStoreHash = process.env.CATALYST_STORE_HASH;
     const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
 
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'create'])).rejects.toThrow(
-      'Missing credentials',
-    );
+    const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce('My New Project');
+
+    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
-    expect(consola.error).toHaveBeenCalledWith('Missing credentials.');
     expect(consola.info).toHaveBeenCalledWith(
-      'Run `catalyst auth login`, or provide --store-hash and --access-token flags (or set CATALYST_STORE_HASH and CATALYST_ACCESS_TOKEN environment variables).',
+      "You're not logged in yet. Let's get you authenticated before creating a project.",
     );
-    expect(exitMock).toHaveBeenCalledWith(1);
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store mock-store-hash.');
+    expect(consola.success).toHaveBeenCalledWith('Project "New Project" created successfully.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    expect(config.get('storeHash')).toBe('mock-store-hash');
+    expect(config.get('accessToken')).toBe('mock-access-token');
+    expect(config.get('projectUuid')).toBe(projectUuid3);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('falls back to manual login when the device flow fails', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+    );
+
+    passwordMock.mockResolvedValueOnce(accessToken);
+
+    const consolaPromptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(storeHash)
+      .mockResolvedValueOnce('My New Project');
+
+    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("Browser login didn't work"));
+    expect(consola.success).toHaveBeenCalledWith(`Logged in to store ${storeHash}.`);
+    expect(consola.success).toHaveBeenCalledWith('Project "New Project" created successfully.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    expect(config.get('storeHash')).toBe(storeHash);
+    expect(config.get('accessToken')).toBe(accessToken);
+
+    consolaPromptMock.mockRestore();
+  });
+
+  test('exits cleanly when the user aborts the manual login fallback', async () => {
+    const savedStoreHash = process.env.CATALYST_STORE_HASH;
+    const savedAccessToken = process.env.CATALYST_ACCESS_TOKEN;
+
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.CATALYST_ACCESS_TOKEN;
+
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+    );
+
+    const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+
+    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
+
+    if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
+    if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
+
+    expect(consola.info).toHaveBeenCalledWith(
+      'Login aborted. Re-run `catalyst project create` when you have your credentials ready.',
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+    expect(config.get('projectUuid')).toBeUndefined();
+
+    consolaPromptMock.mockRestore();
   });
 
   test('propagates create project API errors', async () => {
