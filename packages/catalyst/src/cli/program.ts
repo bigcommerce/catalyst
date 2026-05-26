@@ -9,6 +9,7 @@ import PACKAGE_INFO from '../../package.json';
 
 import { auth } from './commands/auth';
 import { build } from './commands/build';
+import { channel } from './commands/channel';
 import { create } from './commands/create';
 import { deploy } from './commands/deploy';
 import { logs } from './commands/logs';
@@ -86,6 +87,7 @@ program
   .addCommand(deploy)
   .addCommand(logs)
   .addCommand(project)
+  .addCommand(channel)
   .addCommand(auth)
   .addCommand(telemetry)
   .hook('preAction', telemetryPreHook)
