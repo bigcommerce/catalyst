@@ -1,13 +1,11 @@
 import { Command, Option } from 'commander';
-import { colorize } from 'consola/utils';
-import open from 'open';
-import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
-import { DEFAULT_LOGIN_URL, requestDeviceCode, waitForDeviceToken } from '../lib/auth';
 import { consola } from '../lib/logger';
+import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
+import { loginUrlOption } from '../lib/shared-options';
 
 const StoreProfileSchema = z.object({
   data: z.object({
@@ -122,16 +120,16 @@ Example:
 const login = new Command('login')
   .configureHelp({ showGlobalOptions: true })
   .description(
-    'Authenticate via browser using the OAuth device code flow. If already logged in, displays current credentials and suggests running `catalyst auth logout` to re-authenticate.',
+    'Authenticate via browser using the OAuth device code flow. Falls back to an interactive store hash + access token prompt if the browser flow is unavailable. If already logged in, displays current credentials and suggests running `catalyst auth logout` to re-authenticate.',
   )
   .addHelpText(
     'after',
     `
 Examples:
-  # Login via browser (recommended)
+  # Login interactively (browser, with manual fallback)
   $ catalyst auth login
 
-  # Login with existing credentials (skips browser flow)
+  # Login with existing credentials (skips interactive flow)
   $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>`,
   )
   .addOption(
@@ -147,11 +145,12 @@ Examples:
     ).env('CATALYST_ACCESS_TOKEN'),
   )
   .addOption(
-    new Option('--login-url <url>', 'BigCommerce login URL.')
-      .env('BIGCOMMERCE_LOGIN_URL')
-      .default(DEFAULT_LOGIN_URL)
+    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
+      .env('BIGCOMMERCE_API_HOST')
+      .default('api.bigcommerce.com')
       .hideHelp(),
   )
+  .addOption(loginUrlOption())
   .action(async (options) => {
     try {
       const config = getProjectConfig();
@@ -167,37 +166,23 @@ Examples:
         return;
       }
 
-      const deviceCode = await requestDeviceCode(options.loginUrl);
+      const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
 
-      consola.info(
-        `${colorize('yellow', 'Your one-time code:')} ${colorize('bold', deviceCode.user_code)}`,
-      );
+      config.set('storeHash', credentials.storeHash);
+      config.set('accessToken', credentials.accessToken);
 
-      try {
-        await open(deviceCode.verification_uri);
-        consola.info(`Opened ${deviceCode.verification_uri} in your browser.`);
-      } catch {
-        consola.info(
-          `Open ${deviceCode.verification_uri} in your browser and enter the code above.`,
-        );
-      }
-
-      const spinner = yoctoSpinner().start('Waiting for authentication...');
-
-      const credentials = await waitForDeviceToken(
-        options.loginUrl,
-        deviceCode.device_code,
-        deviceCode.interval,
-      );
-
-      spinner.success('Authentication complete.');
-
-      config.set('storeHash', credentials.store_hash);
-      config.set('accessToken', credentials.access_token);
-
-      consola.success(`Logged in to store ${credentials.store_hash}.`);
+      consola.success(`Logged in to store ${credentials.storeHash}.`);
       process.exit(0);
     } catch (error) {
+      if (error instanceof LoginAbortedError) {
+        consola.info(
+          'Login aborted. Re-run `catalyst auth login` when you have your credentials ready.',
+        );
+        process.exit(0);
+
+        return;
+      }
+
       const message = error instanceof Error ? error.message : String(error);
 
       consola.error(`Login failed: ${message}`);

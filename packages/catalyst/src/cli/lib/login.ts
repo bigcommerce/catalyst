@@ -1,8 +1,10 @@
+import { password } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
 import open from 'open';
 import yoctoSpinner from 'yocto-spinner';
+import { z } from 'zod';
 
-import { requestDeviceCode, waitForDeviceToken } from './auth';
+import { DEVICE_OAUTH_SCOPES, requestDeviceCode, waitForDeviceToken } from './auth';
 import { consola } from './logger';
 
 export interface LoginResult {
@@ -10,7 +12,46 @@ export interface LoginResult {
   accessToken: string;
 }
 
-export async function login(loginUrl: string): Promise<LoginResult> {
+// Thrown when the user declines the manual-login fallback after the browser
+// (device-code) flow has failed. Callers should treat this as a clean exit,
+// not an error — the user explicitly chose to abort.
+export class LoginAbortedError extends Error {
+  constructor() {
+    super('Login aborted by user.');
+    this.name = 'LoginAbortedError';
+  }
+}
+
+const StoreProfileSchema = z.object({
+  data: z.object({
+    store_name: z.string(),
+  }),
+});
+
+async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost: string) {
+  const response = await fetch(`https://${apiHost}/stores/${storeHash}/v3/settings/store/profile`, {
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': accessToken,
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+
+  const res: unknown = await response.json();
+  const result = StoreProfileSchema.safeParse(res);
+
+  if (!result.success) {
+    throw new Error('Unexpected response from store profile API');
+  }
+
+  return result.data.data;
+}
+
+async function deviceCodeLogin(loginUrl: string): Promise<LoginResult> {
   const deviceCode = await requestDeviceCode(loginUrl);
 
   consola.info(
@@ -38,4 +79,74 @@ export async function login(loginUrl: string): Promise<LoginResult> {
     storeHash: credentials.store_hash,
     accessToken: credentials.access_token,
   };
+}
+
+async function manualLogin(apiHost: string): Promise<LoginResult> {
+  consola.info(
+    'Create a store-level API account from your BigCommerce Control Panel:\n' +
+      '  Settings → API → Store-level API accounts → Create API account\n' +
+      `Grant these OAuth scopes: ${DEVICE_OAUTH_SCOPES}`,
+  );
+
+  const storeHashInput = await consola.prompt('Store hash:', { type: 'text' });
+  const storeHash = String(storeHashInput).trim();
+
+  if (!storeHash) {
+    throw new Error('Store hash is required.');
+  }
+
+  const accessTokenInput = await password({ message: 'Access token:', mask: true });
+  const accessToken = accessTokenInput.trim();
+
+  if (!accessToken) {
+    throw new Error('Access token is required.');
+  }
+
+  const spinner = yoctoSpinner().start('Validating credentials...');
+
+  try {
+    const profile = await fetchStoreProfile(storeHash, accessToken, apiHost);
+
+    spinner.success(`Validated credentials for ${profile.store_name} (${storeHash}).`);
+  } catch (error) {
+    spinner.error('Failed to validate credentials.');
+
+    const message = error instanceof Error ? error.message : String(error);
+
+    throw new Error(
+      `Could not validate credentials (${message}). Double-check your store hash and access token, then try again.`,
+    );
+  }
+
+  return { storeHash, accessToken };
+}
+
+// Interactive login orchestrator. Used by `catalyst create`, `catalyst auth
+// login`, and `catalyst project create` to gather credentials when none are
+// supplied via flags/env/config.
+//
+// Happy path: opens the browser device-code flow. When that fails (e.g. the
+// device-code endpoint returns 404 because the OAuth client isn't yet
+// provisioned for the user's environment), we ask the user if they'd like to
+// fall back to pasting a store-level API account's credentials instead, then
+// validate them via the store profile API before returning.
+export async function login(loginUrl: string, apiHost: string): Promise<LoginResult> {
+  try {
+    return await deviceCodeLogin(loginUrl);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+
+    consola.warn(`Browser login didn't work (${message}).`);
+
+    const shouldFallback = await consola.prompt(
+      'Try logging in manually with a store hash and access token instead?',
+      { type: 'confirm', initial: true },
+    );
+
+    if (!shouldFallback) {
+      throw new LoginAbortedError();
+    }
+
+    return manualLogin(apiHost);
+  }
 }

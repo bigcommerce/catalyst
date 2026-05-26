@@ -1,5 +1,6 @@
 import { Option } from 'commander';
 
+import { DEFAULT_LOGIN_URL } from './auth';
 import { getProjectConfig } from './project-config';
 
 export const storeHashOption = () =>
@@ -18,6 +19,12 @@ export const apiHostOption = () =>
   new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
     .env('BIGCOMMERCE_API_HOST')
     .default('api.bigcommerce.com')
+    .hideHelp();
+
+export const loginUrlOption = () =>
+  new Option('--login-url <url>', 'BigCommerce login URL.')
+    .env('BIGCOMMERCE_LOGIN_URL')
+    .default(DEFAULT_LOGIN_URL)
     .hideHelp();
 
 export const projectUuidOption = () =>
