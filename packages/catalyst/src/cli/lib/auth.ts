@@ -6,6 +6,7 @@ export const DEVICE_OAUTH_SCOPES = [
   'store_infrastructure_deployments_manage',
   'store_infrastructure_logs_read_only',
   'store_infrastructure_projects_manage',
+  'store_channel_settings',
 ].join(' ');
 export const DEFAULT_LOGIN_URL = 'https://login.bigcommerce.com';
 

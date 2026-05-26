@@ -817,3 +817,133 @@ describe('transformation guard', () => {
     expect(installDependencies).not.toHaveBeenCalled();
   });
 });
+
+describe('--update-site-url', () => {
+  function deployArgs(extra: string[] = []) {
+    return [
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      ...extra,
+    ];
+  }
+
+  test('triggers the interactive flow and PUTs the chosen hostname after deploy', async () => {
+    let putBody: unknown;
+    let putChannelId: string | undefined;
+
+    server.use(
+      http.put(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site',
+        async ({ request, params }) => {
+          putBody = await request.json();
+          putChannelId = String(params.channelId);
+
+          return HttpResponse.json({
+            data: {
+              id: 1,
+              url: 'https://project-one.catalyst-sandbox.store',
+              channel_id: 2,
+            },
+          });
+        },
+      ),
+    );
+
+    // Override the default consola.prompt stub (always-true in beforeEach) with
+    // the channel and hostname selections the interactive flow will ask for.
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('2')
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+
+    await program.parseAsync(deployArgs(['--update-site-url']));
+
+    expect(putChannelId).toBe('2');
+    expect(putBody).toEqual({ url: 'https://project-one.catalyst-sandbox.store' });
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('Updated channel "Catalyst Storefront" (2) site URL'),
+    );
+  });
+
+  test('places the freshly-deployed hostname first in the hostname prompt', async () => {
+    let hostnameOptions: Array<{ label: string; value: string }> | undefined;
+
+    // Project Two has no hostnames by default; use Project One whose handler
+    // already returns the two seeded hostnames. Inject the freshly-deployed
+    // hostname into Project One's list so preferHostname has something to match.
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({
+          data: [
+            {
+              uuid: projectUuid,
+              name: 'Project One',
+              deployment_hostnames: [
+                'project-one.catalyst-sandbox.store',
+                'example.com', // the just-deployed hostname (per the SSE default)
+              ],
+            },
+          ],
+        }),
+      ),
+    );
+
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('2') // channel
+      .mockImplementationOnce((_message, opts) => {
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        hostnameOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+        return Promise.resolve('example.com');
+      });
+
+    await program.parseAsync(deployArgs(['--update-site-url']));
+
+    expect(hostnameOptions?.[0]).toMatchObject({ value: 'example.com' });
+  });
+
+  test('does not call the channel site API when the flag is omitted', async () => {
+    let putCalled = false;
+
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () => {
+        putCalled = true;
+
+        return HttpResponse.json({}, { status: 200 });
+      }),
+    );
+
+    await program.parseAsync(deployArgs());
+
+    expect(putCalled).toBe(false);
+    expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('Updated channel'));
+  });
+
+  test('soft-fails with a warning when the update API returns an error', async () => {
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({}, { status: 401 }),
+      ),
+    );
+
+    vi.spyOn(consola, 'prompt')
+      .mockResolvedValueOnce('2')
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+
+    await program.parseAsync(deployArgs(['--update-site-url']));
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to update channel site URL'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst auth login'));
+  });
+});
