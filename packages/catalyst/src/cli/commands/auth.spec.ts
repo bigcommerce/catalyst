@@ -1,3 +1,4 @@
+import { password } from '@inquirer/prompts';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
 import { realpath } from 'node:fs/promises';
@@ -25,6 +26,11 @@ import { auth } from './auth';
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
+vi.mock('@inquirer/prompts', () => ({
+  password: vi.fn(),
+}));
+
+const passwordMock = vi.mocked(password);
 
 let exitMock: MockInstance;
 let tmpDir: string;
@@ -149,18 +155,137 @@ describe('login', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
-  test('handles API error during device code request', async () => {
+  test('prompts to fall back to manual login when device code request fails', async () => {
     server.use(
       http.post(
         'https://login.bigcommerce.com/device/token',
-        () => new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
       ),
     );
 
+    passwordMock.mockResolvedValueOnce('manual-access-token');
+
+    const promptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockImplementationOnce(async (message, opts) => {
+        expect(message).toContain('Try logging in manually');
+        expect(opts).toMatchObject({ type: 'confirm' });
+
+        return Promise.resolve(true);
+      })
+      .mockImplementationOnce(async (message, opts) => {
+        expect(message).toBe('Store hash:');
+        expect(opts).toMatchObject({ type: 'text' });
+
+        return Promise.resolve('manual-store-hash');
+      });
+
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
-    expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Login failed'));
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("Browser login didn't work"));
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store manual-store-hash.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    const config = getProjectConfig();
+
+    expect(config.get('storeHash')).toBe('manual-store-hash');
+    expect(config.get('accessToken')).toBe('manual-access-token');
+
+    promptMock.mockRestore();
+  });
+
+  test('exits cleanly when user declines manual login fallback', async () => {
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+    );
+
+    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("Browser login didn't work"));
+    expect(consola.info).toHaveBeenCalledWith(
+      'Login aborted. Re-run `catalyst auth login` when you have your credentials ready.',
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    promptMock.mockRestore();
+  });
+
+  test('fails when manual credentials cannot be validated', async () => {
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/settings/store/profile',
+        () => new HttpResponse(null, { status: 401, statusText: 'Unauthorized' }),
+      ),
+    );
+
+    passwordMock.mockResolvedValueOnce('bad-token');
+
+    const promptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce('manual-store-hash');
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.error).toHaveBeenCalledWith(
+      expect.stringContaining('Could not validate credentials'),
+    );
     expect(exitMock).toHaveBeenCalledWith(1);
+
+    promptMock.mockRestore();
+  });
+
+  test('rejects empty store hash during manual login', async () => {
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+    );
+
+    const promptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce('   ');
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Store hash is required'));
+    expect(exitMock).toHaveBeenCalledWith(1);
+
+    promptMock.mockRestore();
+  });
+
+  test('rejects empty access token during manual login', async () => {
+    server.use(
+      http.post(
+        'https://login.bigcommerce.com/device/token',
+        () => new HttpResponse(null, { status: 404, statusText: 'Not Found' }),
+      ),
+    );
+
+    passwordMock.mockResolvedValueOnce('   ');
+
+    const promptMock = vi
+      .spyOn(consola, 'prompt')
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce('manual-store-hash');
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Access token is required'));
+    expect(exitMock).toHaveBeenCalledWith(1);
+
+    promptMock.mockRestore();
   });
 
   test('handles browser open failure gracefully', async () => {

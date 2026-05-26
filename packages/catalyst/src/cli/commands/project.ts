@@ -9,6 +9,7 @@ import {
 } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
+import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { createProject, deleteProject, fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
@@ -16,6 +17,7 @@ import { resolveCredentials } from '../lib/resolve-credentials';
 import {
   accessTokenOption,
   apiHostOption,
+  loginUrlOption,
   projectUuidOption,
   storeHashOption,
 } from '../lib/shared-options';
@@ -105,7 +107,7 @@ Example:
 const create = new Command('create')
   .configureHelp({ showGlobalOptions: true })
   .description(
-    'Create a new BigCommerce infrastructure project and link it to your local Catalyst project.',
+    'Create a new BigCommerce infrastructure project and link it to your local Catalyst project. Walks you through logging in if you are not authenticated yet.',
   )
   .addHelpText(
     'after',
@@ -116,9 +118,41 @@ Example:
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
+  .addOption(loginUrlOption())
   .action(async (options) => {
     const config = getProjectConfig();
-    const { storeHash, accessToken } = resolveCredentials(options, config);
+
+    let storeHash = options.storeHash ?? config.get('storeHash');
+    let accessToken = options.accessToken ?? config.get('accessToken');
+
+    if (!storeHash || !accessToken) {
+      consola.info(
+        "You're not logged in yet. Let's get you authenticated before creating a project.",
+      );
+
+      try {
+        const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
+
+        storeHash = credentials.storeHash;
+        accessToken = credentials.accessToken;
+
+        config.set('storeHash', storeHash);
+        config.set('accessToken', accessToken);
+
+        consola.success(`Logged in to store ${storeHash}.`);
+      } catch (error) {
+        if (error instanceof LoginAbortedError) {
+          consola.info(
+            'Login aborted. Re-run `catalyst project create` when you have your credentials ready.',
+          );
+          process.exit(0);
+
+          return;
+        }
+
+        throw error;
+      }
+    }
 
     await getTelemetry().identify(storeHash);
 

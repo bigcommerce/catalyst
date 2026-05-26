@@ -8,7 +8,7 @@ import { cloneCatalyst } from '../lib/clone-catalyst';
 import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
-import { login } from '../lib/login';
+import { login, LoginAbortedError } from '../lib/login';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { hasProjectsAccess } from '../lib/project';
 import { setupCoreProject } from '../lib/setup-core-project';
@@ -26,11 +26,21 @@ vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
 }));
 
+const { MockLoginAbortedError } = vi.hoisted(() => ({
+  MockLoginAbortedError: class extends Error {
+    constructor() {
+      super('Login aborted by user.');
+      this.name = 'LoginAbortedError';
+    }
+  },
+}));
+
 vi.mock('../lib/login', () => ({
   login: vi.fn().mockResolvedValue({
     storeHash: 'login-store-hash',
     accessToken: 'login-access-token',
   }),
+  LoginAbortedError: MockLoginAbortedError,
 }));
 
 vi.mock('../lib/clone-catalyst', () => ({ cloneCatalyst: vi.fn() }));
@@ -427,6 +437,44 @@ describe('failure handling', () => {
     ).rejects.toThrow('clone failed before creating directory');
 
     expect(consola.warn).not.toHaveBeenCalledWith(expect.stringContaining('partial state'));
+  });
+
+  test('exits cleanly when the user aborts the interactive login', async () => {
+    vi.mocked(login).mockRejectedValueOnce(new LoginAbortedError());
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'create',
+      '--project-name',
+      uniqueProjectName(),
+      '--project-dir',
+      tmpDir,
+    ]);
+
+    expect(consola.info).toHaveBeenCalledWith(
+      'Login aborted. Re-run `catalyst create` when you have your credentials ready.',
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+    expect(cloneCatalyst).not.toHaveBeenCalled();
+  });
+
+  test('propagates non-LoginAbortedError login failures', async () => {
+    vi.mocked(login).mockRejectedValueOnce(new Error('network down'));
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'create',
+        '--project-name',
+        uniqueProjectName(),
+        '--project-dir',
+        tmpDir,
+      ]),
+    ).rejects.toThrow('network down');
+
+    expect(cloneCatalyst).not.toHaveBeenCalled();
   });
 });
 
