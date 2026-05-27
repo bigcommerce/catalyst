@@ -453,6 +453,50 @@ describe('retry and reconnect', () => {
     expect(consola.warn).toHaveBeenCalledWith('Log stream closed by server, reconnecting...');
   });
 
+  test(
+    'reconnects when the stream stalls without emitting any data',
+    { timeout: 3000 },
+    async () => {
+      let requestCount = 0;
+      const ttlMs = 200;
+
+      // Stream that stays open but never enqueues — simulates an API proxy
+      // half-closing the socket: bytes stop arriving but no FIN or error is
+      // surfaced, so reader.read() would otherwise block forever.
+      const createStalledStream = () =>
+        new ReadableStream({
+          start() {
+            // intentionally empty
+          },
+        });
+
+      server.use(
+        http.get(
+          'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid/tail',
+          () => {
+            requestCount += 1;
+
+            if (requestCount <= 2) {
+              return new HttpResponse(createStalledStream(), {
+                status: 200,
+                headers: { 'Content-Type': 'text/event-stream' },
+              });
+            }
+
+            return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+          },
+        ),
+      );
+
+      await expect(
+        tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default', ttlMs),
+      ).rejects.toThrow('Failed to open log stream: 404 Not Found');
+
+      expect(requestCount).toBe(3);
+      expect(consola.warn).toHaveBeenCalledWith('Log stream idle, reconnecting...');
+    },
+  );
+
   test('reconnects when connection TTL is reached', { timeout: 3000 }, async () => {
     let requestCount = 0;
     const ttlMs = 200;
