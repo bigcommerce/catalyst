@@ -598,6 +598,13 @@ describe('setupCommerceHosting', () => {
     writeFileSync(join(coreDir, 'proxy.ts'), contents);
   }
 
+  function writeCoreInstrumentationFile(contents: string) {
+    const coreDir = join(projectDir, 'core');
+
+    mkdirSync(coreDir, { recursive: true });
+    writeFileSync(join(coreDir, 'instrumentation.ts'), contents);
+  }
+
   function readCorePackageJson() {
     return packageJsonSchema.parse(
       JSON.parse(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')),
@@ -622,6 +629,44 @@ describe('setupCommerceHosting', () => {
 
     expect(pkg.dependencies).toMatchObject({ next: '^15.0.0', react: '^18.0.0' });
     expect(pkg.dependencies).toHaveProperty('@opennextjs/cloudflare');
+  });
+
+  it('drops @vercel/otel from dependencies while preserving other deps', () => {
+    writeCorePackageJson({
+      scripts: { dev: 'next dev' },
+      dependencies: {
+        next: '^15.0.0',
+        react: '^18.0.0',
+        '@vercel/otel': '^2.1.0',
+        '@opentelemetry/api': '^1.9.0',
+      },
+    });
+
+    setupCommerceHosting({ projectDir, projectUuid: 'u' });
+
+    const pkg = readCorePackageJson();
+
+    expect(pkg.dependencies).not.toHaveProperty('@vercel/otel');
+    expect(pkg.dependencies).toMatchObject({
+      next: '^15.0.0',
+      react: '^18.0.0',
+      '@opentelemetry/api': '^1.9.0',
+    });
+    expect(pkg.dependencies).toHaveProperty('@opennextjs/cloudflare');
+  });
+
+  it('is a no-op for the @vercel/otel removal when it is not in dependencies', () => {
+    writeCorePackageJson({
+      scripts: { dev: 'next dev' },
+      dependencies: { next: '^15.0.0' },
+    });
+
+    expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
+
+    const pkg = readCorePackageJson();
+
+    expect(pkg.dependencies).not.toHaveProperty('@vercel/otel');
+    expect(pkg.dependencies).toMatchObject({ next: '^15.0.0' });
   });
 
   it('does not modify package.json scripts (handled by setupCoreProject)', () => {
@@ -812,6 +857,24 @@ describe('setupCommerceHosting', () => {
 
       expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
       expect(existsSync(join(projectDir, 'core', 'middleware.ts'))).toBe(false);
+    });
+  });
+
+  describe('instrumentation.ts removal', () => {
+    it('deletes core/instrumentation.ts when it exists', () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeCoreInstrumentationFile('export function register() {}\n');
+
+      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+
+      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+    });
+
+    it('is a no-op when instrumentation.ts does not exist', () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+
+      expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
+      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
     });
   });
 });

@@ -64,6 +64,18 @@ const convertProxyToMiddleware = (projectDir: string) => {
   unlinkSync(proxyPath);
 };
 
+// The default `core/instrumentation.ts` registers `@vercel/otel`, whose node
+// build OpenNext bundles into the worker chunk; workerd then throws on cold
+// start with "Failed to prepare server". The hook isn't wired to any tracer
+// consumers in /core, so we drop it (and the dep) for Commerce Hosting deploys.
+const removeInstrumentationHook = (projectDir: string) => {
+  const instrumentationPath = join(projectDir, 'core', 'instrumentation.ts');
+
+  if (!existsSync(instrumentationPath)) return;
+
+  unlinkSync(instrumentationPath);
+};
+
 export const setupCommerceHosting = ({
   projectDir,
   projectUuid,
@@ -78,8 +90,10 @@ export const setupCommerceHosting = ({
   const corePackageJsonPath = join(projectDir, 'core', 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
 
+  const { '@vercel/otel': _removedVercelOtel, ...preservedDeps } = pkg.dependencies ?? {};
+
   pkg.dependencies = {
-    ...pkg.dependencies,
+    ...preservedDeps,
     '@opennextjs/cloudflare': OPENNEXT_CLOUDFLARE_VERSION,
   };
 
@@ -97,6 +111,7 @@ export const setupCommerceHosting = ({
 
   symlinkRootEnvToCore(projectDir);
   convertProxyToMiddleware(projectDir);
+  removeInstrumentationHook(projectDir);
 };
 
 interface CommerceHostingApiContext {
