@@ -127,6 +127,32 @@ const processLogEvent = (event: string, format: LogFormat) => {
   }
 };
 
+type TimeoutRaceResult<T> = { kind: 'value'; value: T } | { kind: 'timeout' };
+
+// Races a promise against a timer so a hung `reader.read()` doesn't block the
+// reconnect loop. Without this, the connection TTL check below the read() call
+// never runs when the API proxy half-closes the socket — bytes stop arriving
+// but no FIN/error surfaces, so the read promise stays pending forever.
+const raceWithTimeout = async <T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+): Promise<TimeoutRaceResult<T>> => {
+  let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+
+  const timeoutPromise = new Promise<TimeoutRaceResult<T>>((resolve) => {
+    timeoutHandle = setTimeout(() => resolve({ kind: 'timeout' }), timeoutMs);
+  });
+
+  try {
+    return await Promise.race([
+      promise.then((value): TimeoutRaceResult<T> => ({ kind: 'value', value })),
+      timeoutPromise,
+    ]);
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+};
+
 const openLogStream = async (
   projectUuid: string,
   storeHash: string,
@@ -181,15 +207,37 @@ export const tailLogs = async (
       const decoder = new TextDecoder();
       const connectTime = Date.now();
       let buffer = '';
+      let receivedData = false;
 
       retries = 0;
 
       // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
       while (true) {
+        const remainingTtlMs = connectionTtlMs - (Date.now() - connectTime);
+
+        if (remainingTtlMs <= 0) {
+          void reader.cancel();
+          break;
+        }
+
         // eslint-disable-next-line no-await-in-loop
-        const { value, done: streamDone } = await reader.read();
+        const readResult = await raceWithTimeout(reader.read(), remainingTtlMs);
+
+        if (readResult.kind === 'timeout') {
+          // No bytes for the whole TTL window — proxy likely half-closed the
+          // socket. Warn the user so they see the reconnect happen.
+          if (!receivedData) {
+            consola.warn('Log stream idle, reconnecting...');
+          }
+
+          void reader.cancel();
+          break;
+        }
+
+        const { value, done: streamDone } = readResult.value;
 
         if (value) {
+          receivedData = true;
           buffer += decoder.decode(value, { stream: true });
 
           const parts = buffer.split('\n\n');
@@ -203,7 +251,7 @@ export const tailLogs = async (
             .forEach((event) => processLogEvent(event, format));
         }
 
-        if (streamDone || Date.now() - connectTime >= connectionTtlMs) {
+        if (streamDone) {
           void reader.cancel();
           break;
         }
