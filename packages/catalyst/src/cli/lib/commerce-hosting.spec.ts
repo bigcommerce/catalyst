@@ -15,6 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } fr
 import { z } from 'zod';
 
 import {
+  cleanupCloudflareIncompatibilities,
   promptAndCreateCommerceHostingProject,
   promptForCommerceHostingProject,
   setupCommerceHosting,
@@ -876,5 +877,93 @@ describe('setupCommerceHosting', () => {
       expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
       expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
     });
+  });
+});
+
+describe('cleanupCloudflareIncompatibilities', () => {
+  const packageJsonSchema = z.record(z.string(), z.unknown());
+
+  let projectDir: string;
+
+  beforeEach(() => {
+    projectDir = mkdtempSync(join(tmpdir(), 'catalyst-cleanup-test-'));
+  });
+
+  afterEach(() => {
+    rmSync(projectDir, { recursive: true, force: true });
+  });
+
+  function writeCorePackageJson(contents: unknown) {
+    const coreDir = join(projectDir, 'core');
+
+    mkdirSync(coreDir, { recursive: true });
+    writeFileSync(join(coreDir, 'package.json'), JSON.stringify(contents, null, 2));
+  }
+
+  function writeCoreInstrumentationFile(contents: string) {
+    const coreDir = join(projectDir, 'core');
+
+    mkdirSync(coreDir, { recursive: true });
+    writeFileSync(join(coreDir, 'instrumentation.ts'), contents);
+  }
+
+  function readCorePackageJson() {
+    return packageJsonSchema.parse(
+      JSON.parse(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')),
+    );
+  }
+
+  it('removes core/instrumentation.ts when present', () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0' } });
+    writeCoreInstrumentationFile('export function register() {}\n');
+
+    cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+  });
+
+  it('drops @vercel/otel while preserving every other dependency', () => {
+    writeCorePackageJson({
+      dependencies: {
+        next: '^15.0.0',
+        react: '^18.0.0',
+        '@vercel/otel': '^2.1.0',
+        '@opentelemetry/api': '^1.9.0',
+      },
+    });
+
+    cleanupCloudflareIncompatibilities(projectDir);
+
+    const pkg = readCorePackageJson();
+
+    expect(pkg.dependencies).not.toHaveProperty('@vercel/otel');
+    expect(pkg.dependencies).toMatchObject({
+      next: '^15.0.0',
+      react: '^18.0.0',
+      '@opentelemetry/api': '^1.9.0',
+    });
+  });
+
+  it('is fully idempotent when nothing needs to change', () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0' } });
+
+    const before = readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8');
+
+    expect(() => cleanupCloudflareIncompatibilities(projectDir)).not.toThrow();
+
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+    expect(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')).toBe(before);
+  });
+
+  it('skips silently when core/package.json does not exist', () => {
+    expect(() => cleanupCloudflareIncompatibilities(projectDir)).not.toThrow();
+  });
+
+  it('removes the instrumentation file even when no package.json is present', () => {
+    writeCoreInstrumentationFile('export function register() {}\n');
+
+    cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
   });
 });

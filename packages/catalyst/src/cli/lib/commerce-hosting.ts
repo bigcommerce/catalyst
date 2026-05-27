@@ -68,12 +68,31 @@ const convertProxyToMiddleware = (projectDir: string) => {
 // build OpenNext bundles into the worker chunk; workerd then throws on cold
 // start with "Failed to prepare server". The hook isn't wired to any tracer
 // consumers in /core, so we drop it (and the dep) for Commerce Hosting deploys.
-const removeInstrumentationHook = (projectDir: string) => {
+// Exported because callers run this on already-transformed projects too, where
+// `setupCommerceHosting` would short-circuit.
+export const cleanupCloudflareIncompatibilities = (projectDir: string) => {
+  const corePackageJsonPath = join(projectDir, 'core', 'package.json');
+
+  if (existsSync(corePackageJsonPath)) {
+    const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
+
+    if (pkg.dependencies && '@vercel/otel' in pkg.dependencies) {
+      const { '@vercel/otel': _removedVercelOtel, ...preservedDeps } = pkg.dependencies;
+
+      pkg.dependencies = preservedDeps;
+      writeJson(corePackageJsonPath, sortPackageJsonFields(pkg));
+      consola.info(
+        'Dropped @vercel/otel from core/package.json (incompatible with Cloudflare Workers).',
+      );
+    }
+  }
+
   const instrumentationPath = join(projectDir, 'core', 'instrumentation.ts');
 
-  if (!existsSync(instrumentationPath)) return;
-
-  unlinkSync(instrumentationPath);
+  if (existsSync(instrumentationPath)) {
+    unlinkSync(instrumentationPath);
+    consola.info('Removed core/instrumentation.ts (incompatible with Cloudflare Workers).');
+  }
 };
 
 export const setupCommerceHosting = ({
@@ -87,13 +106,13 @@ export const setupCommerceHosting = ({
   storeHash?: string;
   accessToken?: string;
 }) => {
+  cleanupCloudflareIncompatibilities(projectDir);
+
   const corePackageJsonPath = join(projectDir, 'core', 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
 
-  const { '@vercel/otel': _removedVercelOtel, ...preservedDeps } = pkg.dependencies ?? {};
-
   pkg.dependencies = {
-    ...preservedDeps,
+    ...pkg.dependencies,
     '@opennextjs/cloudflare': OPENNEXT_CLOUDFLARE_VERSION,
   };
 
@@ -111,7 +130,6 @@ export const setupCommerceHosting = ({
 
   symlinkRootEnvToCore(projectDir);
   convertProxyToMiddleware(projectDir);
-  removeInstrumentationHook(projectDir);
 };
 
 interface CommerceHostingApiContext {
