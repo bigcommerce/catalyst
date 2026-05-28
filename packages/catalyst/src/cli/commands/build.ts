@@ -1,6 +1,6 @@
 import { Command, Option } from 'commander';
 import { execa } from 'execa';
-import { copyFile, cp, writeFile } from 'node:fs/promises';
+import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -17,6 +17,11 @@ export async function buildCatalystProject(projectUuid: string): Promise<void> {
   const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
 
   const wranglerConfig = getWranglerConfig(projectUuid);
+
+  // Wrangler's --outdir writes alongside existing files instead of replacing
+  // the directory. Stale artifacts (e.g. wasm modules named by an older
+  // Wrangler version) end up in the bundle and break the Cloudflare upload.
+  await rm(bigcommerceDistDir, { recursive: true, force: true });
 
   consola.start('Copying templates...');
 
