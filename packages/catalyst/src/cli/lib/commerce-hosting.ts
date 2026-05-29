@@ -96,6 +96,8 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
     { type: 'confirm', initial: true },
   );
 
+  consola.log('');
+
   if (!shouldRemove) {
     consola.info(
       'Leaving core/instrumentation.ts in place. The Cloudflare worker will continue to log ' +
