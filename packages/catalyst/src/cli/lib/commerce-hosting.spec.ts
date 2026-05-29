@@ -20,6 +20,7 @@ import {
   promptForCommerceHostingProject,
   setupCommerceHosting,
 } from './commerce-hosting';
+import { consola } from './logger';
 import * as projectLib from './project';
 import { InfrastructureProjectValidationError } from './project';
 
@@ -576,13 +577,20 @@ describe('setupCommerceHosting', () => {
   });
 
   let projectDir: string;
+  let restoreTty: () => void;
+  let consolaPromptSpy: MockInstance<typeof consola.prompt>;
 
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), 'catalyst-create-test-'));
+    restoreTty = withInteractiveTty();
+    consolaPromptSpy = vi.spyOn(consola, 'prompt');
+    consolaPromptSpy.mockResolvedValue(true);
   });
 
   afterEach(() => {
     rmSync(projectDir, { recursive: true, force: true });
+    restoreTty();
+    consolaPromptSpy.mockRestore();
   });
 
   function writeCorePackageJson(contents: unknown) {
@@ -618,13 +626,13 @@ describe('setupCommerceHosting', () => {
     );
   }
 
-  it('adds the OpenNext Cloudflare dep while preserving existing dependencies', () => {
+  it('adds the OpenNext Cloudflare dep while preserving existing dependencies', async () => {
     writeCorePackageJson({
       scripts: { dev: 'next dev' },
       dependencies: { next: '^15.0.0', react: '^18.0.0' },
     });
 
-    setupCommerceHosting({ projectDir, projectUuid: 'u' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
     const pkg = readCorePackageJson();
 
@@ -632,7 +640,7 @@ describe('setupCommerceHosting', () => {
     expect(pkg.dependencies).toHaveProperty('@opennextjs/cloudflare');
   });
 
-  it('drops @vercel/otel from dependencies while preserving other deps', () => {
+  it('drops @vercel/otel from dependencies when the user accepts the instrumentation removal prompt', async () => {
     writeCorePackageJson({
       scripts: { dev: 'next dev' },
       dependencies: {
@@ -642,8 +650,9 @@ describe('setupCommerceHosting', () => {
         '@opentelemetry/api': '^1.9.0',
       },
     });
+    writeCoreInstrumentationFile('export function register() {}\n');
 
-    setupCommerceHosting({ projectDir, projectUuid: 'u' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
     const pkg = readCorePackageJson();
 
@@ -656,21 +665,21 @@ describe('setupCommerceHosting', () => {
     expect(pkg.dependencies).toHaveProperty('@opennextjs/cloudflare');
   });
 
-  it('is a no-op for the @vercel/otel removal when it is not in dependencies', () => {
+  it('keeps @vercel/otel in place when no instrumentation.ts file exists', async () => {
     writeCorePackageJson({
       scripts: { dev: 'next dev' },
-      dependencies: { next: '^15.0.0' },
+      dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
     });
 
-    expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
+    await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
     const pkg = readCorePackageJson();
 
-    expect(pkg.dependencies).not.toHaveProperty('@vercel/otel');
-    expect(pkg.dependencies).toMatchObject({ next: '^15.0.0' });
+    expect(pkg.dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+    expect(consolaPromptSpy).not.toHaveBeenCalled();
   });
 
-  it('does not modify package.json scripts (handled by setupCoreProject)', () => {
+  it('does not modify package.json scripts (handled by setupCoreProject)', async () => {
     writeCorePackageJson({
       scripts: {
         dev: 'npm run generate && next dev',
@@ -679,7 +688,7 @@ describe('setupCommerceHosting', () => {
       },
     });
 
-    setupCommerceHosting({ projectDir, projectUuid: 'u' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
     expect(readCorePackageJson().scripts).toEqual({
       dev: 'npm run generate && next dev',
@@ -688,7 +697,7 @@ describe('setupCommerceHosting', () => {
     });
   });
 
-  it('preserves unrelated top-level package.json fields', () => {
+  it('preserves unrelated top-level package.json fields', async () => {
     writeCorePackageJson({
       name: '@bigcommerce/catalyst-core',
       description: 'test description',
@@ -698,7 +707,7 @@ describe('setupCommerceHosting', () => {
       devDependencies: { jest: '^29.0.0' },
     });
 
-    setupCommerceHosting({ projectDir, projectUuid: 'u' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
     const pkg = readCorePackageJson();
 
@@ -709,18 +718,18 @@ describe('setupCommerceHosting', () => {
     expect(pkg.devDependencies).toEqual({ jest: '^29.0.0' });
   });
 
-  it('writes core/.bigcommerce/project.json with the correct shape', () => {
+  it('writes core/.bigcommerce/project.json with the correct shape', async () => {
     writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-    setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
 
     expect(readProjectJson()).toEqual({ projectUuid: 'uuid-xyz', framework: 'catalyst' });
   });
 
-  it('includes storeHash and accessToken in project.json when provided', () => {
+  it('includes storeHash and accessToken in project.json when provided', async () => {
     writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-    setupCommerceHosting({
+    await setupCommerceHosting({
       projectDir,
       projectUuid: 'uuid-xyz',
       storeHash: 'abc123',
@@ -735,10 +744,10 @@ describe('setupCommerceHosting', () => {
     });
   });
 
-  it('omits storeHash and accessToken when not provided', () => {
+  it('omits storeHash and accessToken when not provided', async () => {
     writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-    setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+    await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
 
     const projectJson = readProjectJson();
 
@@ -746,10 +755,10 @@ describe('setupCommerceHosting', () => {
     expect(projectJson.accessToken).toBeUndefined();
   });
 
-  it('includes only the credentials that are provided', () => {
+  it('includes only the credentials that are provided', async () => {
     writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-    setupCommerceHosting({
+    await setupCommerceHosting({
       projectDir,
       projectUuid: 'uuid-xyz',
       storeHash: 'abc123',
@@ -761,21 +770,21 @@ describe('setupCommerceHosting', () => {
     expect(projectJson.accessToken).toBeUndefined();
   });
 
-  it('throws when core/package.json is missing', () => {
-    expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).toThrow();
+  it('throws when core/package.json is missing', async () => {
+    await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
   });
 
-  it('throws when core/package.json has an invalid shape', () => {
+  it('throws when core/package.json has an invalid shape', async () => {
     writeCorePackageJson({ dependencies: { next: 42 } });
 
-    expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).toThrow();
+    await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
   });
 
   describe('core/.env.local symlink', () => {
-    it('creates a symlink at core/.env.local pointing to ../.env.local', () => {
+    it('creates a symlink at core/.env.local pointing to ../.env.local', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       const coreEnvPath = join(projectDir, 'core', '.env.local');
 
@@ -783,11 +792,11 @@ describe('setupCommerceHosting', () => {
       expect(readlinkSync(coreEnvPath)).toBe(join('..', '.env.local'));
     });
 
-    it('keeps both files in sync via the symlink target', () => {
+    it('keeps both files in sync via the symlink target', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeFileSync(join(projectDir, '.env.local'), 'FOO=bar\n');
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       expect(readFileSync(join(projectDir, 'core', '.env.local'), 'utf-8')).toBe('FOO=bar\n');
 
@@ -796,12 +805,12 @@ describe('setupCommerceHosting', () => {
       expect(readFileSync(join(projectDir, '.env.local'), 'utf-8')).toBe('FOO=baz\n');
     });
 
-    it('does not clobber an existing core/.env.local file', () => {
+    it('does not clobber an existing core/.env.local file', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       mkdirSync(join(projectDir, 'core'), { recursive: true });
       writeFileSync(join(projectDir, 'core', '.env.local'), 'PRESERVE=me\n');
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       const coreEnvPath = join(projectDir, 'core', '.env.local');
 
@@ -822,11 +831,11 @@ describe('setupCommerceHosting', () => {
       '',
     ].join('\n');
 
-    it('renames proxy.ts to middleware.ts, renames the export, and injects the edge runtime', () => {
+    it('renames proxy.ts to middleware.ts, renames the export, and injects the edge runtime', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeCoreProxyFile(proxyFixture);
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       const middlewarePath = join(projectDir, 'core', 'middleware.ts');
       const proxyPath = join(projectDir, 'core', 'proxy.ts');
@@ -841,11 +850,11 @@ describe('setupCommerceHosting', () => {
       expect(middleware).toContain("runtime: 'experimental-edge'");
     });
 
-    it('preserves the rest of the file contents', () => {
+    it('preserves the rest of the file contents', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeCoreProxyFile(proxyFixture);
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       const middleware = readFileSync(join(projectDir, 'core', 'middleware.ts'), 'utf-8');
 
@@ -853,29 +862,44 @@ describe('setupCommerceHosting', () => {
       expect(middleware).toContain("matcher: ['/((?!api).*)']");
     });
 
-    it('is a no-op when proxy.ts does not exist', () => {
+    it('is a no-op when proxy.ts does not exist', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-      expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
+      await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
       expect(existsSync(join(projectDir, 'core', 'middleware.ts'))).toBe(false);
     });
   });
 
   describe('instrumentation.ts removal', () => {
-    it('deletes core/instrumentation.ts when it exists', () => {
+    it('deletes core/instrumentation.ts when the user accepts the prompt', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeCoreInstrumentationFile('export function register() {}\n');
 
-      setupCommerceHosting({ projectDir, projectUuid: 'u' });
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
       expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
     });
 
-    it('is a no-op when instrumentation.ts does not exist', () => {
+    it('preserves core/instrumentation.ts when the user declines the prompt', async () => {
+      consolaPromptSpy.mockResolvedValueOnce(false);
+
+      writeCorePackageJson({
+        scripts: { dev: 'next dev' },
+        dependencies: { '@vercel/otel': '^2.1.0' },
+      });
+      writeCoreInstrumentationFile('export function register() {}\n');
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
+
+      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+      expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+    });
+
+    it('does not prompt when instrumentation.ts does not exist', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
-      expect(() => setupCommerceHosting({ projectDir, projectUuid: 'u' })).not.toThrow();
-      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+      await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
+      expect(consolaPromptSpy).not.toHaveBeenCalled();
     });
   });
 });
@@ -884,13 +908,20 @@ describe('cleanupCloudflareIncompatibilities', () => {
   const packageJsonSchema = z.record(z.string(), z.unknown());
 
   let projectDir: string;
+  let restoreTty: () => void;
+  let consolaPromptSpy: MockInstance<typeof consola.prompt>;
 
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), 'catalyst-cleanup-test-'));
+    restoreTty = withInteractiveTty();
+    consolaPromptSpy = vi.spyOn(consola, 'prompt');
+    consolaPromptSpy.mockResolvedValue(true);
   });
 
   afterEach(() => {
     rmSync(projectDir, { recursive: true, force: true });
+    restoreTty();
+    consolaPromptSpy.mockRestore();
   });
 
   function writeCorePackageJson(contents: unknown) {
@@ -913,56 +944,62 @@ describe('cleanupCloudflareIncompatibilities', () => {
     );
   }
 
-  it('removes core/instrumentation.ts when present', () => {
-    writeCorePackageJson({ dependencies: { next: '^15.0.0' } });
-    writeCoreInstrumentationFile('export function register() {}\n');
-
-    cleanupCloudflareIncompatibilities(projectDir);
-
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
-  });
-
-  it('drops @vercel/otel while preserving every other dependency', () => {
+  it('removes core/instrumentation.ts and drops @vercel/otel when the user accepts (TTY)', async () => {
     writeCorePackageJson({
-      dependencies: {
-        next: '^15.0.0',
-        react: '^18.0.0',
-        '@vercel/otel': '^2.1.0',
-        '@opentelemetry/api': '^1.9.0',
-      },
+      dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
     });
-
-    cleanupCloudflareIncompatibilities(projectDir);
-
-    const pkg = readCorePackageJson();
-
-    expect(pkg.dependencies).not.toHaveProperty('@vercel/otel');
-    expect(pkg.dependencies).toMatchObject({
-      next: '^15.0.0',
-      react: '^18.0.0',
-      '@opentelemetry/api': '^1.9.0',
-    });
-  });
-
-  it('is fully idempotent when nothing needs to change', () => {
-    writeCorePackageJson({ dependencies: { next: '^15.0.0' } });
-
-    const before = readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8');
-
-    expect(() => cleanupCloudflareIncompatibilities(projectDir)).not.toThrow();
-
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
-    expect(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')).toBe(before);
-  });
-
-  it('skips silently when core/package.json does not exist', () => {
-    expect(() => cleanupCloudflareIncompatibilities(projectDir)).not.toThrow();
-  });
-
-  it('removes the instrumentation file even when no package.json is present', () => {
     writeCoreInstrumentationFile('export function register() {}\n');
 
-    cleanupCloudflareIncompatibilities(projectDir);
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+    expect(readCorePackageJson().dependencies).not.toHaveProperty('@vercel/otel');
+    expect(readCorePackageJson().dependencies).toMatchObject({ next: '^15.0.0' });
+  });
+
+  it('leaves the file and the dep alone when the user declines (TTY)', async () => {
+    consolaPromptSpy.mockResolvedValueOnce(false);
+
+    writeCorePackageJson({
+      dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
+    });
+    writeCoreInstrumentationFile('// customized\nexport function register() {}\n');
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+    expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+  });
+
+  it('skips the cleanup and never prompts in non-interactive contexts', async () => {
+    restoreTty();
+    restoreTty = withNonInteractiveTty();
+
+    writeCorePackageJson({
+      dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
+    });
+    writeCoreInstrumentationFile('// customized\nexport function register() {}\n');
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(consolaPromptSpy).not.toHaveBeenCalled();
+    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+    expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+  });
+
+  it('is a silent no-op when instrumentation.ts does not exist', async () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(consolaPromptSpy).not.toHaveBeenCalled();
+    expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+  });
+
+  it('removes the instrumentation file even when no package.json is present', async () => {
+    writeCoreInstrumentationFile('export function register() {}\n');
+
+    await cleanupCloudflareIncompatibilities(projectDir);
 
     expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
   });

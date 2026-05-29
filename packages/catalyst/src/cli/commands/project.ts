@@ -37,7 +37,7 @@ async function offerCommerceHostingSetup(
   // (e.g. `core/instrumentation.ts`, `@vercel/otel`). Run cleanup so existing
   // Commerce Hosting users pick up these fixes on re-link without prompting.
   if (getProjectState().isTransformed) {
-    cleanupCloudflareIncompatibilities(projectDir);
+    await cleanupCloudflareIncompatibilities(projectDir);
 
     return;
   }
@@ -49,7 +49,7 @@ async function offerCommerceHostingSetup(
 
   if (!shouldSetup) return;
 
-  setupCommerceHosting({
+  await setupCommerceHosting({
     projectDir,
     projectUuid,
     storeHash: credentials?.storeHash,
