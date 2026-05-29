@@ -68,6 +68,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Product({ params, searchParams }: Props) {
   const { locale, slug } = await params;
+  const options = await searchParams;
+
+  const optionValueIds = Object.keys(options)
+    .map((option) => ({
+      optionEntityId: Number(option),
+      valueEntityId: Number(options[option]),
+    }))
+    .filter(
+      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+    );
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
 
@@ -91,17 +102,6 @@ export default async function Product({ params, searchParams }: Props) {
   }
 
   const streamableProduct = Streamable.from(async () => {
-    const options = await searchParams;
-
-    const optionValueIds = Object.keys(options)
-      .map((option) => ({
-        optionEntityId: Number(option),
-        valueEntityId: Number(options[option]),
-      }))
-      .filter(
-        (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-      );
-
     const variables = {
       entityId: Number(productId),
       optionValueIds,
@@ -122,6 +122,8 @@ export default async function Product({ params, searchParams }: Props) {
   const streamableProductInventory = Streamable.from(async () => {
     const variables = {
       entityId: Number(productId),
+      optionValueIds,
+      useDefaultOptionSelections: true,
     };
 
     const product = await getStreamableProductInventory(variables, customerAccessToken);
@@ -155,17 +157,6 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
-    const options = await searchParams;
-
-    const optionValueIds = Object.keys(options)
-      .map((option) => ({
-        optionEntityId: Number(option),
-        valueEntityId: Number(options[option]),
-      }))
-      .filter(
-        (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-      );
-
     const currencyCode = await getPreferredCurrencyCode();
 
     const variables = {
