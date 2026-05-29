@@ -1,5 +1,153 @@
 # Changelog
 
+## 1.7.0
+
+### Minor Changes
+
+- [#2989](https://github.com/bigcommerce/catalyst/pull/2989) [`518d20a`](https://github.com/bigcommerce/catalyst/commit/518d20a8a8d59bfb45384acee72e04f5366daca8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Restore locale-aware `lang` attribute on the root `<html>` tag. The previous root layout hardcoded `lang="en"` for all locales; ownership of `<html>`/`<body>` now lives in `app/[locale]/layout.tsx` so `lang={locale}` reflects the active locale. The root `app/layout.tsx` is now a passthrough, and `app/not-found.tsx` is self-sufficient (renders its own `<html>`/`<body>`) to preserve the branded 404 for non-localized requests.
+
+- [#2825](https://github.com/bigcommerce/catalyst/pull/2825) [`7b38d98`](https://github.com/bigcommerce/catalyst/commit/7b38d985d40e35c99f542ddd0e7f51d494ca650b) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Add GraphQL proxy to enable client-side GraphQL requests through the storefront. This proxy forwards requests from allowed clients (such as checkout-sdk-js) to the BigCommerce Storefront API using a dedicated unauthenticated storefront token for API authorization, while still passing through the customer access token for customer-specific data. No browser cookies are forwarded.
+
+  ## Migration
+
+  ### Step 1: Add environment variable
+
+  Add a `BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN` to your `.env.local`. This should be a storefront API token scoped for client-side proxy use with minimal permissions.
+
+  ### Step 2: Create proxy
+
+  Create a new file `core/proxies/with-graphql-proxy.ts`:
+
+  ```ts
+  import { NextResponse, URLPattern } from 'next/server';
+  import { z } from 'zod';
+
+  import { auth } from '~/auth';
+  import { client } from '~/client';
+
+  import { type ProxyFactory } from './compose-proxies';
+
+  const ALLOWED_REQUESTERS = ['checkout-sdk-js'];
+  const graphqlPathPattern = new URLPattern({ pathname: '/graphql' });
+
+  const bodySchema = z.object({
+    query: z.unknown(),
+    variables: z.record(z.unknown()).default({}),
+  });
+
+  export const withGraphqlProxy: ProxyFactory = (next) => {
+    return async (request, event) => {
+      // Only handle /graphql path
+      if (!graphqlPathPattern.test(request.nextUrl.toString())) {
+        return next(request, event);
+      }
+
+      const requester = request.headers.get('x-catalyst-graphql-proxy-requester');
+
+      // Validate required header
+      if (!requester || !ALLOWED_REQUESTERS.includes(requester)) {
+        return next(request, event);
+      }
+
+      // Only handle POST requests
+      if (request.method !== 'POST') {
+        return new NextResponse('Method not allowed', { status: 405 });
+      }
+
+      // Wrap in auth to get customer access token for customer-specific data
+      return auth(async (req) => {
+        try {
+          // Parse incoming GraphQL request body
+          const body: unknown = await req.json();
+          const { query, variables } = bodySchema.parse(body);
+
+          if (!query) {
+            return NextResponse.json({ error: 'Missing query' }, { status: 400 });
+          }
+
+          // Get customer access token if authenticated
+          const customerAccessToken = req.auth?.user?.customerAccessToken;
+
+          // Proxy the request using the existing client with an unauthenticated storefront token
+          const response = await client.fetch({
+            document: query,
+            variables,
+            customerAccessToken,
+            fetchOptions: {
+              headers: {
+                Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN}`,
+              },
+              next: { revalidate: 0 },
+            },
+          });
+
+          return NextResponse.json(response);
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error(error);
+
+          return NextResponse.json(error, { status: 500 });
+        }
+        // @ts-expect-error auth() overload expects middleware return type, but we return NextResponse directly for the proxy
+      })(request, event);
+    };
+  };
+  ```
+
+  ### Step 3: Register proxy
+
+  Update `core/proxy.ts` to include the new proxy in the composition chain:
+
+  ```diff
+    import { composeProxies } from './proxies/compose-proxies';
+    import { withAnalyticsCookies } from './proxies/with-analytics-cookies';
+    import { withAuth } from './proxies/with-auth';
+    import { withChannelId } from './proxies/with-channel-id';
+  + import { withGraphqlProxy } from './proxies/with-graphql-proxy';
+    import { withIntl } from './proxies/with-intl';
+    import { withRoutes } from './proxies/with-routes';
+
+    export const proxy = composeProxies(
+      withAuth,
+      withAnalyticsCookies,
+      withIntl,
+      withChannelId,
+  +   withGraphqlProxy,
+      withRoutes,
+    );
+  ```
+
+  The `withGraphqlProxy` proxy should be placed after `withChannelId` and before `withRoutes` in the chain.
+
+### Patch Changes
+
+- [#3002](https://github.com/bigcommerce/catalyst/pull/3002) [`24cc310`](https://github.com/bigcommerce/catalyst/commit/24cc310e16f85f6f5d36d8b3c69c4b6ff02c600d) Thanks [@bc-alexsaiannyi](https://github.com/bc-alexsaiannyi)! - Fix cart summary Discounts row not showing manual discounts applied via the Management Checkout API
+
+- [#2976](https://github.com/bigcommerce/catalyst/pull/2976) [`a85fa42`](https://github.com/bigcommerce/catalyst/commit/a85fa42aaa89ae6c2ac5e69b43d4c0bf15dacdf9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add X-Correlation-ID header to all GraphQL requests. Each page render gets a stable UUID that persists across all fetches within the same render, enabling easier request tracing in server logs.
+
+- [#3021](https://github.com/bigcommerce/catalyst/pull/3021) [`4e44415`](https://github.com/bigcommerce/catalyst/commit/4e444159e6266bd1bc9836b727d9402ad73058ab) Thanks [@mfaris9](https://github.com/mfaris9)! - Default brand PLP sort to `featured` to honor the merchant's product sort order.
+
+- [#2964](https://github.com/bigcommerce/catalyst/pull/2964) [`d00beeb`](https://github.com/bigcommerce/catalyst/commit/d00beeb458e720070c190c09ee26ea50802b1659) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Prevent breadcrumb array mutation on cached web pages by spreading the React `cache()` result before reversing, and fix an off-by-one in `truncateBreadcrumbs` that incorrectly truncated arrays exactly at the target length. Also defer `ProductReviewSchema` to client-only rendering to avoid a DOMPurify SSR crash.
+
+- [#3005](https://github.com/bigcommerce/catalyst/pull/3005) [`37e0a7c`](https://github.com/bigcommerce/catalyst/commit/37e0a7cc99163fea5c22769483175f2509f556e7) Thanks [@mfaris9](https://github.com/mfaris9)! - Fix `formField.required` mismatch for `checkbox-group` fields in `DynamicForm`. The schema branch was missing `.optional()` for non-required checkbox groups.
+
+- [#3013](https://github.com/bigcommerce/catalyst/pull/3013) [`9aacfdc`](https://github.com/bigcommerce/catalyst/commit/9aacfdccfbd081092f98b320028bd5e0d6c6b2bb) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Pass the customer access token through route resolution and the normal/contact webpage queries so customer-restricted web pages are accessible (and appear in navigation) for authenticated customers. The `with-routes` proxy is now wrapped in `auth()`, and webpage `page-data` queries switch to an uncached fetch when a customer token is present.
+
+- [#2963](https://github.com/bigcommerce/catalyst/pull/2963) [`a8dd99e`](https://github.com/bigcommerce/catalyst/commit/a8dd99ef9a1aeab3341e14d39137085cd67f1673) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix DynamicForm not rendering hidden field types, which caused `pageEntityId` to be `NaN` on contact form submission.
+
+- [#3014](https://github.com/bigcommerce/catalyst/pull/3014) [`a792a86`](https://github.com/bigcommerce/catalyst/commit/a792a86b8813811ef87f4b7755ebe8b2e960cdb0) Thanks [@parthshahp](https://github.com/parthshahp)! - TRAC-276 translate the gift certificate line item title in cart, order list, and order details. Previously the title was rendered as the raw English `"{amount} Gift Certificate"` string stored on the BigCommerce backend; it is now rendered from the existing `Cart.GiftCertificate.giftCertificate` translation key, with the amount shown in the separate price column (the order list view now populates `price`/`totalPrice` for gift certificates, which were previously empty).
+
+- [#3008](https://github.com/bigcommerce/catalyst/pull/3008) [`77c8e8d`](https://github.com/bigcommerce/catalyst/commit/77c8e8df9ce4c1fa5e1a3a5ac2fedcca8fb4ab20) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2959](https://github.com/bigcommerce/catalyst/pull/2959) [`4870221`](https://github.com/bigcommerce/catalyst/commit/4870221c3a5c5209b58fb6ec969b30897d08eea8) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2987](https://github.com/bigcommerce/catalyst/pull/2987) [`e18feb6`](https://github.com/bigcommerce/catalyst/commit/e18feb6dd4a02526e239ff0cf7e839882fc50814) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#3022](https://github.com/bigcommerce/catalyst/pull/3022) [`c5fc1af`](https://github.com/bigcommerce/catalyst/commit/c5fc1af718d0992246379c3a7bca7fb1a709e8dc) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- Updated dependencies [[`f4216a6`](https://github.com/bigcommerce/catalyst/commit/f4216a63839050e095e68539d7260ae03797fe9f)]:
+  - @bigcommerce/catalyst-client@1.0.2
+
 ## 1.6.3
 
 ### Patch Changes
