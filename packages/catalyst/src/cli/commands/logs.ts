@@ -130,9 +130,9 @@ const processLogEvent = (event: string, format: LogFormat) => {
 type TimeoutRaceResult<T> = { kind: 'value'; value: T } | { kind: 'timeout' };
 
 // Races a promise against a timer so a hung `reader.read()` doesn't block the
-// reconnect loop. Without this, the connection TTL check below the read() call
-// never runs when the API proxy half-closes the socket — bytes stop arriving
-// but no FIN/error surfaces, so the read promise stays pending forever.
+// read pump. Without this, the connection TTL check never runs when the API
+// proxy half-closes the socket — bytes stop arriving but no FIN/error
+// surfaces, so the read promise stays pending forever.
 const raceWithTimeout = async <T>(
   promise: Promise<T>,
   timeoutMs: number,
@@ -187,6 +187,67 @@ const openLogStream = async (
   return reader;
 };
 
+// Reasons the read pump stops on its own (vs. throwing). The outer reconnect
+// loop maps each to a user-facing message — or silence — and opens a fresh
+// stream.
+type Rotation = 'ttl' | 'idle-timeout' | 'stream-done';
+
+const pumpUntilRotation = async (
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  format: LogFormat,
+  connectionTtlMs: number,
+): Promise<Rotation> => {
+  const decoder = new TextDecoder();
+  const connectTime = Date.now();
+  let buffer = '';
+  let receivedData = false;
+
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    const remainingTtlMs = connectionTtlMs - (Date.now() - connectTime);
+
+    if (remainingTtlMs <= 0) {
+      void reader.cancel();
+
+      return 'ttl';
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    const readResult = await raceWithTimeout(reader.read(), remainingTtlMs);
+
+    if (readResult.kind === 'timeout') {
+      void reader.cancel();
+
+      // No data for the whole window: proxy likely half-closed the socket.
+      // If data flowed earlier, treat it as a normal TTL boundary instead.
+      return receivedData ? 'ttl' : 'idle-timeout';
+    }
+
+    const { value, done: streamDone } = readResult.value;
+
+    if (value) {
+      receivedData = true;
+      buffer += decoder.decode(value, { stream: true });
+
+      const parts = buffer.split('\n\n');
+
+      // Last element is either empty (complete event) or a partial chunk to carry over
+      buffer = parts.pop() ?? '';
+
+      parts
+        .map((raw) => parseSSEEvent(raw))
+        .filter((event): event is string => event !== null)
+        .forEach((event) => processLogEvent(event, format));
+    }
+
+    if (streamDone) {
+      void reader.cancel();
+
+      return 'stream-done';
+    }
+  }
+};
+
 export const tailLogs = async (
   projectUuid: string,
   storeHash: string,
@@ -204,58 +265,16 @@ export const tailLogs = async (
     try {
       // eslint-disable-next-line no-await-in-loop
       const reader = await openLogStream(projectUuid, storeHash, accessToken, apiHost);
-      const decoder = new TextDecoder();
-      const connectTime = Date.now();
-      let buffer = '';
-      let receivedData = false;
 
       retries = 0;
 
-      // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
-      while (true) {
-        const remainingTtlMs = connectionTtlMs - (Date.now() - connectTime);
+      // eslint-disable-next-line no-await-in-loop
+      const rotation = await pumpUntilRotation(reader, format, connectionTtlMs);
 
-        if (remainingTtlMs <= 0) {
-          void reader.cancel();
-          break;
-        }
-
-        // eslint-disable-next-line no-await-in-loop
-        const readResult = await raceWithTimeout(reader.read(), remainingTtlMs);
-
-        if (readResult.kind === 'timeout') {
-          // No bytes for the whole TTL window — proxy likely half-closed the
-          // socket. Warn the user so they see the reconnect happen.
-          if (!receivedData) {
-            consola.warn('Log stream idle, reconnecting...');
-          }
-
-          void reader.cancel();
-          break;
-        }
-
-        const { value, done: streamDone } = readResult.value;
-
-        if (value) {
-          receivedData = true;
-          buffer += decoder.decode(value, { stream: true });
-
-          const parts = buffer.split('\n\n');
-
-          // Last element is either empty (complete event) or a partial chunk to carry over
-          buffer = parts.pop() ?? '';
-
-          parts
-            .map((raw) => parseSSEEvent(raw))
-            .filter((event): event is string => event !== null)
-            .forEach((event) => processLogEvent(event, format));
-        }
-
-        if (streamDone) {
-          void reader.cancel();
-          break;
-        }
+      if (rotation === 'idle-timeout') {
+        consola.warn('Log stream idle, reconnecting...');
       }
+      // 'ttl' and 'stream-done' are healthy rotations — reconnect silently.
     } catch (error) {
       if (error instanceof StreamError && error.fatal) {
         throw error;
