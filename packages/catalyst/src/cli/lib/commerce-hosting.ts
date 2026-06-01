@@ -64,7 +64,68 @@ const convertProxyToMiddleware = (projectDir: string) => {
   unlinkSync(proxyPath);
 };
 
-export const setupCommerceHosting = ({
+// The default `core/instrumentation.ts` registers `@vercel/otel`, whose node
+// build OpenNext bundles into the worker chunk; workerd then throws on cold
+// start with "Failed to prepare server". A Vercel-deploying user may have
+// customized the hook though, so we prompt before removing it (and only drop
+// `@vercel/otel` if the user agrees — their customization probably imports it).
+// In non-TTY contexts (CI deploys, scripts), skip the cleanup with a warning so
+// no customization is silently wiped. Exported because callers run this on
+// already-transformed projects too, where `setupCommerceHosting` would
+// short-circuit.
+export const cleanupCloudflareIncompatibilities = async (projectDir: string) => {
+  const instrumentationPath = join(projectDir, 'core', 'instrumentation.ts');
+
+  if (!existsSync(instrumentationPath)) return;
+
+  if (!process.stdin.isTTY) {
+    consola.warn(
+      'core/instrumentation.ts is present and may be incompatible with the Cloudflare Workers ' +
+        'bundle (the default @vercel/otel scaffolding throws at cold start under workerd). ' +
+        'Skipping automatic cleanup in non-interactive mode — re-run interactively to remove it, ' +
+        'or delete/gate it manually.',
+    );
+
+    return;
+  }
+
+  const shouldRemove = await consola.prompt(
+    'Catalyst found core/instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
+      'bundle when it uses @vercel/otel (causes "Failed to prepare server" at cold start). ' +
+      'Remove it and drop @vercel/otel from core/package.json?',
+    { type: 'confirm', initial: true },
+  );
+
+  consola.log('');
+
+  if (!shouldRemove) {
+    consola.info(
+      'Leaving core/instrumentation.ts in place. The Cloudflare worker will continue to log ' +
+        '"Failed to prepare server" at cold start until this is resolved manually.',
+    );
+
+    return;
+  }
+
+  unlinkSync(instrumentationPath);
+  consola.info('Removed core/instrumentation.ts (incompatible with Cloudflare Workers).');
+
+  const corePackageJsonPath = join(projectDir, 'core', 'package.json');
+
+  if (existsSync(corePackageJsonPath)) {
+    const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
+
+    if (pkg.dependencies && '@vercel/otel' in pkg.dependencies) {
+      const { '@vercel/otel': _removedVercelOtel, ...preservedDeps } = pkg.dependencies;
+
+      pkg.dependencies = preservedDeps;
+      writeJson(corePackageJsonPath, sortPackageJsonFields(pkg));
+      consola.info('Dropped @vercel/otel from core/package.json.');
+    }
+  }
+};
+
+export const setupCommerceHosting = async ({
   projectDir,
   projectUuid,
   storeHash,
@@ -75,6 +136,8 @@ export const setupCommerceHosting = ({
   storeHash?: string;
   accessToken?: string;
 }) => {
+  await cleanupCloudflareIncompatibilities(projectDir);
+
   const corePackageJsonPath = join(projectDir, 'core', 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
 
@@ -417,7 +480,7 @@ export async function runCommerceHostingSetup({
     useExistingOnCollision,
   );
 
-  setupCommerceHosting({
+  await setupCommerceHosting({
     projectDir,
     projectUuid: project.uuid,
     storeHash: api.storeHash,
