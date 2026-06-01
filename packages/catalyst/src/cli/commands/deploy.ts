@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
+  cleanupCloudflareIncompatibilities,
   NoLinkedProjectError,
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
@@ -463,10 +464,16 @@ Example:
 
       const projectDir = dirname(process.cwd());
 
-      setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
+      await setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
       consola.success('Commerce Hosting setup complete.');
 
       await installDependencies(projectDir);
+    } else {
+      // Existing Commerce Hosting users may carry artifacts incompatible with
+      // the Cloudflare worker bundle from earlier Catalyst versions
+      // (`core/instrumentation.ts`, `@vercel/otel`). Sweep them on every deploy
+      // so the fix lands without forcing a re-link.
+      await cleanupCloudflareIncompatibilities(dirname(process.cwd()));
     }
 
     if (options.prebuilt) {

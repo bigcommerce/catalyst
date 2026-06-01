@@ -3,6 +3,7 @@ import { colorize } from 'consola/utils';
 import { dirname } from 'node:path';
 
 import {
+  cleanupCloudflareIncompatibilities,
   NoLinkedProjectError,
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
@@ -29,7 +30,17 @@ async function offerCommerceHostingSetup(
   projectUuid: string,
   credentials?: { storeHash: string; accessToken: string },
 ) {
-  if (getProjectState().isTransformed) return;
+  const projectDir = dirname(process.cwd());
+
+  // Already-transformed projects skip the setup prompt below — but they may
+  // still carry artifacts incompatible with the Cloudflare worker bundle
+  // (e.g. `core/instrumentation.ts`, `@vercel/otel`). Run cleanup so existing
+  // Commerce Hosting users pick up these fixes on re-link without prompting.
+  if (getProjectState().isTransformed) {
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    return;
+  }
 
   const shouldSetup = await consola.prompt(
     'Your project has been linked, but is not fully set up for Commerce Hosting deployments yet. Would you like to run the setup now?',
@@ -38,9 +49,7 @@ async function offerCommerceHostingSetup(
 
   if (!shouldSetup) return;
 
-  const projectDir = dirname(process.cwd());
-
-  setupCommerceHosting({
+  await setupCommerceHosting({
     projectDir,
     projectUuid,
     storeHash: credentials?.storeHash,
