@@ -478,7 +478,7 @@ Examples:
       setupCoreProject(projectDir);
 
       if (useCommerceHosting && commerceHostingProject && storeHash && accessToken) {
-        setupCommerceHosting({
+        await setupCommerceHosting({
           projectDir,
           projectUuid: commerceHostingProject.uuid,
           storeHash,
