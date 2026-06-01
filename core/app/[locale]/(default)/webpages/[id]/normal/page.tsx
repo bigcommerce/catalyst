@@ -10,6 +10,7 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { rewriteWysiwygContentUrls } from '~/data-transformers/html-content-transformer';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { WebPageContent, WebPage as WebPageData } from '../_components/web-page';
@@ -33,7 +34,7 @@ const getWebPage = cache(async (id: string, customerAccessToken?: string): Promi
   return {
     title: webpage.name,
     breadcrumbs,
-    content: webpage.htmlBody,
+    content: rewriteWysiwygContentUrls(webpage.htmlBody),
     seo: webpage.seo,
   };
 });

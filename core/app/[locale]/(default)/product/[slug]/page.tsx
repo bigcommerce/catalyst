@@ -8,6 +8,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { auth, getSessionCustomerAccessToken } from '~/auth';
+import { rewriteWysiwygContentUrls } from '~/data-transformers/html-content-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -482,7 +483,12 @@ export default async function Product({ params, searchParams }: Props) {
             {
               title: t('ProductDetails.Accordions.warranty'),
               content: (
-                <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+                <div
+                  className="prose"
+                  dangerouslySetInnerHTML={{
+                    __html: rewriteWysiwygContentUrls(product.warranty),
+                  }}
+                />
               ),
             },
           ]
@@ -569,7 +575,13 @@ export default async function Product({ params, searchParams }: Props) {
           product={{
             id: baseProduct.entityId.toString(),
             title: baseProduct.name,
-            description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
+            description: (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: rewriteWysiwygContentUrls(baseProduct.description),
+                }}
+              />
+            ),
             href: baseProduct.path,
             images: streamableImages,
             price: streamablePrices,
