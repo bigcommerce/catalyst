@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- [#3018](https://github.com/bigcommerce/catalyst/pull/3018) [`f4216a6`](https://github.com/bigcommerce/catalyst/commit/f4216a63839050e095e68539d7260ae03797fe9f) Thanks [@parthshahp](https://github.com/parthshahp)! - Fix `client.fetch` so that custom headers passed via `fetchOptions.headers` properly override the client's default headers. Headers are now built via a `Headers` object using `.set()`, so case-insensitive overrides work as expected.
+
 ## 1.0.1
 
 ### Patch Changes

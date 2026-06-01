@@ -30,11 +30,12 @@ const NormalPageQuery = graphql(
 
 type Variables = VariablesOf<typeof NormalPageQuery>;
 
-export const getWebpageData = cache(async (variables: Variables) => {
+export const getWebpageData = cache(async (variables: Variables, customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: NormalPageQuery,
     variables,
-    fetchOptions: { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return data;

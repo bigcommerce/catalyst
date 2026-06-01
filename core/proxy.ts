@@ -2,6 +2,7 @@ import { composeProxies } from './proxies/compose-proxies';
 import { withAnalyticsCookies } from './proxies/with-analytics-cookies';
 import { withAuth } from './proxies/with-auth';
 import { withChannelId } from './proxies/with-channel-id';
+import { withGraphqlProxy } from './proxies/with-graphql-proxy';
 import { withIntl } from './proxies/with-intl';
 import { withMakeswift } from './proxies/with-makeswift';
 import { withRoutes } from './proxies/with-routes';
@@ -12,6 +13,7 @@ export const proxy = composeProxies(
   withIntl,
   withAnalyticsCookies,
   withChannelId,
+  withGraphqlProxy,
   withRoutes,
 );
 

@@ -39,6 +39,7 @@ export const orderDetailsTransformer = (
   order: ExistingResultType<typeof getCustomerOrderDetails>,
   t: ExistingResultType<typeof getTranslations<'Account.Orders.Details'>>,
   format: ExistingResultType<typeof getFormatter>,
+  tGiftCertificate: ExistingResultType<typeof getTranslations<'Cart.GiftCertificate'>>,
 ): Order => {
   const paymentMethods = removeEdgesAndNodes(order.payments).map((payment) => {
     if (payment.detail?.__typename === 'CreditCardPaymentInstrument') {
@@ -147,19 +148,20 @@ export const orderDetailsTransformer = (
       order.consignments.email?.map(({ email, lineItems }) => ({
         title: t('digitalDelivery', { email }),
         email,
-        lineItems: lineItems.map((item) => ({
-          id: String(item.entityId),
-          title: item.name,
-          price: format.number(item.salePrice.value, {
+        lineItems: lineItems.map((item) => {
+          const formattedAmount = format.number(item.salePrice.value, {
             style: 'currency',
             currency: item.salePrice.currencyCode,
-          }),
-          totalPrice: format.number(item.salePrice.value, {
-            style: 'currency',
-            currency: item.salePrice.currencyCode,
-          }),
-          quantity: 1,
-        })),
+          });
+
+          return {
+            id: String(item.entityId),
+            title: tGiftCertificate('giftCertificate'),
+            price: formattedAmount,
+            totalPrice: formattedAmount,
+            quantity: 1,
+          };
+        }),
       })) ?? [],
     summary: {
       total: format.number(order.totalIncTax.value, {

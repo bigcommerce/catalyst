@@ -500,6 +500,8 @@
         "otherDetails": "Otros detalles",
         "noOtherDetails": "No hay más detalles.",
         "viewOptions": "Ver opciones",
+        "showMore": "Mostrar más",
+        "showLess": "Mostrar menos",
         "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} añadidos <cartLink> al carrito</cartLink>",
         "missingCart": "No se ha encontrado el carrito. Vuelva a intentarlo más tarde.",
         "unknownError": "Error desconocido. Vuelva a intentarlo más tarde."

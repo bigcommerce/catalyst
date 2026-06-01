@@ -500,6 +500,8 @@
         "otherDetails": "その他の詳細",
         "noOtherDetails": "他に詳細はありません。",
         "viewOptions": "表示オプション",
+        "showMore": "さらに表示する",
+        "showLess": "表示を少なくする",
         "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
         "missingCart": "カートが見つかりません。しばらくしてから再度お試しください。",
         "unknownError": "不明なエラーです。しばらくしてから再度お試しください。"

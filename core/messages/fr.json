@@ -500,6 +500,8 @@
         "otherDetails": "Autres informations",
         "noOtherDetails": "Aucune information supplémentaire.",
         "viewOptions": "Afficher les options",
+        "showMore": "Voir plus",
+        "showLess": "Voir moins",
         "successMessage": "{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à <cartLink>votre panier</cartLink>",
         "missingCart": "Panier introuvable. Veuillez réessayer plus tard.",
         "unknownError": "Erreur inconnue. Veuillez réessayer plus tard."
