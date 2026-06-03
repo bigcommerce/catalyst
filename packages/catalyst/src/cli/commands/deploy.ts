@@ -14,6 +14,12 @@ import {
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
+import {
+  getStoredEnv,
+  mergeDeploymentSecrets,
+  parseEnvAssignment,
+  toDeploymentSecrets,
+} from '../lib/env-config';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
@@ -179,16 +185,12 @@ export const uploadBundleZip = async (uploadUrl: string) => {
 
 export const parseEnvironmentVariables = (secretOption?: string[]) => {
   return secretOption?.map((envVar) => {
-    const [key, value] = envVar.split('=');
-
-    if (!key || !value) {
-      throw new Error(`Invalid secret format: ${envVar}. Expected format: KEY=VALUE`);
-    }
+    const { key, value } = parseEnvAssignment(envVar);
 
     return {
       type: 'secret' as const,
-      key: key.trim(),
-      value: value.trim(),
+      key,
+      value,
     };
   });
 };
@@ -359,6 +361,9 @@ export const deploy = new Command('deploy')
   .addHelpText(
     'after',
     `
+Environment variables saved with \`catalyst env add\` are sent automatically on every deploy.
+Use \`--secret\` to set or override a variable for a single run.
+
 Example:
   $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,
   )
@@ -373,7 +378,7 @@ Example:
   .addOption(
     new Option(
       '--secret <value>',
-      'Secret to set for the deployment (repeatable). Format: --secret KEY=VALUE',
+      'Secret to set for this deployment (repeatable). Overrides a stored value for the same key. Format: --secret KEY=VALUE',
     ).argParser((value: string, previous: string[] = []) => {
       return previous.concat([value]);
     }),
@@ -516,7 +521,14 @@ Example:
 
     await uploadBundleZip(uploadSignature.upload_url);
 
-    const environmentVariables = parseEnvironmentVariables(options.secret);
+    // Merge persisted env vars (`catalyst env add`) with any inline `--secret`
+    // flags. Inline flags win on conflict, letting users override a stored
+    // value for a single run. Send `undefined` when there's nothing to set so
+    // we preserve the prior payload shape.
+    const flagSecrets = parseEnvironmentVariables(options.secret) ?? [];
+    const persistedSecrets = toDeploymentSecrets(getStoredEnv(config));
+    const mergedSecrets = mergeDeploymentSecrets(persistedSecrets, flagSecrets);
+    const environmentVariables = mergedSecrets.length > 0 ? mergedSecrets : undefined;
 
     const { deployment_uuid: deploymentUuid } = await createDeployment(
       projectUuid,
