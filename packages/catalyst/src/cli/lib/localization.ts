@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { assertAuthorized } from './auth-errors';
 import { getTelemetry } from './telemetry';
 
 const allowedLocales = [
@@ -51,6 +52,8 @@ export const getAvailableLocales = async (
       },
     },
   );
+
+  assertAuthorized(response);
 
   if (!response.ok) {
     throw new Error(
