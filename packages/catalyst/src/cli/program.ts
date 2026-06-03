@@ -12,6 +12,7 @@ import { build } from './commands/build';
 import { channel } from './commands/channel';
 import { create } from './commands/create';
 import { deploy } from './commands/deploy';
+import { env } from './commands/env';
 import { logs } from './commands/logs';
 import { project } from './commands/project';
 import { start } from './commands/start';
@@ -87,6 +88,7 @@ program
   .addCommand(deploy)
   .addCommand(logs)
   .addCommand(project)
+  .addCommand(env)
   .addCommand(channel)
   .addCommand(auth)
   .addCommand(telemetry)
