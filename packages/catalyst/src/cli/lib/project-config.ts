@@ -7,6 +7,11 @@ export interface ProjectConfigSchema {
   framework: 'catalyst';
   storeHash?: string;
   accessToken?: string;
+  // Persistent deployment environment variables (KEY -> VALUE). Every entry is
+  // sent to the deployment as a `secret` by `catalyst deploy`. Managed via the
+  // `catalyst env` commands. Lives here (gitignored .bigcommerce/project.json)
+  // so users don't have to re-pass `--secret` on every deploy.
+  env?: Record<string, string>;
 }
 
 export function getProjectConfig() {
@@ -23,6 +28,11 @@ export function getProjectConfig() {
       },
       storeHash: { type: 'string' },
       accessToken: { type: 'string' },
+      env: {
+        type: 'object',
+        additionalProperties: { type: 'string' },
+        default: {},
+      },
     },
   });
 }
