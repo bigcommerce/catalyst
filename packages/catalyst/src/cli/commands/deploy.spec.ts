@@ -550,8 +550,95 @@ test('reads from env options', () => {
   ]);
 
   expect(() => parseEnvironmentVariables(['foo_bar'])).toThrow(
-    'Invalid secret format: foo_bar. Expected format: KEY=VALUE',
+    'Invalid env var format: foo_bar. Expected format: KEY=VALUE',
   );
+});
+
+test('splits secrets on the first = so values containing = survive', () => {
+  const envVariables = parseEnvironmentVariables(['TOKEN=abc=def==']);
+
+  expect(envVariables).toEqual([{ type: 'secret', key: 'TOKEN', value: 'abc=def==' }]);
+});
+
+describe('persisted env vars', () => {
+  interface DeploymentBody {
+    environment_variables?: Array<{ type: string; key: string; value: string }>;
+  }
+
+  test('sends stored env vars and lets inline --secret override the same key', async () => {
+    const config = getProjectConfig();
+
+    config.set('projectUuid', projectUuid);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+    config.set('env', { PERSISTED_ONLY: 'keep', SHARED: 'stored' });
+
+    let body: DeploymentBody | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
+        async ({ request }) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          body = (await request.json()) as DeploymentBody;
+
+          return HttpResponse.json({ data: { deployment_uuid: deploymentUuid } });
+        },
+      ),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--api-host',
+      apiHost,
+      '--prebuilt',
+      '--secret',
+      'SHARED=override',
+      '--secret',
+      'FLAG_ONLY=flag',
+    ]);
+
+    expect(body?.environment_variables).toEqual(
+      expect.arrayContaining([
+        { type: 'secret', key: 'PERSISTED_ONLY', value: 'keep' },
+        { type: 'secret', key: 'SHARED', value: 'override' },
+        { type: 'secret', key: 'FLAG_ONLY', value: 'flag' },
+      ]),
+    );
+    // The shared key is sent once, with the inline flag value winning.
+    expect(body?.environment_variables?.filter((e) => e.key === 'SHARED')).toHaveLength(1);
+
+    config.delete('env');
+  });
+
+  test('omits environment_variables when nothing is stored or passed', async () => {
+    const config = getProjectConfig();
+
+    config.set('projectUuid', projectUuid);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+    config.delete('env');
+
+    let body: DeploymentBody | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
+        async ({ request }) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          body = (await request.json()) as DeploymentBody;
+
+          return HttpResponse.json({ data: { deployment_uuid: deploymentUuid } });
+        },
+      ),
+    );
+
+    await program.parseAsync(['node', 'catalyst', 'deploy', '--api-host', apiHost, '--prebuilt']);
+
+    expect(body?.environment_variables).toBeUndefined();
+  });
 });
 
 describe('--prebuilt flag', () => {
