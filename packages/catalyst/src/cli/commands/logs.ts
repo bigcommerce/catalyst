@@ -63,6 +63,17 @@ class StreamError extends Error {
 const formatMessages = (messages: unknown[]) =>
   messages.map((m) => (typeof m === 'string' ? m : JSON.stringify(m))).join(' ');
 
+// Known framework noise to drop from the human-readable log formats. OpenNext's
+// Cloudflare image handler logs `env.IMAGES binding is not defined` on every
+// `/_next/image` request when no IMAGES binding is configured, then falls back
+// to serving the original bytes. Native Hosting intentionally runs without that
+// binding (see LTRAC-808), so the warning is expected — suppress it so testers
+// aren't flooded with a benign message on every image request.
+const SUPPRESSED_LOG_PATTERNS = [/env\.IMAGES binding is not defined/];
+
+const isSuppressedMessage = (message: string) =>
+  SUPPRESSED_LOG_PATTERNS.some((pattern) => pattern.test(message));
+
 const formatLogEvent = (
   event: z.infer<typeof LogEventSchema>,
   format: 'default' | 'short' | 'request',
@@ -117,10 +128,22 @@ const processLogEvent = (event: string, format: LogFormat) => {
     const parsed: unknown = JSON.parse(event);
     const logEvent = LogEventSchema.parse(parsed);
 
+    const visibleLogs = logEvent.logs.filter(
+      (entry) => !isSuppressedMessage(formatMessages(entry.messages)),
+    );
+
+    // Skip events that contained nothing but suppressed noise so we don't emit
+    // an empty request envelope.
+    if (visibleLogs.length === 0 && logEvent.exceptions.length === 0) {
+      return;
+    }
+
+    const filteredEvent = { ...logEvent, logs: visibleLogs };
+
     if (format === 'pretty') {
-      consola.log(JSON.stringify(logEvent, null, 2));
+      consola.log(JSON.stringify(filteredEvent, null, 2));
     } else {
-      formatLogEvent(logEvent, format);
+      formatLogEvent(filteredEvent, format);
     }
   } catch {
     consola.warn(`Failed to parse log event: ${event}`);
