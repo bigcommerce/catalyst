@@ -50,3 +50,13 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   expect(config.get('storeHash')).toBe('abc123');
   expect(config.get('accessToken')).toBe('secret-token');
 });
+
+test('env defaults to an empty object and round-trips a map', () => {
+  expect(config.get('env')).toEqual({});
+
+  config.set('env', { FOO: 'bar', BAZ: 'qux' });
+
+  expect(config.get('env')).toEqual({ FOO: 'bar', BAZ: 'qux' });
+
+  config.delete('env');
+});
