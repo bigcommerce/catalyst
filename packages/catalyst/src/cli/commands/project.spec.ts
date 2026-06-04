@@ -451,6 +451,27 @@ describe('project list', () => {
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
+
+  test('surfaces an expired-session error on 401', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({}, { status: 401 }),
+      ),
+    );
+
+    await expect(
+      program.parseAsync([
+        'node',
+        'catalyst',
+        'project',
+        'list',
+        '--store-hash',
+        storeHash,
+        '--access-token',
+        accessToken,
+      ]),
+    ).rejects.toThrow('catalyst auth login');
+  });
 });
 
 describe('project link', () => {

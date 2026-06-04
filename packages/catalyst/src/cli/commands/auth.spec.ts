@@ -103,7 +103,7 @@ describe('whoami', () => {
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 
-  test('reports invalid credentials on 401', async () => {
+  test('reports an invalid or expired token on 401', async () => {
     const config = getProjectConfig();
 
     config.set('storeHash', 'test-store');
@@ -119,7 +119,7 @@ describe('whoami', () => {
     await program.parseAsync(['node', 'catalyst', 'auth', 'whoami']);
 
     expect(consola.error).toHaveBeenCalledWith(
-      expect.stringContaining('Not logged in: invalid credentials'),
+      'Not logged in: your access token is invalid or has expired. Run `catalyst auth login`.',
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });

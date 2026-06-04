@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { assertAuthorized } from './auth-errors';
 import { getTelemetry } from './telemetry';
 
 export class InfrastructureProjectValidationError extends Error {
@@ -46,6 +47,8 @@ export async function hasProjectsAccess(
     headers: authHeaders(accessToken),
   });
 
+  assertAuthorized(response);
+
   if (response.status === 200) return true;
   if (response.status === 403) return false;
 
@@ -63,6 +66,8 @@ export async function fetchProjects(
     method: 'GET',
     headers: authHeaders(accessToken),
   });
+
+  assertAuthorized(response);
 
   if (response.status === 403) {
     throw new Error(
@@ -133,6 +138,8 @@ export async function createProject(
     body: JSON.stringify({ name }),
   });
 
+  assertAuthorized(response);
+
   if (response.status === 400 || response.status === 422) {
     const body: unknown = await response.json().catch(() => null);
     const fallback =
@@ -176,6 +183,8 @@ export async function deleteProject(
     method: 'DELETE',
     headers: authHeaders(accessToken),
   });
+
+  assertAuthorized(response);
 
   if (response.status === 403) {
     throw new Error(

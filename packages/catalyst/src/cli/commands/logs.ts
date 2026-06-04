@@ -2,6 +2,7 @@ import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
+import { UnauthorizedError } from '../lib/auth-errors';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
@@ -193,6 +194,12 @@ const openLogStream = async (
       },
     },
   );
+
+  // An invalid/expired token won't recover by reconnecting — surface the
+  // re-auth guidance and stop the loop (fatal) rather than burning retries.
+  if (response.status === 401) {
+    throw new StreamError(new UnauthorizedError().message, true);
+  }
 
   if (!response.ok) {
     throw new StreamError(
