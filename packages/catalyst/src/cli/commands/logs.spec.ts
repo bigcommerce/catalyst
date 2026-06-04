@@ -392,7 +392,7 @@ describe('error handling', () => {
     );
   });
 
-  test('throws on fatal 401 unauthorized', async () => {
+  test('throws a re-auth error on fatal 401 unauthorized', async () => {
     server.use(
       http.get(
         'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid/tail',
@@ -401,7 +401,7 @@ describe('error handling', () => {
     );
 
     await expect(tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default')).rejects.toThrow(
-      'Failed to open log stream: 401 Unauthorized',
+      'catalyst auth login',
     );
   });
 });
