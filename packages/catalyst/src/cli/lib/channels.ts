@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import { assertAuthorized } from './auth-errors';
 import { getTelemetry } from './telemetry';
 
 // `origin` is the CLI-API gateway (configured via `--cli-api-origin`, default
@@ -174,6 +175,8 @@ export async function fetchAvailableChannels(
       },
     },
   );
+
+  assertAuthorized(response);
 
   if (!response.ok) {
     throw new Error(`GET /v3/channels failed: ${response.status} ${response.statusText}`);
