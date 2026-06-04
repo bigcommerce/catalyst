@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { assertAuthorized } from '../lib/auth-errors';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   cleanupCloudflareIncompatibilities,
@@ -146,6 +147,8 @@ export const generateUploadSignature = async (
     },
   );
 
+  assertAuthorized(response);
+
   if (!response.ok) {
     throw new Error(`Failed to fetch upload signature: ${response.status} ${response.statusText}`);
   }
@@ -223,6 +226,8 @@ export const createDeployment = async (
     },
   );
 
+  assertAuthorized(response);
+
   if (!response.ok) {
     throw new Error(`Failed to create deployment: ${response.status} ${response.statusText}`);
   }
@@ -257,6 +262,8 @@ export const getDeploymentStatus = async (
       },
     },
   );
+
+  assertAuthorized(response);
 
   if (!response.ok) {
     throw new Error(`Failed to open event stream: ${response.status} ${response.statusText}`);
@@ -344,6 +351,8 @@ export const fetchProject = async (
       },
     },
   );
+
+  assertAuthorized(response);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);

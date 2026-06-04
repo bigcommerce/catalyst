@@ -1,6 +1,7 @@
 import { Command, Option } from 'commander';
 import { z } from 'zod';
 
+import { assertAuthorized, UnauthorizedError } from '../lib/auth-errors';
 import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { fetchProjects } from '../lib/project';
@@ -21,6 +22,8 @@ async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost
       Accept: 'application/json',
     },
   });
+
+  assertAuthorized(response);
 
   if (!response.ok) {
     throw new Error(`${response.status} ${response.statusText}`);
@@ -107,7 +110,11 @@ Example:
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
 
-      if (message.includes('401') || message.includes('403')) {
+      if (error instanceof UnauthorizedError) {
+        consola.error(
+          'Not logged in: your access token is invalid or has expired. Run `catalyst auth login`.',
+        );
+      } else if (message.includes('401') || message.includes('403')) {
         consola.error(`Not logged in: invalid credentials (${message})`);
       } else {
         consola.error(`Failed to verify credentials: ${message}`);
