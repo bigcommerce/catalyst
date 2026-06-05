@@ -9,6 +9,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
+import { pickPricesForTaxDisplay } from '~/lib/tax-pricing';
 
 import { addToCart } from './_actions/add-to-cart';
 import { CompareAnalyticsProvider } from './_components/compare-analytics-provider';
@@ -64,7 +65,11 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const { products, taxDisplay } = await getComparedProducts(
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
     const format = await getFormatter();
 
     return products.map((product) => ({
@@ -74,7 +79,7 @@ export default async function Compare(props: Props) {
       image: product.defaultImage
         ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
         : undefined,
-      price: pricesTransformer(product.prices, format),
+      price: pricesTransformer(product, format, taxDisplay),
       subtitle: product.brand?.name ?? undefined,
       rating: product.reviewSummary.averageRating,
       description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
@@ -97,16 +102,22 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const { products, taxDisplay } = await getComparedProducts(
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
 
     return products.map((product) => {
+      const prices = pickPricesForTaxDisplay(product, taxDisplay);
+
       return {
         id: product.entityId,
         name: product.name,
         sku: product.sku,
         brand: product.brand?.name ?? '',
-        price: product.prices?.price.value ?? 0,
-        currency: product.prices?.price.currencyCode ?? '',
+        price: prices?.price.value ?? 0,
+        currency: prices?.price.currencyCode ?? '',
       };
     });
   });

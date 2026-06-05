@@ -48,12 +48,14 @@ export default async function Home({ params }: Props) {
 
     const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
       data.site.settings?.inventory ?? {};
+    const taxDisplay = data.site.settings?.tax?.plp;
 
     return productCardTransformer(
       featuredProducts,
       format,
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
+      taxDisplay,
     );
   });
 
@@ -64,12 +66,14 @@ export default async function Home({ params }: Props) {
 
     const { defaultOutOfStockMessage, showOutOfStockMessage, showBackorderMessage } =
       data.site.settings?.inventory ?? {};
+    const taxDisplay = data.site.settings?.tax?.plp;
 
     return productCardTransformer(
       newestProducts,
       format,
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
+      taxDisplay,
     );
   });
 

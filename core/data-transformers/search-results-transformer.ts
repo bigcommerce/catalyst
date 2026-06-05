@@ -4,10 +4,11 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { SearchResult } from '@/vibes/soul/primitives/navigation';
 import { SearchProductFragment } from '~/components/header/_actions/fragment';
 
-import { pricesTransformer } from './prices-transformer';
+import { pricesTransformer, TaxDisplay } from './prices-transformer';
 
 export async function searchResultsTransformer(
   searchProducts: Array<ResultOf<typeof SearchProductFragment>>,
+  taxDisplay?: TaxDisplay | null,
 ): Promise<SearchResult[]> {
   const format = await getFormatter();
   const t = await getTranslations('Components.Header.Search');
@@ -16,7 +17,7 @@ export async function searchResultsTransformer(
     type: 'products',
     title: t('products'),
     products: searchProducts.map((product) => {
-      const price = pricesTransformer(product.prices, format);
+      const price = pricesTransformer(product, format, taxDisplay);
 
       return {
         id: product.entityId.toString(),

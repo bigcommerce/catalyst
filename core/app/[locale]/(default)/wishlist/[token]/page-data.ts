@@ -38,6 +38,11 @@ const PublicWishlistQuery = graphql(
             }
           }
         }
+        settings {
+          tax {
+            plp
+          }
+        }
       }
     }
   `,
@@ -67,5 +72,5 @@ export const getPublicWishlist = cache(async (token: string, pagination: Paginat
     return null;
   }
 
-  return wishlist;
+  return { wishlist, taxDisplay: response.data.site.settings?.tax?.plp };
 });

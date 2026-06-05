@@ -41,22 +41,22 @@ async function listWishlists(
 ): Promise<Wishlist[]> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
-  const wishlists = await getCustomerWishlists(searchParamsParsed);
+  const result = await getCustomerWishlists(searchParamsParsed);
 
-  if (!wishlists) {
+  if (!result) {
     return [];
   }
 
-  return wishlistsTransformer(wishlists, t, formatter);
+  return wishlistsTransformer(result.wishlists, t, formatter, result.taxDisplay);
 }
 
 async function getPaginationInfo(
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<CursorPaginationInfo> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlists = await getCustomerWishlists(searchParamsParsed);
+  const result = await getCustomerWishlists(searchParamsParsed);
 
-  return pageInfoTransformer(wishlists?.pageInfo ?? defaultPageInfo);
+  return pageInfoTransformer(result?.wishlists.pageInfo ?? defaultPageInfo);
 }
 
 export default async function Wishlists({ params, searchParams }: Props) {

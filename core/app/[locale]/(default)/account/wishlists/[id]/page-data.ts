@@ -26,6 +26,13 @@ const WishlistDetailsQuery = graphql(
           }
         }
       }
+      site {
+        settings {
+          tax {
+            plp
+          }
+        }
+      }
     }
   `,
   [WishlistPaginatedItemsFragment],
@@ -55,5 +62,5 @@ export const getCustomerWishlist = cache(async (entityId: number, pagination: Pa
     return null;
   }
 
-  return wishlist;
+  return { wishlist, taxDisplay: response.data.site.settings?.tax?.plp };
 });

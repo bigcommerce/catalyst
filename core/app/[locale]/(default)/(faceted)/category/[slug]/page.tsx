@@ -125,6 +125,8 @@ export default async function Category(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
+  const taxDisplay = settings?.tax?.plp;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
@@ -162,6 +164,7 @@ export default async function Category(props: Props) {
       format,
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
+      taxDisplay,
     );
   });
 
@@ -284,7 +287,13 @@ export default async function Category(props: Props) {
         totalCount={streamableTotalCount}
       />
       <Stream value={streamableFacetedSearch}>
-        {(search) => <CategoryViewed category={category} products={search.products.items} />}
+        {(search) => (
+          <CategoryViewed
+            category={category}
+            products={search.products.items}
+            taxDisplay={taxDisplay}
+          />
+        )}
       </Stream>
     </>
   );

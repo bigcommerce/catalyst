@@ -2,14 +2,17 @@ import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
 import { PricingFragment } from '~/client/fragments/pricing';
 import { FragmentOf } from '~/client/graphql';
+import { TaxDisplay } from '~/data-transformers/prices-transformer';
+import { pickPricesForTaxDisplay } from '~/lib/tax-pricing';
 
 import { ProductSchemaFragment } from './fragment';
 
 interface Props {
   product: FragmentOf<typeof ProductSchemaFragment> & FragmentOf<typeof PricingFragment>;
+  taxDisplay?: TaxDisplay | null;
 }
 
-export const ProductSchema = ({ product }: Props) => {
+export const ProductSchema = ({ product, taxDisplay }: Props) => {
   /* TODO: use common default image when product has no images */
   const image = product.defaultImage ? { image: product.defaultImage.url } : null;
 
@@ -34,15 +37,17 @@ export const ProductSchema = ({ product }: Props) => {
         }
       : null;
 
-  const priceSpecification = product.prices
+  const prices = pickPricesForTaxDisplay(product, taxDisplay);
+
+  const priceSpecification = prices
     ? {
         '@type': 'PriceSpecification' as const,
-        price: product.prices.price.value,
-        priceCurrency: product.prices.price.currencyCode,
-        ...(product.prices.priceRange.min.value !== product.prices.priceRange.max.value
+        price: prices.price.value,
+        priceCurrency: prices.price.currencyCode,
+        ...(prices.priceRange.min.value !== prices.priceRange.max.value
           ? {
-              minPrice: product.prices.priceRange.min.value,
-              maxPrice: product.prices.priceRange.max.value,
+              minPrice: prices.priceRange.min.value,
+              maxPrice: prices.priceRange.max.value,
             }
           : null),
       }

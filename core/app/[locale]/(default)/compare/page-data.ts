@@ -13,6 +13,11 @@ const ComparedProductsQuery = graphql(
   `
     query ComparedProductsQuery($entityIds: [Int!], $first: Int, $currencyCode: currencyCode) {
       site {
+        settings {
+          tax {
+            plp
+          }
+        }
         products(entityIds: $entityIds, first: $first) {
           edges {
             node {
@@ -58,7 +63,7 @@ const ComparedProductsQuery = graphql(
 export const getComparedProducts = cache(
   async (productIds: number[] = [], currencyCode?: CurrencyCode, customerAccessToken?: string) => {
     if (productIds.length === 0) {
-      return [];
+      return { products: [], taxDisplay: undefined };
     }
 
     const { data } = await client.fetch({
@@ -72,6 +77,9 @@ export const getComparedProducts = cache(
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
-    return removeEdgesAndNodes(data.site.products);
+    return {
+      products: removeEdgesAndNodes(data.site.products),
+      taxDisplay: data.site.settings?.tax?.plp,
+    };
   },
 );

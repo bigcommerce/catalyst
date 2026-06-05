@@ -164,7 +164,13 @@ export function ProductCard({
                 {subtitle}
               </span>
             )}
-            {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            {price != null && (
+              <PriceLabel
+                className="[&_abbr]:cursor-default [&_abbr]:no-underline"
+                colorScheme={colorScheme}
+                price={price}
+              />
+            )}
             {showRating && typeof rating === 'number' && rating > 0 && (
               <Rating className="mb-2 mt-1" numberOfReviews={numberOfReviews} rating={rating} />
             )}

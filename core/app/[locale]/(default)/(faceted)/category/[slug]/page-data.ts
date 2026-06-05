@@ -51,6 +51,9 @@ const CategoryPageQuery = graphql(
           reviews {
             enabled
           }
+          tax {
+            plp
+          }
         }
       }
     }

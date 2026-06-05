@@ -33,6 +33,9 @@ const BrandPageQuery = graphql(`
         reviews {
           enabled
         }
+        tax {
+          plp
+        }
       }
     }
   }

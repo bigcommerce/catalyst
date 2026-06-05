@@ -83,6 +83,8 @@ export default async function Search(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
+  const taxDisplay = settings?.tax?.plp;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -127,6 +129,7 @@ export default async function Search(props: Props) {
       format,
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
+      taxDisplay,
     );
   });
 

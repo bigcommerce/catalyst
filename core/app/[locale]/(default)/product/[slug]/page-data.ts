@@ -178,6 +178,9 @@ const ProductQuery = graphql(
           display {
             showProductRating
           }
+          tax {
+            pdp
+          }
         }
         product(entityId: $entityId) {
           entityId
