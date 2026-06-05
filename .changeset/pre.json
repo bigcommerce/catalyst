@@ -13,7 +13,9 @@
     "auto-detect-deploy-secrets",
     "cli-built-in-help-text",
     "cli-show-env-path-in-help",
+    "cli-strip-instrumentation-hook",
     "fix-env-var-names",
+    "project-list-deployed-url",
     "wise-worms-hear"
   ]
 }
