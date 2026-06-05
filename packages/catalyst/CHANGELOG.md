@@ -1,5 +1,15 @@
 # @bigcommerce/catalyst
 
+## 1.0.0-alpha.5
+
+### Minor Changes
+
+- [#2988](https://github.com/bigcommerce/catalyst/pull/2988) [`24f35a4`](https://github.com/bigcommerce/catalyst/commit/24f35a4cc60d73036c264a896e816b98aa47bfba) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Show every deployed URL for each project in `catalyst project list` output (the canonical hostname plus any vanity hostnames) so users can recover the hosted storefront URLs without having to redeploy.
+
+### Patch Changes
+
+- [#3028](https://github.com/bigcommerce/catalyst/pull/3028) [`bdc6e0b`](https://github.com/bigcommerce/catalyst/commit/bdc6e0bf055262e1440bcc1ebcc55597256b424a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove `core/instrumentation.ts` and the `@vercel/otel` dependency during Commerce Hosting setup. The hook isn't compatible with the OpenNext + Cloudflare Workers bundling path and caused a "Failed to prepare server" error on every cold start in `catalyst logs tail`. Self-hosted (non-Commerce Hosting) deployments are unaffected.
+
 ## 1.0.0-alpha.4
 
 ### Patch Changes
