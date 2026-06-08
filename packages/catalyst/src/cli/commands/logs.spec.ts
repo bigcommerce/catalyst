@@ -140,6 +140,7 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--access-token <token>' }),
         expect.objectContaining({ flags: '--api-host <host>' }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--format <format>', defaultValue: 'default' }),
       ]),
     );
   });
@@ -584,7 +585,112 @@ describe('credential resolution', () => {
 });
 
 describe('query subcommand', () => {
-  test('exits with error as not yet implemented', async () => {
+  const start = '2026-06-01T00:00:00Z';
+  const end = '2026-06-02T00:00:00Z';
+
+  const queryArgs = (extra: string[] = []) => [
+    'node',
+    'catalyst',
+    'logs',
+    'query',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--project-uuid',
+    projectUuid,
+    '--start',
+    start,
+    '--end',
+    end,
+    ...extra,
+  ];
+
+  test('prints formatted log lines and a count footer', async () => {
+    await program.parseAsync(queryArgs());
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('/cart'));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('[TypeError]'));
+    expect(consola.info).toHaveBeenCalledWith('1 entry shown (oldest first, times in UTC).');
+    // TODO(TRAC-934): no next-page hint is printed while pagination is removed.
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('More available'));
+  });
+
+  test('warns when the result fills --limit exactly', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [
+            { id: '2', timestamp: '2026-06-01T13:00:00Z', level: 'info', messages: ['newer'] },
+            { id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['older'] },
+          ],
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '2']));
+
+    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('Limit of 2 reached'));
+  });
+
+  test('does not warn when the result is below --limit', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['only'] }],
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '5']));
+
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('reached'));
+  });
+
+  test('prints entries oldest-first', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [
+            { id: '2', timestamp: '2026-06-01T13:00:00Z', level: 'info', messages: ['newer'] },
+            { id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['older'] },
+          ],
+          meta: {
+            cursor_pagination: { count: 2, per_page: 50, start_cursor: null, end_cursor: null },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs());
+
+    const logged = vi.mocked(consola.log).mock.calls.map(([line]) => String(line));
+    const olderIndex = logged.findIndex((line) => line.includes('older'));
+    const newerIndex = logged.findIndex((line) => line.includes('newer'));
+
+    expect(olderIndex).toBeGreaterThanOrEqual(0);
+    expect(olderIndex).toBeLessThan(newerIndex);
+  });
+
+  test('--since queries a relative window ending now', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid',
+        ({ request }) => {
+          captured = new URL(request.url).searchParams;
+
+          return HttpResponse.json({
+            data: [],
+            meta: {
+              cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+            },
+          });
+        },
+      ),
+    );
+
     await program.parseAsync([
       'node',
       'catalyst',
@@ -594,9 +700,141 @@ describe('query subcommand', () => {
       storeHash,
       '--access-token',
       accessToken,
+      '--project-uuid',
+      projectUuid,
+      '--since',
+      '1h',
     ]);
 
-    expect(consola.error).toHaveBeenCalledWith('The query command is not yet implemented.');
+    const sentStart = Date.parse(captured?.get('start') ?? '');
+    const sentEnd = Date.parse(captured?.get('end') ?? '');
+
+    expect(sentEnd - sentStart).toBe(60 * 60 * 1000);
+    expect(Math.abs(Date.now() - sentEnd)).toBeLessThan(60 * 1000);
+  });
+
+  test('reads project UUID from project.json when --project-uuid is omitted', async () => {
+    config.set('projectUuid', projectUuid);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'logs',
+      'query',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--start',
+      start,
+      '--end',
+      end,
+    ]);
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('/cart'));
+  });
+
+  test('outputs one raw JSON entry per line with --format json', async () => {
+    await program.parseAsync(queryArgs(['--format', 'json']));
+
+    // NDJSON to stdout (like `tail --format json`), no footer chrome.
+    expect(stdoutWriteMock).toHaveBeenCalledWith(expect.stringContaining('"is_exception":true'));
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('entry shown'));
+  });
+
+  test('includes request details with --format request', async () => {
+    await program.parseAsync(queryArgs(['--format', 'request']));
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('GET /cart (500)'));
+  });
+
+  test('reports when no entries are found', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [],
+          meta: {
+            cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs());
+
+    expect(consola.info).toHaveBeenCalledWith(
+      'No log entries found for the given window and filters.',
+    );
+  });
+
+  test('forwards filters as query params', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid',
+        ({ request }) => {
+          captured = new URL(request.url).searchParams;
+
+          return HttpResponse.json({
+            data: [],
+            meta: {
+              cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+            },
+          });
+        },
+      ),
+    );
+
+    await program.parseAsync(
+      queryArgs([
+        '--method',
+        'GET',
+        '--status-code',
+        '500',
+        '--url-like',
+        '/cart',
+        '--level-min',
+        'warn',
+        '--limit',
+        '10',
+      ]),
+    );
+
+    expect(captured?.get('method')).toBe('GET');
+    expect(captured?.get('status_code')).toBe('500');
+    expect(captured?.get('url:like')).toBe('/cart');
+    expect(captured?.get('level:min')).toBe('warn');
+    expect(captured?.get('limit')).toBe('10');
+    expect(captured?.get('after')).toBeNull();
+  });
+
+  test('exits with error when no project UUID can be resolved', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'logs',
+      'query',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--start',
+      start,
+      '--end',
+      end,
+    ]);
+
+    expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Project UUID is required'));
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('exits with an error on an invalid time window', async () => {
+    await program.parseAsync(queryArgs(['--end', '2026-05-01T00:00:00Z']));
+
+    expect(consola.error).toHaveBeenCalledWith(
+      expect.stringContaining('--start must be before or equal to --end'),
+    );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 
@@ -607,9 +845,7 @@ describe('query subcommand', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'logs', 'query'])).rejects.toThrow(
-      'Missing credentials',
-    );
+    await program.parseAsync(['node', 'catalyst', 'logs', 'query', '--start', start, '--end', end]);
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;

@@ -138,9 +138,6 @@ export const handlers = [
     });
   }),
 
-  // Handler for queryLogs (historical, single page). The cursor_pagination block
-  // is retained to verify the CLI tolerates a backend that still returns it; the
-  // CLI ignores it while pagination is removed (see parth/logs-query-notes.md).
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
     HttpResponse.json({
       data: [
