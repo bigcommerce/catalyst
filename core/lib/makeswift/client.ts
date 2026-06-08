@@ -34,20 +34,16 @@ function normalizeLocale(locale: string): string | undefined {
 }
 
 export async function getMakeswiftPageMetadata({ path, locale }: { path: string; locale: string }) {
-  const { data: pages } = await client.getPages({
-    pathPrefix: path,
-    locale: normalizeLocale(locale),
-    siteVersion: await getSiteVersion(),
-  });
+  const snapshot = await getPageSnapshot({ path, locale });
 
-  if (pages.length === 0 || !pages[0]) {
+  if (snapshot == null) {
     return null;
   }
 
-  const { title, description } = pages[0];
+  const { meta } = snapshot.document;
 
   return {
-    ...(title && { title }),
-    ...(description && { description }),
+    ...(meta.title && { title: meta.title }),
+    ...(meta.description && { description: meta.description }),
   };
 }
