@@ -138,6 +138,35 @@ export const handlers = [
     });
   }),
 
+  // Handler for queryLogs (historical, single page). The cursor_pagination block
+  // is retained to verify the CLI tolerates a backend that still returns it; the
+  // CLI ignores it while pagination is removed (see parth/logs-query-notes.md).
+  http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+    HttpResponse.json({
+      data: [
+        {
+          id: '01HX9Z8K2J4P7Q6R3T5V8W0YN',
+          timestamp: '2026-06-01T12:34:56.789Z',
+          level: 'error',
+          messages: ['Unhandled exception while rendering /cart'],
+          is_exception: true,
+          request_id: '8f1c2d3e4b5a6978',
+          exception_name: 'TypeError',
+          request: { method: 'GET', url: '/cart', status_code: 500 },
+        },
+      ],
+      meta: {
+        cursor_pagination: {
+          count: 1,
+          per_page: 50,
+          start_cursor: 'cursor_start',
+          end_cursor: 'cursor_end',
+          links: {},
+        },
+      },
+    }),
+  ),
+
   // Handle for createProjects
   http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
