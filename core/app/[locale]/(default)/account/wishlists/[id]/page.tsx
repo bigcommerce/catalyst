@@ -10,6 +10,7 @@ import { ExistingResultType } from '~/client/util';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
 import { redirect } from '~/i18n/routing';
+import { pickPricesForTaxDisplay } from '~/lib/tax-pricing';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { removeWishlistItem } from '../_actions/remove-wishlist-item';
@@ -43,35 +44,37 @@ async function getWishlist(
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const result = await getCustomerWishlist(entityId, searchParamsParsed);
 
-  if (!wishlist) {
+  if (!result) {
     return redirect({ href: '/account/wishlists/', locale });
   }
 
-  return wishlistDetailsTransformer(wishlist, t, pt, formatter);
+  return wishlistDetailsTransformer(result.wishlist, t, pt, formatter, result.taxDisplay);
 }
 
 const getAnalyticsData = async (id: string, searchParamsPromise: Promise<SearchParams>) => {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const result = await getCustomerWishlist(entityId, searchParamsParsed);
 
-  if (!wishlist) {
+  if (!result) {
     return [];
   }
 
-  return removeEdgesAndNodes(wishlist.items)
+  return removeEdgesAndNodes(result.wishlist.items)
     .map(({ product }) => product)
     .filter((product) => product !== null)
     .map((product) => {
+      const prices = pickPricesForTaxDisplay(product, result.taxDisplay);
+
       return {
         id: product.entityId,
         name: product.name,
         sku: product.sku,
         brand: product.brand?.name ?? '',
-        price: product.prices?.price.value ?? 0,
-        currency: product.prices?.price.currencyCode ?? '',
+        price: prices?.price.value ?? 0,
+        currency: prices?.price.currencyCode ?? '',
       };
     });
 };
@@ -82,9 +85,9 @@ async function getPaginationInfo(
 ): Promise<CursorPaginationInfo> {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+  const result = await getCustomerWishlist(entityId, searchParamsParsed);
 
-  return pageInfoTransformer(wishlist?.items.pageInfo ?? defaultPageInfo);
+  return pageInfoTransformer(result?.wishlist.items.pageInfo ?? defaultPageInfo);
 }
 
 export default async function WishlistPage({ params, searchParams }: Props) {

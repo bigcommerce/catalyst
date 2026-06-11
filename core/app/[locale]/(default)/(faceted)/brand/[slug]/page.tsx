@@ -110,6 +110,8 @@ export default async function Brand(props: Props) {
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
+  const taxDisplay = settings?.tax?.plp;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
@@ -146,6 +148,7 @@ export default async function Brand(props: Props) {
       format,
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
+      taxDisplay,
     );
   });
 

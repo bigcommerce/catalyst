@@ -96,6 +96,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   const reviewsEnabled = Boolean(settings?.reviews.enabled && !settings.display.showProductRating);
   const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
+  const taxDisplay = settings?.tax?.pdp;
 
   if (!baseProduct) {
     return notFound();
@@ -176,7 +177,7 @@ export default async function Product({ params, searchParams }: Props) {
       return null;
     }
 
-    return pricesTransformer(product.prices, format) ?? null;
+    return pricesTransformer(product, format, taxDisplay) ?? null;
   });
 
   const streamableImages = Streamable.from(async () => {
@@ -496,7 +497,7 @@ export default async function Product({ params, searchParams }: Props) {
 
     const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
-    return productCardTransformer(relatedProducts, format);
+    return productCardTransformer(relatedProducts, format, undefined, undefined, taxDisplay);
   });
 
   const streamableMinQuantity = Streamable.from(async () => {
@@ -522,8 +523,8 @@ export default async function Product({ params, searchParams }: Props) {
       name: extendedProduct.name,
       sku: extendedProduct.sku,
       brand: extendedProduct.brand?.name ?? '',
-      price: pricingProduct?.prices?.price.value ?? 0,
-      currency: pricingProduct?.prices?.price.currencyCode ?? '',
+      price: pricingProduct?.pricesIncludingTax?.price.value ?? 0,
+      currency: pricingProduct?.pricesIncludingTax?.price.currencyCode ?? '',
     };
   });
 
@@ -627,10 +628,20 @@ export default async function Product({ params, searchParams }: Props) {
         {([extendedProduct, pricingProduct]) => (
           <>
             <ProductSchema
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+              product={{
+                ...extendedProduct,
+                pricesIncludingTax: pricingProduct?.pricesIncludingTax ?? null,
+                pricesExcludingTax: pricingProduct?.pricesExcludingTax ?? null,
+              }}
+              taxDisplay={taxDisplay}
             />
             <ProductViewed
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+              product={{
+                ...extendedProduct,
+                pricesIncludingTax: pricingProduct?.pricesIncludingTax ?? null,
+                pricesExcludingTax: pricingProduct?.pricesExcludingTax ?? null,
+              }}
+              taxDisplay={taxDisplay}
             />
           </>
         )}

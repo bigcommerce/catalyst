@@ -23,6 +23,11 @@ const GetQuickSearchResultsQuery = graphql(
       $currencyCode: currencyCode
     ) {
       site {
+        settings {
+          tax {
+            plp
+          }
+        }
         search {
           searchProducts(filters: $filters) {
             products(first: 5) {
@@ -92,10 +97,11 @@ export async function search(
     });
 
     const { products } = response.data.site.search.searchProducts;
+    const taxDisplay = response.data.site.settings?.tax?.plp;
 
     return {
       lastResult: submission.reply(),
-      searchResults: await searchResultsTransformer(removeEdgesAndNodes(products)),
+      searchResults: await searchResultsTransformer(removeEdgesAndNodes(products), taxDisplay),
       emptyStateTitle,
       emptyStateSubtitle,
     };
