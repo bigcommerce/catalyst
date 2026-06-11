@@ -337,9 +337,17 @@ export const getStreamableProduct = cache(
 
 const StreamableProductInventoryQuery = graphql(
   `
-    query StreamableProductInventoryQuery($entityId: Int!) {
+    query StreamableProductInventoryQuery(
+      $entityId: Int!
+      $optionValueIds: [OptionValueId!]
+      $useDefaultOptionSelections: Boolean
+    ) {
       site {
-        product(entityId: $entityId) {
+        product(
+          entityId: $entityId
+          optionValueIds: $optionValueIds
+          useDefaultOptionSelections: $useDefaultOptionSelections
+        ) {
           sku
           inventory {
             hasVariantInventory
@@ -363,7 +371,7 @@ const StreamableProductInventoryQuery = graphql(
   [ProductVariantsInventoryFragment],
 );
 
-type ProductInventoryVariables = VariablesOf<typeof StreamableProductQuery>;
+type ProductInventoryVariables = VariablesOf<typeof StreamableProductInventoryQuery>;
 
 export const getStreamableProductInventory = cache(
   async (variables: ProductInventoryVariables, customerAccessToken?: string) => {
