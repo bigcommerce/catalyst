@@ -25,8 +25,11 @@ const getPageInfo = async ({
 const getPathname = (variants: Array<{ locale: string; path: string }>, locale: string) =>
   variants.find((v) => v.locale === locale)?.path;
 
+const stripTrailingSlash = (pathname: string) =>
+  pathname !== '/' ? pathname.replace(/\/+$/, '') : pathname;
+
 export async function getLocalizedPathname({
-  pathname,
+  pathname: inputPathname,
   activeLocale,
   targetLocale,
 }: {
@@ -34,6 +37,9 @@ export async function getLocalizedPathname({
   activeLocale: string | undefined;
   targetLocale: string;
 }) {
+  // Makeswift page pathnames are always stored without a trailing slash
+  const pathname = stripTrailingSlash(inputPathname);
+
   // fallback to page info for default locale if there is no page info for active locale
   const fallbackPageInfo =
     activeLocale === defaultLocale
