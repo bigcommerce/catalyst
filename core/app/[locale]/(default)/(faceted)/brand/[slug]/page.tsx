@@ -214,6 +214,7 @@ export default async function Brand(props: Props) {
       compareLabel={t('Compare.compare')}
       compareProducts={streamableCompareProducts}
       emptyStateSubtitle={t('Brand.Empty.subtitle')}
+      promotionCalloutsMoreLabel={t('Brand.PromotionCallouts.more')}
       emptyStateTitle={t('Brand.Empty.title')}
       filterLabel={t('FacetedSearch.filters')}
       filters={streamableFilters}

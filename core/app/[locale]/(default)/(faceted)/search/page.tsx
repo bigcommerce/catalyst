@@ -242,6 +242,7 @@ export default async function Search(props: Props) {
       compareLabel={t('Compare.compare')}
       compareProducts={streamableCompareProducts}
       emptyStateSubtitle={t('Search.Empty.subtitle')}
+      promotionCalloutsMoreLabel={t('Search.PromotionCallouts.more')}
       emptyStateTitle={streamableEmptyStateTitle}
       filterLabel={t('FacetedSearch.filters')}
       filters={streamableFilters}

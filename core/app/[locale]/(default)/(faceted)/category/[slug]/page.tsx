@@ -251,6 +251,7 @@ export default async function Category(props: Props) {
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('Compare.compare')}
+        promotionCalloutsMoreLabel={t('Category.PromotionCallouts.more')}
         compareProducts={streamableCompareProducts}
         emptyStateSubtitle={t('Category.Empty.subtitle')}
         emptyStateTitle={t('Category.Empty.title')}

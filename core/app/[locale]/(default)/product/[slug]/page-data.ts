@@ -192,6 +192,10 @@ const ProductQuery = graphql(
             numberOfReviews
           }
           description
+          featuredPromotions {
+            entityId
+            text
+          }
           ...ProductOptionsFragment
         }
       }

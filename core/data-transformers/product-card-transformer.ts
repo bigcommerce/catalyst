@@ -67,6 +67,13 @@ export const singleProductCardTransformer = (
       'variants' in product
         ? getInventoryMessage(product, outOfStockMessage, showBackorderMessage)
         : undefined,
+    promotionCallouts:
+      'featuredPromotions' in product
+        ? product.featuredPromotions.map((p) => ({
+            id: p.entityId.toString(),
+            text: p.text,
+          }))
+        : [],
   };
 };
 

@@ -124,6 +124,9 @@
       "Empty": {
         "title": "No products in this brand",
         "subtitle": "Try using different filters."
+      },
+      "PromotionCallouts": {
+        "more": "+{count} more"
       }
     },
     "Category": {
@@ -131,6 +134,9 @@
       "Empty": {
         "title": "No products in this category",
         "subtitle": "Try using different filters."
+      },
+      "PromotionCallouts": {
+        "more": "+{count} more"
       }
     },
     "Search": {
@@ -144,6 +150,9 @@
       "Empty": {
         "title": "Sorry, no results for \"{term}\".",
         "subtitle": "Please try another search."
+      },
+      "PromotionCallouts": {
+        "more": "+{count} more"
       }
     },
     "FacetedSearch": {
@@ -480,6 +489,9 @@
         "sku": "SKU",
         "weight": "Weight",
         "condition": "Condition"
+      },
+      "PromotionCallouts": {
+        "more": "+{count} more"
       }
     },
     "RelatedProducts": {
