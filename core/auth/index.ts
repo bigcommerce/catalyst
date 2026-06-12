@@ -1,4 +1,5 @@
 import { decodeJwt } from 'jose';
+import { cookies } from 'next/headers';
 import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -184,6 +185,7 @@ const config = {
   session: {
     strategy: 'jwt',
   },
+  cookies: {},
   pages: {
     signIn: '/login',
     signOut: '/logout',
@@ -318,7 +320,52 @@ const config = {
   ],
 } satisfies NextAuthConfig;
 
-export const { handlers, auth, signIn, signOut, unstable_update: updateSession } = NextAuth(config);
+const SESSION_TOKEN_NAME_RE = /^(__Secure-)?authjs\.session-token(\.\d+)?$/;
+
+// Auth.js sets Expires on session token cookies via cookies().set() when signIn/updateSession
+// are called from server actions. Re-set those cookies without Expires so they comply with
+// Essential classification (session cookies that expire when the browser closes).
+async function patchSessionTokenCookies() {
+  const cookieJar = await cookies();
+
+  cookieJar.getAll().forEach(({ name, value }) => {
+    if (SESSION_TOKEN_NAME_RE.test(name) && value) {
+      cookieJar.set(name, value, {
+        httpOnly: true,
+        sameSite: 'lax' as const,
+        path: '/',
+        secure: name.startsWith('__Secure-'),
+      });
+    }
+  });
+}
+
+const {
+  handlers,
+  auth,
+  signIn: authSignIn,
+  signOut,
+  unstable_update: authUpdateSession,
+} = NextAuth(config);
+
+export { handlers, auth, signOut };
+
+export const signIn = async (...args: Parameters<typeof authSignIn>) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await authSignIn(...args);
+  } finally {
+    await patchSessionTokenCookies();
+  }
+};
+
+export const updateSession = async (...args: Parameters<typeof authUpdateSession>) => {
+  try {
+    return await authUpdateSession(...args);
+  } finally {
+    await patchSessionTokenCookies();
+  }
+};
 
 export const getSessionCustomerAccessToken = async () => {
   try {
