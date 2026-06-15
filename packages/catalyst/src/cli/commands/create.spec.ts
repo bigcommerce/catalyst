@@ -19,7 +19,10 @@ import { create } from './create';
 
 // Mock all side-effecting modules so the action runs end-to-end without
 // actually cloning, installing, writing files, or hitting the network.
-vi.mock('child_process', () => ({ execSync: vi.fn() }));
+// `exec` is needed because `program.ts` also imports the `integration` command,
+// which reads `child_process.exec` at module load; an incomplete mock would
+// throw when this suite loads the program graph.
+vi.mock('child_process', () => ({ execSync: vi.fn(), exec: vi.fn() }));
 
 vi.mock('@inquirer/prompts', () => ({
   input: vi.fn(),
