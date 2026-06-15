@@ -379,6 +379,7 @@
             "subTotal": "Subtotaal",
             "discounts": "Kortingen",
             "tax": "Belasting",
+            "totalIncludesTax": "Includes {tax} tax",
             "total": "Totaal",
             "CouponCode": {
                 "apply": "Toepassen",
@@ -389,6 +390,7 @@
             },
             "Shipping": {
                 "shipping": "Verzending",
+                "shippingExcludingTax": "Shipping (Ex. Tax)",
                 "add": "Toevoegen",
                 "change": "Wijzigen",
                 "cancel": "Annuleren",
@@ -648,7 +650,11 @@
         "Price": {
             "originalPrice": "De oorspronkelijke prijs was {price}.",
             "currentPrice": "De huidige prijs is {price}.",
-            "range": "Prijs van {minValue} tot {maxValue}."
+            "range": "Prijs van {minValue} tot {maxValue}.",
+            "includingTax": "(Inc. Tax)",
+            "excludingTax": "(Ex. Tax)",
+            "includingTaxFull": "Inclusief btw",
+            "excludingTaxFull": "Exclusief btw"
         }
     },
     "GiftCertificates": {

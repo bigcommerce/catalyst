@@ -379,6 +379,7 @@
             "subTotal": "小計",
             "discounts": "割引",
             "tax": "税金",
+            "totalIncludesTax": "Includes {tax} tax",
             "total": "合計",
             "CouponCode": {
                 "apply": "適用",
@@ -389,6 +390,7 @@
             },
             "Shipping": {
                 "shipping": "配送",
+                "shippingExcludingTax": "Shipping (Ex. Tax)",
                 "add": "追加",
                 "change": "変更する",
                 "cancel": "キャンセル",
@@ -648,7 +650,11 @@
         "Price": {
             "originalPrice": "元の価格は{price}でした。",
             "currentPrice": "現在の価格は{price}です。",
-            "range": "価格は{minValue}から{maxValue}までです。"
+            "range": "価格は{minValue}から{maxValue}までです。",
+            "includingTax": "(Inc. Tax)",
+            "excludingTax": "(Ex. Tax)",
+            "includingTaxFull": "税込",
+            "excludingTaxFull": "税別"
         }
     },
     "GiftCertificates": {
