@@ -13,6 +13,7 @@ import { channel } from './commands/channel';
 import { create } from './commands/create';
 import { deploy } from './commands/deploy';
 import { env } from './commands/env';
+import { init } from './commands/init';
 import { logs } from './commands/logs';
 import { project } from './commands/project';
 import { start } from './commands/start';
@@ -83,6 +84,7 @@ program
   )
   .addCommand(version)
   .addCommand(create)
+  .addCommand(init)
   .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
