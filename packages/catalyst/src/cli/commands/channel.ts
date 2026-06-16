@@ -40,7 +40,7 @@ const parseChannelId = (value: string): number => {
 
 // Resolve credentials from flags/env → persisted project config → interactive
 // login (persisting on success). Returns null when the user aborts login.
-// `channel connect` is an onboarding command — a fresh clone has neither
+// `channel link` is an onboarding command — a fresh clone has neither
 // .env.local nor .bigcommerce/project.json — so it logs the user in like
 // `catalyst project create`, rather than erroring like the operational commands.
 async function resolveCredentialsWithLogin(
@@ -133,33 +133,32 @@ Examples:
     process.exit(0);
   });
 
-const connect = new Command('connect')
+const link = new Command('link')
   .configureHelp({ showGlobalOptions: true })
   .description(
-    'Connect this Catalyst project to a BigCommerce channel and write its credentials to .env.local.',
+    'Link this Catalyst project to a BigCommerce channel and write its credentials to .env.local.',
   )
   .addHelpText(
     'after',
     `
 Examples:
   # Pick a channel interactively (logs you in if needed)
-  $ catalyst channel connect
+  $ catalyst channel link
 
   # Non-interactive
-  $ catalyst channel connect --store-hash <hash> --access-token <token> --channel-id 123
+  $ catalyst channel link --store-hash <hash> --access-token <token> --channel-id 123
 
   # Append extra environment variables to .env.local
-  $ catalyst channel connect --channel-id 123 --env MY_FLAG=1`,
+  $ catalyst channel link --channel-id 123 --env MY_FLAG=1`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(loginUrlOption())
   .addOption(
-    new Option(
-      '--channel-id <id>',
-      'Connect this channel directly, skipping the picker.',
-    ).argParser(parseChannelId),
+    new Option('--channel-id <id>', 'Link this channel directly, skipping the picker.').argParser(
+      parseChannelId,
+    ),
   )
   .option(
     '--env <vars...>',
@@ -177,7 +176,7 @@ Examples:
 
     if (!credentials) {
       consola.info(
-        'Login aborted. Re-run `catalyst channel connect` when you have your credentials ready.',
+        'Login aborted. Re-run `catalyst channel link` when you have your credentials ready.',
       );
       process.exit(0);
 
@@ -214,7 +213,7 @@ Examples:
         return aIndex - bIndex;
       });
 
-      const selected = await consola.prompt('Which channel would you like to connect?', {
+      const selected = await consola.prompt('Which channel would you like to link?', {
         type: 'select',
         options: sorted.map((c) => ({
           label: c.name,
@@ -241,7 +240,7 @@ Examples:
       });
     }
 
-    // Writes .env.local in the current working directory — `channel connect`
+    // Writes .env.local in the current working directory — `channel link`
     // runs from inside `core/`, the same place `dev`/`build`/`deploy` run.
     outputFileSync(
       join(process.cwd(), '.env.local'),
@@ -253,7 +252,7 @@ Examples:
     const label = channelName ? `"${channelName}" (${channelId})` : `${channelId}`;
 
     consola.success(
-      `Connected to channel ${label} and wrote ${colorize('cyanBright', '.env.local')}.`,
+      `Linked to channel ${label} and wrote ${colorize('cyanBright', '.env.local')}.`,
     );
     consola.log(`\nStart your storefront:\n\n  ${colorize('yellow', 'pnpm run dev')}\n`);
 
@@ -263,5 +262,5 @@ Examples:
 export const channel = new Command('channel')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage BigCommerce channels.')
-  .addCommand(connect)
+  .addCommand(link)
   .addCommand(update);

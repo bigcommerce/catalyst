@@ -13,7 +13,7 @@ import { program } from '../program';
 
 import { channel } from './channel';
 
-// `channel connect` can trigger the interactive device-code login (browser +
+// `channel link` can trigger the interactive device-code login (browser +
 // spinner); stub both so the no-credentials path runs headless in tests.
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
 // eslint-disable-next-line import/dynamic-import-chunkname
@@ -91,13 +91,11 @@ describe('channel', () => {
     expect(update?.description()).toContain('Update a BigCommerce channel');
   });
 
-  test('has the connect subcommand', () => {
-    const connect = channel.commands.find((cmd) => cmd.name() === 'connect');
+  test('has the link subcommand', () => {
+    const link = channel.commands.find((cmd) => cmd.name() === 'link');
 
-    expect(connect).toBeDefined();
-    expect(connect?.description()).toContain(
-      'Connect this Catalyst project to a BigCommerce channel',
-    );
+    expect(link).toBeDefined();
+    expect(link?.description()).toContain('Link this Catalyst project to a BigCommerce channel');
   });
 });
 
@@ -271,11 +269,11 @@ describe('channel update', () => {
   });
 });
 
-describe('channel connect', () => {
+describe('channel link', () => {
   const initUrl =
     'https://cxm-prd.bigcommerceapp.com/stores/:storeHash/cli-api/v3/channels/:channelId/init';
 
-  test('connects a channel by id and writes .env.local', async () => {
+  test('links a channel by id and writes .env.local', async () => {
     let initChannelId: string | undefined;
 
     server.use(
@@ -299,7 +297,7 @@ describe('channel connect', () => {
       'node',
       'catalyst',
       'channel',
-      'connect',
+      'link',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -315,7 +313,7 @@ describe('channel connect', () => {
 
     expect(envLocal).toContain(`BIGCOMMERCE_STORE_HASH=${storeHash}`);
     expect(envLocal).toContain('BIGCOMMERCE_STOREFRONT_TOKEN=sft-token');
-    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Connected to channel 2'));
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Linked to channel 2'));
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
@@ -338,7 +336,7 @@ describe('channel connect', () => {
       'node',
       'catalyst',
       'channel',
-      'connect',
+      'link',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -349,7 +347,7 @@ describe('channel connect', () => {
     expect(initChannelId).toBe('2');
     // id 2 in the default channels handler is "Catalyst Storefront".
     expect(consola.success).toHaveBeenCalledWith(
-      expect.stringContaining('Connected to channel "Catalyst Storefront" (2)'),
+      expect.stringContaining('Linked to channel "Catalyst Storefront" (2)'),
     );
   });
 
@@ -369,7 +367,7 @@ describe('channel connect', () => {
       'node',
       'catalyst',
       'channel',
-      'connect',
+      'link',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -399,7 +397,7 @@ describe('channel connect', () => {
       'node',
       'catalyst',
       'channel',
-      'connect',
+      'link',
       '--store-hash',
       storeHash,
       '--access-token',
@@ -421,7 +419,7 @@ describe('channel connect', () => {
       ),
     );
 
-    await program.parseAsync(['node', 'catalyst', 'channel', 'connect', '--channel-id', '2']);
+    await program.parseAsync(['node', 'catalyst', 'channel', 'link', '--channel-id', '2']);
 
     expect(config.get('storeHash')).toBe('mock-store-hash');
     expect(config.get('accessToken')).toBe('mock-access-token');
