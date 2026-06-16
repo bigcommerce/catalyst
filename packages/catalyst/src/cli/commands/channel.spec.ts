@@ -315,7 +315,7 @@ describe('channel connect', () => {
 
     expect(envLocal).toContain(`BIGCOMMERCE_STORE_HASH=${storeHash}`);
     expect(envLocal).toContain('BIGCOMMERCE_STOREFRONT_TOKEN=sft-token');
-    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Connected channel 2'));
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Connected to channel 2'));
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
@@ -349,7 +349,7 @@ describe('channel connect', () => {
     expect(initChannelId).toBe('2');
     // id 2 in the default channels handler is "Catalyst Storefront".
     expect(consola.success).toHaveBeenCalledWith(
-      expect.stringContaining('Connected channel "Catalyst Storefront" (2)'),
+      expect.stringContaining('Connected to channel "Catalyst Storefront" (2)'),
     );
   });
 

@@ -250,11 +250,12 @@ Examples:
         .join('\n')}\n`,
     );
 
-    const label = channelName ? `channel "${channelName}" (${channelId})` : `channel ${channelId}`;
+    const label = channelName ? `"${channelName}" (${channelId})` : `${channelId}`;
 
-    consola.success(`Connected ${label} — wrote .env.local.`);
-    consola.info('Next steps:');
-    consola.info(colorize('yellow', '  pnpm run dev'));
+    consola.success(
+      `Connected to channel ${label} and wrote ${colorize('cyanBright', '.env.local')}.`,
+    );
+    consola.log(`\nStart your storefront:\n\n  ${colorize('yellow', 'pnpm run dev')}\n`);
 
     process.exit(0);
   });
