@@ -4,6 +4,7 @@ import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
+import { PromotionCallout } from '@/vibes/soul/primitives/promotion-callout';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
@@ -236,9 +237,17 @@ export default async function Search(props: Props) {
     }));
   });
 
+  // TODO: replace with real data once featuredPromotions is in the GQL schema
+  const promotionCallouts = [
+    { id: '1', text: 'Buy 2 get 1 free' },
+    { id: '2', text: '20% off today only' },
+  ];
+
   return (
-    <ProductsListSection
-      breadcrumbs={[
+    <>
+      <PromotionCallout callouts={promotionCallouts} />
+      <ProductsListSection
+        breadcrumbs={[
         { label: t('Search.Breadcrumbs.home'), href: '/' },
         { label: t('Search.Breadcrumbs.search'), href: `#` },
       ]}
@@ -275,5 +284,6 @@ export default async function Search(props: Props) {
       title={streamableTitle}
       totalCount={streamableTotalCount}
     />
+    </>
   );
 }

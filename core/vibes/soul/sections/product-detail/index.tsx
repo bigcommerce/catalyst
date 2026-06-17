@@ -4,6 +4,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import { PromotionCallout, PromotionCalloutItem } from '@/vibes/soul/primitives/promotion-callout';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import {
@@ -52,6 +53,7 @@ interface ProductDetailProduct {
 
 export interface ProductDetailProps<F extends Field> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
+  promotionCallouts?: Streamable<PromotionCalloutItem[]>;
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -98,6 +100,7 @@ export function ProductDetail<F extends Field>({
   action,
   fields: streamableFields,
   breadcrumbs,
+  promotionCallouts,
   quantityLabel,
   incrementLabel,
   decrementLabel,
@@ -122,6 +125,11 @@ export function ProductDetail<F extends Field>({
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
+      {promotionCallouts != null && (
+        <Stream fallback={null} value={promotionCallouts}>
+          {(callouts) => (callouts.length > 0 ? <PromotionCallout callouts={callouts} /> : null)}
+        </Stream>
+      )}
       <div className="group/product-detail mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">

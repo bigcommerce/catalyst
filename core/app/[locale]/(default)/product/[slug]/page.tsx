@@ -528,6 +528,12 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  // TODO: replace with real data once featuredPromotions is in the GQL schema
+  const promotionCallouts = [
+    { id: '1', text: 'Buy 2 get 1 free' },
+    { id: '2', text: '20% off today only' },
+  ];
+
   const streamableUser = Streamable.from(async () => {
     const session = await auth();
     const firstName = session?.user?.firstName ?? '';
@@ -588,6 +594,7 @@ export default async function Product({ params, searchParams }: Props) {
             stockDisplayData: streamableStockDisplayData,
             backorderDisplayData: streamableBackorderDisplayData,
           }}
+          promotionCallouts={promotionCallouts}
           quantityLabel={t('ProductDetails.quantity')}
           recaptchaSiteKey={recaptchaSiteKey}
           reviewFormAction={submitReview}
