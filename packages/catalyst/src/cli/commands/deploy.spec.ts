@@ -1,3 +1,4 @@
+import { confirm, input, select } from '@inquirer/prompts';
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
@@ -35,6 +36,12 @@ import {
   parseEnvironmentVariables,
   uploadBundleZip,
 } from './deploy';
+
+vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(),
+  input: vi.fn(),
+  select: vi.fn(),
+}));
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
@@ -111,7 +118,9 @@ beforeAll(async () => {
 
 beforeEach(() => {
   process.chdir(tmpDir);
-  vi.spyOn(consola, 'prompt').mockResolvedValue(true);
+  // Default the transformation-guard confirm to "yes" so tests that don't
+  // exercise it proceed past the guard.
+  vi.mocked(confirm).mockResolvedValue(true);
 });
 
 afterEach(() => {
@@ -350,9 +359,8 @@ describe('linked project verification', () => {
     config.set('storeHash', storeHash);
     config.set('accessToken', accessToken);
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve(projectUuid));
+    // The project picker is a select that returns the chosen project UUID.
+    vi.mocked(select).mockResolvedValue(projectUuid);
 
     await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
 
@@ -362,8 +370,6 @@ describe('linked project verification', () => {
     expect(consola.success).toHaveBeenCalledWith('Linked project "Project One".');
     expect(config.get('projectUuid')).toBe(projectUuid);
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('prompts for a project when none is linked yet', async () => {
@@ -373,9 +379,8 @@ describe('linked project verification', () => {
     config.set('storeHash', storeHash);
     config.set('accessToken', accessToken);
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve(projectUuid));
+    // The project picker is a select that returns the chosen project UUID.
+    vi.mocked(select).mockResolvedValue(projectUuid);
 
     await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
 
@@ -383,8 +388,6 @@ describe('linked project verification', () => {
     expect(consola.success).toHaveBeenCalledWith('Linked project "Project One".');
     expect(config.get('projectUuid')).toBe(projectUuid);
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('offers to create when no projects exist on the store', async () => {
@@ -400,24 +403,24 @@ describe('linked project verification', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message) => {
-        expect(message).toContain('There are not any hosting projects that you can link to yet');
-
-        return Promise.resolve(true);
-      })
-      .mockImplementationOnce(async (message) => {
-        expect(message).toBe('Enter a name for the new project:');
-
-        return Promise.resolve('My New Project');
-      });
+    // No projects exist → a confirm ("create one?") then an input (project name).
+    // The transformation-guard confirm defaults to true via beforeEach.
+    vi.mocked(input).mockResolvedValue('My New Project');
 
     await program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run']);
 
+    expect(confirm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        message: expect.stringContaining(
+          'There are not any hosting projects that you can link to yet',
+        ),
+      }),
+    );
+    expect(input).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Enter a name for the new project:' }),
+    );
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('exits gracefully with guidance when user declines to create', async () => {
@@ -433,9 +436,8 @@ describe('linked project verification', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve(false));
+    // Declining the "create one?" confirm throws NoLinkedProjectError.
+    vi.mocked(confirm).mockResolvedValue(false);
 
     await expect(program.parseAsync(['node', 'catalyst', 'deploy', '--dry-run'])).rejects.toThrow(
       'No infrastructure project linked',
@@ -445,8 +447,6 @@ describe('linked project verification', () => {
       "When you're ready to create a project, run `catalyst project create` or re-run `catalyst deploy`.",
     );
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 });
 
@@ -756,9 +756,11 @@ describe('transformation guard', () => {
       '--dry-run',
     ]);
 
-    expect(consola.prompt).toHaveBeenCalledWith(
-      expect.stringContaining('not yet set up for Commerce Hosting deployments'),
-      expect.objectContaining({ type: 'confirm' }),
+    expect(confirm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        message: expect.stringContaining('not yet set up for Commerce Hosting deployments'),
+      }),
     );
     expect(setupCommerceHosting).toHaveBeenCalledWith({
       projectDir: dirname(tmpDir),
@@ -771,7 +773,7 @@ describe('transformation guard', () => {
 
   test('exits gracefully when user declines to run setup', async () => {
     vi.mocked(getProjectState).mockReturnValueOnce(untransformedState);
-    vi.mocked(consola.prompt).mockResolvedValueOnce(false);
+    vi.mocked(confirm).mockResolvedValueOnce(false);
 
     // In production, process.exit halts. In tests it's mocked, so we can only
     // verify the user-visible signals: the guidance log and the exit code.
@@ -860,10 +862,10 @@ describe('--update-site-url', () => {
       ),
     );
 
-    // Override the default consola.prompt stub (always-true in beforeEach) with
-    // the channel and hostname selections the interactive flow will ask for.
-    vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2')
+    // The interactive flow asks two selects in order: the channel (returns the
+    // numeric channel id) then the hostname (returns the hostname string).
+    vi.mocked(select)
+      .mockResolvedValueOnce(2)
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await program.parseAsync(deployArgs(['--update-site-url']));
@@ -876,7 +878,7 @@ describe('--update-site-url', () => {
   });
 
   test('places the freshly-deployed hostname first in the hostname prompt', async () => {
-    let hostnameOptions: Array<{ label: string; value: string }> | undefined;
+    let hostnameChoices: Array<{ name: string; value: string }> | undefined;
 
     // Project Two has no hostnames by default; use Project One whose handler
     // already returns the two seeded hostnames. Inject the freshly-deployed
@@ -898,18 +900,20 @@ describe('--update-site-url', () => {
       ),
     );
 
-    vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2') // channel
-      .mockImplementationOnce((_message, opts) => {
+    vi.mocked(select)
+      .mockResolvedValueOnce(2) // channel
+      .mockImplementationOnce((config) => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        hostnameOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
+        const cfg = config as unknown as { choices: Array<{ name: string; value: string }> };
 
-        return Promise.resolve('example.com');
+        hostnameChoices = cfg.choices;
+
+        return Object.assign(Promise.resolve('example.com'), { cancel: () => undefined });
       });
 
     await program.parseAsync(deployArgs(['--update-site-url']));
 
-    expect(hostnameOptions?.[0]).toMatchObject({ value: 'example.com' });
+    expect(hostnameChoices?.[0]).toMatchObject({ value: 'example.com' });
   });
 
   test('does not call the channel site API when the flag is omitted', async () => {
@@ -936,8 +940,8 @@ describe('--update-site-url', () => {
       ),
     );
 
-    vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2')
+    vi.mocked(select)
+      .mockResolvedValueOnce(2)
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await program.parseAsync(deployArgs(['--update-site-url']));

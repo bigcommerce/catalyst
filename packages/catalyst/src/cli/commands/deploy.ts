@@ -1,3 +1,4 @@
+import { confirm } from '@inquirer/prompts';
 import AdmZip from 'adm-zip';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
@@ -466,10 +467,11 @@ Example:
     // here so first-run `catalyst deploy` works on a fresh self-hosted scaffold
     // without forcing the user to re-run after a separate setup step.
     if (!getProjectState().isTransformed) {
-      const shouldSetup = await consola.prompt(
-        'Your project is not yet set up for Commerce Hosting deployments. Would you like to run the Commerce Hosting setup now?',
-        { type: 'confirm', initial: true },
-      );
+      const shouldSetup = await confirm({
+        message:
+          'Your project is not yet set up for Commerce Hosting deployments. Would you like to run the Commerce Hosting setup now?',
+        default: true,
+      });
 
       if (!shouldSetup) {
         consola.info("When you're ready to deploy, re-run `catalyst deploy` to complete setup.");

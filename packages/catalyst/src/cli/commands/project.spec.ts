@@ -1,4 +1,4 @@
-import { password } from '@inquirer/prompts';
+import { confirm, input, password, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
@@ -30,6 +30,9 @@ vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('@inquirer/prompts', () => ({
   password: vi.fn(),
+  confirm: vi.fn(),
+  input: vi.fn(),
+  select: vi.fn(),
 }));
 
 vi.mock('../lib/project-state', () => ({
@@ -41,6 +44,9 @@ vi.mock('../lib/install-dependencies', () => ({
 }));
 
 const passwordMock = vi.mocked(password);
+const confirmMock = vi.mocked(confirm);
+const inputMock = vi.mocked(input);
+const selectMock = vi.mocked(select);
 
 vi.mock('../lib/commerce-hosting', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../lib/commerce-hosting')>();
@@ -180,7 +186,7 @@ describe('project', () => {
 
 describe('project create', () => {
   test('prompts for name and creates project', async () => {
-    const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('My New Project');
+    inputMock.mockResolvedValue('My New Project');
 
     await program.parseAsync([
       'node',
@@ -194,9 +200,8 @@ describe('project create', () => {
     ]);
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
-    expect(consolaPromptMock).toHaveBeenCalledWith(
-      'Enter a name for the new project:',
-      expect.any(Object),
+    expect(inputMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Enter a name for the new project:' }),
     );
     expect(consola.success).toHaveBeenCalledWith('Project "New Project" created successfully.');
     expect(consola.start).toHaveBeenCalledWith(
@@ -210,8 +215,6 @@ describe('project create', () => {
     expect(config.get('projectUuid')).toBe('c23f5785-fd99-4a94-9fb3-945551623925');
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('runs interactive login when no credentials are provided', async () => {
@@ -221,7 +224,7 @@ describe('project create', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce('My New Project');
+    inputMock.mockResolvedValueOnce('My New Project');
 
     await program.parseAsync(['node', 'catalyst', 'project', 'create']);
 
@@ -238,8 +241,6 @@ describe('project create', () => {
     expect(config.get('storeHash')).toBe('mock-store-hash');
     expect(config.get('accessToken')).toBe('mock-access-token');
     expect(config.get('projectUuid')).toBe(projectUuid3);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('falls back to manual login when the device flow fails', async () => {
@@ -258,11 +259,10 @@ describe('project create', () => {
 
     passwordMock.mockResolvedValueOnce(accessToken);
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce(true)
-      .mockResolvedValueOnce(storeHash)
-      .mockResolvedValueOnce('My New Project');
+    // Manual-login fallback: confirm() to retry manually, input() for the store
+    // hash, password() for the token, then input() for the new project name.
+    confirmMock.mockResolvedValueOnce(true);
+    inputMock.mockResolvedValueOnce(storeHash).mockResolvedValueOnce('My New Project');
 
     await program.parseAsync(['node', 'catalyst', 'project', 'create']);
 
@@ -276,8 +276,6 @@ describe('project create', () => {
 
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('exits cleanly when the user aborts the manual login fallback', async () => {
@@ -294,7 +292,8 @@ describe('project create', () => {
       ),
     );
 
-    const consolaPromptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+    // Decline the manual-login fallback confirm() — aborts cleanly.
+    confirmMock.mockResolvedValueOnce(false);
 
     await program.parseAsync(['node', 'catalyst', 'project', 'create']);
 
@@ -306,8 +305,6 @@ describe('project create', () => {
     );
     expect(exitMock).toHaveBeenCalledWith(0);
     expect(config.get('projectUuid')).toBeUndefined();
-
-    consolaPromptMock.mockRestore();
   });
 
   test('propagates create project API errors', async () => {
@@ -317,7 +314,7 @@ describe('project create', () => {
       ),
     );
 
-    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('Duplicate');
+    inputMock.mockResolvedValue('Duplicate');
 
     await expect(
       program.parseAsync([
@@ -331,8 +328,6 @@ describe('project create', () => {
         accessToken,
       ]),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
-
-    promptMock.mockRestore();
   });
 
   test('propagates 422 validation error', async () => {
@@ -342,7 +337,7 @@ describe('project create', () => {
       ),
     );
 
-    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValue('bad name');
+    inputMock.mockResolvedValue('bad name');
 
     await expect(
       program.parseAsync([
@@ -358,8 +353,6 @@ describe('project create', () => {
     ).rejects.toThrow(
       "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
     );
-
-    promptMock.mockRestore();
   });
 });
 
@@ -515,26 +508,7 @@ describe('project link', () => {
   });
 
   test('fetches projects and prompts user to select one', async () => {
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async (message, opts) => {
-        expect(message).toContain(
-          'Select a project or create a new project (Press <enter> to select).',
-        );
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        expect(options).toHaveLength(3);
-        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
-        expect(options[1]).toMatchObject({
-          label: 'Project Two',
-          value: projectUuid2,
-        });
-        expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
-
-        return new Promise((resolve) => resolve(projectUuid2));
-      });
+    selectMock.mockResolvedValueOnce(projectUuid2);
 
     await program.parseAsync([
       'node',
@@ -546,6 +520,22 @@ describe('project link', () => {
       '--access-token',
       accessToken,
     ]);
+
+    expect(selectMock).toHaveBeenCalledTimes(1);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as {
+      message: string;
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    expect(selectArgs.message).toContain(
+      'Select a project or create a new project (Press <enter> to select).',
+    );
+    expect(selectArgs.choices).toHaveLength(3);
+    expect(selectArgs.choices[0]).toMatchObject({ name: 'Project One', value: projectUuid1 });
+    expect(selectArgs.choices[1]).toMatchObject({ name: 'Project Two', value: projectUuid2 });
+    expect(selectArgs.choices[2]).toMatchObject({ name: 'Create a new project', value: 'create' });
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
@@ -564,36 +554,11 @@ describe('project link', () => {
     expect(config.get('projectUuid')).toBe(projectUuid2);
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('prompts to create a new project', async () => {
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toContain(
-          'Select a project or create a new project (Press <enter> to select).',
-        );
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        expect(options).toHaveLength(3);
-        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
-        expect(options[1]).toMatchObject({
-          label: 'Project Two',
-          value: projectUuid2,
-        });
-        expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
-
-        return new Promise((resolve) => resolve('create'));
-      })
-      .mockImplementationOnce(async (message) => {
-        expect(message).toBe('Enter a name for the new project:');
-
-        return new Promise((resolve) => resolve('New Project'));
-      });
+    selectMock.mockResolvedValueOnce('create');
+    inputMock.mockResolvedValueOnce('New Project');
 
     await program.parseAsync([
       'node',
@@ -605,6 +570,24 @@ describe('project link', () => {
       '--access-token',
       accessToken,
     ]);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as {
+      message: string;
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    expect(selectArgs.message).toContain(
+      'Select a project or create a new project (Press <enter> to select).',
+    );
+    expect(selectArgs.choices).toHaveLength(3);
+    expect(selectArgs.choices[0]).toMatchObject({ name: 'Project One', value: projectUuid1 });
+    expect(selectArgs.choices[1]).toMatchObject({ name: 'Project Two', value: projectUuid2 });
+    expect(selectArgs.choices[2]).toMatchObject({ name: 'Create a new project', value: 'create' });
+
+    expect(inputMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Enter a name for the new project:' }),
+    );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
@@ -618,8 +601,6 @@ describe('project link', () => {
     expect(config.get('projectUuid')).toBe(projectUuid3);
     expect(config.get('storeHash')).toBe(storeHash);
     expect(config.get('accessToken')).toBe(accessToken);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('errors when create project API fails', async () => {
@@ -629,31 +610,8 @@ describe('project link', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toContain(
-          'Select a project or create a new project (Press <enter> to select).',
-        );
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        expect(options).toHaveLength(3);
-        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
-        expect(options[1]).toMatchObject({
-          label: 'Project Two',
-          value: projectUuid2,
-        });
-        expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
-
-        return new Promise((resolve) => resolve('create'));
-      })
-      .mockImplementationOnce(async (message) => {
-        expect(message).toBe('Enter a name for the new project:');
-
-        return new Promise((resolve) => resolve('New Project'));
-      });
+    selectMock.mockResolvedValueOnce('create');
+    inputMock.mockResolvedValueOnce('New Project');
 
     await expect(
       program.parseAsync([
@@ -668,12 +626,28 @@ describe('project link', () => {
       ]),
     ).rejects.toThrow('Failed to create project, is the name already in use?');
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as {
+      message: string;
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    expect(selectArgs.message).toContain(
+      'Select a project or create a new project (Press <enter> to select).',
+    );
+    expect(selectArgs.choices).toHaveLength(3);
+    expect(selectArgs.choices[0]).toMatchObject({ name: 'Project One', value: projectUuid1 });
+    expect(selectArgs.choices[1]).toMatchObject({ name: 'Project Two', value: projectUuid2 });
+    expect(selectArgs.choices[2]).toMatchObject({ name: 'Create a new project', value: 'create' });
+
+    expect(inputMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Enter a name for the new project:' }),
+    );
+
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
     expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
-
-    consolaPromptMock.mockRestore();
   });
 
   test('errors when create project returns 422 validation error', async () => {
@@ -683,31 +657,8 @@ describe('project link', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toContain(
-          'Select a project or create a new project (Press <enter> to select).',
-        );
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        expect(options).toHaveLength(3);
-        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
-        expect(options[1]).toMatchObject({
-          label: 'Project Two',
-          value: projectUuid2,
-        });
-        expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
-
-        return new Promise((resolve) => resolve('create'));
-      })
-      .mockImplementationOnce(async (message) => {
-        expect(message).toBe('Enter a name for the new project:');
-
-        return new Promise((resolve) => resolve('bad name'));
-      });
+    selectMock.mockResolvedValueOnce('create');
+    inputMock.mockResolvedValueOnce('bad name');
 
     await expect(
       program.parseAsync([
@@ -724,31 +675,34 @@ describe('project link', () => {
       "The project name you entered doesn't meet the requirements. It must be 3–32 characters long and use only letters, numbers, hyphens (-), underscores (_), and periods (.)",
     );
 
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as {
+      message: string;
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    expect(selectArgs.message).toContain(
+      'Select a project or create a new project (Press <enter> to select).',
+    );
+    expect(selectArgs.choices).toHaveLength(3);
+    expect(selectArgs.choices[0]).toMatchObject({ name: 'Project One', value: projectUuid1 });
+    expect(selectArgs.choices[1]).toMatchObject({ name: 'Project Two', value: projectUuid2 });
+    expect(selectArgs.choices[2]).toMatchObject({ name: 'Create a new project', value: 'create' });
+
+    expect(inputMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Enter a name for the new project:' }),
+    );
+
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
     expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
-
-    consolaPromptMock.mockRestore();
   });
 
   test('marks the currently linked project with [linked] in the select prompt', async () => {
     config.set('projectUuid', projectUuid2);
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (_message, opts) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        const linkedOption = options.find((o) => o.value === projectUuid2);
-        const otherOption = options.find((o) => o.value === projectUuid1);
-
-        expect(linkedOption?.label).toContain('[linked]');
-        expect(otherOption?.label).not.toContain('[linked]');
-
-        return Promise.resolve(projectUuid2);
-      });
+    selectMock.mockResolvedValueOnce(projectUuid2);
 
     await program.parseAsync([
       'node',
@@ -761,7 +715,16 @@ describe('project link', () => {
       accessToken,
     ]);
 
-    consolaPromptMock.mockRestore();
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as unknown as {
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    const linkedOption = selectArgs.choices.find((o) => o.value === projectUuid2);
+    const otherOption = selectArgs.choices.find((o) => o.value === projectUuid1);
+
+    expect(linkedOption?.name).toContain('[linked]');
+    expect(otherOption?.name).not.toContain('[linked]');
   });
 
   test('exits gracefully with guidance when user declines to create from empty list', async () => {
@@ -771,9 +734,8 @@ describe('project link', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve(false));
+    // Empty list → confirm() to create; declining throws NoLinkedProjectError.
+    confirmMock.mockResolvedValue(false);
 
     await expect(
       program.parseAsync([
@@ -792,8 +754,6 @@ describe('project link', () => {
       "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
     );
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('errors when infrastructure projects API is not found', async () => {
@@ -825,8 +785,6 @@ describe('project link', () => {
 
   describe('post-link Commerce Hosting setup prompt', () => {
     test('does not prompt when project is already transformed', async () => {
-      const consolaPromptMock = vi.spyOn(consola, 'prompt');
-
       vi.mocked(getProjectState).mockReturnValue(transformedState);
 
       await program.parseAsync([
@@ -838,23 +796,17 @@ describe('project link', () => {
         projectUuid1,
       ]);
 
-      const promptMessages = consolaPromptMock.mock.calls.map(([msg]) => msg);
+      const confirmMessages = confirmMock.mock.calls.map(([opts]) => opts.message);
 
-      expect(promptMessages).not.toContain(
+      expect(confirmMessages).not.toContainEqual(
         expect.stringContaining('not fully set up for Commerce Hosting'),
       );
-
-      consolaPromptMock.mockRestore();
     });
 
     test('prompts and runs setup when user accepts', async () => {
       vi.mocked(getProjectState).mockReturnValue(untransformedState);
 
-      const consolaPromptMock = vi.spyOn(consola, 'prompt').mockImplementation(async (message) => {
-        expect(message).toContain('not fully set up for Commerce Hosting');
-
-        return Promise.resolve(true);
-      });
+      confirmMock.mockResolvedValue(true);
 
       await program.parseAsync([
         'node',
@@ -865,20 +817,21 @@ describe('project link', () => {
         projectUuid1,
       ]);
 
+      expect(confirmMock).toHaveBeenCalledTimes(1);
+      expect(confirmMock.mock.calls[0][0].message).toContain(
+        'not fully set up for Commerce Hosting',
+      );
+
       expect(setupCommerceHosting).toHaveBeenCalledWith(
         expect.objectContaining({ projectUuid: projectUuid1 }),
       );
       expect(installDependencies).toHaveBeenCalled();
-
-      consolaPromptMock.mockRestore();
     });
 
     test('skips setup when user declines', async () => {
       vi.mocked(getProjectState).mockReturnValue(untransformedState);
 
-      const consolaPromptMock = vi
-        .spyOn(consola, 'prompt')
-        .mockImplementation(async () => Promise.resolve(false));
+      confirmMock.mockResolvedValue(false);
 
       await program.parseAsync([
         'node',
@@ -891,8 +844,6 @@ describe('project link', () => {
 
       expect(setupCommerceHosting).not.toHaveBeenCalled();
       expect(installDependencies).not.toHaveBeenCalled();
-
-      consolaPromptMock.mockRestore();
     });
   });
 
@@ -914,8 +865,6 @@ describe('project link', () => {
 
 describe('project delete', () => {
   test('with --project-uuid and --force deletes without prompting', async () => {
-    const consolaPromptMock = vi.spyOn(consola, 'prompt');
-
     await program.parseAsync([
       'node',
       'catalyst',
@@ -930,26 +879,16 @@ describe('project delete', () => {
       accessToken,
     ]);
 
-    expect(consolaPromptMock).not.toHaveBeenCalled();
+    expect(selectMock).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
     expect(consola.start).toHaveBeenCalledWith(`Deleting project ${projectUuid1}...`);
     expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid1} deleted.`);
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('with --project-uuid prompts for confirmation and deletes on accept', async () => {
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async (message, opts) => {
-        expect(message).toContain('Are you sure you want to delete project');
-        expect(message).toContain(projectUuid1);
-        expect(message).toContain('irreversible');
-        expect(opts).toMatchObject({ type: 'confirm' });
-
-        return Promise.resolve(true);
-      });
+    confirmMock.mockResolvedValue(true);
 
     await program.parseAsync([
       'node',
@@ -964,11 +903,17 @@ describe('project delete', () => {
       accessToken,
     ]);
 
-    expect(consolaPromptMock).toHaveBeenCalledTimes(1);
+    expect(confirmMock).toHaveBeenCalledTimes(1);
+
+    const confirmArgs = confirmMock.mock.calls[0][0];
+
+    expect(confirmArgs.message).toContain('Are you sure you want to delete project');
+    expect(confirmArgs.message).toContain(projectUuid1);
+    expect(confirmArgs.message).toContain('irreversible');
+    expect(confirmArgs.default).toBe(false);
+
     expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid1} deleted.`);
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('aborts when user declines the confirmation prompt', async () => {
@@ -985,9 +930,7 @@ describe('project delete', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve(false));
+    confirmMock.mockResolvedValue(false);
 
     await program.parseAsync([
       'node',
@@ -1005,32 +948,11 @@ describe('project delete', () => {
     expect(deleteRequested).toBe(false);
     expect(consola.info).toHaveBeenCalledWith('Aborted. No project was deleted.');
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('without --project-uuid fetches projects and prompts to select one', async () => {
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toContain('Select a project to delete');
-
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        expect(options).toHaveLength(3);
-        expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
-        expect(options[1]).toMatchObject({ label: 'Project Two', value: projectUuid2 });
-        expect(options[2]).toMatchObject({ label: 'Cancel', value: 'cancel' });
-
-        return Promise.resolve(projectUuid2);
-      })
-      .mockImplementationOnce(async (message) => {
-        expect(message).toContain('"Project Two"');
-        expect(message).toContain(projectUuid2);
-
-        return Promise.resolve(true);
-      });
+    selectMock.mockResolvedValueOnce(projectUuid2);
+    confirmMock.mockResolvedValueOnce(true);
 
     await program.parseAsync([
       'node',
@@ -1042,33 +964,35 @@ describe('project delete', () => {
       '--access-token',
       accessToken,
     ]);
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as {
+      message: string;
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    expect(selectArgs.message).toContain('Select a project to delete');
+    expect(selectArgs.choices).toHaveLength(3);
+    expect(selectArgs.choices[0]).toMatchObject({ name: 'Project One', value: projectUuid1 });
+    expect(selectArgs.choices[1]).toMatchObject({ name: 'Project Two', value: projectUuid2 });
+    expect(selectArgs.choices[2]).toMatchObject({ name: 'Cancel', value: 'cancel' });
+
+    const confirmArgs = confirmMock.mock.calls[0][0];
+
+    expect(confirmArgs.message).toContain('"Project Two"');
+    expect(confirmArgs.message).toContain(projectUuid2);
 
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
     expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
     expect(consola.success).toHaveBeenCalledWith(`Project ${projectUuid2} deleted.`);
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('marks the currently linked project with [linked] in the select prompt', async () => {
     config.set('projectUuid', projectUuid2);
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (_message, opts) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        const options = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        const linkedOption = options.find((o) => o.value === projectUuid2);
-        const otherOption = options.find((o) => o.value === projectUuid1);
-
-        expect(linkedOption?.label).toContain('[linked]');
-        expect(otherOption?.label).not.toContain('[linked]');
-
-        return Promise.resolve(projectUuid1);
-      })
-      .mockImplementationOnce(async () => Promise.resolve(true));
+    selectMock.mockResolvedValueOnce(projectUuid1);
+    confirmMock.mockResolvedValueOnce(true);
 
     await program.parseAsync([
       'node',
@@ -1081,7 +1005,16 @@ describe('project delete', () => {
       accessToken,
     ]);
 
-    consolaPromptMock.mockRestore();
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const selectArgs = selectMock.mock.calls[0][0] as unknown as {
+      choices: Array<{ name: string; value: string }>;
+    };
+
+    const linkedOption = selectArgs.choices.find((o) => o.value === projectUuid2);
+    const otherOption = selectArgs.choices.find((o) => o.value === projectUuid1);
+
+    expect(linkedOption?.name).toContain('[linked]');
+    expect(otherOption?.name).not.toContain('[linked]');
   });
 
   test('aborts when user selects Cancel from the project list', async () => {
@@ -1098,9 +1031,7 @@ describe('project delete', () => {
       ),
     );
 
-    const consolaPromptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementation(async () => Promise.resolve('cancel'));
+    selectMock.mockResolvedValue('cancel');
 
     await program.parseAsync([
       'node',
@@ -1113,12 +1044,11 @@ describe('project delete', () => {
       accessToken,
     ]);
 
-    expect(consolaPromptMock).toHaveBeenCalledTimes(1);
+    expect(selectMock).toHaveBeenCalledTimes(1);
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(deleteRequested).toBe(false);
     expect(consola.info).toHaveBeenCalledWith('Aborted. No project was deleted.');
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    consolaPromptMock.mockRestore();
   });
 
   test('exits cleanly when there are no projects to delete', async () => {

@@ -1,4 +1,4 @@
-import { password } from '@inquirer/prompts';
+import { confirm, input, password } from '@inquirer/prompts';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
 import { realpath } from 'node:fs/promises';
@@ -27,9 +27,13 @@ import { auth } from './auth';
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
 vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(),
+  input: vi.fn(),
   password: vi.fn(),
 }));
 
+const confirmMock = vi.mocked(confirm);
+const inputMock = vi.mocked(input);
 const passwordMock = vi.mocked(password);
 
 let exitMock: MockInstance;
@@ -163,24 +167,15 @@ describe('login', () => {
       ),
     );
 
+    confirmMock.mockResolvedValueOnce(true);
+    inputMock.mockResolvedValueOnce('manual-store-hash');
     passwordMock.mockResolvedValueOnce('manual-access-token');
 
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toContain('Try logging in manually');
-        expect(opts).toMatchObject({ type: 'confirm' });
-
-        return Promise.resolve(true);
-      })
-      .mockImplementationOnce(async (message, opts) => {
-        expect(message).toBe('Store hash:');
-        expect(opts).toMatchObject({ type: 'text' });
-
-        return Promise.resolve('manual-store-hash');
-      });
-
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(confirmMock).toHaveBeenCalledOnce();
+    expect(confirmMock.mock.calls[0]?.[0].message).toContain('Try logging in manually');
+    expect(inputMock).toHaveBeenCalledWith(expect.objectContaining({ message: 'Store hash:' }));
 
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("Browser login didn't work"));
     expect(consola.success).toHaveBeenCalledWith('Logged in to store manual-store-hash.');
@@ -190,8 +185,6 @@ describe('login', () => {
 
     expect(config.get('storeHash')).toBe('manual-store-hash');
     expect(config.get('accessToken')).toBe('manual-access-token');
-
-    promptMock.mockRestore();
   });
 
   test('exits cleanly when user declines manual login fallback', async () => {
@@ -202,7 +195,7 @@ describe('login', () => {
       ),
     );
 
-    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+    confirmMock.mockResolvedValueOnce(false);
 
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
@@ -211,8 +204,6 @@ describe('login', () => {
       'Login aborted. Re-run `catalyst auth login` when you have your credentials ready.',
     );
     expect(exitMock).toHaveBeenCalledWith(0);
-
-    promptMock.mockRestore();
   });
 
   test('fails when manual credentials cannot be validated', async () => {
@@ -227,12 +218,9 @@ describe('login', () => {
       ),
     );
 
+    confirmMock.mockResolvedValueOnce(true);
+    inputMock.mockResolvedValueOnce('manual-store-hash');
     passwordMock.mockResolvedValueOnce('bad-token');
-
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce(true)
-      .mockResolvedValueOnce('manual-store-hash');
 
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
@@ -240,8 +228,6 @@ describe('login', () => {
       expect.stringContaining('Could not validate credentials'),
     );
     expect(exitMock).toHaveBeenCalledWith(1);
-
-    promptMock.mockRestore();
   });
 
   test('rejects empty store hash during manual login', async () => {
@@ -252,17 +238,13 @@ describe('login', () => {
       ),
     );
 
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce(true)
-      .mockResolvedValueOnce('   ');
+    confirmMock.mockResolvedValueOnce(true);
+    inputMock.mockResolvedValueOnce('   ');
 
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
     expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Store hash is required'));
     expect(exitMock).toHaveBeenCalledWith(1);
-
-    promptMock.mockRestore();
   });
 
   test('rejects empty access token during manual login', async () => {
@@ -273,19 +255,14 @@ describe('login', () => {
       ),
     );
 
+    confirmMock.mockResolvedValueOnce(true);
+    inputMock.mockResolvedValueOnce('manual-store-hash');
     passwordMock.mockResolvedValueOnce('   ');
-
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce(true)
-      .mockResolvedValueOnce('manual-store-hash');
 
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
     expect(consola.error).toHaveBeenCalledWith(expect.stringContaining('Access token is required'));
     expect(exitMock).toHaveBeenCalledWith(1);
-
-    promptMock.mockRestore();
   });
 
   test('handles browser open failure gracefully', async () => {

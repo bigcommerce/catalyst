@@ -1,3 +1,4 @@
+import { confirm, input, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import { colorize } from 'consola/utils';
 import { dirname } from 'node:path';
@@ -42,10 +43,11 @@ async function offerCommerceHostingSetup(
     return;
   }
 
-  const shouldSetup = await consola.prompt(
-    'Your project has been linked, but is not fully set up for Commerce Hosting deployments yet. Would you like to run the setup now?',
-    { type: 'confirm', initial: true },
-  );
+  const shouldSetup = await confirm({
+    message:
+      'Your project has been linked, but is not fully set up for Commerce Hosting deployments yet. Would you like to run the setup now?',
+    default: true,
+  });
 
   if (!shouldSetup) return;
 
@@ -165,9 +167,7 @@ Example:
 
     await getTelemetry().identify(storeHash);
 
-    const newProjectName = await consola.prompt('Enter a name for the new project:', {
-      type: 'text',
-    });
+    const newProjectName = await input({ message: 'Enter a name for the new project:' });
 
     const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
 
@@ -307,24 +307,18 @@ Examples:
 
       const linkedProjectUuid = config.get('projectUuid');
 
-      const selected = await consola.prompt(
-        'Select a project to delete (Press <enter> to select).',
-        {
-          type: 'select',
-          options: [
-            ...projects.map((p) => ({
-              label:
-                p.uuid === linkedProjectUuid
-                  ? `${p.name} ${colorize('green', '[linked]')}`
-                  : p.name,
-              value: p.uuid,
-              hint: p.uuid,
-            })),
-            { label: 'Cancel', value: 'cancel', hint: 'Exit without deleting any project.' },
-          ],
-          cancel: 'reject',
-        },
-      );
+      const selected = await select({
+        message: 'Select a project to delete (Press <enter> to select).',
+        choices: [
+          ...projects.map((p) => ({
+            name:
+              p.uuid === linkedProjectUuid ? `${p.name} ${colorize('green', '[linked]')}` : p.name,
+            value: p.uuid,
+            description: p.uuid,
+          })),
+          { name: 'Cancel', value: 'cancel', description: 'Exit without deleting any project.' },
+        ],
+      });
 
       if (selected === 'cancel') {
         consola.info('Aborted. No project was deleted.');
@@ -346,10 +340,10 @@ Examples:
     if (!options.force) {
       const label = targetName ? `"${targetName}" (${targetUuid})` : targetUuid;
 
-      const confirmed = await consola.prompt(
-        `Are you sure you want to delete project ${label}? This action is irreversible and will permanently destroy the project and all of its data.`,
-        { type: 'confirm', initial: false },
-      );
+      const confirmed = await confirm({
+        message: `Are you sure you want to delete project ${label}? This action is irreversible and will permanently destroy the project and all of its data.`,
+        default: false,
+      });
 
       if (!confirmed) {
         consola.info('Aborted. No project was deleted.');

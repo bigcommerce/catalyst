@@ -1,3 +1,4 @@
+import { confirm, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
@@ -13,11 +14,19 @@ import { program } from '../program';
 
 import { channel } from './channel';
 
+vi.mock('@inquirer/prompts', () => ({
+  select: vi.fn(),
+  confirm: vi.fn(),
+  input: vi.fn(),
+}));
 // `channel link` can trigger the interactive device-code login (browser +
 // spinner); stub both so the no-credentials path runs headless in tests.
 vi.mock('open', () => ({ default: vi.fn().mockResolvedValue(undefined) }));
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
+
+const mockSelect = vi.mocked(select);
+const mockConfirm = vi.mocked(confirm);
 
 let exitMock: MockInstance;
 
@@ -122,10 +131,7 @@ describe('channel update', () => {
       ),
     );
 
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2')
-      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+    mockSelect.mockResolvedValueOnce(2).mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await program.parseAsync([
       'node',
@@ -140,7 +146,7 @@ describe('channel update', () => {
       linkedProjectUuid,
     ]);
 
-    expect(promptMock).toHaveBeenCalledTimes(2);
+    expect(mockSelect).toHaveBeenCalledTimes(2);
     expect(putChannelId).toBe('2');
     expect(putBody).toEqual({ url: 'https://project-one.catalyst-sandbox.store' });
     expect(consola.success).toHaveBeenCalledWith(
@@ -152,10 +158,7 @@ describe('channel update', () => {
   test('reads project UUID from .bigcommerce/project.json when no flag is passed', async () => {
     config.set('projectUuid', linkedProjectUuid);
 
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2')
-      .mockResolvedValueOnce('vanity.project-one.example.com');
+    mockSelect.mockResolvedValueOnce(2).mockResolvedValueOnce('vanity.project-one.example.com');
 
     await program.parseAsync([
       'node',
@@ -168,7 +171,7 @@ describe('channel update', () => {
       accessToken,
     ]);
 
-    expect(promptMock).toHaveBeenCalledTimes(2);
+    expect(mockSelect).toHaveBeenCalledTimes(2);
     expect(consola.success).toHaveBeenCalledWith(
       expect.stringContaining('https://vanity.project-one.example.com'),
     );
@@ -192,8 +195,6 @@ describe('channel update', () => {
       ),
     );
 
-    const promptMock = vi.spyOn(consola, 'prompt');
-
     await program.parseAsync([
       'node',
       'catalyst',
@@ -211,7 +212,7 @@ describe('channel update', () => {
       'override.example',
     ]);
 
-    expect(promptMock).not.toHaveBeenCalled();
+    expect(mockSelect).not.toHaveBeenCalled();
     expect(putChannelId).toBe('5');
     expect(putBody).toEqual({ url: 'https://override.example' });
   });
@@ -224,7 +225,7 @@ describe('channel update', () => {
     );
 
     // First prompt: "Would you like to create one?" — user says no
-    vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+    mockConfirm.mockResolvedValueOnce(false);
 
     await program.parseAsync([
       'node',
@@ -248,9 +249,7 @@ describe('channel update', () => {
       ),
     );
 
-    vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2')
-      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+    mockSelect.mockResolvedValueOnce(2).mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await expect(
       program.parseAsync([
@@ -330,7 +329,7 @@ describe('channel link', () => {
       }),
     );
 
-    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce('2');
+    mockSelect.mockResolvedValueOnce(2);
 
     await program.parseAsync([
       'node',
@@ -343,7 +342,7 @@ describe('channel link', () => {
       accessToken,
     ]);
 
-    expect(promptMock).toHaveBeenCalledTimes(1);
+    expect(mockSelect).toHaveBeenCalledTimes(1);
     expect(initChannelId).toBe('2');
     // id 2 in the default channels handler is "Catalyst Storefront".
     expect(consola.success).toHaveBeenCalledWith(

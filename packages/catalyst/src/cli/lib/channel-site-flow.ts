@@ -1,3 +1,5 @@
+import { select } from '@inquirer/prompts';
+
 import { type Channel, fetchAvailableChannels, updateChannelSiteUrl } from './channels';
 import { selectOrCreateInfrastructureProject } from './commerce-hosting';
 import { consola } from './logger';
@@ -71,17 +73,15 @@ async function resolveChannel(
     );
   }
 
-  const selectedId = await consola.prompt('Select the channel to update.', {
-    type: 'select',
-    options: catalystChannels.map((c: Channel) => ({
-      label: c.name,
-      value: String(c.id),
-      hint: `id: ${c.id}`,
+  const id = await select({
+    message: 'Select the channel to update.',
+    choices: catalystChannels.map((c: Channel) => ({
+      name: c.name,
+      value: c.id,
+      description: `id: ${c.id}`,
     })),
-    cancel: 'reject',
   });
 
-  const id = Number(selectedId);
   const matched = catalystChannels.find((c) => c.id === id);
 
   return { id, name: matched?.name };
@@ -111,13 +111,12 @@ async function resolveHostname(
       ]
     : project.deployment_hostnames;
 
-  const selected = await consola.prompt('Select the hostname to point the channel at.', {
-    type: 'select',
-    options: ordered.map((h) => ({ label: h, value: h })),
-    cancel: 'reject',
+  const selected = await select({
+    message: 'Select the hostname to point the channel at.',
+    choices: ordered.map((h) => ({ name: h, value: h })),
   });
 
-  return String(selected);
+  return selected;
 }
 
 export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Promise<void> {
