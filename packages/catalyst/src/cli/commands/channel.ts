@@ -5,7 +5,12 @@ import { outputFileSync } from 'fs-extra/esm';
 import { join } from 'node:path';
 
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
-import { fetchAvailableChannels, getChannelInit } from '../lib/channels';
+import {
+  channelPlatformLabel,
+  fetchAvailableChannels,
+  getChannelInit,
+  sortChannelsByPlatform,
+} from '../lib/channels';
 import { NoLinkedProjectError } from '../lib/commerce-hosting';
 import { parseEnvAssignment } from '../lib/env-config';
 import { consola } from '../lib/logger';
@@ -20,13 +25,6 @@ import {
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
-
-// Surface Catalyst channels first, then Next, then Stencil (`bigcommerce`),
-// then anything else — same ordering `catalyst create` uses.
-const CHANNEL_SORT_ORDER = ['catalyst', 'next', 'bigcommerce'];
-
-const platformLabel = (platform: string) =>
-  platform === 'bigcommerce' ? 'Stencil' : platform.charAt(0).toUpperCase() + platform.slice(1);
 
 const parseChannelId = (value: string): number => {
   const parsed = Number.parseInt(value, 10);
@@ -202,23 +200,12 @@ Examples:
         return;
       }
 
-      const sorted = [...channels].sort((a, b) => {
-        const aIndex = CHANNEL_SORT_ORDER.indexOf(a.platform);
-        const bIndex = CHANNEL_SORT_ORDER.indexOf(b.platform);
-
-        if (aIndex === -1 && bIndex === -1) return 0;
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
-
-        return aIndex - bIndex;
-      });
-
       const selected = await consola.prompt('Which channel would you like to link?', {
         type: 'select',
-        options: sorted.map((c) => ({
+        options: sortChannelsByPlatform(channels).map((c) => ({
           label: c.name,
           value: String(c.id),
-          hint: platformLabel(c.platform),
+          hint: channelPlatformLabel(c.platform),
         })),
         cancel: 'reject',
       });
