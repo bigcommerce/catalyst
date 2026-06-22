@@ -1,3 +1,4 @@
+import { confirm, input, select } from '@inquirer/prompts';
 import { http, HttpResponse } from 'msw';
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
@@ -6,6 +7,16 @@ import { server } from '../../../tests/mocks/node';
 import { runChannelSiteUrlFlow } from './channel-site-flow';
 import { NoLinkedProjectError } from './commerce-hosting';
 import { consola } from './logger';
+
+vi.mock('@inquirer/prompts', () => ({
+  select: vi.fn(),
+  confirm: vi.fn(),
+  input: vi.fn(),
+}));
+
+const selectMock = vi.mocked(select);
+const confirmMock = vi.mocked(confirm);
+const inputMock = vi.mocked(input);
 
 const storeHash = 'test-store';
 const accessToken = 'test-token';
@@ -67,11 +78,10 @@ describe('runChannelSiteUrlFlow', () => {
       ),
     );
 
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      // First prompt — channel select; resolve with channel id (as string)
-      .mockResolvedValueOnce('2')
-      // Second prompt — hostname select
+    selectMock
+      // First select — channel select; resolves with the channel id (a number)
+      .mockResolvedValueOnce(2)
+      // Second select — hostname select (a string)
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await runChannelSiteUrlFlow({
@@ -81,7 +91,7 @@ describe('runChannelSiteUrlFlow', () => {
       projectUuid: linkedProjectUuid,
     });
 
-    expect(promptMock).toHaveBeenCalledTimes(2);
+    expect(selectMock).toHaveBeenCalledTimes(2);
     expect(putChannelId).toBe('2');
     expect(putBody).toEqual({ url: 'https://project-one.catalyst-sandbox.store' });
     expect(consola.success).toHaveBeenCalledWith(
@@ -90,9 +100,7 @@ describe('runChannelSiteUrlFlow', () => {
   });
 
   test('--channel-id short-circuits the channel prompt', async () => {
-    const promptMock = vi
-      .spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('vanity.project-one.example.com');
+    selectMock.mockResolvedValueOnce('vanity.project-one.example.com');
 
     await runChannelSiteUrlFlow({
       storeHash,
@@ -102,16 +110,15 @@ describe('runChannelSiteUrlFlow', () => {
       channelId: 99,
     });
 
-    // Only the hostname prompt fires
-    expect(promptMock).toHaveBeenCalledTimes(1);
-    expect(promptMock).toHaveBeenCalledWith(
-      'Select the hostname to point the channel at.',
-      expect.any(Object),
+    // Only the hostname select fires
+    expect(selectMock).toHaveBeenCalledTimes(1);
+    expect(selectMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Select the hostname to point the channel at.' }),
     );
   });
 
   test('--hostname short-circuits the hostname prompt', async () => {
-    const promptMock = vi.spyOn(consola, 'prompt').mockResolvedValueOnce('2');
+    selectMock.mockResolvedValueOnce(2);
 
     await runChannelSiteUrlFlow({
       storeHash,
@@ -121,16 +128,16 @@ describe('runChannelSiteUrlFlow', () => {
       hostname: 'manual.example.com',
     });
 
-    expect(promptMock).toHaveBeenCalledTimes(1);
-    expect(promptMock).toHaveBeenCalledWith('Select the channel to update.', expect.any(Object));
+    expect(selectMock).toHaveBeenCalledTimes(1);
+    expect(selectMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Select the channel to update.' }),
+    );
     expect(consola.success).toHaveBeenCalledWith(
       expect.stringContaining('https://manual.example.com'),
     );
   });
 
   test('both overrides skip all prompts', async () => {
-    const promptMock = vi.spyOn(consola, 'prompt');
-
     await runChannelSiteUrlFlow({
       storeHash,
       accessToken,
@@ -140,23 +147,18 @@ describe('runChannelSiteUrlFlow', () => {
       hostname: 'auto.example.com',
     });
 
-    expect(promptMock).not.toHaveBeenCalled();
+    expect(selectMock).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(inputMock).not.toHaveBeenCalled();
     expect(consola.success).toHaveBeenCalledWith(
       expect.stringContaining('Updated channel 42 site URL to https://auto.example.com.'),
     );
   });
 
   test('preferHostname is placed first in the hostname options', async () => {
-    let hostnameOptions: Array<{ label: string; value: string }> | undefined;
-
-    vi.spyOn(consola, 'prompt')
-      .mockResolvedValueOnce('2') // channel (the catalyst one)
-      .mockImplementationOnce((_message, opts) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        hostnameOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        return Promise.resolve('vanity.project-one.example.com');
-      });
+    selectMock
+      .mockResolvedValueOnce(2) // channel (the catalyst one)
+      .mockResolvedValueOnce('vanity.project-one.example.com'); // hostname
 
     await runChannelSiteUrlFlow({
       storeHash,
@@ -166,7 +168,12 @@ describe('runChannelSiteUrlFlow', () => {
       preferHostname: 'vanity.project-one.example.com',
     });
 
-    expect(hostnameOptions?.[0]).toMatchObject({ value: 'vanity.project-one.example.com' });
+    // The hostname select is the second call; inspect the choices passed to it.
+    const hostnameCall = selectMock.mock.calls[1][0];
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const hostnameChoices = hostnameCall.choices as Array<{ name: string; value: string }>;
+
+    expect(hostnameChoices[0]).toMatchObject({ value: 'vanity.project-one.example.com' });
   });
 
   test('throws when no Catalyst channels are available', async () => {
@@ -190,16 +197,9 @@ describe('runChannelSiteUrlFlow', () => {
   });
 
   test('filters non-Catalyst channels out of the picker', async () => {
-    let channelOptions: Array<{ label: string; value: string }> | undefined;
-
-    vi.spyOn(consola, 'prompt')
-      .mockImplementationOnce((_message, opts) => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        channelOptions = (opts as { options: Array<{ label: string; value: string }> }).options;
-
-        return Promise.resolve('2');
-      })
-      .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
+    selectMock
+      .mockResolvedValueOnce(2) // channel
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store'); // hostname
 
     await runChannelSiteUrlFlow({
       storeHash,
@@ -208,17 +208,22 @@ describe('runChannelSiteUrlFlow', () => {
       projectUuid: linkedProjectUuid,
     });
 
+    // The channel select is the first call; inspect the choices passed to it.
+    const channelCall = selectMock.mock.calls[0][0];
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const channelChoices = channelCall.choices as Array<{ name: string; value: number }>;
+
     // The default handler returns one bigcommerce + one catalyst channel; only
     // the catalyst one should appear in the picker.
-    expect(channelOptions).toHaveLength(1);
-    expect(channelOptions?.[0]).toMatchObject({ label: 'Catalyst Storefront', value: '2' });
+    expect(channelChoices).toHaveLength(1);
+    expect(channelChoices[0]).toMatchObject({ name: 'Catalyst Storefront', value: 2 });
   });
 
   test('throws when the project has no deployment hostnames', async () => {
     // Project Two in the default handler has deployment_hostnames: []
     const projectTwo = 'b23f5785-fd99-4a94-9fb3-945551623924';
 
-    vi.spyOn(consola, 'prompt').mockResolvedValueOnce('2');
+    selectMock.mockResolvedValueOnce(2);
 
     await expect(
       runChannelSiteUrlFlow({
@@ -249,12 +254,12 @@ describe('runChannelSiteUrlFlow', () => {
       }),
     );
 
-    vi.spyOn(consola, 'prompt')
-      // selectOrCreateInfrastructureProject prompt — pick the only project
+    selectMock
+      // selectOrCreateInfrastructureProject select — pick the only project (UUID string)
       .mockResolvedValueOnce(linkedProjectUuid)
-      // channel
-      .mockResolvedValueOnce('2')
-      // hostname
+      // channel (number)
+      .mockResolvedValueOnce(2)
+      // hostname (string)
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store');
 
     await runChannelSiteUrlFlow({ storeHash, accessToken, apiHost });
@@ -273,7 +278,7 @@ describe('runChannelSiteUrlFlow', () => {
     );
 
     // The "create a new project?" confirm prompt — user says no
-    vi.spyOn(consola, 'prompt').mockResolvedValueOnce(false);
+    confirmMock.mockResolvedValueOnce(false);
 
     await expect(runChannelSiteUrlFlow({ storeHash, accessToken, apiHost })).rejects.toBeInstanceOf(
       NoLinkedProjectError,
@@ -295,12 +300,12 @@ describe('runChannelSiteUrlFlow', () => {
       ),
     );
 
-    vi.spyOn(consola, 'prompt')
-      // project picker
+    selectMock
+      // project picker (UUID string)
       .mockResolvedValueOnce('different-uuid')
-      // channel
-      .mockResolvedValueOnce('1')
-      // hostname
+      // channel (number)
+      .mockResolvedValueOnce(1)
+      // hostname (string)
       .mockResolvedValueOnce('other.example.com');
 
     await runChannelSiteUrlFlow({

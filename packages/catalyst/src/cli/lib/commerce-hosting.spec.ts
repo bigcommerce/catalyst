@@ -1,4 +1,4 @@
-import { input, select } from '@inquirer/prompts';
+import { confirm, input, select } from '@inquirer/prompts';
 import {
   existsSync,
   lstatSync,
@@ -20,11 +20,11 @@ import {
   promptForCommerceHostingProject,
   setupCommerceHosting,
 } from './commerce-hosting';
-import { consola } from './logger';
 import * as projectLib from './project';
 import { InfrastructureProjectValidationError } from './project';
 
 vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(),
   input: vi.fn(),
   select: vi.fn(),
   Separator: class FakeSeparator {
@@ -32,6 +32,7 @@ vi.mock('@inquirer/prompts', () => ({
   },
 }));
 
+const confirmMock = vi.mocked(confirm);
 const inputMock = vi.mocked(input);
 const selectMock = vi.mocked(select);
 
@@ -59,6 +60,7 @@ let createProjectSpy: MockInstance<typeof projectLib.createProject>;
 let consoleErrorSpy: MockInstance<(typeof console)['error']>;
 
 beforeEach(() => {
+  confirmMock.mockReset();
   inputMock.mockReset();
   selectMock.mockReset();
   fetchProjectsSpy = vi.spyOn(projectLib, 'fetchProjects').mockResolvedValue([]);
@@ -578,19 +580,16 @@ describe('setupCommerceHosting', () => {
 
   let projectDir: string;
   let restoreTty: () => void;
-  let consolaPromptSpy: MockInstance<typeof consola.prompt>;
 
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), 'catalyst-create-test-'));
     restoreTty = withInteractiveTty();
-    consolaPromptSpy = vi.spyOn(consola, 'prompt');
-    consolaPromptSpy.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
   });
 
   afterEach(() => {
     rmSync(projectDir, { recursive: true, force: true });
     restoreTty();
-    consolaPromptSpy.mockRestore();
   });
 
   function writeCorePackageJson(contents: unknown) {
@@ -676,7 +675,7 @@ describe('setupCommerceHosting', () => {
     const pkg = readCorePackageJson();
 
     expect(pkg.dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
-    expect(consolaPromptSpy).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
   });
 
   it('does not modify package.json scripts (handled by setupCoreProject)', async () => {
@@ -881,7 +880,7 @@ describe('setupCommerceHosting', () => {
     });
 
     it('preserves core/instrumentation.ts when the user declines the prompt', async () => {
-      consolaPromptSpy.mockResolvedValueOnce(false);
+      confirmMock.mockResolvedValueOnce(false);
 
       writeCorePackageJson({
         scripts: { dev: 'next dev' },
@@ -899,7 +898,7 @@ describe('setupCommerceHosting', () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
       await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
-      expect(consolaPromptSpy).not.toHaveBeenCalled();
+      expect(confirmMock).not.toHaveBeenCalled();
     });
   });
 });
@@ -909,19 +908,16 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
   let projectDir: string;
   let restoreTty: () => void;
-  let consolaPromptSpy: MockInstance<typeof consola.prompt>;
 
   beforeEach(() => {
     projectDir = mkdtempSync(join(tmpdir(), 'catalyst-cleanup-test-'));
     restoreTty = withInteractiveTty();
-    consolaPromptSpy = vi.spyOn(consola, 'prompt');
-    consolaPromptSpy.mockResolvedValue(true);
+    confirmMock.mockResolvedValue(true);
   });
 
   afterEach(() => {
     rmSync(projectDir, { recursive: true, force: true });
     restoreTty();
-    consolaPromptSpy.mockRestore();
   });
 
   function writeCorePackageJson(contents: unknown) {
@@ -958,7 +954,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
   });
 
   it('leaves the file and the dep alone when the user declines (TTY)', async () => {
-    consolaPromptSpy.mockResolvedValueOnce(false);
+    confirmMock.mockResolvedValueOnce(false);
 
     writeCorePackageJson({
       dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
@@ -982,7 +978,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     await cleanupCloudflareIncompatibilities(projectDir);
 
-    expect(consolaPromptSpy).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
     expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
   });
@@ -992,7 +988,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     await cleanupCloudflareIncompatibilities(projectDir);
 
-    expect(consolaPromptSpy).not.toHaveBeenCalled();
+    expect(confirmMock).not.toHaveBeenCalled();
     expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
   });
 

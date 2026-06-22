@@ -1,4 +1,4 @@
-import { password } from '@inquirer/prompts';
+import { confirm, input, password } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
 import open from 'open';
 import yoctoSpinner from 'yocto-spinner';
@@ -88,8 +88,8 @@ async function manualLogin(apiHost: string): Promise<LoginResult> {
       `Grant these OAuth scopes: ${DEVICE_OAUTH_SCOPES}`,
   );
 
-  const storeHashInput = await consola.prompt('Store hash:', { type: 'text' });
-  const storeHash = String(storeHashInput).trim();
+  const storeHashInput = await input({ message: 'Store hash:' });
+  const storeHash = storeHashInput.trim();
 
   if (!storeHash) {
     throw new Error('Store hash is required.');
@@ -138,10 +138,10 @@ export async function login(loginUrl: string, apiHost: string): Promise<LoginRes
 
     consola.warn(`Browser login didn't work (${message}).`);
 
-    const shouldFallback = await consola.prompt(
-      'Try logging in manually with a store hash and access token instead?',
-      { type: 'confirm', initial: true },
-    );
+    const shouldFallback = await confirm({
+      message: 'Try logging in manually with a store hash and access token instead?',
+      default: true,
+    });
 
     if (!shouldFallback) {
       throw new LoginAbortedError();
