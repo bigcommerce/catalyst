@@ -379,7 +379,7 @@
             "subTotal": "Subtotal",
             "discounts": "Rabatter",
             "tax": "Moms",
-            "totalIncludesTax": "Includes {tax} tax",
+            "totalIncludesTax": "Inklusiv {tax} moms",
             "total": "I alt",
             "CouponCode": {
                 "apply": "Anvend",
@@ -390,7 +390,7 @@
             },
             "Shipping": {
                 "shipping": "Forsendelse",
-                "shippingExcludingTax": "Shipping (Ex. Tax)",
+                "shippingExcludingTax": "Forsendelse (ekskl. moms)",
                 "add": "Tilføj",
                 "change": "Ændr",
                 "cancel": "Annuller",
@@ -651,8 +651,8 @@
             "originalPrice": "Den oprindelige pris var {price}.",
             "currentPrice": "Den aktuelle pris er {price}.",
             "range": "Pris fra {minValue} til {maxValue}.",
-            "includingTax": "(Inc. Tax)",
-            "excludingTax": "(Ex. Tax)",
+            "includingTax": "(Inkl. moms)",
+            "excludingTax": "(Ekskl. moms)",
             "includingTaxFull": "Inklusiv skat",
             "excludingTaxFull": "Eksklusiv skat"
         }
