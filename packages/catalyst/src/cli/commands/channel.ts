@@ -1,3 +1,4 @@
+import { select } from '@inquirer/prompts';
 import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
@@ -200,17 +201,15 @@ Examples:
         return;
       }
 
-      const selected = await consola.prompt('Which channel would you like to link?', {
-        type: 'select',
-        options: sortChannelsByPlatform(channels).map((c) => ({
-          label: c.name,
-          value: String(c.id),
-          hint: channelPlatformLabel(c.platform),
+      channelId = await select({
+        message: 'Which channel would you like to link?',
+        choices: sortChannelsByPlatform(channels).map((c) => ({
+          name: c.name,
+          value: c.id,
+          description: channelPlatformLabel(c.platform),
         })),
-        cancel: 'reject',
       });
 
-      channelId = Number(selected);
       channelName = channels.find((c) => c.id === channelId)?.name;
     }
 
@@ -241,7 +240,7 @@ Examples:
     consola.success(
       `Linked to channel ${label} and wrote ${colorize('cyanBright', '.env.local')}.`,
     );
-    consola.log(`\nStart your storefront:\n\n  ${colorize('yellow', 'pnpm run dev')}\n`);
+    consola.log(`Next steps:\n\n  ${colorize('yellow', 'pnpm run dev')}`);
 
     process.exit(0);
   });

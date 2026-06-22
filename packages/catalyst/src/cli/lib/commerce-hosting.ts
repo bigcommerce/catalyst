@@ -1,4 +1,4 @@
-import { input, select, Separator } from '@inquirer/prompts';
+import { confirm, input, select, Separator } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
 import {
   existsSync,
@@ -89,14 +89,13 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
     return;
   }
 
-  const shouldRemove = await consola.prompt(
-    'Catalyst found core/instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
+  const shouldRemove = await confirm({
+    message:
+      'Catalyst found core/instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
       'bundle when it uses @vercel/otel (causes "Failed to prepare server" at cold start). ' +
       'Remove it and drop @vercel/otel from core/package.json?',
-    { type: 'confirm', initial: true },
-  );
-
-  consola.log('');
+    default: true,
+  });
 
   if (!shouldRemove) {
     consola.info(
@@ -180,16 +179,9 @@ export class NoLinkedProjectError extends Error {
 }
 
 async function promptForNewProjectName(api: CommerceHostingApiContext): Promise<ProjectListItem> {
-  const newProjectName = await consola.prompt('Enter a name for the new project:', {
-    type: 'text',
-  });
+  const newProjectName = await input({ message: 'Enter a name for the new project:' });
 
-  const data = await createProject(
-    String(newProjectName),
-    api.storeHash,
-    api.accessToken,
-    api.apiHost,
-  );
+  const data = await createProject(newProjectName, api.storeHash, api.accessToken, api.apiHost);
 
   consola.success(`Project "${data.name}" created successfully.`);
 
@@ -217,10 +209,11 @@ export async function selectOrCreateInfrastructureProject(
   // No existing projects on the store — skip the select prompt and offer
   // creation directly. Declining means we have nothing to link to.
   if (existingProjects.length === 0) {
-    const shouldCreate = await consola.prompt(
-      'There are not any hosting projects that you can link to yet. Would you like to create one?',
-      { type: 'confirm', initial: true },
-    );
+    const shouldCreate = await confirm({
+      message:
+        'There are not any hosting projects that you can link to yet. Would you like to create one?',
+      default: true,
+    });
 
     if (!shouldCreate) {
       throw new NoLinkedProjectError();
@@ -229,23 +222,23 @@ export async function selectOrCreateInfrastructureProject(
     return promptForNewProjectName(api);
   }
 
-  const promptOptions = [
+  const choices = [
     ...existingProjects.map((p) => ({
-      label: p.uuid === linkedProjectUuid ? `${p.name} ${colorize('green', '[linked]')}` : p.name,
+      name: p.uuid === linkedProjectUuid ? `${p.name} ${colorize('green', '[linked]')}` : p.name,
       value: p.uuid,
-      hint: p.uuid,
+      description: p.uuid,
     })),
     {
-      label: 'Create a new project',
+      name: 'Create a new project',
       value: 'create',
-      hint: 'Create a new hosting project for this Catalyst storefront.',
+      description: 'Create a new hosting project for this Catalyst storefront.',
     },
   ];
 
-  const selected = await consola.prompt(
-    'Select a project or create a new project (Press <enter> to select).',
-    { type: 'select', options: promptOptions, cancel: 'reject' },
-  );
+  const selected = await select({
+    message: 'Select a project or create a new project (Press <enter> to select).',
+    choices,
+  });
 
   if (selected === 'create') {
     return promptForNewProjectName(api);

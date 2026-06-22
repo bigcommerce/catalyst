@@ -1,5 +1,5 @@
 import { Command, InvalidArgumentError, Option } from '@commander-js/extra-typings';
-import { input, select } from '@inquirer/prompts';
+import { checkbox, input, select } from '@inquirer/prompts';
 import { execSync } from 'child_process';
 import { colorize } from 'consola/utils';
 import { pathExistsSync } from 'fs-extra/esm';
@@ -100,30 +100,15 @@ async function handleChannelCreation(
   let additionalLocales: string[] = [];
 
   if (shouldAddAdditionalLocales) {
-    const localeOptions = availableLocales
+    const localeChoices = availableLocales
       .filter(({ value }) => value !== storefrontLocale)
-      .map(({ name, value }) => ({ label: name, value, hint: value }));
+      .map(({ name, value }) => ({ name, value, description: value }));
 
-    // consola's multiselect returns the value strings at runtime, but its typed
-    // return is loose (the whole option array). Recursion + cast avoids the
-    // no-await-in-loop / no-constant-condition lint hits and re-prompts on overflow.
-    const pickLocales = async (): Promise<string[]> => {
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const selected = (await consola.prompt(
-        'Which additional languages would you like to add to your channel?',
-        { type: 'multiselect', options: localeOptions, cancel: 'reject' },
-      )) as unknown as string[];
-
-      if (selected.length > 4) {
-        consola.warn('You can only select up to 4 additional languages. Please try again.');
-
-        return pickLocales();
-      }
-
-      return selected;
-    };
-
-    additionalLocales = await pickLocales();
+    additionalLocales = await checkbox({
+      message: 'Which additional languages would you like to add to your channel?',
+      choices: localeChoices,
+      validate: (items) => items.length <= 4 || 'You can only select up to 4 additional languages.',
+    });
   }
 
   const shouldInstallSampleData = await select({
@@ -487,15 +472,16 @@ Examples:
     }
 
     consola.success(`Created '${projectName}' at '${projectDir}'`);
-    consola.info('Next steps:');
-    consola.info(colorize('yellow', `  cd ${projectName}/core && pnpm run dev`));
+
+    const steps = [`cd ${projectName}/core && pnpm run dev`];
 
     if (useCommerceHosting) {
-      consola.info(
-        colorize(
-          'yellow',
-          `  Run 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce Hosting.`,
-        ),
+      steps.push(
+        `Run 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce Hosting.`,
       );
     }
+
+    consola.log(
+      `Next steps:\n\n${steps.map((step) => `  ${colorize('yellow', step)}`).join('\n')}`,
+    );
   });

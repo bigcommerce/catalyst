@@ -22,6 +22,7 @@ import { create } from './create';
 vi.mock('child_process', () => ({ execSync: vi.fn() }));
 
 vi.mock('@inquirer/prompts', () => ({
+  checkbox: vi.fn(),
   input: vi.fn(),
   select: vi.fn(),
 }));
