@@ -37,6 +37,32 @@ const channelsResponseSchema = z.object({
   data: z.array(channelSchema),
 });
 
+// Channels are surfaced Catalyst-first, then Next, then Stencil
+// (`bigcommerce`), then anything else — the order the `create` and
+// `channel link` pickers both present. Returns a sorted copy.
+const CHANNEL_PLATFORM_ORDER = ['catalyst', 'next', 'bigcommerce'];
+
+export function sortChannelsByPlatform(channels: Channel[]): Channel[] {
+  return [...channels].sort((a, b) => {
+    const aIndex = CHANNEL_PLATFORM_ORDER.indexOf(a.platform);
+    const bIndex = CHANNEL_PLATFORM_ORDER.indexOf(b.platform);
+
+    if (aIndex === -1 && bIndex === -1) return 0;
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+
+    return aIndex - bIndex;
+  });
+}
+
+// Human-friendly platform name for channel pickers. `bigcommerce` is the
+// Stencil storefront platform; everything else is title-cased.
+export function channelPlatformLabel(platform: string): string {
+  return platform === 'bigcommerce'
+    ? 'Stencil'
+    : platform.charAt(0).toUpperCase() + platform.slice(1);
+}
+
 const initResponseSchema = z.object({
   data: z.object({
     storefront_api_token: z.string(),

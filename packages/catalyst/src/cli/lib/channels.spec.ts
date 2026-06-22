@@ -3,7 +3,12 @@ import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 
-import { updateChannelSiteUrl } from './channels';
+import {
+  type Channel,
+  channelPlatformLabel,
+  sortChannelsByPlatform,
+  updateChannelSiteUrl,
+} from './channels';
 
 const storeHash = 'test-store';
 const accessToken = 'test-token';
@@ -103,5 +108,26 @@ describe('updateChannelSiteUrl', () => {
     await expect(
       updateChannelSiteUrl(channelId, 'https://x.example', storeHash, accessToken, apiHost),
     ).rejects.toThrow('Failed to update channel site: 500');
+  });
+});
+
+describe('sortChannelsByPlatform', () => {
+  const ch = (id: number, platform: string): Channel => ({ id, name: `ch-${id}`, platform });
+
+  test('orders catalyst → next → bigcommerce → unknown, without mutating the input', () => {
+    const input = [ch(1, 'wordpress'), ch(2, 'bigcommerce'), ch(3, 'next'), ch(4, 'catalyst')];
+    const sorted = sortChannelsByPlatform(input);
+
+    expect(sorted.map((c) => c.platform)).toEqual(['catalyst', 'next', 'bigcommerce', 'wordpress']);
+    // Original array is untouched.
+    expect(input.map((c) => c.platform)).toEqual(['wordpress', 'bigcommerce', 'next', 'catalyst']);
+  });
+});
+
+describe('channelPlatformLabel', () => {
+  test('maps bigcommerce to Stencil and title-cases the rest', () => {
+    expect(channelPlatformLabel('bigcommerce')).toBe('Stencil');
+    expect(channelPlatformLabel('catalyst')).toBe('Catalyst');
+    expect(channelPlatformLabel('next')).toBe('Next');
   });
 });

@@ -9,10 +9,12 @@ import { join } from 'path';
 import { DEFAULT_LOGIN_URL } from '../lib/auth';
 import { buildWorkspacePackages } from '../lib/build-workspace-packages';
 import {
+  channelPlatformLabel,
   checkChannelEligibility,
   createChannel,
   fetchAvailableChannels,
   getChannelInit,
+  sortChannelsByPlatform,
 } from '../lib/channels';
 import { cloneCatalyst } from '../lib/clone-catalyst';
 import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/commerce-hosting';
@@ -144,34 +146,15 @@ async function handleChannelCreation(
 }
 
 async function handleChannelSelection(storeHash: string, accessToken: string, apiHost: string) {
-  const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
   const channels = await fetchAvailableChannels(storeHash, accessToken, apiHost);
 
   const existingChannel = await select({
     message: 'Which channel would you like to use?',
-    choices: channels
-      .sort((a, b) => {
-        const aIndex = channelSortOrder.indexOf(a.platform);
-        const bIndex = channelSortOrder.indexOf(b.platform);
-
-        if (aIndex === -1 && bIndex === -1) {
-          return 0;
-        }
-
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
-
-        return aIndex - bIndex;
-      })
-      .map((ch) => ({
-        name: ch.name,
-        value: ch,
-        description: `Channel Platform: ${
-          ch.platform === 'bigcommerce'
-            ? 'Stencil'
-            : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
-        }`,
-      })),
+    choices: sortChannelsByPlatform(channels).map((ch) => ({
+      name: ch.name,
+      value: ch,
+      description: `Channel Platform: ${channelPlatformLabel(ch.platform)}`,
+    })),
   });
 
   return existingChannel.id;
