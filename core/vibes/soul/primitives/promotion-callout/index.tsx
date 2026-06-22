@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import { clsx } from 'clsx';
 
 export interface PromotionCalloutItem {
@@ -22,16 +20,14 @@ export function PromotionCallout({ callouts, className }: PromotionCalloutProps)
         className,
       )}
     >
-      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 px-4 font-[family-name:var(--promotion-callout-font-family,var(--font-family-body))] text-sm text-[var(--promotion-callout-text,hsl(var(--foreground)))]">
-        {callouts.map((callout, i) => (
-          <Fragment key={callout.id}>
-            {i > 0 && (
-              <span aria-hidden className="select-none text-[hsl(var(--contrast-300))]">
-                |
-              </span>
-            )}
-            <span>{callout.text}</span>
-          </Fragment>
+      <div className="flex items-stretch divide-x divide-[hsl(var(--contrast-300))] font-[family-name:var(--promotion-callout-font-family,var(--font-family-body))] text-sm text-[var(--promotion-callout-text,hsl(var(--foreground)))] md:justify-center">
+        {callouts.map((callout) => (
+          <span
+            className="flex flex-1 items-center justify-center px-4 text-center md:flex-none"
+            key={callout.id}
+          >
+            {callout.text}
+          </span>
         ))}
       </div>
     </div>

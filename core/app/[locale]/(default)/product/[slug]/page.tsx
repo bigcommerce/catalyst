@@ -528,11 +528,10 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
-  // TODO: replace with real data once featuredPromotions is in the GQL schema
-  const promotionCallouts = [
-    { id: '1', text: 'Buy 2 get 1 free' },
-    { id: '2', text: '20% off today only' },
-  ];
+  const promotionCallouts = removeEdgesAndNodes(baseProduct.featuredPromotions).map((p) => ({
+    id: p.entityId.toString(),
+    text: p.text,
+  }));
 
   const streamableUser = Streamable.from(async () => {
     const session = await auth();

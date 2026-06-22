@@ -20,6 +20,7 @@ import { getMetadataAlternates } from '~/lib/seo/canonical';
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
+import { streamPromotionCallouts } from '../../promotion-callouts';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
@@ -250,15 +251,13 @@ export default async function Category(props: Props) {
     }));
   });
 
-  // TODO: replace with real data once featuredPromotions is in the GQL schema
-  const promotionCallouts = [
-    { id: '1', text: 'Buy 2 get 1 free' },
-    { id: '2', text: '20% off today only' },
-  ];
+  const streamablePromotionCallouts = streamPromotionCallouts(streamableFacetedSearch);
 
   return (
     <>
-      <PromotionCallout callouts={promotionCallouts} />
+      <Stream fallback={null} value={streamablePromotionCallouts}>
+        {(callouts) => (callouts.length > 0 ? <PromotionCallout callouts={callouts} /> : null)}
+      </Stream>
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('Compare.compare')}
