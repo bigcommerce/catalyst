@@ -379,7 +379,7 @@
             "subTotal": "Delsum",
             "discounts": "Rabatter",
             "tax": "Avgift",
-            "totalIncludesTax": "Includes {tax} tax",
+            "totalIncludesTax": "Inkludert {tax} avgift",
             "total": "Totalbeløp",
             "CouponCode": {
                 "apply": "Bruk",
@@ -390,7 +390,7 @@
             },
             "Shipping": {
                 "shipping": "Frakt",
-                "shippingExcludingTax": "Shipping (Ex. Tax)",
+                "shippingExcludingTax": "Frakt (ekskl. avgift)",
                 "add": "Legg til",
                 "change": "Endre",
                 "cancel": "Avbryt",
@@ -651,8 +651,8 @@
             "originalPrice": "Opprinnelig pris var {price}.",
             "currentPrice": "Nåværende pris er {price}.",
             "range": "Pris fra {minValue} til {maxValue}.",
-            "includingTax": "(Inc. Tax)",
-            "excludingTax": "(Ex. Tax)",
+            "includingTax": "(Inkl. avgift)",
+            "excludingTax": "(Ekskl. avgift)",
             "includingTaxFull": "Inkludert avgifter",
             "excludingTaxFull": "Ekskludert avgifter"
         }
