@@ -472,15 +472,16 @@ Examples:
     }
 
     consola.success(`Created '${projectName}' at '${projectDir}'`);
-    consola.info('Next steps:');
-    consola.info(colorize('yellow', `  cd ${projectName}/core && pnpm run dev`));
+
+    const steps = [`cd ${projectName}/core && pnpm run dev`];
 
     if (useCommerceHosting) {
-      consola.info(
-        colorize(
-          'yellow',
-          `  Run 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce Hosting.`,
-        ),
+      steps.push(
+        `Run 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce Hosting.`,
       );
     }
+
+    consola.log(
+      `Next steps:\n\n${steps.map((step) => `  ${colorize('yellow', step)}`).join('\n')}`,
+    );
   });

@@ -96,21 +96,21 @@ Example:
 
     const linkedProjectUuid = config.get('projectUuid');
 
-    projects.forEach((p) => {
+    const projectList = projects.map((p) => {
       const marker = p.uuid === linkedProjectUuid ? ` ${colorize('green', '[linked]')}` : '';
+      const hostnames =
+        p.deployment_hostnames.length === 0
+          ? ['  (not deployed)']
+          : p.deployment_hostnames.map(
+              (hostname) => `  ${colorize('blue', `https://${hostname}`)}`,
+            );
 
-      consola.log(`${p.name} (${p.uuid})${marker}`);
-
-      if (p.deployment_hostnames.length === 0) {
-        consola.log('  (not deployed)');
-      } else {
-        p.deployment_hostnames.forEach((hostname) => {
-          consola.log(`  ${colorize('blue', `https://${hostname}`)}`);
-        });
-      }
-
-      consola.log('');
+      return [`${p.name} (${p.uuid})${marker}`, ...hostnames].join('\n');
     });
+
+    // Single log call so projects are blank-line separated without each blank
+    // picking up a reporter timestamp.
+    consola.log(projectList.join('\n\n'));
 
     process.exit(0);
   });

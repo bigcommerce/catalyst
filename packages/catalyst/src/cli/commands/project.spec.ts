@@ -372,15 +372,17 @@ describe('project list', () => {
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
     expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
-    expect(consola.log).toHaveBeenCalledWith('Project One (a23f5785-fd99-4a94-9fb3-945551623923)');
-    expect(consola.log).toHaveBeenCalledWith(
-      expect.stringContaining('https://project-one.catalyst-sandbox.store'),
-    );
-    expect(consola.log).toHaveBeenCalledWith(
-      expect.stringContaining('https://vanity.project-one.example.com'),
-    );
-    expect(consola.log).toHaveBeenCalledWith('Project Two (b23f5785-fd99-4a94-9fb3-945551623924)');
-    expect(consola.log).toHaveBeenCalledWith('  (not deployed)');
+
+    const output = vi
+      .mocked(consola.log)
+      .mock.calls.map(([msg]) => String(msg))
+      .join('\n');
+
+    expect(output).toContain('Project One (a23f5785-fd99-4a94-9fb3-945551623923)');
+    expect(output).toContain('https://project-one.catalyst-sandbox.store');
+    expect(output).toContain('https://vanity.project-one.example.com');
+    expect(output).toContain('Project Two (b23f5785-fd99-4a94-9fb3-945551623924)');
+    expect(output).toContain('(not deployed)');
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
@@ -398,13 +400,17 @@ describe('project list', () => {
       accessToken,
     ]);
 
-    const logCalls = vi.mocked(consola.log).mock.calls.map(([msg]) => String(msg));
+    const blocks = vi
+      .mocked(consola.log)
+      .mock.calls.map(([msg]) => String(msg))
+      .join('\n')
+      .split('\n\n');
 
-    const linkedLine = logCalls.find((line) => line.includes(projectUuid2));
-    const otherLine = logCalls.find((line) => line.includes(projectUuid1));
+    const linkedBlock = blocks.find((block) => block.includes(projectUuid2));
+    const otherBlock = blocks.find((block) => block.includes(projectUuid1));
 
-    expect(linkedLine).toContain('[linked]');
-    expect(otherLine).not.toContain('[linked]');
+    expect(linkedBlock).toContain('[linked]');
+    expect(otherBlock).not.toContain('[linked]');
   });
 
   test('does not mark any project when nothing is linked', async () => {

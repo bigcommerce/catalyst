@@ -240,7 +240,7 @@ Examples:
     consola.success(
       `Linked to channel ${label} and wrote ${colorize('cyanBright', '.env.local')}.`,
     );
-    consola.log(`\nStart your storefront:\n\n  ${colorize('yellow', 'pnpm run dev')}\n`);
+    consola.log(`Next steps:\n\n  ${colorize('yellow', 'pnpm run dev')}`);
 
     process.exit(0);
   });
