@@ -1,5 +1,62 @@
 # Changelog
 
+## 1.8.0
+
+### Minor Changes
+
+- [#3024](https://github.com/bigcommerce/catalyst/pull/3024) [`3cec674`](https://github.com/bigcommerce/catalyst/commit/3cec674f8fcbcf563e9c2d8015c35d96f4cd56e0) Thanks [@mfaris9](https://github.com/mfaris9)! - Honor the merchant's Tax Display setting (`Inc.`, `Ex.`, or `Both`) from the BigCommerce control panel across PDP, PLP, search, compare, and home. When set to `Both`, prices render stacked with `(Inc. Tax)` and `(Ex. Tax)` labels, including sale strike-throughs per line.
+
+  ## Migration
+
+  For forks that can't rebase cleanly: pricing was refactored end-to-end to support inc/ex tax variants and a `Both` mode (`PricingFragment`, `pricesTransformer`, `Price` types, page-data settings queries, analytics helpers). See PR #3024 for the full diff.
+
+- [#3015](https://github.com/bigcommerce/catalyst/pull/3015) [`15e365a`](https://github.com/bigcommerce/catalyst/commit/15e365aeeb36a44901769b7831e635e9e0e7bcc1) Thanks [@mfaris9](https://github.com/mfaris9)! - Consume merchant-configured per-locale URL subfolders from the BigCommerce Storefront GraphQL API (`Locale.path`). The locale that sits at the bare root URL (`/`) is derived from the CP configuration: if the default locale has no path, it sits at root; otherwise, if exactly one non-default locale has no path, that one sits at root; otherwise every locale gets a prefix. Locales with a path use it; locales without a path fall back to their locale code.
+
+### Patch Changes
+
+- [#3031](https://github.com/bigcommerce/catalyst/pull/3031) [`874e332`](https://github.com/bigcommerce/catalyst/commit/874e332b73b8a36c2d93ae4ec99d5dc00d7fb3e1) Thanks [@Tharaae](https://github.com/Tharaae)! - Display backorder information for variants on PDP.
+
+- [#3033](https://github.com/bigcommerce/catalyst/pull/3033) [`8bc379d`](https://github.com/bigcommerce/catalyst/commit/8bc379df6fe0c843ba82e901e31e245f506d0cf3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix broken images in WYSIWYG content (web pages, blog posts, product description and warranty). Images uploaded through the Control Panel editor are stored as store-root-relative WebDAV paths (`/content/...` and `/product_images/...`) that 404 on the headless storefront domain; they are now rewritten to absolute BigCommerce CDN URLs.
+
+- [#3056](https://github.com/bigcommerce/catalyst/pull/3056) [`2c99731`](https://github.com/bigcommerce/catalyst/commit/2c997312623af93f67a1d202aed3a9467bb125a0) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add a `catalyst` field to `core/package.json` (`catalyst.version` and `catalyst.ref`) that tracks the true Catalyst version independently of the top-level `version`, which merchants may repurpose for their own deploy tagging. The backend user-agent now reports `catalyst.version` (falling back to `version` for projects created before the field existed), and the release pipeline keeps the field in sync on each version bump.
+
+- [#3035](https://github.com/bigcommerce/catalyst/pull/3035) [`b4215f0`](https://github.com/bigcommerce/catalyst/commit/b4215f06cc4fbda8694835c589c84b362fb1a8fc) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Scope the consent manager cookie (`c15t-consent`) to the current host instead of the top-level domain. Previously `crossSubdomain: true` caused the cookie to be set on the root domain (e.g. `.example.com`) for stores running on a sub-domain, so it appeared on both the root domain and the sub-domain. Removing it makes the cookie host-only, so it now exists only on the sub-domain the store runs on.
+
+- [#3046](https://github.com/bigcommerce/catalyst/pull/3046) [`5034ea3`](https://github.com/bigcommerce/catalyst/commit/5034ea32b684acf2a074c2e2d8876b35aeef0a15) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Gate `catalyst.visitorId`, `catalyst.visitId`, and `currencyCode` cookies behind shopper consent. The visitor and visit cookies now require measurement consent and the currency preference cookie requires functionality consent. When consent is absent, existing analytics cookies are deleted on the next request. When measurement consent is granted mid-session, a new `startVisit` server action sets the cookies and fires the server-side `visitStartedEvent` immediately rather than waiting for the next full-page navigation.
+
+- [#3047](https://github.com/bigcommerce/catalyst/pull/3047) [`1ab2c82`](https://github.com/bigcommerce/catalyst/commit/1ab2c821b72ab8c2ad5db67f72bd139195945abb) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Make `authjs.session-token` and `authjs.anonymous-session-token` browser-session cookies (no `Expires` attribute) to satisfy Essential cookie classification requirements.
+
+  ## What changed
+
+  **Anonymous session token:** `anonymousSignIn` no longer sets `maxAge` on the cookie. Without it, Next.js omits `Max-Age`/`Expires` and the cookie becomes a session cookie that the browser drops when it closes.
+
+  **Auth session token:** Auth.js v5 unconditionally writes `Expires` on the session token cookie and provides no config option to suppress it. Two post-processing steps strip the attribute:
+  - `proxies/with-auth.ts` — strips `Expires` from `Set-Cookie` response headers on every page request.
+  - `auth/index.ts` — wraps `signIn` and `updateSession` to re-set the cookie via `cookies().set()` without `Expires` immediately after Auth.js writes it, covering the sign-in and session-update paths that middleware cannot reach.
+
+  `Max-Age=0` (used by Auth.js for cookie deletion on sign-out) is intentionally left intact.
+
+  ## Migration
+
+  **If you have a custom `maxAge` on `anonymousSignIn`:** The default 7-day `maxAge` has been removed. If your app relies on anonymous sessions persisting across browser restarts, add it back in your own `anonymousSignIn` call:
+
+  ```ts
+  cookieJar.set(anonymousCookieName, jwt, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: useSecureCookies,
+    maxAge: 60 * 60 * 24 * 7, // restore 7-day persistence if needed
+  });
+  ```
+
+  **If you already have your own `Expires`-stripping workaround:** Remove it. The middleware regex in `with-auth.ts` and the `patchSessionTokenCookies` wrapper in `auth/index.ts` now handle this centrally. Leaving both in place will cause redundant cookie writes.
+
+  **If you import `signIn` or `updateSession` directly from `auth/index.ts`:** No change needed — the signatures are identical. The exports are now thin async wrappers that call the Auth.js originals and then patch any session token cookies written during the call.
+
+- [#3058](https://github.com/bigcommerce/catalyst/pull/3058) [`94c503e`](https://github.com/bigcommerce/catalyst/commit/94c503e1f5a2d51ed81c741f5d92556116dac4c9) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#3048](https://github.com/bigcommerce/catalyst/pull/3048) [`226f2f3`](https://github.com/bigcommerce/catalyst/commit/226f2f3b49de4d6988105b40253b46a3a083ad4a) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.7.0
 
 ### Minor Changes

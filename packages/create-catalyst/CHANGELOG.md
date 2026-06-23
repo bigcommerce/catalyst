@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- [#3055](https://github.com/bigcommerce/catalyst/pull/3055) [`854aab5`](https://github.com/bigcommerce/catalyst/commit/854aab54d530c71a07360c753cc687fd3944325b) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Deprecate the `create-catalyst integration` command. It now prints a deprecation warning when invoked and is hidden from `--help`. The command builds integration patches by diffing git tags, which won't work once Catalyst projects are distributed as tarballs (no git history) — it will be replaced by the forthcoming `catalyst upgrade` command. The command still functions for now; full removal will follow in a future major version.
+
 ## 1.0.3
 
 ### Patch Changes
