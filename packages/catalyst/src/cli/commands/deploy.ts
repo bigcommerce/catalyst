@@ -3,7 +3,7 @@ import AdmZip from 'adm-zip';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 import { access, readdir, readFile } from 'node:fs/promises';
-import { dirname, join } from 'node:path';
+import { join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
@@ -478,7 +478,7 @@ Example:
         process.exit(0);
       }
 
-      const projectDir = dirname(process.cwd());
+      const projectDir = process.cwd();
 
       await setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
       consola.success('Commerce Hosting setup complete.');
@@ -489,7 +489,7 @@ Example:
       // the Cloudflare worker bundle from earlier Catalyst versions
       // (`core/instrumentation.ts`, `@vercel/otel`). Sweep them on every deploy
       // so the fix lands without forcing a re-link.
-      await cleanupCloudflareIncompatibilities(dirname(process.cwd()));
+      await cleanupCloudflareIncompatibilities(process.cwd());
     }
 
     if (options.prebuilt) {

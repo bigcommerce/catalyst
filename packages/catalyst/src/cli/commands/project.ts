@@ -1,7 +1,6 @@
 import { confirm, input, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import { colorize } from 'consola/utils';
-import { dirname } from 'node:path';
 
 import {
   cleanupCloudflareIncompatibilities,
@@ -25,13 +24,13 @@ import {
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
-// `catalyst project link` runs from inside `core/`, so the project root (which
-// `setupCommerceHosting` and `installDependencies` expect) is one level up.
+// `catalyst project link` runs from the project root, which is what
+// `setupCommerceHosting` and `installDependencies` expect.
 async function offerCommerceHostingSetup(
   projectUuid: string,
   credentials?: { storeHash: string; accessToken: string },
 ) {
-  const projectDir = dirname(process.cwd());
+  const projectDir = process.cwd();
 
   // Already-transformed projects skip the setup prompt below — but they may
   // still carry artifacts incompatible with the Cloudflare worker bundle
