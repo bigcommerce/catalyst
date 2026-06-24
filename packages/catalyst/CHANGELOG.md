@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.0.0-alpha.6
+
+### Patch Changes
+
+- [#3061](https://github.com/bigcommerce/catalyst/pull/3061) [`eea1355`](https://github.com/bigcommerce/catalyst/commit/eea135543423dc0d50d6bff68d93f1548e54e096) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst build` now derives the Cloudflare Workers `compatibility_date` dynamically (current date minus one month) instead of using a pinned date, keeping the build-time runtime semantics aligned with what the deployment service applies at deploy time.
+
 ## 1.0.0-alpha.5
 
 ### Minor Changes

@@ -12,6 +12,7 @@
     "alpha-release-notes",
     "auto-detect-deploy-secrets",
     "cli-built-in-help-text",
+    "cli-dynamic-compat-date",
     "cli-show-env-path-in-help",
     "cli-strip-instrumentation-hook",
     "fix-env-var-names",
