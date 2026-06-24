@@ -7,7 +7,7 @@ import { client } from '~/client';
 import { type ProxyFactory } from './compose-proxies';
 
 const ALLOWED_REQUESTERS = ['checkout-sdk-js'];
-const graphqlPathPattern = new URLPattern({ pathname: '/graphql' });
+const graphqlPathPattern = new URLPattern({ pathname: '/graphql{/}?' });
 
 const bodySchema = z.object({
   query: z.unknown(),
