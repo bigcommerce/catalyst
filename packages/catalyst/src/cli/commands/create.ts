@@ -7,7 +7,6 @@ import kebabCase from 'lodash.kebabcase';
 import { join } from 'path';
 
 import { DEFAULT_LOGIN_URL } from '../lib/auth';
-import { buildWorkspacePackages } from '../lib/build-workspace-packages';
 import {
   channelPlatformLabel,
   checkChannelEligibility,
@@ -16,13 +15,16 @@ import {
   getChannelInit,
   sortChannelsByPlatform,
 } from '../lib/channels';
-import { cloneCatalyst } from '../lib/clone-catalyst';
 import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/commerce-hosting';
+import { detectPackageManager } from '../lib/detect-package-manager';
+import { extractCatalyst } from '../lib/extract-catalyst';
+import { initGitRepo } from '../lib/init-git-repo';
 import { installDependencies } from '../lib/install-dependencies';
 import { getAvailableLocales } from '../lib/localization';
 import { consola } from '../lib/logger';
 import { login, LoginAbortedError } from '../lib/login';
 import { hasProjectsAccess, type ProjectListItem } from '../lib/project';
+import { rewriteCorePackage } from '../lib/rewrite-core-package';
 import { setupCoreProject } from '../lib/setup-core-project';
 import { accessTokenOption, storeHashOption } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
@@ -202,15 +204,6 @@ function checkRequiredTools() {
     consola.error('git is required to create a Catalyst project');
     process.exit(1);
   }
-
-  try {
-    execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
-  } catch {
-    consola.error(
-      'pnpm is required to create a Catalyst project. Enable it by running `corepack enable pnpm`.',
-    );
-    process.exit(1);
-  }
 }
 
 export const create = new Command('create')
@@ -237,11 +230,10 @@ Examples:
   .option('--storefront-token <token>', 'BigCommerce storefront token')
   .option(
     '--gh-ref <ref>',
-    'Clone a specific ref from the source repository',
+    'Extract a specific ref (tag, branch, or commit) from the source repository',
     '@bigcommerce/catalyst-core@latest',
   )
-  .option('--reset-main', 'Reset the main branch to the gh-ref')
-  .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
+  .option('--repository <repository>', 'GitHub repository to extract from', 'bigcommerce/catalyst')
   .option(
     '--env <vars...>',
     'Arbitrary environment variables to set in .env.local. Format: KEY=VALUE (repeatable).',
@@ -411,9 +403,9 @@ Examples:
     // (already in envVars from the channel init response) at startup.
     if (accessToken) envVars.CATALYST_ACCESS_TOKEN = accessToken;
 
-    // Resolve the Commerce Hosting project before cloning so credential checks
+    // Resolve the Commerce Hosting project before extraction so credential checks
     // and prompts happen up-front. We defer the file mutations
-    // (`setupCommerceHosting`) until after the clone.
+    // (`setupCommerceHosting`) until after extraction.
     let commerceHostingProject: ProjectListItem | undefined;
 
     if (useCommerceHosting && storeHash && accessToken) {
@@ -437,12 +429,17 @@ Examples:
 
     consola.info(`Creating '${projectName}' at '${projectDir}'`);
 
+    const packageManager = detectPackageManager();
+
     // Anything that mutates `projectDir` runs inside this block. If a step
     // fails, the directory is likely partially populated — surface that to the
     // user so they can clean up before retrying. We don't auto-delete because
     // they may want to inspect the partial state first.
     try {
-      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
+      await extractCatalyst({ repository, ref: ghRef, projectDir });
+      // Turn the extracted core/ into an installable standalone project
+      // (resolve workspace deps, drop `private`, record the catalyst version/ref).
+      await rewriteCorePackage(projectDir, ghRef);
       setupCoreProject(projectDir);
 
       if (useCommerceHosting && commerceHostingProject && storeHash && accessToken) {
@@ -454,13 +451,12 @@ Examples:
         });
       }
 
-      // Write env before install/build — keeps env vars available to any future
-      // workspace build script that might read them, and matters today for
-      // postinstall scripts that may resolve env-driven config.
+      // Write env before install — matters for postinstall scripts that may
+      // resolve env-driven config.
       writeEnv(projectDir, envVars);
 
-      await installDependencies(projectDir);
-      buildWorkspacePackages(projectDir);
+      await installDependencies(projectDir, packageManager);
+      initGitRepo(projectDir);
     } catch (error) {
       if (pathExistsSync(projectDir)) {
         consola.warn(
@@ -473,11 +469,11 @@ Examples:
 
     consola.success(`Created '${projectName}' at '${projectDir}'`);
 
-    const steps = [`cd ${projectName}/core && pnpm run dev`];
+    const steps = [`cd ${projectName} && ${packageManager} run dev`];
 
     if (useCommerceHosting) {
       steps.push(
-        `Run 'cd ${projectName}/core && pnpm run deploy' when ready to deploy to Commerce Hosting.`,
+        `Run 'cd ${projectName} && ${packageManager} run deploy' when ready to deploy to Commerce Hosting.`,
       );
     }
 

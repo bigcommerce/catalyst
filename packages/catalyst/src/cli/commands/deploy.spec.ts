@@ -763,12 +763,12 @@ describe('transformation guard', () => {
       }),
     );
     expect(setupCommerceHosting).toHaveBeenCalledWith({
-      projectDir: dirname(tmpDir),
+      projectDir: tmpDir,
       projectUuid,
       storeHash,
       accessToken,
     });
-    expect(installDependencies).toHaveBeenCalledWith(dirname(tmpDir));
+    expect(installDependencies).toHaveBeenCalledWith(tmpDir);
   });
 
   test('exits gracefully when user declines to run setup', async () => {

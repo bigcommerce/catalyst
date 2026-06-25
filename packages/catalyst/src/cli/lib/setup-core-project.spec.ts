@@ -1,4 +1,4 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -17,16 +17,11 @@ const packageJsonSchema = z.looseObject({
 let projectDir: string;
 
 const writeCorePackageJson = (contents: unknown) => {
-  const coreDir = join(projectDir, 'core');
-
-  mkdirSync(coreDir, { recursive: true });
-  writeFileSync(join(coreDir, 'package.json'), JSON.stringify(contents, null, 2));
+  writeFileSync(join(projectDir, 'package.json'), JSON.stringify(contents, null, 2));
 };
 
 const readCorePackageJson = () =>
-  packageJsonSchema.parse(
-    JSON.parse(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')),
-  );
+  packageJsonSchema.parse(JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf-8')));
 
 beforeEach(() => {
   projectDir = mkdtempSync(join(tmpdir(), 'catalyst-setup-core-test-'));
