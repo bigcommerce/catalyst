@@ -1,16 +1,19 @@
 import { execa } from 'execa';
+import { confirm } from '@inquirer/prompts';
 import {
   access,
   copyFile,
+  cp,
   mkdir,
   mkdtemp,
   readdir,
   readFile,
+  rename,
   rm,
   writeFile,
 } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { homedir, tmpdir } from 'node:os';
+import { dirname, join, relative } from 'node:path';
 import { z } from 'zod';
 
 import { consola } from '../lib/logger';
@@ -20,6 +23,27 @@ const CorePackageJson = z.object({
   version: z.string(),
   catalyst: z.object({ version: z.string(), ref: z.string() }).optional(),
 });
+
+// Catalyst versions are git tags on the upstream monorepo (e.g.
+// "@bigcommerce/catalyst-core@1.7.0"), NOT npm packages. GitHub serves a
+// tarball for any tag via the repos/<owner>/<repo>/tarball/<ref> endpoint.
+const DEFAULT_REPOSITORY = 'bigcommerce/catalyst';
+
+// Moving tags that don't pin a concrete version. When the target is one of
+// these we resolve the real version from the downloaded core/package.json so
+// catalyst.ref records a stable pin rather than the alias.
+const MOVING_TAGS = new Set(['latest', 'canary', 'alpha']);
+
+// Known Catalyst package families, used to reconstruct a base ref from a
+// project's package.json `name` when `catalyst.ref` is missing.
+const KNOWN_FAMILIES = new Set([
+  '@bigcommerce/catalyst-core',
+  '@bigcommerce/catalyst-makeswift',
+  '@bigcommerce/catalyst-b2b-makeswift',
+  '@bigcommerce/catalyst-b2b',
+]);
+
+const CACHE_DIR = join(homedir(), '.cache', 'catalyst-cli', 'cores');
 
 // ── small fs helpers ──────────────────────────────────────────────────────────
 const pathExists = (p: string) =>
@@ -517,5 +541,201 @@ export async function applyIndexState(
   });
 }
 
+// ── project (destination) layout resolution ───────────────────────────────────
+// The command is merchant-facing and must support two repo shapes:
+//   * flat (future)  — core/ contents at the repo root (package.json at root)
+//   * nested (deprecated monorepo clone) — core/package.json under <root>/core
+// We locate the package.json carrying the `catalyst` field; if none has it yet
+// we fall back to the most likely Catalyst package.json so the auto-detect path
+// can still run.
+interface Project {
+  gitRoot: string;
+  catalystRoot: string;
+  relDir: string; // "." (flat) or "core" (nested), relative to gitRoot
+  pkgPath: string;
+  rawContent: string;
+  pkg: z.infer<typeof CorePackageJson>;
+}
+
+export async function resolveProject(cwd: string): Promise<Project | null> {
+  let gitRoot: string;
+
+  try {
+    gitRoot = (await execa('git', ['rev-parse', '--show-toplevel'], { cwd })).stdout.trim();
+  } catch {
+    return null;
+  }
+
+  // Probe order favours the nested core/ first (a monorepo clone also has a
+  // root package.json we don't want), then flat, then the cwd variants.
+  const candidateDirs = [...new Set([join(gitRoot, 'core'), gitRoot, join(cwd, 'core'), cwd])];
+
+  const parsed = (
+    await Promise.all(
+      candidateDirs.map(async (dir) => {
+        const pkgPath = join(dir, 'package.json');
+        const raw = await readFile(pkgPath, 'utf-8').catch(() => null);
+
+        if (!raw) return null;
+
+        let pkgJson: unknown;
+
+        try {
+          pkgJson = JSON.parse(raw);
+        } catch {
+          return null;
+        }
+
+        const result = CorePackageJson.safeParse(pkgJson);
+
+        return result.success ? { dir, pkgPath, raw, pkg: result.data } : null;
+      }),
+    )
+  ).filter((entry) => entry !== null);
+
+  if (parsed.length === 0) return null;
+
+  // Prefer the package.json that already declares `catalyst`; otherwise fall
+  // back to one that looks like a Catalyst project (known family name).
+  const chosen =
+    parsed.find((p) => p.pkg.catalyst?.ref) ??
+    parsed.find((p) => p.pkg.name !== undefined && KNOWN_FAMILIES.has(p.pkg.name)) ??
+    parsed[0];
+
+  return {
+    gitRoot,
+    catalystRoot: chosen.dir,
+    relDir: relative(gitRoot, chosen.dir) || '.',
+    pkgPath: chosen.pkgPath,
+    rawContent: chosen.raw,
+    pkg: chosen.pkg,
+  };
+}
+
+// ── tarball download (source side stays the monorepo) ─────────────────────────
+export async function downloadCore(
+  repository: string,
+  ref: string,
+  destDir: string,
+  token?: string,
+): Promise<void> {
+  // Never cache moving tags (latest/canary/alpha) — they'd go stale silently.
+  const cacheable = !MOVING_TAGS.has(parseRef(ref).version);
+  // Use a separator before the ref so that repository strings differing only
+  // by characters that sanitize to '_' (e.g. '/' vs '_') produce distinct keys.
+  const cacheKey = `${repository.replace(/[^a-zA-Z0-9._-]/g, '_')}__${ref.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const cachePath = join(CACHE_DIR, cacheKey);
+
+  if (cacheable && (await pathExists(cachePath))) {
+    await cp(cachePath, destDir, { recursive: true });
+
+    return;
+  }
+
+  // encodeURIComponent turns "@bigcommerce/catalyst-core@1.7.0" into
+  // "%40bigcommerce%2Fcatalyst-core%401.7.0", which the API accepts.
+  const url = `https://api.github.com/repos/${repository}/tarball/${encodeURIComponent(ref)}`;
+  const headers: Record<string, string> = {
+    'User-Agent': 'catalyst-cli',
+    Accept: 'application/vnd.github+json',
+  };
+
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, { headers });
+
+  if (!res.ok) {
+    let hint = '';
+
+    if (res.status === 404) hint = ` — tag "${ref}" not found in ${repository}`;
+    if (res.status === 403) hint = ' — GitHub rate limit hit; set GITHUB_TOKEN to raise it';
+
+    throw new Error(`GitHub returned ${res.status} for ${ref}${hint}`);
+  }
+
+  const tarballPath = `${destDir}.tgz`;
+  const rawDir = `${destDir}.raw`;
+
+  await writeFile(tarballPath, Buffer.from(await res.arrayBuffer()));
+  await mkdir(rawDir, { recursive: true });
+  // --strip-components=1 drops the "bigcommerce-catalyst-<sha>/" top dir.
+  await execa('tar', ['-xzf', tarballPath, '-C', rawDir, '--strip-components=1']);
+
+  // Source is expected to be the monorepo (core/ inside); fall back to the
+  // extracted root for a hypothetical flat-source tag (insurance, not a target).
+  const coreDir = join(rawDir, 'core');
+  const sourceDir = (await pathExists(coreDir)) ? coreDir : rawDir;
+
+  await rename(sourceDir, destDir);
+  await rm(tarballPath, { force: true });
+  await rm(rawDir, { recursive: true, force: true });
+
+  if (cacheable) {
+    await mkdir(CACHE_DIR, { recursive: true });
+    await cp(destDir, cachePath, { recursive: true }).catch(() => {
+      /* best-effort cache; ignore failures */
+    });
+  }
+}
+
+// ── base-ref resolution / auto-detect ─────────────────────────────────────────
+// Returns the base ref to diff from, auto-detecting when catalyst.ref is absent.
+export async function resolveBaseRef(
+  project: Project,
+  fromOption: string | undefined,
+  assumeYes: boolean,
+): Promise<string | null> {
+  if (project.pkg.catalyst?.ref) return project.pkg.catalyst.ref;
+  if (fromOption) return fromOption;
+
+  // Older projects mirror the Catalyst version in `version`; the package `name`
+  // tells us the family. Propose the inferred ref and let the merchant confirm.
+  const family =
+    project.pkg.name && KNOWN_FAMILIES.has(project.pkg.name)
+      ? project.pkg.name
+      : '@bigcommerce/catalyst-core';
+  const guess = `${family}@${project.pkg.version}`;
+
+  consola.warn(`No \`catalyst.ref\` found in package.json. Inferred base: ${guess}`);
+
+  if (assumeYes) return guess;
+
+  const ok = await confirm({ message: `Upgrade from ${guess}?`, default: true }).catch(() => false);
+
+  if (!ok) {
+    consola.info('Re-run with `--from <ref>` to set the base version explicitly.');
+
+    return null;
+  }
+
+  return guess;
+}
+
+// ── summary output ────────────────────────────────────────────────────────────
+function printSummary(result: MergeResult, relDir: string, stampedPkg: boolean): void {
+  // package.json is excluded from the conflict list when the stamp resolved it.
+  const unresolved = result.conflicted.filter((f) => !(stampedPkg && f === 'package.json'));
+
+  const parts = [
+    `${result.applied.length} updated`,
+    `${result.added.length} added`,
+    `${result.deleted.length} removed`,
+  ];
+
+  if (unresolved.length) parts.push(`${unresolved.length} with conflicts`);
+
+  consola.log(`\n${parts.join(', ')}`);
+
+  if (unresolved.length) {
+    const files = unresolved.map((f) => `  ${f}`).join('\n');
+
+    consola.warn(
+      `\nStaged the clean changes. ${unresolved.length} file(s) need conflict resolution (the <<<ours/===/theirs>>> markers):\n${files}\n\nResolve them, then: git add ${relDir} && git commit`,
+    );
+  } else {
+    consola.success('Staged all changes — review with `git diff --cached`, then commit.');
+  }
+}
+
 // Re-export readResolvedVersion so later PRs can use it without re-importing.
-export { readResolvedVersion };
+export { readResolvedVersion, printSummary, DEFAULT_REPOSITORY };
