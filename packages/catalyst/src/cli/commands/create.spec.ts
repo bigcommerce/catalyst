@@ -3,14 +3,16 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
-import { buildWorkspacePackages } from '../lib/build-workspace-packages';
-import { cloneCatalyst } from '../lib/clone-catalyst';
 import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/commerce-hosting';
+import { detectPackageManager } from '../lib/detect-package-manager';
+import { extractCatalyst } from '../lib/extract-catalyst';
+import { initGitRepo } from '../lib/init-git-repo';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { login, LoginAbortedError } from '../lib/login';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { hasProjectsAccess } from '../lib/project';
+import { rewriteCorePackage } from '../lib/rewrite-core-package';
 import { setupCoreProject } from '../lib/setup-core-project';
 import { writeEnv } from '../lib/write-env';
 import { program } from '../program';
@@ -44,12 +46,18 @@ vi.mock('../lib/login', () => ({
   LoginAbortedError: MockLoginAbortedError,
 }));
 
-vi.mock('../lib/clone-catalyst', () => ({ cloneCatalyst: vi.fn() }));
+vi.mock('../lib/extract-catalyst', () => ({
+  extractCatalyst: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock('../lib/rewrite-core-package', () => ({
+  rewriteCorePackage: vi.fn().mockResolvedValue(undefined),
+}));
+vi.mock('../lib/detect-package-manager', () => ({ detectPackageManager: vi.fn(() => 'pnpm') }));
+vi.mock('../lib/init-git-repo', () => ({ initGitRepo: vi.fn() }));
 vi.mock('../lib/setup-core-project', () => ({ setupCoreProject: vi.fn() }));
 vi.mock('../lib/install-dependencies', () => ({
   installDependencies: vi.fn().mockResolvedValue(undefined),
 }));
-vi.mock('../lib/build-workspace-packages', () => ({ buildWorkspacePackages: vi.fn() }));
 vi.mock('../lib/write-env', () => ({ writeEnv: vi.fn() }));
 
 vi.mock('../lib/commerce-hosting', async (importOriginal) => {
@@ -111,7 +119,7 @@ const accessToken = 'flag-access-token';
 
 // Each test gets a unique --project-name so the computed projectDir
 // (`${tmpDir}/${name}`) doesn't collide with prior tests' directories
-// when cloneCatalyst's mock creates them.
+// when extractCatalyst's mock creates them.
 const uniqueProjectName = () => `test-project-${(testCounter += 1)}`;
 
 beforeAll(async () => {
@@ -165,11 +173,13 @@ describe('happy paths', () => {
 
     expect(login).not.toHaveBeenCalled();
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
-    expect(cloneCatalyst).toHaveBeenCalled();
+    expect(extractCatalyst).toHaveBeenCalled();
+    expect(rewriteCorePackage).toHaveBeenCalled();
+    expect(detectPackageManager).toHaveBeenCalled();
     expect(setupCoreProject).toHaveBeenCalled();
     expect(setupCommerceHosting).not.toHaveBeenCalled();
     expect(installDependencies).toHaveBeenCalled();
-    expect(buildWorkspacePackages).toHaveBeenCalled();
+    expect(initGitRepo).toHaveBeenCalled();
     expect(writeEnv).toHaveBeenCalledWith(
       join(tmpDir, projectName),
       expect.objectContaining({
@@ -341,10 +351,9 @@ describe('parser validation', () => {
 });
 
 describe('ordering invariants', () => {
-  test('writeEnv runs before installDependencies and buildWorkspacePackages', async () => {
-    // Regression test for edge case #2: previously env vars were written after
-    // install/build, which would break any future workspace build script that
-    // reads env vars.
+  test('writeEnv runs before install, and git init runs after install', async () => {
+    // Env vars must be written before install (postinstall scripts may read
+    // them), and the git repo is initialized only after the project is complete.
     await program.parseAsync([
       'node',
       'catalyst',
@@ -365,23 +374,25 @@ describe('ordering invariants', () => {
 
     const [writeEnvOrder] = vi.mocked(writeEnv).mock.invocationCallOrder;
     const [installOrder] = vi.mocked(installDependencies).mock.invocationCallOrder;
-    const [buildOrder] = vi.mocked(buildWorkspacePackages).mock.invocationCallOrder;
+    const [gitInitOrder] = vi.mocked(initGitRepo).mock.invocationCallOrder;
 
     expect(writeEnvOrder).toBeLessThan(installOrder);
-    expect(writeEnvOrder).toBeLessThan(buildOrder);
+    expect(installOrder).toBeLessThan(gitInitOrder);
   });
 });
 
 describe('failure handling', () => {
   test('mid-flow failure surfaces cleanup warning when projectDir exists', async () => {
-    // Regression test for edge case #5. cloneCatalyst's mock creates the dir
+    // Regression test for edge case #5. extractCatalyst's mock creates the dir
     // so the cleanup-warning's pathExistsSync check passes; installDependencies
     // then throws to simulate a mid-flow failure.
     const projectName = uniqueProjectName();
     const projectDir = join(tmpDir, projectName);
 
-    vi.mocked(cloneCatalyst).mockImplementationOnce(() => {
+    vi.mocked(extractCatalyst).mockImplementationOnce(() => {
       mkdirSync(projectDir, { recursive: true });
+
+      return Promise.resolve();
     });
     vi.mocked(installDependencies).mockRejectedValueOnce(new Error('install failed'));
 
@@ -411,11 +422,11 @@ describe('failure handling', () => {
   });
 
   test('mid-flow failure does not log cleanup warning if projectDir does not exist', async () => {
-    // cloneCatalyst is mocked but does NOT create the dir, so pathExistsSync
-    // returns false and the cleanup warning is suppressed.
-    vi.mocked(cloneCatalyst).mockImplementationOnce(() => {
-      throw new Error('clone failed before creating directory');
-    });
+    // extractCatalyst is mocked to reject WITHOUT creating the dir, so
+    // pathExistsSync returns false and the cleanup warning is suppressed.
+    vi.mocked(extractCatalyst).mockRejectedValueOnce(
+      new Error('extract failed before creating directory'),
+    );
 
     await expect(
       program.parseAsync([
@@ -435,7 +446,7 @@ describe('failure handling', () => {
         '--storefront-token',
         'flag-storefront-token',
       ]),
-    ).rejects.toThrow('clone failed before creating directory');
+    ).rejects.toThrow('extract failed before creating directory');
 
     expect(consola.warn).not.toHaveBeenCalledWith(expect.stringContaining('partial state'));
   });
@@ -457,7 +468,7 @@ describe('failure handling', () => {
       'Login aborted. Re-run `catalyst create` when you have your credentials ready.',
     );
     expect(exitMock).toHaveBeenCalledWith(0);
-    expect(cloneCatalyst).not.toHaveBeenCalled();
+    expect(extractCatalyst).not.toHaveBeenCalled();
   });
 
   test('propagates non-LoginAbortedError login failures', async () => {
@@ -475,7 +486,7 @@ describe('failure handling', () => {
       ]),
     ).rejects.toThrow('network down');
 
-    expect(cloneCatalyst).not.toHaveBeenCalled();
+    expect(extractCatalyst).not.toHaveBeenCalled();
   });
 });
 

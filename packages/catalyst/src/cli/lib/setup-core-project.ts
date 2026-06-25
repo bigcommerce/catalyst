@@ -17,11 +17,11 @@ const writeJson = (path: string, value: unknown) => {
 };
 
 // Wires Catalyst CLI scripts and the `@bigcommerce/catalyst` dep into a freshly
-// cloned `core/`. Always runs at create time, regardless of hosting choice —
+// extracted project. Always runs at create time, regardless of hosting choice —
 // `catalyst build` / `catalyst start` / `catalyst deploy` dispatch on project
 // state, so these scripts work for self-hosted projects too without rewrite.
 export const setupCoreProject = (projectDir: string) => {
-  const corePackageJsonPath = join(projectDir, 'core', 'package.json');
+  const corePackageJsonPath = join(projectDir, 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
 
   pkg.scripts = {

@@ -1,14 +1,6 @@
 import { confirm, input, select, Separator } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
-import {
-  existsSync,
-  lstatSync,
-  mkdirSync,
-  readFileSync,
-  symlinkSync,
-  unlinkSync,
-  writeFileSync,
-} from 'fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { z } from 'zod';
 
@@ -32,27 +24,9 @@ const writeJson = (path: string, value: unknown) => {
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
 };
 
-const symlinkRootEnvToCore = (projectDir: string) => {
-  const coreEnvPath = join(projectDir, 'core', '.env.local');
-
-  if (lstatSync(coreEnvPath, { throwIfNoEntry: false })) return;
-
-  try {
-    symlinkSync('../.env.local', coreEnvPath);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : 'unknown error';
-
-    consola.warn(
-      `Could not create symlink at core/.env.local: ${message}\n` +
-        'On Windows, enable Developer Mode or run as administrator to allow symlinks.\n' +
-        'You will need to keep .env.local and core/.env.local in sync manually.',
-    );
-  }
-};
-
 const convertProxyToMiddleware = (projectDir: string) => {
-  const proxyPath = join(projectDir, 'core', 'proxy.ts');
-  const middlewarePath = join(projectDir, 'core', 'middleware.ts');
+  const proxyPath = join(projectDir, 'proxy.ts');
+  const middlewarePath = join(projectDir, 'middleware.ts');
 
   if (!existsSync(proxyPath)) return;
 
@@ -64,7 +38,7 @@ const convertProxyToMiddleware = (projectDir: string) => {
   unlinkSync(proxyPath);
 };
 
-// The default `core/instrumentation.ts` registers `@vercel/otel`, whose node
+// The default `instrumentation.ts` registers `@vercel/otel`, whose node
 // build OpenNext bundles into the worker chunk; workerd then throws on cold
 // start with "Failed to prepare server". A Vercel-deploying user may have
 // customized the hook though, so we prompt before removing it (and only drop
@@ -74,13 +48,13 @@ const convertProxyToMiddleware = (projectDir: string) => {
 // already-transformed projects too, where `setupCommerceHosting` would
 // short-circuit.
 export const cleanupCloudflareIncompatibilities = async (projectDir: string) => {
-  const instrumentationPath = join(projectDir, 'core', 'instrumentation.ts');
+  const instrumentationPath = join(projectDir, 'instrumentation.ts');
 
   if (!existsSync(instrumentationPath)) return;
 
   if (!process.stdin.isTTY) {
     consola.warn(
-      'core/instrumentation.ts is present and may be incompatible with the Cloudflare Workers ' +
+      'instrumentation.ts is present and may be incompatible with the Cloudflare Workers ' +
         'bundle (the default @vercel/otel scaffolding throws at cold start under workerd). ' +
         'Skipping automatic cleanup in non-interactive mode — re-run interactively to remove it, ' +
         'or delete/gate it manually.',
@@ -91,15 +65,15 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
 
   const shouldRemove = await confirm({
     message:
-      'Catalyst found core/instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
+      'Catalyst found instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
       'bundle when it uses @vercel/otel (causes "Failed to prepare server" at cold start). ' +
-      'Remove it and drop @vercel/otel from core/package.json?',
+      'Remove it and drop @vercel/otel from package.json?',
     default: true,
   });
 
   if (!shouldRemove) {
     consola.info(
-      'Leaving core/instrumentation.ts in place. The Cloudflare worker will continue to log ' +
+      'Leaving instrumentation.ts in place. The Cloudflare worker will continue to log ' +
         '"Failed to prepare server" at cold start until this is resolved manually.',
     );
 
@@ -107,9 +81,9 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
   }
 
   unlinkSync(instrumentationPath);
-  consola.info('Removed core/instrumentation.ts (incompatible with Cloudflare Workers).');
+  consola.info('Removed instrumentation.ts (incompatible with Cloudflare Workers).');
 
-  const corePackageJsonPath = join(projectDir, 'core', 'package.json');
+  const corePackageJsonPath = join(projectDir, 'package.json');
 
   if (existsSync(corePackageJsonPath)) {
     const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
@@ -119,7 +93,7 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
 
       pkg.dependencies = preservedDeps;
       writeJson(corePackageJsonPath, sortPackageJsonFields(pkg));
-      consola.info('Dropped @vercel/otel from core/package.json.');
+      consola.info('Dropped @vercel/otel from package.json.');
     }
   }
 };
@@ -137,7 +111,7 @@ export const setupCommerceHosting = async ({
 }) => {
   await cleanupCloudflareIncompatibilities(projectDir);
 
-  const corePackageJsonPath = join(projectDir, 'core', 'package.json');
+  const corePackageJsonPath = join(projectDir, 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
 
   pkg.dependencies = {
@@ -155,9 +129,8 @@ export const setupCommerceHosting = async ({
   if (storeHash) projectJson.storeHash = storeHash;
   if (accessToken) projectJson.accessToken = accessToken;
 
-  writeJson(join(projectDir, 'core', '.bigcommerce', 'project.json'), projectJson);
+  writeJson(join(projectDir, '.bigcommerce', 'project.json'), projectJson);
 
-  symlinkRootEnvToCore(projectDir);
   convertProxyToMiddleware(projectDir);
 };
 

@@ -1,14 +1,5 @@
 import { confirm, input, select } from '@inquirer/prompts';
-import {
-  existsSync,
-  lstatSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  readlinkSync,
-  rmSync,
-  writeFileSync,
-} from 'fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
@@ -593,35 +584,26 @@ describe('setupCommerceHosting', () => {
   });
 
   function writeCorePackageJson(contents: unknown) {
-    const coreDir = join(projectDir, 'core');
-
-    mkdirSync(coreDir, { recursive: true });
-    writeFileSync(join(coreDir, 'package.json'), JSON.stringify(contents, null, 2));
+    writeFileSync(join(projectDir, 'package.json'), JSON.stringify(contents, null, 2));
   }
 
   function writeCoreProxyFile(contents: string) {
-    const coreDir = join(projectDir, 'core');
-
-    mkdirSync(coreDir, { recursive: true });
-    writeFileSync(join(coreDir, 'proxy.ts'), contents);
+    writeFileSync(join(projectDir, 'proxy.ts'), contents);
   }
 
   function writeCoreInstrumentationFile(contents: string) {
-    const coreDir = join(projectDir, 'core');
-
-    mkdirSync(coreDir, { recursive: true });
-    writeFileSync(join(coreDir, 'instrumentation.ts'), contents);
+    writeFileSync(join(projectDir, 'instrumentation.ts'), contents);
   }
 
   function readCorePackageJson() {
     return packageJsonSchema.parse(
-      JSON.parse(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')),
+      JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf-8')),
     );
   }
 
   function readProjectJson() {
     return projectJsonSchema.parse(
-      JSON.parse(readFileSync(join(projectDir, 'core', '.bigcommerce', 'project.json'), 'utf-8')),
+      JSON.parse(readFileSync(join(projectDir, '.bigcommerce', 'project.json'), 'utf-8')),
     );
   }
 
@@ -717,7 +699,7 @@ describe('setupCommerceHosting', () => {
     expect(pkg.devDependencies).toEqual({ jest: '^29.0.0' });
   });
 
-  it('writes core/.bigcommerce/project.json with the correct shape', async () => {
+  it('writes .bigcommerce/project.json with the correct shape', async () => {
     writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
     await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
@@ -769,53 +751,14 @@ describe('setupCommerceHosting', () => {
     expect(projectJson.accessToken).toBeUndefined();
   });
 
-  it('throws when core/package.json is missing', async () => {
+  it('throws when package.json is missing', async () => {
     await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
   });
 
-  it('throws when core/package.json has an invalid shape', async () => {
+  it('throws when package.json has an invalid shape', async () => {
     writeCorePackageJson({ dependencies: { next: 42 } });
 
     await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
-  });
-
-  describe('core/.env.local symlink', () => {
-    it('creates a symlink at core/.env.local pointing to ../.env.local', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      const coreEnvPath = join(projectDir, 'core', '.env.local');
-
-      expect(lstatSync(coreEnvPath).isSymbolicLink()).toBe(true);
-      expect(readlinkSync(coreEnvPath)).toBe(join('..', '.env.local'));
-    });
-
-    it('keeps both files in sync via the symlink target', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-      writeFileSync(join(projectDir, '.env.local'), 'FOO=bar\n');
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      expect(readFileSync(join(projectDir, 'core', '.env.local'), 'utf-8')).toBe('FOO=bar\n');
-
-      writeFileSync(join(projectDir, 'core', '.env.local'), 'FOO=baz\n');
-
-      expect(readFileSync(join(projectDir, '.env.local'), 'utf-8')).toBe('FOO=baz\n');
-    });
-
-    it('does not clobber an existing core/.env.local file', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-      mkdirSync(join(projectDir, 'core'), { recursive: true });
-      writeFileSync(join(projectDir, 'core', '.env.local'), 'PRESERVE=me\n');
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      const coreEnvPath = join(projectDir, 'core', '.env.local');
-
-      expect(lstatSync(coreEnvPath).isSymbolicLink()).toBe(false);
-      expect(readFileSync(coreEnvPath, 'utf-8')).toBe('PRESERVE=me\n');
-    });
   });
 
   describe('proxy.ts → middleware.ts conversion', () => {
@@ -836,8 +779,8 @@ describe('setupCommerceHosting', () => {
 
       await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
-      const middlewarePath = join(projectDir, 'core', 'middleware.ts');
-      const proxyPath = join(projectDir, 'core', 'proxy.ts');
+      const middlewarePath = join(projectDir, 'middleware.ts');
+      const proxyPath = join(projectDir, 'proxy.ts');
 
       expect(existsSync(middlewarePath)).toBe(true);
       expect(existsSync(proxyPath)).toBe(false);
@@ -855,7 +798,7 @@ describe('setupCommerceHosting', () => {
 
       await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
-      const middleware = readFileSync(join(projectDir, 'core', 'middleware.ts'), 'utf-8');
+      const middleware = readFileSync(join(projectDir, 'middleware.ts'), 'utf-8');
 
       expect(middleware).toContain("import { composeProxies } from './proxies/compose-proxies';");
       expect(middleware).toContain("matcher: ['/((?!api).*)']");
@@ -865,21 +808,21 @@ describe('setupCommerceHosting', () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
       await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
-      expect(existsSync(join(projectDir, 'core', 'middleware.ts'))).toBe(false);
+      expect(existsSync(join(projectDir, 'middleware.ts'))).toBe(false);
     });
   });
 
   describe('instrumentation.ts removal', () => {
-    it('deletes core/instrumentation.ts when the user accepts the prompt', async () => {
+    it('deletes instrumentation.ts when the user accepts the prompt', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeCoreInstrumentationFile('export function register() {}\n');
 
       await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
-      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+      expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(false);
     });
 
-    it('preserves core/instrumentation.ts when the user declines the prompt', async () => {
+    it('preserves instrumentation.ts when the user declines the prompt', async () => {
       confirmMock.mockResolvedValueOnce(false);
 
       writeCorePackageJson({
@@ -890,7 +833,7 @@ describe('setupCommerceHosting', () => {
 
       await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
-      expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+      expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(true);
       expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
     });
 
@@ -921,26 +864,20 @@ describe('cleanupCloudflareIncompatibilities', () => {
   });
 
   function writeCorePackageJson(contents: unknown) {
-    const coreDir = join(projectDir, 'core');
-
-    mkdirSync(coreDir, { recursive: true });
-    writeFileSync(join(coreDir, 'package.json'), JSON.stringify(contents, null, 2));
+    writeFileSync(join(projectDir, 'package.json'), JSON.stringify(contents, null, 2));
   }
 
   function writeCoreInstrumentationFile(contents: string) {
-    const coreDir = join(projectDir, 'core');
-
-    mkdirSync(coreDir, { recursive: true });
-    writeFileSync(join(coreDir, 'instrumentation.ts'), contents);
+    writeFileSync(join(projectDir, 'instrumentation.ts'), contents);
   }
 
   function readCorePackageJson() {
     return packageJsonSchema.parse(
-      JSON.parse(readFileSync(join(projectDir, 'core', 'package.json'), 'utf-8')),
+      JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf-8')),
     );
   }
 
-  it('removes core/instrumentation.ts and drops @vercel/otel when the user accepts (TTY)', async () => {
+  it('removes instrumentation.ts and drops @vercel/otel when the user accepts (TTY)', async () => {
     writeCorePackageJson({
       dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' },
     });
@@ -948,7 +885,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     await cleanupCloudflareIncompatibilities(projectDir);
 
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+    expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(false);
     expect(readCorePackageJson().dependencies).not.toHaveProperty('@vercel/otel');
     expect(readCorePackageJson().dependencies).toMatchObject({ next: '^15.0.0' });
   });
@@ -963,7 +900,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     await cleanupCloudflareIncompatibilities(projectDir);
 
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+    expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(true);
     expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
   });
 
@@ -979,7 +916,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
     await cleanupCloudflareIncompatibilities(projectDir);
 
     expect(confirmMock).not.toHaveBeenCalled();
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(true);
+    expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(true);
     expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
   });
 
@@ -997,6 +934,6 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     await cleanupCloudflareIncompatibilities(projectDir);
 
-    expect(existsSync(join(projectDir, 'core', 'instrumentation.ts'))).toBe(false);
+    expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(false);
   });
 });
