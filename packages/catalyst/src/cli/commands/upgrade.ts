@@ -1,5 +1,5 @@
-import { execa } from 'execa';
 import { confirm } from '@inquirer/prompts';
+import { execa } from 'execa';
 import {
   access,
   copyFile,

@@ -11,6 +11,8 @@ import {
   mergeCorePerFile,
   mergeCoreTree,
   parseRef,
+  resolveBaseRef,
+  resolveProject,
   resolveStrategy,
 } from './upgrade';
 
@@ -55,6 +57,122 @@ describe('parseRef', () => {
 
   test('throws when there is no version separator', () => {
     expect(() => parseRef('catalyst-core')).toThrow();
+  });
+});
+
+describe('resolveProject', () => {
+  async function initRepo(): Promise<string> {
+    const repo = await mkTmp();
+
+    await execa('git', ['init', '-q'], { cwd: repo });
+    await execa('git', ['config', 'user.email', 't@t.com'], { cwd: repo });
+    await execa('git', ['config', 'user.name', 't'], { cwd: repo });
+
+    return repo;
+  }
+
+  const catalystPkg = (version: string) =>
+    `${JSON.stringify(
+      {
+        name: '@bigcommerce/catalyst-core',
+        version,
+        catalyst: { version, ref: `@bigcommerce/catalyst-core@${version}` },
+      },
+      null,
+      2,
+    )}\n`;
+
+  test('detects a nested (monorepo) layout → relDir "core"', async () => {
+    const repo = await initRepo();
+
+    await write(join(repo, 'core', 'package.json'), catalystPkg('1.6.3'));
+
+    const project = await resolveProject(repo);
+
+    expect(project).not.toBeNull();
+    expect(project?.relDir).toBe('core');
+    expect(project?.catalystRoot.endsWith('core')).toBe(true);
+    expect(project?.pkg.catalyst?.ref).toBe('@bigcommerce/catalyst-core@1.6.3');
+  });
+
+  test('detects a flat layout → relDir "."', async () => {
+    const repo = await initRepo();
+
+    await write(join(repo, 'package.json'), catalystPkg('1.7.0'));
+
+    const project = await resolveProject(repo);
+
+    expect(project).not.toBeNull();
+    expect(project?.relDir).toBe('.');
+    expect(project?.pkg.catalyst?.ref).toBe('@bigcommerce/catalyst-core@1.7.0');
+  });
+
+  test('returns null outside a git repo', async () => {
+    const notARepo = await mkTmp();
+
+    expect(await resolveProject(notARepo)).toBeNull();
+  });
+});
+
+describe('resolveBaseRef', () => {
+  // Minimal Project stub — resolveBaseRef only reads `.pkg` (plus its --from /
+  // --yes args). Conditional spreads keep optional fields truly absent so the
+  // stub satisfies CorePackageJson under exactOptionalPropertyTypes.
+  const projectWith = (pkg: { name?: string; version: string; ref?: string }) => ({
+    gitRoot: '/repo',
+    catalystRoot: '/repo/core',
+    relDir: 'core',
+    pkgPath: '/repo/core/package.json',
+    rawContent: '',
+    pkg: {
+      ...(pkg.name === undefined ? {} : { name: pkg.name }),
+      version: pkg.version,
+      ...(pkg.ref === undefined ? {} : { catalyst: { version: pkg.version, ref: pkg.ref } }),
+    },
+  });
+
+  test('uses catalyst.ref verbatim when present (ignores --from)', async () => {
+    expect(
+      await resolveBaseRef(
+        projectWith({
+          name: '@bigcommerce/catalyst-core',
+          version: '1.6.3',
+          ref: '@bigcommerce/catalyst-core@1.6.3',
+        }),
+        '@bigcommerce/catalyst-core@1.0.0',
+        false,
+      ),
+    ).toBe('@bigcommerce/catalyst-core@1.6.3');
+  });
+
+  test('missing catalyst.ref: --from wins when provided', async () => {
+    expect(
+      await resolveBaseRef(
+        projectWith({ name: '@bigcommerce/catalyst-core', version: '1.6.3' }),
+        '@bigcommerce/catalyst-makeswift@1.5.0',
+        false,
+      ),
+    ).toBe('@bigcommerce/catalyst-makeswift@1.5.0');
+  });
+
+  test('missing catalyst.ref (pre-LTRAC-466): infers <name>@<version> under --yes', async () => {
+    expect(
+      await resolveBaseRef(
+        projectWith({ name: '@bigcommerce/catalyst-makeswift', version: '1.6.3' }),
+        undefined,
+        true,
+      ),
+    ).toBe('@bigcommerce/catalyst-makeswift@1.6.3');
+  });
+
+  test('missing catalyst.ref + unknown package name: defaults to catalyst-core family', async () => {
+    expect(
+      await resolveBaseRef(
+        projectWith({ name: 'acme-storefront', version: '1.6.3' }),
+        undefined,
+        true,
+      ),
+    ).toBe('@bigcommerce/catalyst-core@1.6.3');
   });
 });
 
