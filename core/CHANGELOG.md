@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.8.0
+
+### Minor Changes
+
+- [#2913](https://github.com/bigcommerce/catalyst/pull/2913) [`097eea7`](https://github.com/bigcommerce/catalyst/commit/097eea7b9205ce35ba0724a8c1a5c04281f18dd7) Thanks [@agurtovoy](https://github.com/agurtovoy)! - Enable interaction-mode site navigation in Makeswift builder
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.8.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.8.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/81b88df3e42ff06c86bd91628d7be570579af89d/core/CHANGELOG.md#180).
+
+### Patch Changes
+
+- [#2950](https://github.com/bigcommerce/catalyst/pull/2950) [`4d511dc`](https://github.com/bigcommerce/catalyst/commit/4d511dc40e577b6c1a4b6bbbc72a02f66b0ef8d4) Thanks [@agurtovoy](https://github.com/agurtovoy)! - Fix 404 error on switching between localized Makeswift pages with locale-specific paths when TRAILING_SLASH=true
+
 ## 1.7.0
 
 ### Minor Changes
