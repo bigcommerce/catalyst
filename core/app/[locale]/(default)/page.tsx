@@ -56,7 +56,7 @@ export default async function Home({ params }: Props) {
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
       taxDisplay,
-    );
+    ).map((p) => ({ ...p, promotions: undefined }));
   });
 
   const streamableNewestProducts = Streamable.from(async () => {
@@ -74,7 +74,7 @@ export default async function Home({ params }: Props) {
       showOutOfStockMessage ? defaultOutOfStockMessage : undefined,
       showBackorderMessage,
       taxDisplay,
-    );
+    ).map((p) => ({ ...p, promotions: undefined }));
   });
 
   const streamableShowNewsletterSignup = Streamable.from(async () => {

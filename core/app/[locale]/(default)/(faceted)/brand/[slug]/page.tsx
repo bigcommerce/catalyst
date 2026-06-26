@@ -4,9 +4,8 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { PromotionCallout } from '@/vibes/soul/primitives/promotion-callout';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -19,7 +18,6 @@ import { getMetadataAlternates } from '~/lib/seo/canonical';
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
-import { streamPromotionCallouts } from '../../promotion-callouts';
 
 import { getBrandPageData } from './page-data';
 
@@ -214,47 +212,40 @@ export default async function Brand(props: Props) {
     }));
   });
 
-  const streamablePromotionCallouts = streamPromotionCallouts(streamableFacetedSearch);
-
   return (
-    <>
-      <Stream fallback={null} value={streamablePromotionCallouts}>
-        {(callouts) => (callouts.length > 0 ? <PromotionCallout callouts={callouts} /> : null)}
-      </Stream>
-      <ProductsListSection
-        compareLabel={t('Compare.compare')}
-        compareProducts={streamableCompareProducts}
-        emptyStateSubtitle={t('Brand.Empty.subtitle')}
-        emptyStateTitle={t('Brand.Empty.title')}
-        filterLabel={t('FacetedSearch.filters')}
-        filters={streamableFilters}
-        filtersPanelTitle={t('FacetedSearch.filters')}
-        maxCompareLimitMessage={t('Compare.maxCompareLimit')}
-        maxItems={MAX_COMPARE_LIMIT}
-        paginationInfo={streamablePagination}
-        products={streamableProducts}
-        rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
-        removeLabel={t('Compare.remove')}
-        resetFiltersLabel={t('FacetedSearch.resetFilters')}
-        showCompare={productComparisonsEnabled}
-        showRating={showRating}
-        sortDefaultValue="featured"
-        sortLabel={t('Search.title')}
-        sortOptions={[
-          { value: 'featured', label: t('SortBy.featuredItems') },
-          { value: 'newest', label: t('SortBy.newestItems') },
-          { value: 'best_selling', label: t('SortBy.bestSellingItems') },
-          { value: 'a_to_z', label: t('SortBy.aToZ') },
-          { value: 'z_to_a', label: t('SortBy.zToA') },
-          { value: 'best_reviewed', label: t('SortBy.byReview') },
-          { value: 'lowest_price', label: t('SortBy.priceAscending') },
-          { value: 'highest_price', label: t('SortBy.priceDescending') },
-          { value: 'relevance', label: t('SortBy.relevance') },
-        ]}
-        sortParamName="sort"
-        title={brand.name}
-        totalCount={streamableTotalCount}
-      />
-    </>
+    <ProductsListSection
+      compareLabel={t('Compare.compare')}
+      compareProducts={streamableCompareProducts}
+      emptyStateSubtitle={t('Brand.Empty.subtitle')}
+      emptyStateTitle={t('Brand.Empty.title')}
+      filterLabel={t('FacetedSearch.filters')}
+      filters={streamableFilters}
+      filtersPanelTitle={t('FacetedSearch.filters')}
+      maxCompareLimitMessage={t('Compare.maxCompareLimit')}
+      maxItems={MAX_COMPARE_LIMIT}
+      paginationInfo={streamablePagination}
+      products={streamableProducts}
+      rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
+      removeLabel={t('Compare.remove')}
+      resetFiltersLabel={t('FacetedSearch.resetFilters')}
+      showCompare={productComparisonsEnabled}
+      showRating={showRating}
+      sortDefaultValue="featured"
+      sortLabel={t('Search.title')}
+      sortOptions={[
+        { value: 'featured', label: t('SortBy.featuredItems') },
+        { value: 'newest', label: t('SortBy.newestItems') },
+        { value: 'best_selling', label: t('SortBy.bestSellingItems') },
+        { value: 'a_to_z', label: t('SortBy.aToZ') },
+        { value: 'z_to_a', label: t('SortBy.zToA') },
+        { value: 'best_reviewed', label: t('SortBy.byReview') },
+        { value: 'lowest_price', label: t('SortBy.priceAscending') },
+        { value: 'highest_price', label: t('SortBy.priceDescending') },
+        { value: 'relevance', label: t('SortBy.relevance') },
+      ]}
+      sortParamName="sort"
+      title={brand.name}
+      totalCount={streamableTotalCount}
+    />
   );
 }

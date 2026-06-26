@@ -2,7 +2,7 @@
 "@bigcommerce/catalyst-core": minor
 ---
 
-Add a new `PromotionCallout` primitive and wire promotion callouts into PDP and PLP pages using live data from the Storefront GraphQL API.
+Wire promotion callouts into PDP and PLP pages using live data from the Storefront GraphQL API (`featuredPromotions` on the `Product` type).
 
-- **PDP**: a full-width banner renders above the breadcrumbs, showing all active promotions for the product sourced from `featuredPromotions` on the `Product` type.
-- **PLP (category, brand, search)**: a full-width page-level banner renders at the top of each listing page, deduplicating promotions across all products on the page.
+- **PDP**: stacked callout boxes render inline below the price, one per active promotion.
+- **PLP (category, brand, search)**: each product card shows its first promotion inline below the price; if there are multiple, a "+N more" label appears within the same callout.

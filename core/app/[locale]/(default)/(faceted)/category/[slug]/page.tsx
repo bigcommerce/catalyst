@@ -7,7 +7,6 @@ import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { PromotionCallout } from '@/vibes/soul/primitives/promotion-callout';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -20,7 +19,6 @@ import { getMetadataAlternates } from '~/lib/seo/canonical';
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
-import { streamPromotionCallouts } from '../../promotion-callouts';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
@@ -251,13 +249,8 @@ export default async function Category(props: Props) {
     }));
   });
 
-  const streamablePromotionCallouts = streamPromotionCallouts(streamableFacetedSearch);
-
   return (
     <>
-      <Stream fallback={null} value={streamablePromotionCallouts}>
-        {(callouts) => (callouts.length > 0 ? <PromotionCallout callouts={callouts} /> : null)}
-      </Stream>
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('Compare.compare')}
