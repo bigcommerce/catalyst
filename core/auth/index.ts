@@ -195,7 +195,6 @@ const config = {
   session: {
     strategy: 'jwt',
   },
-  cookies: {},
   pages: {
     signIn: '/login',
     signOut: '/logout',
