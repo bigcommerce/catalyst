@@ -1,9 +1,14 @@
+import { Command } from '@commander-js/extra-typings';
 import { execa } from 'execa';
 import { execSync } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test, vi } from 'vitest';
+
+// The tree engine runs many git subprocesses sequentially on Windows CI; give
+// every test in this file enough headroom (the fast ones finish in < 1 s).
+vi.setConfig({ testTimeout: 30_000 });
 
 import {
   applyIndexState,
@@ -14,6 +19,7 @@ import {
   resolveBaseRef,
   resolveProject,
   resolveStrategy,
+  upgrade,
 } from './upgrade';
 
 const createdDirs: string[] = [];
@@ -37,7 +43,16 @@ const exists = (p: string) =>
     .catch(() => false);
 
 afterEach(async () => {
-  await Promise.all(createdDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
+  await Promise.all(
+    createdDirs
+      .splice(0)
+      .map((dir) => rm(dir, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 })),
+  );
+});
+
+test('properly configured Command instance', () => {
+  expect(upgrade).toBeInstanceOf(Command);
+  expect(upgrade.name()).toBe('upgrade');
 });
 
 describe('parseRef', () => {
