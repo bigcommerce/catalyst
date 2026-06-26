@@ -1,7 +1,19 @@
 import { execa } from 'execa';
-import { access, copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import {
+  access,
+  copyFile,
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  rm,
+  writeFile,
+} from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { z } from 'zod';
+
+import { consola } from '../lib/logger';
 
 const CorePackageJson = z.object({
   name: z.string().optional(),
@@ -239,6 +251,274 @@ export async function mergeCorePerFile(
   await Promise.all([...new Set([...baseFiles, ...theirsFiles])].map(decide));
 
   return result;
+}
+
+// ── merge strategy selection ───────────────────────────────────────────────────
+export type MergeStrategy = 'auto' | 'tree' | 'per-file';
+
+// `git merge-tree --write-tree` (the whole-tree engine) landed in git 2.38.
+export async function gitSupportsMergeTree(): Promise<boolean> {
+  try {
+    const { stdout } = await execa('git', ['--version']);
+    const match = /(\d+)\.(\d+)/.exec(stdout);
+
+    if (!match) return false;
+
+    const [major, minor] = [Number(match[1]), Number(match[2])];
+
+    return major > 2 || (major === 2 && minor >= 38);
+  } catch {
+    return false;
+  }
+}
+
+// 'auto' resolves to the whole-tree engine when git supports it, else per-file.
+export async function resolveStrategy(strategy: MergeStrategy): Promise<'tree' | 'per-file'> {
+  if (strategy !== 'auto') return strategy;
+
+  if (await gitSupportsMergeTree()) return 'tree';
+
+  consola.warn('git < 2.38 — using the per-file merge engine (no `git merge-tree`).');
+
+  return 'per-file';
+}
+
+// ── whole-tree 3-way merge engine (git merge-tree, 2.38+) ──────────────────────
+// Builds base/ours/theirs as commits in a throwaway object store, runs a real
+// recursive merge (rename detection, modify/delete, mode changes, binary — all
+// native to git), then materialises the merged tree into the catalyst root.
+// Conflicts come back as in-blob <<<ours/===/theirs>>> markers; like per-file it
+// never aborts. Branch names `ours`/`theirs` make the markers match the per-file
+// engine's labels.
+export async function mergeCoreTree(
+  baseDir: string,
+  theirsDir: string,
+  catalystRoot: string,
+): Promise<MergeResult> {
+  const scratch = await mkdtemp(join(tmpdir(), 'catalyst-merge-'));
+
+  try {
+    await execa('git', ['init', '-q', scratch]);
+    // Disable line-ending conversion so checkout-index writes LF on all platforms.
+    await execa('git', ['config', 'core.autocrlf', 'false'], {
+      env: { ...process.env, GIT_DIR: join(scratch, '.git') },
+    });
+
+    const env = {
+      ...process.env,
+      GIT_DIR: join(scratch, '.git'),
+      GIT_AUTHOR_NAME: 'catalyst',
+      GIT_AUTHOR_EMAIL: 'catalyst@bigcommerce.com',
+      GIT_COMMITTER_NAME: 'catalyst',
+      GIT_COMMITTER_EMAIL: 'catalyst@bigcommerce.com',
+    };
+
+    // Snapshot a directory as a tree object (own index per side; .gitignore is
+    // honoured, so build artifacts like node_modules never enter the tree).
+    const writeTree = async (workTree: string, tag: string): Promise<string> => {
+      const sideEnv = {
+        ...env,
+        GIT_WORK_TREE: workTree,
+        GIT_INDEX_FILE: join(scratch, `index.${tag}`),
+      };
+
+      await execa('git', ['add', '-A'], { env: sideEnv });
+
+      return (await execa('git', ['write-tree'], { env: sideEnv })).stdout.trim();
+    };
+
+    const commitTree = (tree: string, parent?: string) =>
+      execa('git', ['commit-tree', tree, '-m', 'x', ...(parent ? ['-p', parent] : [])], {
+        env,
+      }).then((r) => r.stdout.trim());
+
+    const [baseTree, oursTree, theirsTree] = await Promise.all([
+      writeTree(baseDir, 'base'),
+      writeTree(catalystRoot, 'ours'),
+      writeTree(theirsDir, 'theirs'),
+    ]);
+
+    const baseCommit = await commitTree(baseTree);
+    const [oursCommit, theirsCommit] = await Promise.all([
+      commitTree(oursTree, baseCommit),
+      commitTree(theirsTree, baseCommit),
+    ]);
+
+    await Promise.all([
+      execa('git', ['branch', 'ours', oursCommit], { env }),
+      execa('git', ['branch', 'theirs', theirsCommit], { env }),
+    ]);
+
+    // -z --name-only output: <merged-tree-oid> NUL, then conflicted paths each
+    // NUL-terminated, then an empty field marks the end of the conflicted set
+    // (everything after is informational messages we don't need).
+    const merge = await execa(
+      'git',
+      [
+        'merge-tree',
+        '--write-tree',
+        '-z',
+        '--name-only',
+        `--merge-base=${baseCommit}`,
+        'ours',
+        'theirs',
+      ],
+      { env, reject: false },
+    );
+
+    if ((merge.exitCode ?? 0) > 1)
+      throw new Error(merge.stderr || merge.stdout.slice(0, 500) || 'git merge-tree failed');
+
+    // -z --name-only emits <merged-tree-oid>, then conflicted paths, then an
+    // empty field; everything after that is informational and ignored.
+    const fields = merge.stdout.split('\0');
+    const mergedTree = fields[0];
+    const afterOid = fields.slice(1);
+    const emptyAt = afterOid.indexOf('');
+    const conflicted = afterOid.slice(0, emptyAt === -1 ? afterOid.length : emptyAt);
+    const conflictedSet = new Set(conflicted);
+
+    // Materialise the merged tree into the catalyst root (conflict markers are
+    // already baked into the conflicted blobs).
+    const outEnv = {
+      ...env,
+      GIT_WORK_TREE: catalystRoot,
+      GIT_INDEX_FILE: join(scratch, 'index.out'),
+    };
+
+    await execa('git', ['read-tree', mergedTree], { env: outEnv });
+    await execa('git', ['checkout-index', '-a', '-f'], { env: outEnv });
+
+    // Classify ours → merged. -z --name-status emits [status, path, status, …].
+    const diff = await execa(
+      'git',
+      ['diff', '-z', '--no-renames', '--name-status', oursTree, mergedTree],
+      { env },
+    );
+
+    const tokens = diff.stdout.split('\0');
+    const changes: Array<{ status: string; path: string }> = [];
+
+    for (let i = 0; i + 1 < tokens.length; i += 2) {
+      const status = tokens[i];
+      const path = tokens[i + 1];
+
+      if (status && path && !conflictedSet.has(path)) {
+        changes.push({ status, path });
+      }
+    }
+
+    // checkout-index only writes; it won't remove paths the merge dropped.
+    const deleted = changes.filter((change) => change.status === 'D').map((change) => change.path);
+
+    await Promise.all(deleted.map((path) => rm(join(catalystRoot, path), { force: true })));
+
+    return {
+      applied: changes
+        .filter((change) => change.status !== 'A' && change.status !== 'D')
+        .map((change) => change.path),
+      added: changes.filter((change) => change.status === 'A').map((change) => change.path),
+      deleted,
+      conflicted,
+    };
+  } finally {
+    await rm(scratch, { recursive: true, force: true });
+  }
+}
+
+// ── index staging ──────────────────────────────────────────────────────────────
+// After the merge, stage everything that merged cleanly (so the merchant only
+// reviews what needs attention) and register conflicted files as real unmerged
+// index entries: stage 1 = base, 2 = ours (the committed pre-upgrade blob),
+// 3 = theirs. `git status` then reports them as conflicts (UU / AA / DU), which
+// lights up editors' merge UIs. No MERGE_HEAD — the target tag isn't an ancestor,
+// so resolving is a normal `git add` + commit, not a merge commit.
+export async function applyIndexState(
+  gitRoot: string,
+  relDir: string,
+  baseDir: string,
+  theirsDir: string,
+  result: MergeResult,
+  stampedPkg: boolean,
+): Promise<void> {
+  const toRepoPath = (rel: string) => (relDir === '.' ? rel : `${relDir}/${rel}`);
+  const pkgRel = 'package.json';
+
+  // If the stamp resolved package.json (stripped its conflict markers and wrote
+  // clean JSON), treat it as a clean file rather than a conflict — it should be
+  // staged normally so it shows up in `git diff --cached`, not registered as UU.
+  const stillConflicted = result.conflicted.filter((rel) => !(stampedPkg && rel === pkgRel));
+  const conflictedRepoPaths = new Set(stillConflicted.map(toRepoPath));
+
+  // 1. Pre-stage the clean changes (+ the resolved package.json when stamped).
+  const clean = [...result.applied, ...result.added, ...result.deleted].map(toRepoPath);
+
+  if (stampedPkg) clean.push(toRepoPath(pkgRel));
+
+  const toStage = [...new Set(clean)].filter((path) => !conflictedRepoPaths.has(path));
+
+  if (toStage.length) {
+    await execa('git', ['add', '-A', '--', ...toStage], { cwd: gitRoot });
+  }
+
+  if (stillConflicted.length === 0) return;
+
+  // 2. Conflicts → unmerged index entries. ours = the committed blob (the
+  //    clean-tree precondition guarantees the worktree matched HEAD before the
+  //    merge); base/theirs blobs get written into the repo's object store.
+  const OID = /^[0-9a-f]{40,64}$/;
+  // Detect SHA-256 repos (git 2.29+). SHA-1 uses a 40-zero null OID; SHA-256 uses 64.
+  const gitFormat = (
+    await execa('git', ['rev-parse', '--show-object-format'], { cwd: gitRoot, reject: false })
+  ).stdout.trim();
+  const NULL_OID = gitFormat === 'sha256' ? '0'.repeat(64) : '0'.repeat(40);
+
+  // Write a file's content as a blob; null if the file is absent or the OID
+  // comes back malformed (guards against shell wrappers polluting stdout).
+  const hashBlob = async (file: string): Promise<string | null> => {
+    if (!(await pathExists(file))) return null;
+
+    const oid = (
+      await execa('git', ['hash-object', '-w', '--', file], { cwd: gitRoot })
+    ).stdout.trim();
+
+    return OID.test(oid) ? oid : null;
+  };
+
+  // ours mode + blob via `ls-tree`. Unlike `rev-parse HEAD:<path>`, ls-tree
+  // never echoes a missing path back as if it were an object name.
+  const headEntry = async (repoPath: string): Promise<{ mode: string; oid: string } | null> => {
+    const { stdout } = await execa('git', ['ls-tree', 'HEAD', '--', repoPath], {
+      cwd: gitRoot,
+      reject: false,
+    });
+    const match = /^(\d{6}) blob ([0-9a-f]+)\t/.exec(stdout);
+
+    return match ? { mode: match[1], oid: match[2] } : null;
+  };
+
+  const records = await Promise.all(
+    stillConflicted.map(async (rel) => {
+      const repoPath = toRepoPath(rel);
+      const [base, ours, theirs] = await Promise.all([
+        hashBlob(join(baseDir, rel)),
+        headEntry(repoPath),
+        hashBlob(join(theirsDir, rel)),
+      ]);
+
+      return [
+        `0 ${NULL_OID}\t${repoPath}`,
+        ...(base ? [`100644 ${base} 1\t${repoPath}`] : []),
+        ...(ours ? [`${ours.mode} ${ours.oid} 2\t${repoPath}`] : []),
+        ...(theirs ? [`100644 ${theirs} 3\t${repoPath}`] : []),
+      ].join('\n');
+    }),
+  );
+
+  await execa('git', ['update-index', '--index-info'], {
+    cwd: gitRoot,
+    input: `${records.join('\n')}\n`,
+  });
 }
 
 // Re-export readResolvedVersion so later PRs can use it without re-importing.
