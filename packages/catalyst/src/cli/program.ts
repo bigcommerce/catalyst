@@ -17,6 +17,7 @@ import { logs } from './commands/logs';
 import { project } from './commands/project';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
+import { upgrade } from './commands/upgrade';
 import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
@@ -91,6 +92,7 @@ program
   .addCommand(env)
   .addCommand(channel)
   .addCommand(auth)
+  .addCommand(upgrade)
   .addCommand(telemetry)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);

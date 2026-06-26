@@ -1,3 +1,4 @@
+import { Command, Option } from '@commander-js/extra-typings';
 import { confirm } from '@inquirer/prompts';
 import { execa } from 'execa';
 import {
@@ -14,9 +15,11 @@ import {
 } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
+import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { consola } from '../lib/logger';
+import { getTelemetry } from '../lib/telemetry';
 
 const CorePackageJson = z.object({
   name: z.string().optional(),
@@ -356,11 +359,11 @@ export async function mergeCoreTree(
         env,
       }).then((r) => r.stdout.trim());
 
-    const [baseTree, oursTree, theirsTree] = await Promise.all([
-      writeTree(baseDir, 'base'),
-      writeTree(catalystRoot, 'ours'),
-      writeTree(theirsDir, 'theirs'),
-    ]);
+    // Run sequentially to avoid concurrent writes to the shared object store
+    // on Windows, where simultaneous git processes cause EPERM on object files.
+    const baseTree = await writeTree(baseDir, 'base');
+    const oursTree = await writeTree(catalystRoot, 'ours');
+    const theirsTree = await writeTree(theirsDir, 'theirs');
 
     const baseCommit = await commitTree(baseTree);
     const [oursCommit, theirsCommit] = await Promise.all([
@@ -446,7 +449,7 @@ export async function mergeCoreTree(
       conflicted,
     };
   } finally {
-    await rm(scratch, { recursive: true, force: true });
+    await rm(scratch, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 });
   }
 }
 
@@ -630,7 +633,15 @@ export async function downloadCore(
   const cacheKey = `${repository.replace(/[^a-zA-Z0-9._-]/g, '_')}__${ref.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
   const cachePath = join(CACHE_DIR, cacheKey);
 
-  if (cacheable && (await pathExists(cachePath))) {
+  // Guard against a partially-written cache entry: two concurrent downloadCore
+  // calls for the same ref can race — the first creates cachePath mid-copy, and
+  // the second sees it as present but gets an incomplete directory. Validate with
+  // a package.json sentinel (every extracted core/ tree must have one).
+  if (
+    cacheable &&
+    (await pathExists(cachePath)) &&
+    (await pathExists(join(cachePath, 'package.json')))
+  ) {
     await cp(cachePath, destDir, { recursive: true });
 
     return;
@@ -741,5 +752,316 @@ function printSummary(result: MergeResult, relDir: string, stampedPkg: boolean):
   }
 }
 
-// Re-export readResolvedVersion so later PRs can use it without re-importing.
-export { readResolvedVersion, printSummary, DEFAULT_REPOSITORY };
+export const upgrade = new Command('upgrade')
+  .configureHelp({ showGlobalOptions: true })
+  .aliases([
+    'up',
+    // These are hidden aliases
+    'upgrayedd',
+    'ugrad',
+  ])
+  .description('Upgrade your Catalyst project to a newer version by applying a 3-way merge.')
+  .argument('[version]', 'Target version to upgrade to (default: latest)')
+  .addOption(
+    new Option(
+      '--ref <ref>',
+      'Full git tag to upgrade to, e.g. an integration family like @bigcommerce/catalyst-makeswift@1.7.0. Overrides [version].',
+    ),
+  )
+  .addOption(new Option('--from <ref>', 'Base ref to upgrade from (when catalyst.ref is missing)'))
+  .option('--dry-run', 'Generate and display the diff without applying it')
+  .option('--yes', 'Skip confirmation prompts (e.g. inferred base ref)')
+  .addOption(
+    new Option(
+      '--strategy <strategy>',
+      'Merge engine: tree (git merge-tree, full fidelity), per-file (git merge-file, no-history fallback), or auto (tree when git >= 2.38, else per-file)',
+    )
+      .choices(['auto', 'tree', 'per-file'] as const)
+      .default('auto' as const)
+      .hideHelp(),
+  )
+  .addOption(
+    new Option('--repository <owner/repo>', 'GitHub repository to pull versions from').default(
+      DEFAULT_REPOSITORY,
+    ),
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Upgrade to the latest Catalyst version
+  $ catalyst upgrade
+
+  # Upgrade to a specific version
+  $ catalyst upgrade 1.8.0
+
+  # Preview what would change without applying
+  $ catalyst upgrade --dry-run
+
+  # Upgrade to an integration family (makeswift, b2b-makeswift, ...)
+  $ catalyst upgrade --ref @bigcommerce/catalyst-makeswift@1.7.0
+
+Conflicts are written as standard <<<ours/===/theirs>>> markers — the upgrade
+never aborts. Versions are git tags on the repository (not npm). Set GITHUB_TOKEN
+to raise the GitHub API rate limit.`,
+  )
+  // eslint-disable-next-line complexity
+  .action(async (version, options) => {
+    // ── 1. Resolve the merchant project (flat or nested layout) ───────────
+    const project = await resolveProject(process.cwd());
+
+    if (!project) {
+      consola.error(
+        'Run `catalyst upgrade` from inside a Catalyst git repository (flat core/ repo or a project containing core/).',
+      );
+      process.exit(1);
+    }
+
+    const { gitRoot, catalystRoot, relDir, pkgPath } = project;
+
+    // ── 2. Resolve base + target refs ─────────────────────────────────────
+    const baseRef = await resolveBaseRef(project, options.from, options.yes ?? false);
+
+    if (!baseRef) process.exit(1);
+
+    let basePackage: string;
+    let upstreamRef: string;
+    let upstreamTagVersion: string;
+
+    try {
+      ({ packageName: basePackage } = parseRef(baseRef));
+      upstreamRef = options.ref ?? `${basePackage}@${version ?? 'latest'}`;
+      ({ version: upstreamTagVersion } = parseRef(upstreamRef));
+    } catch {
+      consola.error(
+        `Invalid ref format — expected <package>@<version> (e.g. @bigcommerce/catalyst-core@1.7.0). Got: "${baseRef}"`,
+      );
+      process.exit(1);
+    }
+
+    if (upstreamRef === baseRef) {
+      consola.success('Already up to date.');
+
+      return;
+    }
+
+    // ── 3. Require a clean working tree at the catalyst root (preview exempt) ─
+    // The merge writes in place, so pre-existing uncommitted edits would be
+    // indistinguishable from the upgrade. Committing/stashing first gives the
+    // merchant a clean point to diff and roll back from.
+    if (!options.dryRun) {
+      const statusArgs = relDir === '.' ? [] : ['--', relDir];
+      const status = await execa('git', ['status', '--porcelain', ...statusArgs], {
+        cwd: gitRoot,
+        reject: false,
+      });
+
+      if (status.stdout.trim()) {
+        const where = relDir === '.' ? 'The repo' : `${relDir}/`;
+
+        consola.error(
+          `${where} has uncommitted changes. Commit or stash them before upgrading, so the upgrade is isolated and reversible:\n  git add ${relDir} && git commit -m "snapshot before upgrade"\n  # or: git stash`,
+        );
+        process.exit(1);
+      }
+    }
+
+    // ── 3b. Backfill catalyst.ref when it was inferred ────────────────────
+    // If catalyst.ref was absent and the user confirmed an inferred base (not
+    // an explicit --from), write the field and stage it so it travels with the
+    // upgrade commit. Runs after the clean-tree check so we only add to an
+    // already-clean index. --from is excluded: the user already knows the base
+    // and shouldn't get an extra staged change they didn't ask for.
+    if (!project.pkg.catalyst?.ref && !options.from && !options.dryRun) {
+      const { version: baseVersion } = parseRef(baseRef);
+      const rawPkg = await readFile(pkgPath, 'utf-8');
+      const parsedPkg = z.record(z.string(), z.unknown()).parse(JSON.parse(rawPkg));
+
+      parsedPkg.catalyst = { version: baseVersion, ref: baseRef };
+      await writeFile(pkgPath, `${JSON.stringify(parsedPkg, null, 2)}\n`);
+      await execa('git', ['add', '--', pkgPath], { cwd: gitRoot });
+      consola.success(`Added catalyst.ref → ${baseRef}`);
+    }
+
+    const token = process.env.GITHUB_TOKEN;
+    const tmpDir = await mkdtemp(join(tmpdir(), 'catalyst-upgrade-'));
+
+    try {
+      const baseDir = join(tmpDir, 'base');
+      const theirsDir = join(tmpDir, 'theirs');
+      const emptyFile = join(tmpDir, '.empty');
+
+      await writeFile(emptyFile, '');
+
+      const downloadSpinner = yoctoSpinner().start(`Downloading ${baseRef} and ${upstreamRef}...`);
+
+      try {
+        await Promise.all([
+          downloadCore(options.repository, baseRef, baseDir, token),
+          downloadCore(options.repository, upstreamRef, theirsDir, token),
+        ]);
+        downloadSpinner.success('Downloaded both versions.');
+      } catch (err) {
+        downloadSpinner.error('Download failed');
+        throw err;
+      }
+
+      // When the base was auto-inferred (no catalyst.ref, no --from), validate
+      // the guess by checking how many base files are unmodified in the project.
+      // A correct base scores ~70-80%+; a wrong guess (e.g. merchant manually
+      // bumped their version field without actually upgrading) scores much lower.
+      if (!project.pkg.catalyst?.ref && !options.from) {
+        const similarity = await computeBaseSimilarity(baseDir, catalystRoot);
+        const pct = Math.round(similarity * 100);
+
+        if (similarity < 0.5) {
+          consola.warn(
+            `Low confidence in inferred base ${baseRef} (${pct}% of base files match your project). If the merge result looks off, re-run with \`--from <correct-version>\` to set the base explicitly.`,
+          );
+        }
+      }
+
+      // For moving tags (latest/canary/alpha) we don't know the real version
+      // until the tarball lands, so read it from the downloaded package.json.
+      // For concrete tags the version is already in the tag itself.
+      const resolvedVersion = MOVING_TAGS.has(upstreamTagVersion)
+        ? await readResolvedVersion(theirsDir)
+        : upstreamTagVersion;
+      const newRef = MOVING_TAGS.has(upstreamTagVersion)
+        ? `${basePackage}@${resolvedVersion}`
+        : upstreamRef;
+
+      // ── 4. Dry run: show the unified diff and stop ──────────────────────
+      if (options.dryRun) {
+        const diffSpinner = yoctoSpinner().start('Generating diff...');
+        const diff = await execa(
+          'git',
+          ['diff', '--no-index', '--binary', '--diff-algorithm=histogram', 'base', 'theirs'],
+          { cwd: tmpDir, reject: false, stripFinalNewline: false },
+        );
+
+        if ((diff.exitCode ?? 0) > 1) {
+          diffSpinner.error('Failed to generate diff');
+          throw new Error(diff.stderr);
+        }
+
+        if (!diff.stdout.trim()) {
+          diffSpinner.success('No differences between versions — already up to date.');
+
+          return;
+        }
+
+        const fileCount = (diff.stdout.match(/^diff --git /gm) ?? []).length;
+
+        diffSpinner.success(`Diff ready — ${fileCount} file(s) affected.`);
+        consola.log('\nDiff preview (--dry-run, not applied):\n');
+        consola.log(diff.stdout);
+
+        return;
+      }
+
+      // ── 5. Apply via 3-way merge (whole-tree by default, per-file fallback) ─
+      const strategy = await resolveStrategy(options.strategy);
+      const mergeSpinner = yoctoSpinner().start(`Merging changes (${strategy})...`);
+      const result =
+        strategy === 'tree'
+          ? await mergeCoreTree(baseDir, theirsDir, catalystRoot)
+          : await mergeCorePerFile(baseDir, theirsDir, catalystRoot, emptyFile);
+      const total =
+        result.applied.length +
+        result.added.length +
+        result.deleted.length +
+        result.conflicted.length;
+
+      if (total === 0) {
+        mergeSpinner.success('No differences between versions — already up to date.');
+
+        return;
+      }
+
+      if (result.conflicted.length) {
+        mergeSpinner.warning('Merged with conflicts — resolve the markers, then commit.');
+      } else {
+        mergeSpinner.success('Merged cleanly.');
+      }
+
+      // ── 6. Stamp catalyst.ref (skip if package.json itself conflicted) ──
+      const patchedRaw = await readFile(pkgPath, 'utf-8');
+
+      let stampedPkg = false;
+
+      try {
+        const patchedPkg = z.record(z.string(), z.unknown()).parse(JSON.parse(patchedRaw));
+
+        patchedPkg.catalyst = { version: resolvedVersion, ref: newRef };
+        await writeFile(pkgPath, `${JSON.stringify(patchedPkg, null, 2)}\n`);
+        stampedPkg = true;
+        consola.success(`catalyst.ref updated → ${newRef}`);
+      } catch {
+        // package.json has conflict markers (scripts, deps, etc.). The catalyst
+        // field was added cleanly by ours and should sit outside the conflict
+        // blocks — so replace just that field in-place, leaving all other conflict
+        // markers intact for the merchant to resolve normally.
+        const catalystReplacement = JSON.stringify(
+          { version: resolvedVersion, ref: newRef },
+          null,
+          2,
+        )
+          .split('\n')
+          .map((line, i) => (i === 0 ? line : `  ${line}`))
+          .join('\n');
+
+        // Use a function replacer to prevent $-interpolation in the replacement string
+        // (e.g. $& or $1 in a ref/version value would silently corrupt the output).
+        const updated = patchedRaw.replace(
+          /"catalyst":\s*\{[^}]*\}/,
+          () => `"catalyst": ${catalystReplacement}`,
+        );
+
+        if (updated !== patchedRaw) {
+          await writeFile(pkgPath, updated);
+          // stampedPkg stays false — the file still has conflict markers in other
+          // sections, so it must stay as a UU unmerged entry so the editor shows
+          // the merge UI. Only the catalyst field was resolved in place.
+          consola.success(`catalyst.ref updated → ${newRef}`);
+          consola.info(
+            'package.json still has conflicts in other sections — resolve them, then: git add package.json',
+          );
+        } else {
+          consola.warn(
+            `package.json has conflicts — after resolving, add:\n  "catalyst": { "version": "${resolvedVersion}", "ref": "${newRef}" }`,
+          );
+        }
+      }
+
+      // ── 7. Stage the clean changes; mark conflicts as real unmerged entries ─
+      // Staging is a convenience; the merge already landed on disk, so never let
+      // a git quirk here fail the whole upgrade.
+      try {
+        await applyIndexState(gitRoot, relDir, baseDir, theirsDir, result, stampedPkg);
+      } catch (err) {
+        consola.warn(
+          `Couldn't auto-stage the changes (${err instanceof Error ? err.message : String(err)}). Your files are merged on disk — run \`git add ${relDir}\` yourself.`,
+        );
+      }
+
+      const gitVersion = await execa('git', ['--version'])
+        .then((r) => r.stdout.trim())
+        .catch(() => 'unknown');
+
+      await getTelemetry().track('upgrade', {
+        strategy,
+        gitVersion,
+        dryRun: Boolean(options.dryRun),
+        applied: result.applied.length,
+        added: result.added.length,
+        deleted: result.deleted.length,
+        conflicts: result.conflicted.length,
+        hasConflicts: result.conflicted.length > 0,
+      });
+
+      printSummary(result, relDir, stampedPkg);
+    } finally {
+      await rm(tmpDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 });
+    }
+  });
