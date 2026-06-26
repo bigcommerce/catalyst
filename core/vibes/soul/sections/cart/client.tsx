@@ -4,7 +4,6 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithoutRef,
   startTransition,
@@ -16,6 +15,7 @@ import {
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
+import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import {
@@ -49,8 +49,7 @@ export interface CartLineItem {
   image?: { alt: string; src: string };
   subtitle: string;
   quantity: number;
-  price: string;
-  salePrice?: string;
+  price: Price;
   href?: string;
   inventoryMessages?: CartLineIteminventoryMessages;
 }
@@ -82,6 +81,7 @@ export interface Cart<LineItem extends CartLineItem> {
   summaryItems: CartSummaryItem[];
   total: string;
   totalLabel?: string;
+  totalSubtitle?: string;
 }
 
 interface CouponCode {
@@ -405,12 +405,19 @@ export function CartClient<LineItem extends CartLineItem>({
                 removeLabel={giftCertificate.removeLabel}
               />
             )}
-            <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">
-              <dt>{cart.totalLabel ?? 'Total'}</dt>
-              {isLineItemActionPending ? (
-                <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
-              ) : (
-                <dd>{cart.total}</dd>
+            <div className="border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6">
+              <div className="flex justify-between text-xl font-bold">
+                <dt>{cart.totalLabel ?? 'Total'}</dt>
+                {isLineItemActionPending ? (
+                  <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
+                ) : (
+                  <dd>{cart.total}</dd>
+                )}
+              </div>
+              {cart.totalSubtitle != null && (
+                <div className="mt-1 flex justify-end text-sm font-normal opacity-70">
+                  {cart.totalSubtitle}
+                </div>
               )}
             </div>
           </dl>
@@ -522,8 +529,6 @@ function CounterForm({
   action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
 }) {
-  const t = useTranslations('Cart');
-
   const [form, fields] = useForm({
     defaultValue: { id: lineItem.id },
     shouldValidate: 'onBlur',
@@ -543,7 +548,9 @@ function CounterForm({
       <form {...getFormProps(form)} action={action}>
         <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
         <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-          <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+          {typeof lineItem.price === 'string' && (
+            <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+          )}
 
           <span className="flex flex-1 select-none justify-center px-14 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
             {lineItem.quantity}
@@ -571,18 +578,7 @@ function CounterForm({
     <form {...getFormProps(form)} action={action}>
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
-          <span className="mt-3 self-start font-medium @xl:ml-auto">
-            <span className="sr-only">{t('originalPrice', { price: lineItem.price })}</span>
-            <span aria-hidden="true" className="line-through">
-              {lineItem.price}
-            </span>{' '}
-            <span className="sr-only">{t('currentPrice', { price: lineItem.salePrice })}</span>
-            <span aria-hidden="true">{lineItem.salePrice}</span>
-          </span>
-        ) : (
-          <span className="mt-3 self-start font-medium @xl:ml-auto">{lineItem.price}</span>
-        )}
+        <PriceLabel className="mt-3 self-start @xl:ml-auto" price={lineItem.price} />
         <div className="flex size-min flex-col gap-y-0">
           <div className="mb-1 mt-1 flex items-center gap-x-5">
             {/* Counter */}

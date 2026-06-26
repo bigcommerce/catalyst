@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
+import { rewriteWysiwygContentUrls } from '~/data-transformers/html-content-transformer';
 import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -63,7 +64,7 @@ async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
   return {
     author: blogPost.author ?? undefined,
     title: blogPost.name,
-    content: blogPost.htmlBody,
+    content: rewriteWysiwygContentUrls(blogPost.htmlBody),
     date: format.dateTime(new Date(blogPost.publishedDate.utc)),
     image: blogPost.thumbnailImage
       ? { alt: blogPost.thumbnailImage.altText, src: blogPost.thumbnailImage.url }

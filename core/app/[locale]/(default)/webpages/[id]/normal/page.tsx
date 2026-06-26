@@ -10,6 +10,7 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { rewriteWysiwygContentUrls } from '~/data-transformers/html-content-transformer';
 import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -35,7 +36,7 @@ const getWebPage = cache(async (id: string, customerAccessToken?: string): Promi
     title: webpage.name,
     path: webpage.path,
     breadcrumbs,
-    content: webpage.htmlBody,
+    content: rewriteWysiwygContentUrls(webpage.htmlBody),
     seo: webpage.seo,
   };
 });

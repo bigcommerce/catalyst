@@ -435,6 +435,7 @@
             "subTotal": "Subtotal",
             "discounts": "Descuentos",
             "tax": "Impuesto",
+            "totalIncludesTax": "Incluye {tax} impuestos",
             "total": "Total",
             "CouponCode": {
                 "apply": "Aplicar",
@@ -445,6 +446,7 @@
             },
             "Shipping": {
                 "shipping": "Envío",
+                "shippingExcludingTax": "Envío (sin Impuestos)",
                 "add": "Añadir",
                 "change": "Cambiar",
                 "cancel": "Cancelar",
@@ -704,7 +706,11 @@
         "Price": {
             "originalPrice": "El precio original era {price}.",
             "currentPrice": "El precio actual es {price}.",
-            "range": "Precios entre {minValue} y {maxValue}."
+            "range": "Precios entre {minValue} y {maxValue}.",
+            "includingTax": "(con impuestos)",
+            "excludingTax": "(Sin Impuesto)",
+            "includingTaxFull": "Con impuestos",
+            "excludingTaxFull": "Excluye impuestos"
         }
     },
     "GiftCertificates": {

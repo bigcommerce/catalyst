@@ -435,6 +435,7 @@
             "subTotal": "Sous-total",
             "discounts": "Remises",
             "tax": "Taxes",
+            "totalIncludesTax": "Taxes {tax} incluses",
             "total": "Total",
             "CouponCode": {
                 "apply": "Appliquer",
@@ -445,6 +446,7 @@
             },
             "Shipping": {
                 "shipping": "Livraison",
+                "shippingExcludingTax": "Frais de port (hors taxes)",
                 "add": "Ajouter",
                 "change": "Modifier",
                 "cancel": "Annuler",
@@ -704,7 +706,11 @@
         "Price": {
             "originalPrice": "Le prix initial était de {price}.",
             "currentPrice": "Le prix actuel est de {price}.",
-            "range": "Prix de {minValue} à {maxValue}."
+            "range": "Prix de {minValue} à {maxValue}.",
+            "includingTax": "(toutes taxes comprises)",
+            "excludingTax": "(hors taxes)",
+            "includingTaxFull": "Toutes taxes comprises",
+            "excludingTaxFull": "Hors taxes"
         }
     },
     "GiftCertificates": {

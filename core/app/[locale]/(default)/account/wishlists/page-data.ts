@@ -22,6 +22,13 @@ const WishlistsPageQuery = graphql(
           ...WishlistsFragment
         }
       }
+      site {
+        settings {
+          tax {
+            plp
+          }
+        }
+      }
     }
   `,
   [WishlistsFragment],
@@ -50,5 +57,5 @@ export const getCustomerWishlists = cache(async ({ limit = 9, before, after }: P
     return null;
   }
 
-  return wishlists;
+  return { wishlists, taxDisplay: response.data.site.settings?.tax?.plp };
 });

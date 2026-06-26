@@ -70,6 +70,9 @@ const HomePageQuery = graphql(
           newsletter {
             showNewsletterSignup
           }
+          tax {
+            plp
+          }
         }
       }
     }

@@ -22,6 +22,12 @@ export async function setVisitorIdCookie(visitorId: string): Promise<void> {
   });
 }
 
+export async function deleteVisitorIdCookie(): Promise<void> {
+  const cookieStore = await cookies();
+
+  cookieStore.delete(VISITOR_COOKIE_NAME);
+}
+
 export async function getVisitIdCookie(): Promise<string | undefined> {
   const cookieStore = await cookies();
 
@@ -37,4 +43,10 @@ export async function setVisitIdCookie(visitId: string): Promise<void> {
     path: '/',
     maxAge: VISIT_DURATION,
   });
+}
+
+export async function deleteVisitIdCookie(): Promise<void> {
+  const cookieStore = await cookies();
+
+  cookieStore.delete(VISIT_COOKIE_NAME);
 }

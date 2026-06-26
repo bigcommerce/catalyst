@@ -435,6 +435,7 @@
             "subTotal": "Suma cząstkowa",
             "discounts": "Rabaty",
             "tax": "Podatek",
+            "totalIncludesTax": "Includes {tax} tax",
             "total": "Razem",
             "CouponCode": {
                 "apply": "Zgłoś się na",
@@ -445,6 +446,7 @@
             },
             "Shipping": {
                 "shipping": "Wysyłka",
+                "shippingExcludingTax": "Shipping (Ex. Tax)",
                 "add": "Dodaj",
                 "change": "Zmiana",
                 "cancel": "Anuluj",
@@ -704,7 +706,11 @@
         "Price": {
             "originalPrice": "Original price was {price}.",
             "currentPrice": "Current price is {price}.",
-            "range": "Price from {minValue} to {maxValue}."
+            "range": "Price from {minValue} to {maxValue}.",
+            "includingTax": "(Inc. Tax)",
+            "excludingTax": "(Ex. Tax)",
+            "includingTaxFull": "Z uwzględnieniem podatku",
+            "excludingTaxFull": "Bez podatku"
         }
     },
     "GiftCertificates": {

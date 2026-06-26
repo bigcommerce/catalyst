@@ -2,129 +2,142 @@ import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
+import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 
-export const PhysicalItemFragment = graphql(`
-  fragment PhysicalItemFragment on CartPhysicalItem {
-    __typename
-    name
-    brand
-    sku
-    image {
-      url: urlTemplate(lossy: true)
-    }
-    entityId
-    quantity
-    productEntityId
-    variantEntityId
-    parentEntityId
-    listPrice {
-      currencyCode
-      value
-    }
-    salePrice {
-      currencyCode
-      value
-    }
-    discountedAmount {
-      currencyCode
-      value
-    }
-    selectedOptions {
+export const PhysicalItemFragment = graphql(
+  `
+    fragment PhysicalItemFragment on CartPhysicalItem {
       __typename
-      entityId
       name
-      ... on CartSelectedMultipleChoiceOption {
+      brand
+      sku
+      image {
+        url: urlTemplate(lossy: true)
+      }
+      entityId
+      quantity
+      productEntityId
+      variantEntityId
+      parentEntityId
+      listPrice {
+        currencyCode
         value
-        valueEntityId
       }
-      ... on CartSelectedCheckboxOption {
+      salePrice {
+        currencyCode
         value
-        valueEntityId
       }
-      ... on CartSelectedNumberFieldOption {
-        number
+      discountedAmount {
+        currencyCode
+        value
       }
-      ... on CartSelectedMultiLineTextFieldOption {
-        text
+      catalogProductWithOptionSelections {
+        ...PricingFragment
       }
-      ... on CartSelectedTextFieldOption {
-        text
-      }
-      ... on CartSelectedDateFieldOption {
-        date {
-          utc
+      selectedOptions {
+        __typename
+        entityId
+        name
+        ... on CartSelectedMultipleChoiceOption {
+          value
+          valueEntityId
+        }
+        ... on CartSelectedCheckboxOption {
+          value
+          valueEntityId
+        }
+        ... on CartSelectedNumberFieldOption {
+          number
+        }
+        ... on CartSelectedMultiLineTextFieldOption {
+          text
+        }
+        ... on CartSelectedTextFieldOption {
+          text
+        }
+        ... on CartSelectedDateFieldOption {
+          date {
+            utc
+          }
         }
       }
+      url
+      stockPosition {
+        backorderMessage
+        quantityOnHand
+        quantityBackordered
+        quantityOutOfStock
+      }
     }
-    url
-    stockPosition {
-      backorderMessage
-      quantityOnHand
-      quantityBackordered
-      quantityOutOfStock
-    }
-  }
-`);
+  `,
+  [PricingFragment],
+);
 
-export const DigitalItemFragment = graphql(`
-  fragment DigitalItemFragment on CartDigitalItem {
-    __typename
-    name
-    brand
-    sku
-    image {
-      url: urlTemplate(lossy: true)
-    }
-    entityId
-    quantity
-    productEntityId
-    variantEntityId
-    parentEntityId
-    listPrice {
-      currencyCode
-      value
-    }
-    salePrice {
-      currencyCode
-      value
-    }
-    discountedAmount {
-      currencyCode
-      value
-    }
-    selectedOptions {
+export const DigitalItemFragment = graphql(
+  `
+    fragment DigitalItemFragment on CartDigitalItem {
       __typename
-      entityId
       name
-      ... on CartSelectedMultipleChoiceOption {
+      brand
+      sku
+      image {
+        url: urlTemplate(lossy: true)
+      }
+      entityId
+      quantity
+      productEntityId
+      variantEntityId
+      parentEntityId
+      listPrice {
+        currencyCode
         value
-        valueEntityId
       }
-      ... on CartSelectedCheckboxOption {
+      salePrice {
+        currencyCode
         value
-        valueEntityId
       }
-      ... on CartSelectedNumberFieldOption {
-        number
+      discountedAmount {
+        currencyCode
+        value
       }
-      ... on CartSelectedMultiLineTextFieldOption {
-        text
+      catalogProductWithOptionSelections {
+        ...PricingFragment
       }
-      ... on CartSelectedTextFieldOption {
-        text
-      }
-      ... on CartSelectedDateFieldOption {
-        date {
-          utc
+      selectedOptions {
+        __typename
+        entityId
+        name
+        ... on CartSelectedMultipleChoiceOption {
+          value
+          valueEntityId
+        }
+        ... on CartSelectedCheckboxOption {
+          value
+          valueEntityId
+        }
+        ... on CartSelectedNumberFieldOption {
+          number
+        }
+        ... on CartSelectedMultiLineTextFieldOption {
+          text
+        }
+        ... on CartSelectedTextFieldOption {
+          text
+        }
+        ... on CartSelectedDateFieldOption {
+          date {
+            utc
+          }
         }
       }
+      url
     }
-    url
-  }
-`);
+  `,
+  [PricingFragment],
+);
 
 export const CartGiftCertificateFragment = graphql(`
   fragment CartGiftCertificateFragment on CartGiftCertificate {
@@ -238,6 +251,7 @@ const CartPageQuery = graphql(
           entityId
           version
           currencyCode
+          isTaxIncluded
           discountedAmount {
             ...MoneyFieldsFragment
           }

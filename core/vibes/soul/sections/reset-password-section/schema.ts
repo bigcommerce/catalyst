@@ -38,7 +38,6 @@ export const resetPasswordSchema = (
 
   return z
     .object({
-      currentPassword: z.string().trim(),
       password: passwordSchema,
       confirmPassword: z.string(),
     })

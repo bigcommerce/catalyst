@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { defaultLocale, locales } from '~/i18n/locales';
+import { defaultLocale, locales, prefixes, rootLocale } from '~/i18n/locales';
 
 interface CanonicalUrlOptions {
   /**
@@ -90,7 +90,10 @@ function buildLocalizedUrl(baseUrl: string, pathname: string, locale: string): s
 
   const url = new URL(pathname, baseUrl);
 
-  url.pathname = locale === defaultLocale ? url.pathname : `/${locale}${url.pathname}`;
+  const prefix = prefixes[locale] ?? `/${locale}`;
+  const skipPrefix = locale === rootLocale;
+
+  url.pathname = skipPrefix ? url.pathname : `${prefix}${url.pathname}`;
 
   if (trailingSlash && !url.pathname.endsWith('/')) {
     url.pathname += '/';
