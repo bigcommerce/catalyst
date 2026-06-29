@@ -208,7 +208,9 @@ describe('domain API client', () => {
 
     await expect(
       createDomain(domain, projectUuid, storeHash, accessToken, apiHost),
-    ).rejects.toThrow(/Failed to add domain: 502 Bad Gateway.*Correlation ID:/);
+    ).rejects.toThrow(
+      'Failed to add domain: 502 Bad Gateway. This is a server-side response from the Domains API.',
+    );
   });
 });
 

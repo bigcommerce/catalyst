@@ -39,8 +39,8 @@ function authHeaders(accessToken: string) {
   };
 }
 
-function formatResponseStatus(response: Response): string {
-  return [response.status, response.statusText].filter(Boolean).join(' ');
+function formatResponseStatus(response: Response, message?: string): string {
+  return [response.status, response.statusText || message].filter(Boolean).join(' ');
 }
 
 async function getErrorMessage(response: Response, action: string): Promise<string> {
@@ -48,9 +48,9 @@ async function getErrorMessage(response: Response, action: string): Promise<stri
   const message = formatV3Error(body);
 
   if (response.status >= 500) {
-    const status = formatResponseStatus(response);
+    const status = formatResponseStatus(response, message);
 
-    return `${action}: ${status}. This is a server-side response from the Domains API. Correlation ID: ${getTelemetry().correlationId}.`;
+    return `${action}: ${status}. This is a server-side response from the Domains API.`;
   }
 
   return message ?? `${action}: ${response.statusText}`;
