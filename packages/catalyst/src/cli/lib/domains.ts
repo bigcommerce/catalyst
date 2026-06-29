@@ -39,13 +39,24 @@ function authHeaders(accessToken: string) {
   };
 }
 
-async function getErrorMessage(response: Response, fallback: string): Promise<string> {
-  const body: unknown = await response.json().catch(() => null);
-
-  return formatV3Error(body) ?? fallback;
+function formatResponseStatus(response: Response): string {
+  return [response.status, response.statusText].filter(Boolean).join(' ');
 }
 
-async function assertDomainResponse(response: Response, fallback: string): Promise<void> {
+async function getErrorMessage(response: Response, action: string): Promise<string> {
+  const body: unknown = await response.json().catch(() => null);
+  const message = formatV3Error(body);
+
+  if (response.status >= 500) {
+    const status = formatResponseStatus(response);
+
+    return `${action}: ${status}. This is a server-side response from the Domains API. Correlation ID: ${getTelemetry().correlationId}.`;
+  }
+
+  return message ?? `${action}: ${response.statusText}`;
+}
+
+async function assertDomainResponse(response: Response, action: string): Promise<void> {
   assertAuthorized(response);
 
   if (response.status === 403) {
@@ -53,7 +64,7 @@ async function assertDomainResponse(response: Response, fallback: string): Promi
   }
 
   if (!response.ok) {
-    throw new Error(await getErrorMessage(response, fallback));
+    throw new Error(await getErrorMessage(response, action));
   }
 }
 
@@ -73,7 +84,7 @@ export async function createDomain(
     body: JSON.stringify({ domain }),
   });
 
-  await assertDomainResponse(response, `Failed to add domain: ${response.statusText}`);
+  await assertDomainResponse(response, 'Failed to add domain');
 
   const result: unknown = await response.json();
 
@@ -92,7 +103,7 @@ export async function getDomain(
     headers: authHeaders(accessToken),
   });
 
-  await assertDomainResponse(response, `Failed to fetch domain: ${response.statusText}`);
+  await assertDomainResponse(response, 'Failed to fetch domain');
 
   const result: unknown = await response.json();
 

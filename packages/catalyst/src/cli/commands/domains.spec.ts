@@ -177,17 +177,38 @@ describe('domain API client', () => {
     ).rejects.toThrow('Domain could not be added. (domain: Enter a valid domain.)');
   });
 
-  test('falls back to status text when the error response is not a V3 body', async () => {
+  test('falls back to status text when a client error response is not a V3 body', async () => {
     server.use(
       http.get(
         'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
-        () => new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
+        () => new HttpResponse(null, { status: 400, statusText: 'Bad Request' }),
       ),
     );
 
     await expect(getDomain(domain, projectUuid, storeHash, accessToken, apiHost)).rejects.toThrow(
-      'Failed to fetch domain: Internal Server Error',
+      'Failed to fetch domain: Bad Request',
     );
+  });
+
+  test('adds status and correlation details for server errors', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () =>
+          HttpResponse.json(
+            {
+              status: 502,
+              title: 'Bad Gateway',
+              errors: {},
+            },
+            { status: 502, statusText: 'Bad Gateway' },
+          ),
+      ),
+    );
+
+    await expect(
+      createDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).rejects.toThrow(/Failed to add domain: 502 Bad Gateway.*Correlation ID:/);
   });
 });
 
