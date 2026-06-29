@@ -1,9 +1,10 @@
-import { Command, Option } from 'commander';
+import { Command, InvalidArgumentError, Option } from 'commander';
 import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
 import { UnauthorizedError } from '../lib/auth-errors';
 import { consola } from '../lib/logger';
+import { formatLogEntry, LOG_LEVELS, queryLogs, resolveTimeWindow } from '../lib/observability';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
 import {
@@ -347,26 +348,142 @@ Examples:
     }
   });
 
+// Validates a numeric flag client-side so typos fail instantly with a clear
+// message instead of sending NaN (or an out-of-range value) to the API.
+const parseIntInRange = (flag: string, min: number, max: number) => (value: string) => {
+  const parsed = Number(value);
+
+  if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+    throw new InvalidArgumentError(`${flag} must be an integer between ${min} and ${max}.`);
+  }
+
+  return parsed;
+};
+
 const query = new Command('query')
   .configureHelp({ showGlobalOptions: true })
   .description('Query historical logs from your deployed application.')
   .addHelpText(
     'after',
     `
-Example:
-  $ catalyst logs query`,
+Specify a time window with \`--since\` (relative to now) or \`--start\`/\`--end\`
+(ISO-8601 timestamps or Unix epoch seconds, UTC). The window may not exceed
+7 days. Entries print oldest-first; timestamps are UTC.
+
+Examples:
+  # Last hour of logs
+  $ catalyst logs query --since 1h
+
+  # Everything from today (UTC)
+  $ catalyst logs query --start 2026-06-11T00:00:00Z
+
+  # Errors only for a specific path
+  $ catalyst logs query --since 24h --level-min error --url-like /cart
+
+  # Errors with request details (method, URL, status)
+  $ catalyst logs query --since 1h --level-min error --format request
+
+  # Raw JSON (NDJSON) for piping to other tools
+  $ catalyst logs query --since 2d --format json`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(projectUuidOption())
-  .action((options) => {
-    const config = getProjectConfig();
+  .addOption(
+    new Option(
+      '--since <duration>',
+      'Relative window ending at --end (default: now), e.g. 30m, 6h, 2d (units: s, m, h, d).',
+    ).conflicts('start'),
+  )
+  .option('--start <time>', 'Window start: ISO-8601 timestamp or Unix epoch (seconds).')
+  .option(
+    '--end <time>',
+    'Window end: ISO-8601 timestamp or Unix epoch (seconds). Defaults to now. The window must not exceed 7 days.',
+  )
+  .option('--method <method>', 'Filter by request HTTP method (case-insensitive).')
+  .addOption(
+    new Option('--status-code <code>', 'Filter by response status code (100-599).').argParser(
+      parseIntInRange('--status-code', 100, 599),
+    ),
+  )
+  .option('--url-like <substring>', 'Filter by URL substring (case-sensitive).')
+  .addOption(
+    new Option('--level-min <level>', 'Minimum log level.').choices(Array.from(LOG_LEVELS)),
+  )
+  .addOption(
+    new Option('--limit <n>', 'Maximum number of entries to return (1-500).')
+      .argParser(parseIntInRange('--limit', 1, 500))
+      .default(100),
+  )
+  // TODO(TRAC-934): --after (cursor) and --all (follow pagination) were
+  // removed until Cloudflare fixes invocations-view pagination
+  .addOption(
+    new Option('--format <format>', 'Output format for log entries.')
+      .choices(['json', 'pretty', 'default', 'short', 'request'])
+      .default('default'),
+  )
+  .action(async (options) => {
+    try {
+      const config = getProjectConfig();
+      const { storeHash, accessToken } = resolveCredentials(options, config);
 
-    resolveCredentials(options, config);
+      await telemetry.identify(storeHash);
 
-    consola.error('The query command is not yet implemented.');
-    process.exit(1);
+      const projectUuid = resolveProjectUuid(options);
+      const { start, end } = resolveTimeWindow(options);
+
+      const result = await queryLogs(projectUuid, storeHash, accessToken, options.apiHost, {
+        start,
+        end,
+        method: options.method,
+        statusCode: options.statusCode,
+        urlLike: options.urlLike,
+        levelMin: options.levelMin,
+        limit: options.limit,
+      });
+
+      const entries = result.data;
+      const ordered = [...entries].reverse();
+
+      if (options.format === 'json') {
+        ordered.forEach((entry) => process.stdout.write(`${JSON.stringify(entry)}\n`));
+
+        return;
+      }
+
+      if (options.format === 'pretty') {
+        ordered.forEach((entry) => consola.log(JSON.stringify(entry, null, 2)));
+
+        return;
+      }
+
+      if (entries.length === 0) {
+        consola.info('No log entries found for the given window and filters.');
+
+        return;
+      }
+
+      // `json`/`pretty` returned above, leaving the human line formats — capture
+      // the narrowed value so it survives into the forEach closure.
+      const lineFormat = options.format;
+
+      ordered.forEach((entry) => consola.log(formatLogEntry(entry, lineFormat)));
+
+      consola.info(
+        `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} shown (oldest first, times in UTC).`,
+      );
+
+      if (entries.length === options.limit) {
+        consola.info(
+          `Limit of ${options.limit} reached; older entries may exist. ` +
+            'Narrow the time window or raise --limit (max 500) to see more.',
+        );
+      }
+    } catch (error) {
+      consola.error(error instanceof Error ? error.message : error);
+      process.exit(1);
+    }
   });
 
 export const logs = new Command('logs')
