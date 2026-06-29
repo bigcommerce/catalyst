@@ -18,7 +18,17 @@ const domainResponseSchema = z.object({
   data: domainSchema,
 });
 
+const domainListResponseSchema = z.object({
+  data: z.array(domainSchema),
+});
+
 export type Domain = z.infer<typeof domainSchema>;
+export type DomainStatusFilter = Exclude<DomainStatus, 'unknown'>;
+
+interface ListDomainsFilters {
+  domains?: string[];
+  verificationStatus?: DomainStatusFilter;
+}
 
 const DOMAINS_API_NOT_ENABLED =
   'Infrastructure Domains API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.';
@@ -108,4 +118,35 @@ export async function getDomain(
   const result: unknown = await response.json();
 
   return domainResponseSchema.parse(result).data;
+}
+
+export async function listDomains(
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+  filters: ListDomainsFilters = {},
+): Promise<Domain[]> {
+  const search = new URLSearchParams();
+
+  if (filters.domains && filters.domains.length > 0) {
+    search.set('domain:in', filters.domains.join(','));
+  }
+
+  if (filters.verificationStatus) {
+    search.set('verification_status', filters.verificationStatus);
+  }
+
+  const query = search.toString();
+  const url = `${domainsUrl(storeHash, projectUuid, apiHost)}${query ? `?${query}` : ''}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: authHeaders(accessToken),
+  });
+
+  await assertDomainResponse(response, 'Failed to fetch domains');
+
+  const result: unknown = await response.json();
+
+  return domainListResponseSchema.parse(result).data;
 }
