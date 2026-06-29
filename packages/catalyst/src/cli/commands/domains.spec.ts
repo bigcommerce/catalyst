@@ -59,7 +59,7 @@ afterAll(async () => {
 });
 
 describe('command configuration', () => {
-  test('domains has add and list subcommands', () => {
+  test('domains has add, list, and status subcommands', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
@@ -68,6 +68,7 @@ describe('command configuration', () => {
 
     const add = domains.commands.find((command) => command.name() === 'add');
     const list = domains.commands.find((command) => command.name() === 'list');
+    const status = domains.commands.find((command) => command.name() === 'status');
 
     expect(add).toBeDefined();
     expect(add?.description()).toBe('Add a custom domain to the current Native Hosting project.');
@@ -91,6 +92,20 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
         expect.objectContaining({ flags: '--domain <domain>' }),
         expect.objectContaining({ flags: '--status <status>' }),
+      ]),
+    );
+
+    expect(status).toBeDefined();
+    expect(status?.description()).toBe(
+      'Show the status of a custom domain on the current Native Hosting project.',
+    );
+    expect(status?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--store-hash <hash>' }),
+        expect.objectContaining({ flags: '--access-token <token>' }),
+        expect.objectContaining({ flags: '--api-host <host>' }),
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--wait' }),
       ]),
     );
   });
@@ -450,5 +465,48 @@ describe('list command', () => {
 
     expect(consola.info).toHaveBeenCalledWith('No custom domains found.');
     expect(exitMock).toHaveBeenCalledWith(0);
+  });
+});
+
+describe('status command', () => {
+  test('shows a domain status for the linked project', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['status', domain], { from: 'user' });
+
+    expect(consola.start).toHaveBeenCalledWith(`Fetching status for ${domain}...`);
+    expect(consola.success).toHaveBeenCalledWith('Domain status fetched.');
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining(domain));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('can wait for a pending domain to leave pending status', async () => {
+    let requests = 0;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => {
+          requests += 1;
+
+          return HttpResponse.json({
+            data: {
+              domain,
+              project_uuid: projectUuid,
+              verification_status: requests === 1 ? 'pending' : 'verified',
+            },
+          });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['status', domain, '--wait'], { from: 'user' });
+
+    expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(requests).toBe(2);
   });
 });
