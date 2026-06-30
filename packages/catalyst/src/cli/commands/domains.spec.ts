@@ -4,7 +4,7 @@ import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
-import { createDomain, getDomain } from '../lib/domains';
+import { createDomain, getDomain, listDomains } from '../lib/domains';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
@@ -59,7 +59,7 @@ afterAll(async () => {
 });
 
 describe('command configuration', () => {
-  test('domains has an add subcommand', () => {
+  test('domains has add and list subcommands', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
@@ -67,6 +67,7 @@ describe('command configuration', () => {
     );
 
     const add = domains.commands.find((command) => command.name() === 'add');
+    const list = domains.commands.find((command) => command.name() === 'list');
 
     expect(add).toBeDefined();
     expect(add?.description()).toBe('Add a custom domain to the current Native Hosting project.');
@@ -77,6 +78,19 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--api-host <host>' }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
         expect.objectContaining({ flags: '--wait' }),
+      ]),
+    );
+
+    expect(list).toBeDefined();
+    expect(list?.description()).toBe('List custom domains for the current Native Hosting project.');
+    expect(list?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--store-hash <hash>' }),
+        expect.objectContaining({ flags: '--access-token <token>' }),
+        expect.objectContaining({ flags: '--api-host <host>' }),
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--domain <domain>' }),
+        expect.objectContaining({ flags: '--status <status>' }),
       ]),
     );
   });
@@ -212,6 +226,59 @@ describe('domain API client', () => {
       'Failed to add domain: 502 Bad Gateway. This is a server-side response from the Domains API.',
     );
   });
+
+  test('lists domains for a project', async () => {
+    await expect(listDomains(projectUuid, storeHash, accessToken, apiHost)).resolves.toEqual([
+      {
+        domain: 'www.example.com',
+        project_uuid: projectUuid,
+        verification_status: 'pending',
+      },
+      {
+        domain: 'shop.example.com',
+        project_uuid: projectUuid,
+        verification_status: 'verified',
+      },
+    ]);
+  });
+
+  test('passes list filters to the API', async () => {
+    let capturedSearchParams: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        ({ request }) => {
+          capturedSearchParams = new URL(request.url).searchParams;
+
+          return HttpResponse.json({
+            data: [
+              {
+                domain,
+                project_uuid: projectUuid,
+                verification_status: 'pending',
+              },
+            ],
+          });
+        },
+      ),
+    );
+
+    await expect(
+      listDomains(projectUuid, storeHash, accessToken, apiHost, {
+        domains: [domain],
+        verificationStatus: 'pending',
+      }),
+    ).resolves.toEqual([
+      {
+        domain,
+        project_uuid: projectUuid,
+        verification_status: 'pending',
+      },
+    ]);
+    expect(capturedSearchParams?.get('domain:in')).toBe(domain);
+    expect(capturedSearchParams?.get('verification_status')).toBe('pending');
+  });
 });
 
 describe('waitForDomainVerification', () => {
@@ -321,5 +388,67 @@ describe('add command', () => {
 
     expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+  });
+});
+
+describe('list command', () => {
+  test('lists domains for the linked project', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['list'], { from: 'user' });
+
+    expect(consola.start).toHaveBeenCalledWith('Fetching domains...');
+    expect(consola.success).toHaveBeenCalledWith('Domains fetched.');
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('www.example.com'));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('pending'));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('shop.example.com'));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('passes filters from options', async () => {
+    let capturedSearchParams: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        ({ request }) => {
+          capturedSearchParams = new URL(request.url).searchParams;
+
+          return HttpResponse.json({
+            data: [
+              {
+                domain,
+                project_uuid: projectUuid,
+                verification_status: 'pending',
+              },
+            ],
+          });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['list', '--domain', domain, '--status', 'pending'], { from: 'user' });
+
+    expect(capturedSearchParams?.get('domain:in')).toBe(domain);
+    expect(capturedSearchParams?.get('verification_status')).toBe('pending');
+  });
+
+  test('reports when no domains are configured', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () => HttpResponse.json({ data: [] }),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['list'], { from: 'user' });
+
+    expect(consola.info).toHaveBeenCalledWith('No custom domains found.');
+    expect(exitMock).toHaveBeenCalledWith(0);
   });
 });

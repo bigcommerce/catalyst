@@ -1,7 +1,14 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
-import { createDomain, Domain, DomainStatus, getDomain } from '../lib/domains';
+import {
+  createDomain,
+  Domain,
+  DomainStatus,
+  DomainStatusFilter,
+  getDomain,
+  listDomains,
+} from '../lib/domains';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
@@ -16,6 +23,7 @@ import { getTelemetry } from '../lib/telemetry';
 
 const WAIT_INTERVAL_MS = 5000;
 const WAIT_TIMEOUT_MS = 5 * 60 * 1000;
+const DOMAIN_STATUS_FILTERS: DomainStatusFilter[] = ['pending', 'verified', 'failed'];
 
 const STATUS_COLORS: Record<DomainStatus, Parameters<typeof colorize>[0]> = {
   pending: 'yellow',
@@ -140,7 +148,61 @@ Examples:
     process.exit(0);
   });
 
+const list = new Command('list')
+  .configureHelp({ showGlobalOptions: true })
+  .description('List custom domains for the current Native Hosting project.')
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst domains list
+
+  # Show pending domains only
+  $ catalyst domains list --status pending`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--domain <domain>', 'Only show a specific domain.')
+  .addOption(
+    new Option('--status <status>', 'Filter by verification status.').choices(
+      DOMAIN_STATUS_FILTERS,
+    ),
+  )
+  .action(async (options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    consola.start('Fetching domains...');
+
+    const result = await listDomains(
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+      {
+        domains: options.domain ? [options.domain] : undefined,
+        verificationStatus: options.status,
+      },
+    );
+
+    consola.success('Domains fetched.');
+
+    if (result.length === 0) {
+      consola.info('No custom domains found.');
+      process.exit(0);
+
+      return;
+    }
+
+    result.forEach((item) => consola.log(formatDomain(item)));
+    process.exit(0);
+  });
+
 export const domains = new Command('domains')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage custom domains for the current Native Hosting project.')
-  .addCommand(add);
+  .addCommand(add)
+  .addCommand(list);
