@@ -25,6 +25,39 @@ export const handlers = [
     }),
   ),
 
+  // Handler for createDomain
+  http.post(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+    async ({ request }) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const body = (await request.json()) as { domain: string };
+
+      return HttpResponse.json(
+        {
+          data: {
+            domain: body.domain,
+            project_uuid: '6b202364-10f3-11f1-8bc7-fe9b9d8b14ab',
+            verification_status: 'pending',
+          },
+        },
+        { status: 201 },
+      );
+    },
+  ),
+
+  // Handler for getDomain
+  http.get(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+    ({ params }) =>
+      HttpResponse.json({
+        data: {
+          domain: params.domain,
+          project_uuid: params.projectUuid,
+          verification_status: 'verified',
+        },
+      }),
+  ),
+
   // Handler for fetchProjects
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
