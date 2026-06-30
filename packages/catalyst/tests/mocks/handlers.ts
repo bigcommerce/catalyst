@@ -45,6 +45,26 @@ export const handlers = [
     },
   ),
 
+  // Handler for listDomains
+  http.get(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+    ({ params }) =>
+      HttpResponse.json({
+        data: [
+          {
+            domain: 'www.example.com',
+            project_uuid: params.projectUuid,
+            verification_status: 'pending',
+          },
+          {
+            domain: 'shop.example.com',
+            project_uuid: params.projectUuid,
+            verification_status: 'verified',
+          },
+        ],
+      }),
+  ),
+
   // Handler for getDomain
   http.get(
     'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
