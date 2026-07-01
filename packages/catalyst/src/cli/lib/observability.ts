@@ -247,7 +247,7 @@ export async function queryLogs(
 
   if (response.status === 403) {
     throw new Error(
-      'Infrastructure Logs API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Logs API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 

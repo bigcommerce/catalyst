@@ -31,7 +31,7 @@ interface ListDomainsFilters {
 }
 
 const DOMAINS_API_NOT_ENABLED =
-  'Infrastructure Domains API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.';
+  'Infrastructure Domains API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.';
 
 function domainsUrl(storeHash: string, projectUuid: string, apiHost: string) {
   return `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects/${projectUuid}/domains`;

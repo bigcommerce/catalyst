@@ -71,7 +71,7 @@ export async function fetchProjects(
 
   if (response.status === 403) {
     throw new Error(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 
@@ -153,7 +153,7 @@ export async function createProject(
 
   if (response.status === 403) {
     throw new Error(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 
@@ -188,7 +188,7 @@ export async function deleteProject(
 
   if (response.status === 403) {
     throw new Error(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 

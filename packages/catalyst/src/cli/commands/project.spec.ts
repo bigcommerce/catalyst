@@ -781,7 +781,7 @@ describe('project link', () => {
         accessToken,
       ]),
     ).rejects.toThrow(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
 
     expect(mockIdentify).toHaveBeenCalledWith(storeHash);
@@ -1187,7 +1187,7 @@ describe('project delete', () => {
         accessToken,
       ]),
     ).rejects.toThrow(
-      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   });
 });
