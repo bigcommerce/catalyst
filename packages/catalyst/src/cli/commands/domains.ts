@@ -201,8 +201,53 @@ Examples:
     process.exit(0);
   });
 
+const showStatus = new Command('status')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Show the status of a custom domain on the current Native Hosting project.')
+  .argument('<domain>', 'Custom domain to check.')
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst domains status www.example.com
+
+  # Wait until the domain leaves pending verification
+  $ catalyst domains status www.example.com --wait`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--wait', 'Poll until domain verification completes or times out.')
+  .action(async (domain, options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    consola.start(`Fetching status for ${domain}...`);
+
+    let result = await getDomain(
+      domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    consola.success('Domain status fetched.');
+
+    if (options.wait && result.verification_status === 'pending') {
+      consola.start(`Waiting for ${result.domain} to verify...`);
+      result = await waitForDomainVerification({ domain: result.domain, ...context });
+    }
+
+    consola.log(formatDomain(result));
+    process.exit(0);
+  });
+
 export const domains = new Command('domains')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage custom domains for the current Native Hosting project.')
   .addCommand(add)
-  .addCommand(list);
+  .addCommand(list)
+  .addCommand(showStatus);
