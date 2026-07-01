@@ -11,6 +11,7 @@ interface Props {
   token?: string;
   environment: 'staging' | 'production' | 'integration';
   cartId?: string | null;
+  bcGraphqlDomain?: string;
 }
 
 const CDN_BY_ENV: Record<Props['environment'], string> = {
@@ -19,7 +20,7 @@ const CDN_BY_ENV: Record<Props['environment'], string> = {
   integration: 'https://microapps.integration.zone',
 };
 
-export function ScriptProduction({ cartId, storeHash, channelId, token, environment }: Props) {
+export function ScriptProduction({ cartId, storeHash, channelId, token, environment, bcGraphqlDomain }: Props) {
   useB2BAuth(token);
   useB2BCart(cartId);
 
@@ -35,6 +36,7 @@ export function ScriptProduction({ cartId, storeHash, channelId, token, environm
                 channel_id: ${channelId},
                 platform: 'catalyst',
                 cart_url: '/cart',
+                bc_graphql_domain: '${bcGraphqlDomain ?? 'mybigcommerce.com'}',
               }
             }
         `}

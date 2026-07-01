@@ -12,9 +12,10 @@ interface DevProps {
   hostname: string;
   token?: string;
   cartId?: string;
+  bcGraphqlDomain?: string;
 }
 
-export function ScriptDev({ cartId, hostname, storeHash, channelId, token }: DevProps) {
+export function ScriptDev({ cartId, hostname, storeHash, channelId, token, bcGraphqlDomain }: DevProps) {
   useB2BAuth(token);
   useB2BCart(cartId);
 
@@ -46,11 +47,12 @@ export function ScriptDev({ cartId, hostname, storeHash, channelId, token }: Dev
                   channel_id: ${channelId},
                   platform: 'catalyst',
                   cart_url: '/cart',
+                  bc_graphql_domain: '${bcGraphqlDomain ?? 'mybigcommerce.com'}',
                 },
               };
           `}
       </Script>
-      <Script data-channelid={storeHash} data-storehash={channelId} src={src} type="module" />
+      <Script data-channelid={channelId} data-storehash={storeHash} src={src} type="module" />
     </>
   );
 }
