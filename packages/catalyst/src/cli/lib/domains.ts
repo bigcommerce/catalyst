@@ -150,3 +150,18 @@ export async function listDomains(
 
   return domainListResponseSchema.parse(result).data;
 }
+
+export async function deleteDomain(
+  domain: string,
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<void> {
+  const response = await fetch(domainUrl(storeHash, projectUuid, domain, apiHost), {
+    method: 'DELETE',
+    headers: authHeaders(accessToken),
+  });
+
+  await assertDomainResponse(response, `Failed to remove domain: ${response.statusText}`);
+}

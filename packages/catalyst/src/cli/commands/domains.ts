@@ -1,8 +1,10 @@
+import { confirm } from '@inquirer/prompts';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
 import {
   createDomain,
+  deleteDomain,
   Domain,
   DomainStatus,
   DomainStatusFilter,
@@ -245,9 +247,71 @@ Examples:
     process.exit(0);
   });
 
+const remove = new Command('remove')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Remove a custom domain from the current Native Hosting project.')
+  .argument('<domain>', 'Custom domain to remove.')
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst domains remove www.example.com
+
+  # Skip confirmation for an active domain
+  $ catalyst domains remove www.example.com --force`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--force', 'Skip the confirmation prompt before removing an active domain.')
+  .action(async (domain, options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    consola.start(`Fetching status for ${domain}...`);
+
+    const current = await getDomain(
+      domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (current.verification_status === 'verified' && !options.force) {
+      const confirmed = await confirm({
+        message: `Remove active domain ${current.domain}? Traffic may stop routing to this project.`,
+        default: false,
+      });
+
+      if (!confirmed) {
+        consola.info('Aborted. No domain was removed.');
+        process.exit(0);
+
+        return;
+      }
+    }
+
+    consola.start(`Removing domain ${current.domain}...`);
+
+    await deleteDomain(
+      current.domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    consola.success(`Domain ${current.domain} removed.`);
+    process.exit(0);
+  });
+
 export const domains = new Command('domains')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage custom domains for the current Native Hosting project.')
   .addCommand(add)
   .addCommand(list)
-  .addCommand(showStatus);
+  .addCommand(showStatus)
+  .addCommand(remove);

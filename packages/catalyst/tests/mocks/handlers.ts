@@ -78,6 +78,12 @@ export const handlers = [
       }),
   ),
 
+  // Handler for deleteDomain
+  http.delete(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
   // Handler for fetchProjects
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({

@@ -1,15 +1,22 @@
+import { confirm } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
-import { createDomain, getDomain, listDomains } from '../lib/domains';
+import { createDomain, deleteDomain, getDomain, listDomains } from '../lib/domains';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 
 import { domains, formatDomain, formatDomainStatus, waitForDomainVerification } from './domains';
+
+vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(),
+}));
+
+const confirmMock = vi.mocked(confirm);
 
 let exitMock: MockInstance;
 let tmpDir: string;
@@ -59,7 +66,7 @@ afterAll(async () => {
 });
 
 describe('command configuration', () => {
-  test('domains has add, list, and status subcommands', () => {
+  test('domains has add, list, status, and remove subcommands', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
@@ -69,6 +76,7 @@ describe('command configuration', () => {
     const add = domains.commands.find((command) => command.name() === 'add');
     const list = domains.commands.find((command) => command.name() === 'list');
     const status = domains.commands.find((command) => command.name() === 'status');
+    const remove = domains.commands.find((command) => command.name() === 'remove');
 
     expect(add).toBeDefined();
     expect(add?.description()).toBe('Add a custom domain to the current Native Hosting project.');
@@ -106,6 +114,20 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--api-host <host>' }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
         expect.objectContaining({ flags: '--wait' }),
+      ]),
+    );
+
+    expect(remove).toBeDefined();
+    expect(remove?.description()).toBe(
+      'Remove a custom domain from the current Native Hosting project.',
+    );
+    expect(remove?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--store-hash <hash>' }),
+        expect.objectContaining({ flags: '--access-token <token>' }),
+        expect.objectContaining({ flags: '--api-host <host>' }),
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--force' }),
       ]),
     );
   });
@@ -293,6 +315,26 @@ describe('domain API client', () => {
     ]);
     expect(capturedSearchParams?.get('domain:in')).toBe(domain);
     expect(capturedSearchParams?.get('verification_status')).toBe('pending');
+  });
+
+  test('deletes a domain', async () => {
+    let deletedDomain: string | readonly string[] | undefined;
+
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        ({ params }) => {
+          deletedDomain = params.domain;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    await expect(
+      deleteDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).resolves.toBeUndefined();
+    expect(deletedDomain).toBe(domain);
   });
 });
 
@@ -508,5 +550,83 @@ describe('status command', () => {
     expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
     expect(requests).toBe(2);
+  });
+});
+
+describe('remove command', () => {
+  test('confirms before removing an active domain', async () => {
+    confirmMock.mockResolvedValue(true);
+
+    writeCredentials();
+
+    await domains.parseAsync(['remove', domain], { from: 'user' });
+
+    expect(consola.start).toHaveBeenCalledWith(`Fetching status for ${domain}...`);
+    expect(confirmMock).toHaveBeenCalledWith({
+      message: `Remove active domain ${domain}? Traffic may stop routing to this project.`,
+      default: false,
+    });
+    expect(consola.start).toHaveBeenCalledWith(`Removing domain ${domain}...`);
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} removed.`);
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('does not remove an active domain when confirmation is declined', async () => {
+    let deleteRequests = 0;
+
+    server.use(
+      http.delete(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => {
+          deleteRequests += 1;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    confirmMock.mockResolvedValue(false);
+
+    writeCredentials();
+
+    await domains.parseAsync(['remove', domain], { from: 'user' });
+
+    expect(consola.info).toHaveBeenCalledWith('Aborted. No domain was removed.');
+    expect(deleteRequests).toBe(0);
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('skips confirmation with --force', async () => {
+    confirmMock.mockResolvedValue(false);
+
+    writeCredentials();
+
+    await domains.parseAsync(['remove', domain, '--force'], { from: 'user' });
+
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} removed.`);
+  });
+
+  test('does not prompt before removing a pending domain', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () =>
+          HttpResponse.json({
+            data: {
+              domain,
+              project_uuid: projectUuid,
+              verification_status: 'pending',
+            },
+          }),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['remove', domain], { from: 'user' });
+
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} removed.`);
   });
 });
