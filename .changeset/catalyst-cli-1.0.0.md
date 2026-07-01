@@ -8,7 +8,7 @@ Introducing the Catalyst CLI (`@bigcommerce/catalyst`) — a single command-line
 
 - **Scaffold a storefront** — `catalyst create` downloads a clean, standalone project (flattened from `core/`, `workspace:` dependencies resolved to published versions, fresh git repo) via tarball extraction and connects it to your BigCommerce store. The package manager is auto-detected from `npm_config_user_agent`.
 - **Browser-based authentication** — Run `catalyst auth login` to authenticate via an OAuth device code flow. Credentials are stored locally in `.bigcommerce/project.json` for use by all subsequent commands. CI/CD environments can use `--store-hash` and `--access-token` flags or environment variables instead.
-- **Project & channel management** — Create, link, and list BigCommerce infrastructure projects with `catalyst project create`, `catalyst project link`, and `catalyst project list`, and connect storefront channels with `catalyst channel link`.
+- **Project & channel management** — Create, link, and list BigCommerce infrastructure projects with `catalyst project`, and connect storefront channels with `catalyst channel`.
 - **Build & deploy** — `catalyst build` runs the OpenNext Cloudflare build pipeline (deriving the Wrangler `compatibility_date` dynamically) and generates deployment artifacts. `catalyst deploy` bundles, uploads, and deploys your storefront with real-time progress streaming. Pass runtime secrets with `--secret KEY=VALUE`; environment variables are auto-detected as deploy secrets.
 - **Persisted deployment env vars** — Manage deployment environment variables across deploys with `catalyst env` (list and remove; values are masked).
 - **Custom domains** — Add, list, check the status of, and remove custom domains for a Native Hosting project with `catalyst domains`.
@@ -23,20 +23,15 @@ Introducing the Catalyst CLI (`@bigcommerce/catalyst`) — a single command-line
 | Command | Description |
 |---------|-------------|
 | `catalyst create` | Scaffold and connect a Catalyst storefront to your BigCommerce store |
-| `catalyst auth login` | Authenticate via browser OAuth flow |
-| `catalyst auth logout` | Remove stored credentials |
-| `catalyst auth whoami` | Verify credentials and display store/project info |
-| `catalyst project create` | Create a new infrastructure project |
-| `catalyst project link` | Link to an existing infrastructure project |
-| `catalyst project list` | List infrastructure projects for your store |
-| `catalyst channel link` | Connect a storefront channel |
+| `catalyst auth` | Authenticate, sign out, and verify stored credentials |
+| `catalyst project` | Create, link, and list infrastructure projects |
+| `catalyst channel` | Connect a storefront channel to your project |
 | `catalyst build` | Build your Catalyst project for deployment |
 | `catalyst deploy` | Build and deploy to BigCommerce Native Hosting |
 | `catalyst env` | Manage persisted deployment environment variables |
 | `catalyst domains` | Manage custom domains for a Native Hosting project |
 | `catalyst start` | Start a local Cloudflare Workers preview |
-| `catalyst logs tail` | Stream live logs from your deployment |
-| `catalyst logs query` | Query historical logs from your deployment |
+| `catalyst logs` | Stream live logs and query historical logs |
 | `catalyst upgrade` | Upgrade a project to a newer version via 3-way merge |
 | `catalyst version` | Display CLI, Node.js, and platform info |
 | `catalyst telemetry` | View or change telemetry collection status |
