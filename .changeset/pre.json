@@ -1,0 +1,22 @@
+{
+  "mode": "exit",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bigcommerce/catalyst": "1.0.0",
+    "@bigcommerce/catalyst-core": "1.6.2",
+    "@bigcommerce/catalyst-client": "1.0.1",
+    "@bigcommerce/create-catalyst": "1.0.2",
+    "@bigcommerce/eslint-config-catalyst": "1.0.0"
+  },
+  "changesets": [
+    "alpha-release-notes",
+    "auto-detect-deploy-secrets",
+    "cli-built-in-help-text",
+    "cli-dynamic-compat-date",
+    "cli-show-env-path-in-help",
+    "cli-strip-instrumentation-hook",
+    "fix-env-var-names",
+    "project-list-deployed-url",
+    "wise-worms-hear"
+  ]
+}

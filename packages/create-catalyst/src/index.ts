@@ -1,29 +1,40 @@
-#!/usr/bin/env node
+import { spawn } from 'node:child_process';
+import { createRequire } from 'node:module';
+import { dirname, join } from 'node:path';
 
-import { program } from '@commander-js/extra-typings';
-import { colorize } from 'consola/utils';
+const require = createRequire(import.meta.url);
 
-import PACKAGE_INFO from '../package.json';
+// `create-catalyst` is a thin wrapper around `@bigcommerce/catalyst`: it forwards
+// everything to `catalyst create` so all scaffolding logic lives in one place
+// (mirroring how `create-next-app` fronts `next`). `pnpm create catalyst` /
+// `npx create-catalyst` install `@bigcommerce/catalyst` as a dependency, so its
+// bin is resolvable from this package — no global `catalyst` install required.
+function resolveCatalystBin(): string {
+  const packageJsonPath = require.resolve('@bigcommerce/catalyst/package.json');
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const { bin } = require('@bigcommerce/catalyst/package.json') as {
+    bin: string | Record<string, string>;
+  };
+  const relativeBin = typeof bin === 'string' ? bin : bin.catalyst;
 
-import { create } from './commands/create';
-import { init } from './commands/init';
-import { integration } from './commands/integration';
-import { telemetry } from './commands/telemetry';
-import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+  return join(dirname(packageJsonPath), relativeBin);
+}
 
-console.log(colorize('cyanBright', `\n◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
+const child = spawn(process.execPath, [resolveCatalystBin(), 'create', ...process.argv.slice(2)], {
+  stdio: 'inherit',
+});
 
-program
-  .name(PACKAGE_INFO.name)
-  .version(PACKAGE_INFO.version)
-  .description('A command line tool to create a new Catalyst project.')
-  .addCommand(create, { isDefault: true })
-  .addCommand(init)
-  // Deprecated: hidden from help so new users don't discover it; still runnable
-  // (with a deprecation warning) until it's removed. See LTRAC-467.
-  .addCommand(integration, { hidden: true })
-  .addCommand(telemetry)
-  .hook('preAction', telemetryPreHook)
-  .hook('postAction', telemetryPostHook);
+child.on('error', (error) => {
+  console.error(error);
+  process.exit(1);
+});
 
-program.parse(process.argv);
+// Mirror the child's exit so CI/automation sees the real status code, and
+// re-raise signals (e.g. Ctrl-C) rather than swallowing them.
+child.on('exit', (code, signal) => {
+  if (signal) {
+    process.kill(process.pid, signal);
+  } else {
+    process.exit(code ?? 0);
+  }
+});
