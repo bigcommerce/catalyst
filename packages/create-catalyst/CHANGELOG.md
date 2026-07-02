@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.0
+
+### Major Changes
+
+- [#3077](https://github.com/bigcommerce/catalyst/pull/3077) [`a45ab43`](https://github.com/bigcommerce/catalyst/commit/a45ab4346c27e8cc60d6ce64fb597f22dbde2243) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Reduce `create-catalyst` to a thin wrapper that delegates to `catalyst create`. `pnpm create catalyst` / `npx create-catalyst` still scaffold a project — now by invoking `@bigcommerce/catalyst` under the hood — so the scaffolding UX is unchanged. The standalone `init`, `integration`, and `telemetry` subcommands are removed; use `catalyst channel link` and `catalyst telemetry` from the consolidated CLI instead.
+
+### Patch Changes
+
+- Updated dependencies [[`a45ab43`](https://github.com/bigcommerce/catalyst/commit/a45ab4346c27e8cc60d6ce64fb597f22dbde2243)]:
+  - @bigcommerce/catalyst@1.0.0
+
 ## 1.1.0
 
 ### Minor Changes
