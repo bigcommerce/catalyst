@@ -5,13 +5,15 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
-/**
- * Which microapp CDN to load. Prod is public and works for a render-only POC,
- * since the ECP form needs no BigCommerce backend to render. For a bcdev store
- * you can switch to the integration base:
- *   https://microapps.integration.zone/storefront-account-payments/
- */
-const MICROAPP_BASE = 'https://microapps.bigcommerce.com/storefront-account-payments/';
+// Where to load the microapp bundle from. Defaults to the prod CDN.
+// Override with ACCOUNT_PAYMENTS_MICROAPP_BASE in .env.local, for example a
+// local build served over a CORS-enabled static server:
+//   ACCOUNT_PAYMENTS_MICROAPP_BASE=http://localhost:4000/
+// or the integration CDN:
+//   ACCOUNT_PAYMENTS_MICROAPP_BASE=https://microapps.integration.zone/storefront-account-payments/
+const MICROAPP_BASE =
+  process.env.ACCOUNT_PAYMENTS_MICROAPP_BASE ??
+  'https://microapps.bigcommerce.com/storefront-account-payments/';
 
 export interface MicroappAssets {
   base: string;
