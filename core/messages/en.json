@@ -181,6 +181,7 @@
       "addresses": "Addresses",
       "logout": "Logout",
       "orders": "Orders",
+      "paymentMethods": "Payment Methods",
       "settings": "Account",
       "wishlists": "Wish lists"
     },
