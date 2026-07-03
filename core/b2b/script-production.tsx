@@ -11,9 +11,10 @@ interface Props {
   token?: string;
   environment: 'staging' | 'production';
   cartId?: string | null;
+  bcGraphqlDomain?: string;
 }
 
-export function ScriptProduction({ cartId, storeHash, channelId, token, environment }: Props) {
+export function ScriptProduction({ cartId, storeHash, channelId, token, environment, bcGraphqlDomain }: Props) {
   useB2BAuth(token);
   useB2BCart(cartId);
 
@@ -27,6 +28,7 @@ export function ScriptProduction({ cartId, storeHash, channelId, token, environm
                 channel_id: ${channelId},
                 platform: 'catalyst',
                 cart_url: '/cart',
+                bc_graphql_domain: '${bcGraphqlDomain ?? 'mybigcommerce.com'}',
               }
             }
         `}
