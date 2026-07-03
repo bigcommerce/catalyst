@@ -46,7 +46,20 @@ export function AccountPaymentsMicroapp({
       return;
     }
 
-    const toUrl = (path: string) => new URL(path, assets.base).toString();
+    // Local dev servers serve stable filenames (no content hash), so append a
+    // per-load cache-buster to defeat any stale browser cache entry. The CDN uses
+    // hashed names, so it needs none.
+    const isLocalBase = assets.base.startsWith('http://');
+    const cacheBust = Date.now();
+    const toUrl = (path: string) => {
+      const url = new URL(path, assets.base);
+
+      if (isLocalBase) {
+        url.searchParams.set('t', String(cacheBust));
+      }
+
+      return url.toString();
+    };
 
     const loadScript = (src: string) =>
       new Promise<void>((resolve, reject) => {
