@@ -40,6 +40,9 @@ const RegisterCustomerQuery = graphql(
         countries {
           code
           name
+          statesOrProvinces {
+            entityId
+          }
         }
       }
     }
