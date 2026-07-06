@@ -1,4 +1,8 @@
-import { PasswordComplexitySettings } from '@/vibes/soul/form/dynamic-form/schema';
+import {
+  Field,
+  FieldGroup,
+  PasswordComplexitySettings,
+} from '@/vibes/soul/form/dynamic-form/schema';
 
 import { ChangePasswordAction, ChangePasswordForm } from './change-password-form';
 import {
@@ -11,6 +15,7 @@ export interface AccountSettingsSectionProps {
   title?: string;
   account: Account;
   updateAccountAction: UpdateAccountAction;
+  updateAccountCustomFields?: Array<Field | FieldGroup<Field>>;
   updateAccountSubmitLabel?: string;
   changePasswordTitle?: string;
   changePasswordAction: ChangePasswordAction;
@@ -45,6 +50,7 @@ export function AccountSettingsSection({
   title = 'Account Settings',
   account,
   updateAccountAction,
+  updateAccountCustomFields,
   updateAccountSubmitLabel,
   changePasswordTitle = 'Change Password',
   changePasswordAction,
@@ -73,6 +79,7 @@ export function AccountSettingsSection({
             <UpdateAccountForm
               account={account}
               action={updateAccountAction}
+              customFields={updateAccountCustomFields}
               submitLabel={updateAccountSubmitLabel}
             />
           </div>

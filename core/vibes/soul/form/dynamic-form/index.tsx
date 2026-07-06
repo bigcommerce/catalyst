@@ -241,7 +241,7 @@ function SubmitButton({
   );
 }
 
-function DynamicFormField({
+export function DynamicFormField({
   field,
   formField,
 }: {

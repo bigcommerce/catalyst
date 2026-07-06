@@ -328,30 +328,35 @@ function getFieldSchema(
   return fieldSchema;
 }
 
-export function schema(
+export function getFieldsShape(
   fields: Array<Field | FieldGroup<Field>>,
   passwordComplexity?: PasswordComplexitySettings | null,
   errorTranslations?: FormErrorTranslationMap,
-) {
+): SchemaRawShape {
   const shape: SchemaRawShape = {};
-  let passwordFieldName: string | undefined;
-  let confirmPasswordFieldName: string | undefined;
 
   fields.forEach((field) => {
     if (Array.isArray(field)) {
       field.forEach((f) => {
         shape[f.name] = getFieldSchema(f, passwordComplexity, errorTranslations);
-
-        if (f.type === 'password') passwordFieldName = f.name;
-        if (f.type === 'confirm-password') confirmPasswordFieldName = f.name;
       });
     } else {
       shape[field.name] = getFieldSchema(field, passwordComplexity, errorTranslations);
-
-      if (field.type === 'password') passwordFieldName = field.name;
-      if (field.type === 'confirm-password') confirmPasswordFieldName = field.name;
     }
   });
+
+  return shape;
+}
+
+export function schema(
+  fields: Array<Field | FieldGroup<Field>>,
+  passwordComplexity?: PasswordComplexitySettings | null,
+  errorTranslations?: FormErrorTranslationMap,
+) {
+  const shape = getFieldsShape(fields, passwordComplexity, errorTranslations);
+  const flatFields = fields.flatMap((field) => (Array.isArray(field) ? field : [field]));
+  const passwordFieldName = flatFields.find((f) => f.type === 'password')?.name;
+  const confirmPasswordFieldName = flatFields.find((f) => f.type === 'confirm-password')?.name;
 
   return z.object(shape).superRefine((data, ctx) => {
     if (
