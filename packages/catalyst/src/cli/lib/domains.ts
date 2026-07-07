@@ -14,6 +14,40 @@ const domainSchema = z.object({
   verification_status: domainStatusSchema,
 });
 
+const ownershipVerificationSchema = z.object({
+  type: z.string(),
+  name: z.string(),
+  value: z.string().optional(),
+});
+
+export type OwnershipVerification = z.infer<typeof ownershipVerificationSchema>;
+
+const ownershipVerificationMetaSchema = z.object({
+  meta: z.object({
+    ownership_verification: ownershipVerificationSchema,
+  }),
+});
+
+// Raised when the Domains API rejects an add/claim because ownership of a
+// domain bound to another store has not been verified. Carries the TXT record
+// the caller must publish so the command can render actionable next steps
+// instead of an opaque error.
+export class DomainOwnershipVerificationError extends Error {
+  readonly ownershipVerification: OwnershipVerification;
+
+  constructor(message: string, ownershipVerification: OwnershipVerification) {
+    super(message);
+    this.name = 'DomainOwnershipVerificationError';
+    this.ownershipVerification = ownershipVerification;
+  }
+}
+
+function parseOwnershipVerification(body: unknown): OwnershipVerification | undefined {
+  const parsed = ownershipVerificationMetaSchema.safeParse(body);
+
+  return parsed.success ? parsed.data.meta.ownership_verification : undefined;
+}
+
 const domainResponseSchema = z.object({
   data: domainSchema,
 });
@@ -41,6 +75,10 @@ function domainUrl(storeHash: string, projectUuid: string, domain: string, apiHo
   return `${domainsUrl(storeHash, projectUuid, apiHost)}/${encodeURIComponent(domain)}`;
 }
 
+function domainClaimUrl(storeHash: string, projectUuid: string, domain: string, apiHost: string) {
+  return `${domainUrl(storeHash, projectUuid, domain, apiHost)}/claim`;
+}
+
 function authHeaders(accessToken: string) {
   return {
     Accept: 'application/json',
@@ -53,8 +91,7 @@ function formatResponseStatus(response: Response, message?: string): string {
   return [response.status, response.statusText || message].filter(Boolean).join(' ');
 }
 
-async function getErrorMessage(response: Response, action: string): Promise<string> {
-  const body: unknown = await response.json().catch(() => null);
+function buildErrorMessage(response: Response, body: unknown, action: string): string {
   const message = formatV3Error(body);
 
   if (response.status >= 500) {
@@ -66,6 +103,10 @@ async function getErrorMessage(response: Response, action: string): Promise<stri
   return message ?? `${action}: ${response.statusText}`;
 }
 
+// Throws for any non-OK Domains API response. When the body carries an
+// `meta.ownership_verification` TXT record (a domain bound to another store),
+// surfaces a DomainOwnershipVerificationError so callers can guide the user
+// through the claim flow; otherwise throws a plain formatted error.
 async function assertDomainResponse(response: Response, action: string): Promise<void> {
   assertAuthorized(response);
 
@@ -73,9 +114,19 @@ async function assertDomainResponse(response: Response, action: string): Promise
     throw new Error(DOMAINS_API_NOT_ENABLED);
   }
 
-  if (!response.ok) {
-    throw new Error(await getErrorMessage(response, action));
+  if (response.ok) {
+    return;
   }
+
+  const body: unknown = await response.json().catch(() => null);
+  const message = buildErrorMessage(response, body, action);
+  const ownershipVerification = parseOwnershipVerification(body);
+
+  if (ownershipVerification) {
+    throw new DomainOwnershipVerificationError(message, ownershipVerification);
+  }
+
+  throw new Error(message);
 }
 
 export async function createDomain(
@@ -164,4 +215,19 @@ export async function deleteDomain(
   });
 
   await assertDomainResponse(response, `Failed to remove domain: ${response.statusText}`);
+}
+
+export async function claimDomain(
+  domain: string,
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<void> {
+  const response = await fetch(domainClaimUrl(storeHash, projectUuid, domain, apiHost), {
+    method: 'POST',
+    headers: authHeaders(accessToken),
+  });
+
+  await assertDomainResponse(response, 'Failed to claim domain');
 }

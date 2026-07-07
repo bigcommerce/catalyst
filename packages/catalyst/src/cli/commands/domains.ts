@@ -3,13 +3,16 @@ import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
 import {
+  claimDomain,
   createDomain,
   deleteDomain,
   Domain,
+  DomainOwnershipVerificationError,
   DomainStatus,
   DomainStatusFilter,
   getDomain,
   listDomains,
+  OwnershipVerification,
 } from '../lib/domains';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
@@ -84,6 +87,20 @@ export function formatDomain(domain: Domain): string {
   return `${domain.domain} ${formatDomainStatus(domain.verification_status)}`;
 }
 
+export function formatOwnershipVerification(record: OwnershipVerification): string {
+  const lines = [
+    'Publish this DNS record to verify ownership, then run the claim again:',
+    `  Type:  ${record.type}`,
+    `  Name:  ${record.name}`,
+  ];
+
+  if (record.value) {
+    lines.push(`  Value: ${record.value}`);
+  }
+
+  return lines.join('\n');
+}
+
 export async function waitForDomainVerification({
   domain,
   projectUuid,
@@ -131,13 +148,28 @@ Examples:
 
     consola.start(`Adding domain ${domain}...`);
 
-    let result = await createDomain(
-      domain,
-      context.projectUuid,
-      context.storeHash,
-      context.accessToken,
-      context.apiHost,
-    );
+    let result: Domain;
+
+    try {
+      result = await createDomain(
+        domain,
+        context.projectUuid,
+        context.storeHash,
+        context.accessToken,
+        context.apiHost,
+      );
+    } catch (error) {
+      if (error instanceof DomainOwnershipVerificationError) {
+        consola.warn(error.message);
+        consola.log(formatOwnershipVerification(error.ownershipVerification));
+        consola.info(`Then run: catalyst domains claim ${domain}`);
+        process.exit(1);
+
+        return;
+      }
+
+      throw error;
+    }
 
     consola.success(`Domain ${result.domain} added.`);
 
@@ -247,6 +279,74 @@ Examples:
     process.exit(0);
   });
 
+const claim = new Command('claim')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Claim a custom domain that is currently in use on another store.')
+  .argument('<domain>', 'Custom domain to claim.')
+  .addHelpText(
+    'after',
+    `
+Claiming requires publishing the ownership-verification TXT record returned when
+you try to add a domain that is already in use on another store. Publish the
+record with your DNS provider, then run this command to complete the claim.
+
+Examples:
+  $ catalyst domains claim www.example.com
+
+  # Wait until the claimed domain leaves pending verification
+  $ catalyst domains claim www.example.com --wait`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--wait', 'Poll until domain verification completes or times out.')
+  .action(async (domain, options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    consola.start(`Claiming domain ${domain}...`);
+
+    try {
+      await claimDomain(
+        domain,
+        context.projectUuid,
+        context.storeHash,
+        context.accessToken,
+        context.apiHost,
+      );
+    } catch (error) {
+      if (error instanceof DomainOwnershipVerificationError) {
+        consola.warn(error.message);
+        consola.log(formatOwnershipVerification(error.ownershipVerification));
+        process.exit(1);
+
+        return;
+      }
+
+      throw error;
+    }
+
+    consola.success(`Domain ${domain} claimed.`);
+
+    let result = await getDomain(
+      domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (options.wait && result.verification_status === 'pending') {
+      consola.start(`Waiting for ${result.domain} to verify...`);
+      result = await waitForDomainVerification({ domain: result.domain, ...context });
+    }
+
+    consola.log(formatDomain(result));
+    process.exit(0);
+  });
+
 const remove = new Command('remove')
   .configureHelp({ showGlobalOptions: true })
   .description('Remove a custom domain from the current Native Hosting project.')
@@ -314,4 +414,5 @@ export const domains = new Command('domains')
   .addCommand(add)
   .addCommand(list)
   .addCommand(showStatus)
+  .addCommand(claim)
   .addCommand(remove);
