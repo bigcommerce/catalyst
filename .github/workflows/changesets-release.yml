@@ -47,6 +47,10 @@ jobs:
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
           command: sync
+          # Only the storefront package ships as its own release; changes to
+          # other workspace packages (client, create-catalyst, the CLI) are
+          # released separately and shouldn't count toward this pipeline.
+          include_paths: core/**
           # TODO: one-time bootstrap bound so the first sync doesn't scan this
           # existing project's full history. Remove once the pipeline has its
           # own release bookmark.
