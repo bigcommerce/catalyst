@@ -158,6 +158,9 @@ importers:
       jose:
         specifier: ^5.10.0
         version: 5.10.0
+      lite-youtube-embed:
+        specifier: ^0.3.4
+        version: 0.3.4
       lodash.debounce:
         specifier: ^4.0.8
         version: 4.0.8
@@ -7240,6 +7243,9 @@ packages:
   listhen@1.9.0:
     resolution: {integrity: sha512-I8oW2+QL5KJo8zXNWX046M134WchxsXC7SawLPvRQpogCbkyQIaFxPE89A2HiwR7vAK2Dm2ERBAmyjTYGYEpBg==}
     hasBin: true
+
+  lite-youtube-embed@0.3.4:
+    resolution: {integrity: sha512-aXgxpwK7AIW58GEbRzA8EYaY4LWvF3FKak6B9OtSJmuNyLhX2ouD4cMTxz/yR5HFInhknaYd2jLWOTRTvT8oAw==}
 
   load-tsconfig@0.2.5:
     resolution: {integrity: sha512-IXO6OCs9yg8tMKzfPZ1YmheJbZCiEsnBdcB03l0OcfK9prKnJb96siuHCr5Fl37/yo9DnKU+TLpxzTUspw9shg==}
@@ -18397,6 +18403,8 @@ snapshots:
       ufo: 1.6.1
       untun: 0.1.3
       uqr: 0.1.2
+
+  lite-youtube-embed@0.3.4: {}
 
   load-tsconfig@0.2.5: {}
 
