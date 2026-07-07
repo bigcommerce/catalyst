@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          # Full history required for linear-release-action to scan commits.
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -39,6 +42,16 @@ jobs:
         env:
           CLI_SEGMENT_WRITE_KEY: ${{ secrets.CLI_SEGMENT_WRITE_KEY }}
 
+      - name: Sync Linear release
+        uses: linear/linear-release-action@v0
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          command: sync
+          # TODO: one-time bootstrap bound so the first sync doesn't scan this
+          # existing project's full history. Remove once the pipeline has its
+          # own release bookmark.
+          base_ref: ${{ github.ref_name == 'canary' && '@bigcommerce/catalyst-core@1.8.0' || '@bigcommerce/catalyst-makeswift@1.8.0' }}
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -51,3 +64,34 @@ jobs:
           commit: "Version Packages (`${{ github.ref_name }}`)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve headline package
+        id: headline
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          PACKAGE_NAME="@bigcommerce/catalyst-core"
+          if [ "${{ github.ref_name }}" = "integrations/makeswift" ]; then
+            PACKAGE_NAME="@bigcommerce/catalyst-makeswift"
+          fi
+          VERSION=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r --arg name "$PACKAGE_NAME" '.[] | select(.name == $name) | .version')
+          if [ -z "$VERSION" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$PACKAGE_NAME@$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch release notes
+        if: steps.headline.outputs.found == 'true'
+        run: gh release view "${{ steps.headline.outputs.tag }}" --json body -q .body > /tmp/release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Complete Linear release
+        if: steps.headline.outputs.found == 'true'
+        uses: linear/linear-release-action@v0
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          command: complete
+          version: ${{ steps.headline.outputs.tag }}
+          release_notes: /tmp/release-notes.md
