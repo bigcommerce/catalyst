@@ -1,4 +1,10 @@
 import { ReactNode } from 'react';
+import {
+  Content as CalloutContent,
+  Header as CalloutHeader,
+  Root as CalloutRoot,
+  Title as CalloutTitle,
+} from 'storefront-kit/callout';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
@@ -52,6 +58,7 @@ interface ProductDetailProduct {
 
 export interface ProductDetailProps<F extends Field> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
+  promotionCallouts?: Streamable<Array<{ id: string; text: string }>>;
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
@@ -98,6 +105,7 @@ export function ProductDetail<F extends Field>({
   action,
   fields: streamableFields,
   breadcrumbs,
+  promotionCallouts,
   quantityLabel,
   incrementLabel,
   decrementLabel,
@@ -201,6 +209,34 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
+                  {promotionCallouts != null && (
+                    <div className="group/product-promotions mb-4">
+                      <Stream fallback={null} value={promotionCallouts}>
+                        {(callouts) =>
+                          callouts.length > 0 ? (
+                            <div className="flex flex-col gap-2">
+                              {callouts.map((callout) => (
+                                <CalloutRoot
+                                  className="items-start rounded-md border border-yellow-300 bg-yellow-50 px-2.5 py-1.5"
+                                  key={callout.id}
+                                  size="small"
+                                  variant="warning"
+                                >
+                                  <CalloutContent>
+                                    <CalloutHeader>
+                                      <CalloutTitle className="text-xs font-semibold leading-snug text-yellow-900">
+                                        {callout.text}
+                                      </CalloutTitle>
+                                    </CalloutHeader>
+                                  </CalloutContent>
+                                </CalloutRoot>
+                              ))}
+                            </div>
+                          ) : null
+                        }
+                      </Stream>
+                    </div>
+                  )}
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(imagesData) => (

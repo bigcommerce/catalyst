@@ -528,6 +528,11 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
+  const promotionCallouts = removeEdgesAndNodes(baseProduct.featuredPromotions).map((p) => ({
+    id: p.entityId.toString(),
+    text: p.text,
+  }));
+
   const streamableUser = Streamable.from(async () => {
     const session = await auth();
     const firstName = session?.user?.firstName ?? '';
@@ -588,6 +593,7 @@ export default async function Product({ params, searchParams }: Props) {
             stockDisplayData: streamableStockDisplayData,
             backorderDisplayData: streamableBackorderDisplayData,
           }}
+          promotionCallouts={promotionCallouts}
           quantityLabel={t('ProductDetails.quantity')}
           recaptchaSiteKey={recaptchaSiteKey}
           reviewFormAction={submitReview}

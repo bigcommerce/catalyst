@@ -1,4 +1,11 @@
 import { clsx } from 'clsx';
+import {
+  Content as CalloutContent,
+  Description as CalloutDescription,
+  Header as CalloutHeader,
+  Root as CalloutRoot,
+  Title as CalloutTitle,
+} from 'storefront-kit/callout';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
@@ -21,6 +28,7 @@ export interface Product {
   rating?: number;
   inventoryMessage?: string;
   numberOfReviews?: number;
+  promotions?: Array<{ id: string; text: string }>;
 }
 
 export interface ProductCardProps {
@@ -32,6 +40,7 @@ export interface ProductCardProps {
   imageSizes?: string;
   compareLabel?: string;
   compareParamName?: string;
+  moreOffersLabel?: string;
   product: Product;
   showRating?: boolean;
 }
@@ -70,6 +79,7 @@ export function ProductCard({
     inventoryMessage,
     rating,
     numberOfReviews,
+    promotions,
   },
   showRating = false,
   colorScheme = 'light',
@@ -78,6 +88,7 @@ export function ProductCard({
   aspectRatio = '5:6',
   compareLabel,
   compareParamName,
+  moreOffersLabel = 'more offers',
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: ProductCardProps) {
@@ -170,6 +181,28 @@ export function ProductCard({
                 colorScheme={colorScheme}
                 price={price}
               />
+            )}
+            {promotions != null && promotions.length > 0 && (
+              <div className="mt-1.5">
+                <CalloutRoot
+                  className="items-start rounded-md border border-yellow-300 bg-yellow-50 px-2.5 py-1.5"
+                  size="small"
+                  variant="warning"
+                >
+                  <CalloutContent>
+                    <CalloutHeader>
+                      <CalloutTitle className="text-xs font-semibold leading-snug text-yellow-900">
+                        {promotions[0]?.text ?? ''}
+                      </CalloutTitle>
+                      {promotions.length > 1 && (
+                        <CalloutDescription className="text-xs text-yellow-900/70">
+                          +{promotions.length - 1} {moreOffersLabel}
+                        </CalloutDescription>
+                      )}
+                    </CalloutHeader>
+                  </CalloutContent>
+                </CalloutRoot>
+              </div>
             )}
             {showRating && typeof rating === 'number' && rating > 0 && (
               <Rating className="mb-2 mt-1" numberOfReviews={numberOfReviews} rating={rating} />
