@@ -1,9 +1,10 @@
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
+import { UserActionableError } from './errors';
 import { getTelemetry } from './telemetry';
 
-export class InfrastructureProjectValidationError extends Error {
+export class InfrastructureProjectValidationError extends UserActionableError {
   constructor(message: string) {
     super(message);
     this.name = 'InfrastructureProjectValidationError';
@@ -70,7 +71,7 @@ export async function fetchProjects(
   assertAuthorized(response);
 
   if (response.status === 403) {
-    throw new Error(
+    throw new UserActionableError(
       'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
@@ -152,7 +153,7 @@ export async function createProject(
   }
 
   if (response.status === 403) {
-    throw new Error(
+    throw new UserActionableError(
       'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
@@ -187,13 +188,13 @@ export async function deleteProject(
   assertAuthorized(response);
 
   if (response.status === 403) {
-    throw new Error(
+    throw new UserActionableError(
       'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 
   if (response.status === 404) {
-    throw new Error(`Project ${projectUuid} not found.`);
+    throw new UserActionableError(`Project ${projectUuid} not found.`);
   }
 
   if (!response.ok) {

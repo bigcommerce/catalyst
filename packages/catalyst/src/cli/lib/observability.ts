@@ -2,6 +2,7 @@ import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
+import { UserActionableError } from './errors';
 import { getTelemetry } from './telemetry';
 
 export const LOG_LEVELS = ['debug', 'info', 'warn', 'error'] as const;
@@ -111,7 +112,7 @@ export function resolveTimeWindow(
     endMs = parseTimeInput(end);
 
     if (endMs === null) {
-      throw new Error(
+      throw new UserActionableError(
         `Invalid --end value "${end}". Provide an ISO-8601 timestamp or a Unix epoch (seconds).`,
       );
     }
@@ -124,7 +125,7 @@ export function resolveTimeWindow(
     const durationMs = parseDuration(since);
 
     if (durationMs === null) {
-      throw new Error(
+      throw new UserActionableError(
         `Invalid --since value "${since}". Provide a duration like 30m, 6h, or 2d (units: s, m, h, d).`,
       );
     }
@@ -135,20 +136,22 @@ export function resolveTimeWindow(
     startMs = parseTimeInput(start);
 
     if (startMs === null) {
-      throw new Error(
+      throw new UserActionableError(
         `Invalid --start value "${start}". Provide an ISO-8601 timestamp or a Unix epoch (seconds).`,
       );
     }
   } else {
-    throw new Error('Provide a time window with --since <duration> or --start <time>.');
+    throw new UserActionableError(
+      'Provide a time window with --since <duration> or --start <time>.',
+    );
   }
 
   if (startMs > endMs) {
-    throw new Error('Invalid time window: --start must be before or equal to --end.');
+    throw new UserActionableError('Invalid time window: --start must be before or equal to --end.');
   }
 
   if (endMs - startMs > SEVEN_DAYS_MS) {
-    throw new Error('Invalid time window: the range must not exceed 7 days.');
+    throw new UserActionableError('Invalid time window: the range must not exceed 7 days.');
   }
 
   return { start, end };
@@ -246,13 +249,13 @@ export async function queryLogs(
   assertAuthorized(response);
 
   if (response.status === 403) {
-    throw new Error(
+    throw new UserActionableError(
       'Infrastructure Logs API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
   }
 
   if (response.status === 404) {
-    throw new Error('Project not found. Check the project UUID.');
+    throw new UserActionableError('Project not found. Check the project UUID.');
   }
 
   // 400 (bad UUID) and 422 (invalid window/filter) both carry the field-keyed
@@ -260,7 +263,7 @@ export async function queryLogs(
   if (response.status === 400 || response.status === 422) {
     const body: unknown = await response.json().catch(() => null);
 
-    throw new Error(formatV3Error(body) ?? 'Invalid log query.');
+    throw new UserActionableError(formatV3Error(body) ?? 'Invalid log query.');
   }
 
   if (!response.ok) {

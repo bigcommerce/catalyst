@@ -3,6 +3,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vite
 
 import { server } from '../../../tests/mocks/node';
 
+import { UserActionableError } from './errors';
 import { consola } from './logger';
 import { formatLogEntry, formatV3Error, queryLogs, resolveTimeWindow } from './observability';
 
@@ -32,6 +33,10 @@ describe('resolveTimeWindow', () => {
     expect(() => resolveTimeWindow({ end: '2026-06-01T00:00:00Z' })).toThrow(
       'Provide a time window with --since <duration> or --start <time>.',
     );
+  });
+
+  test('bad time-window input is user-actionable (no support/correlation framing)', () => {
+    expect(() => resolveTimeWindow({ since: 'yesterday' })).toThrow(UserActionableError);
   });
 
   test('defaults end to now when omitted', () => {
@@ -418,12 +423,14 @@ describe('queryLogs', () => {
   test('maps 404 to a project-not-found error', async () => {
     server.use(http.get(logsUrl, () => new HttpResponse(null, { status: 404 })));
 
-    await expect(
-      queryLogs(projectUuid, storeHash, accessToken, apiHost, {
-        start: '2026-06-01T00:00:00Z',
-        end: '2026-06-02T00:00:00Z',
-      }),
-    ).rejects.toThrow('Project not found');
+    const error = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    }).catch((err: unknown) => err);
+
+    // A 4xx is a clear, user-actionable response — no Correlation ID/support framing.
+    expect(error).toBeInstanceOf(UserActionableError);
+    expect(error).toHaveProperty('message', expect.stringContaining('Project not found'));
   });
 
   test('surfaces the v3 error message on 422', async () => {
@@ -453,11 +460,15 @@ describe('queryLogs', () => {
       http.get(logsUrl, () => new HttpResponse(null, { status: 500, statusText: 'Server Error' })),
     );
 
-    await expect(
-      queryLogs(projectUuid, storeHash, accessToken, apiHost, {
-        start: '2026-06-01T00:00:00Z',
-        end: '2026-06-02T00:00:00Z',
-      }),
-    ).rejects.toThrow('Failed to fetch logs: 500 Server Error');
+    const error = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    }).catch((err: unknown) => err);
+
+    // A 5xx is a server-side failure worth escalating, so it stays a plain Error
+    // and keeps the top-level Correlation ID + support framing.
+    expect(error).toBeInstanceOf(Error);
+    expect(error).not.toBeInstanceOf(UserActionableError);
+    expect(error).toHaveProperty('message', 'Failed to fetch logs: 500 Server Error');
   });
 });
