@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { type MicroappAssets, type MicroappCountry } from '../page-data';
+import { type MicroappAssets } from '../page-data';
 
 interface RenderConfig {
   styles: Record<string, unknown>;
@@ -18,17 +18,15 @@ declare global {
   }
 }
 
-// Loads the storefront-account-payments microapp bundle from the CDN and calls
-// renderAccountPayments for a single provider.
-//
-// POC scope: renders the ECP (ACH) form. Per the source, vaultToken is submit-only
-// and the ECP form needs no init data, so placeholder values are enough to render.
+// Loads the storefront-account-payments microapp bundle from the CDN and calls renderAccountPayments with the
+// storeContextData assembled server-side by the page (provider config, VAT, and — for token providers — the minted
+// setup token). The microapp itself needs no change; the provider path it renders is driven entirely by this data.
 export function AccountPaymentsMicroapp({
   assets,
-  countries,
+  storeContextData,
 }: {
   assets: MicroappAssets;
-  countries: MicroappCountry[];
+  storeContextData: Record<string, unknown>;
 }) {
   const started = useRef(false);
   const [status, setStatus] = useState('Loading microapp…');
@@ -92,29 +90,14 @@ export function AccountPaymentsMicroapp({
           // eslint-disable-next-line no-console
           console.error('[account-payments]', message);
         },
-        storeContextData: {
-          // ECP (ACH): routes to the plain bank-account form (needs no init data).
-          providerId: 'test',
-          methodType: 'ecp',
-          storeLocale: 'en',
-          countries,
-          paymentsUrl: '',
-          paymentMethodsUrl: '/account/payment-methods',
-          // Submit-only fields. Placeholders are fine for a render-only POC.
-          vaultToken: '',
-          shopperId: '',
-          storeHash: '',
-          currencyCode: 'USD',
-          customerEmail: '',
-          paymentProviderInitializationData: {},
-        },
+        storeContextData,
       });
 
       setStatus('Microapp rendered.');
     };
 
     run().catch((error: unknown) => setStatus(`Error: ${String(error)}`));
-  }, [assets, countries]);
+  }, [assets, storeContextData]);
 
   return (
     <div>

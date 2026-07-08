@@ -39,9 +39,25 @@ export default async function PaymentMethodsPage({ params }: Props) {
         </Link>
       </section>
 
+      <section className="mb-10">
+        <h2 className="mb-4 text-xl font-medium">Credit Card (Stripe)</h2>
+
+        <Link
+          className="flex min-h-44 w-full max-w-sm flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-[hsl(var(--contrast-200))] p-8 text-center transition-colors hover:border-[hsl(var(--foreground))] hover:bg-[hsl(var(--contrast-100))]"
+          href="/account/payment-methods/add?provider=stripeocs&method_type=card"
+        >
+          <span aria-hidden className="text-4xl leading-none">
+            +
+          </span>
+          <span className="font-[family-name:var(--font-family-mono)] text-xs uppercase tracking-wide text-[hsl(var(--contrast-500))]">
+            Add new payment method
+          </span>
+        </Link>
+      </section>
+
       <p className="text-sm text-[hsl(var(--contrast-400))]">
-        POC page with a fake provider list. Only the ECP (ACH) Add flow is wired, and it loads the
-        storefront-account-payments microapp.
+        POC page with a fake provider list. The ECP (ACH) and Stripe credit-card Add flows are wired, and each
+        loads the storefront-account-payments microapp.
       </p>
     </div>
   );

@@ -97,3 +97,105 @@ export const getMicroappCountries = cache(async (): Promise<MicroappCountry[]> =
     };
   });
 });
+
+// --- Stripe OCS card vaulting (PROJECT-6074) ---
+
+export interface StripeOcsVaultInit {
+  publishableKey: string;
+  setupIntentClientSecret: string;
+  connectedAccount?: string | null;
+}
+
+export interface VaultContext {
+  vaultToken: string;
+  init: StripeOcsVaultInit;
+}
+
+// Mints the VAT and the provider vault initialization in one round-trip. The two are separate operations (a credential
+// vs the SDK render data) but ride the same request. The VAT and setup token only ever reach the browser inside the
+// microapp's storeContextData at render.
+const AddCardVaultContextMutation = graphql(`
+  mutation AddCardVaultContext($providerId: ID!, $currencyCode: String!) {
+    payment {
+      storedInstrument {
+        createVaultToken {
+          vaultToken
+          expiresIn
+        }
+        createVaultInitialization(providerId: $providerId, currencyCode: $currencyCode) {
+          data {
+            __typename
+            ... on StripeOcsVaultInit {
+              publishableKey
+              setupIntentClientSecret
+              connectedAccount
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getVaultContext = cache(
+  async (providerId: string, currencyCode: string): Promise<VaultContext> => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
+    const response = await client.fetch({
+      document: AddCardVaultContextMutation,
+      variables: { providerId, currencyCode },
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    const storedInstrument = response.data.payment.storedInstrument;
+    const vaultToken = storedInstrument.createVaultToken?.vaultToken;
+    const init = storedInstrument.createVaultInitialization?.data;
+
+    if (!vaultToken) {
+      throw new Error('createVaultToken returned no vault token');
+    }
+
+    // The union arm the storefront returned must be one we know how to render; otherwise fail rather than guess.
+    if (init?.__typename !== 'StripeOcsVaultInit') {
+      throw new Error(`Unsupported vault initialization provider: ${init?.__typename ?? 'none'}`);
+    }
+
+    return {
+      vaultToken,
+      init: {
+        publishableKey: init.publishableKey,
+        setupIntentClientSecret: init.setupIntentClientSecret,
+        connectedAccount: init.connectedAccount,
+      },
+    };
+  },
+);
+
+export interface CustomerVaultInfo {
+  entityId: number;
+  email: string;
+}
+
+const GetCustomerForVaultQuery = graphql(`
+  query GetCustomerForVault {
+    customer {
+      entityId
+      email
+    }
+  }
+`);
+
+export const getCustomerForVault = cache(async (): Promise<CustomerVaultInfo | null> => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const response = await client.fetch({
+    document: GetCustomerForVaultQuery,
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  const customer = response.data.customer;
+
+  return customer ? { entityId: customer.entityId, email: customer.email } : null;
+});
