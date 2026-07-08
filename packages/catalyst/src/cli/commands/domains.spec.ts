@@ -5,7 +5,7 @@ import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
-import { createDomain, deleteDomain, getDomain, listDomains } from '../lib/domains';
+import { claimDomain, createDomain, deleteDomain, getDomain, listDomains } from '../lib/domains';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
@@ -66,7 +66,7 @@ afterAll(async () => {
 });
 
 describe('command configuration', () => {
-  test('domains has add, list, status, and remove subcommands', () => {
+  test('domains has add, list, status, claim, and remove subcommands', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
@@ -76,6 +76,7 @@ describe('command configuration', () => {
     const add = domains.commands.find((command) => command.name() === 'add');
     const list = domains.commands.find((command) => command.name() === 'list');
     const status = domains.commands.find((command) => command.name() === 'status');
+    const claim = domains.commands.find((command) => command.name() === 'claim');
     const remove = domains.commands.find((command) => command.name() === 'remove');
 
     expect(add).toBeDefined();
@@ -108,6 +109,20 @@ describe('command configuration', () => {
       'Show the status of a custom domain on the current Native Hosting project.',
     );
     expect(status?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--store-hash <hash>' }),
+        expect.objectContaining({ flags: '--access-token <token>' }),
+        expect.objectContaining({ flags: '--api-host <host>' }),
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--wait' }),
+      ]),
+    );
+
+    expect(claim).toBeDefined();
+    expect(claim?.description()).toBe(
+      'Claim a custom domain that is currently in use on another store.',
+    );
+    expect(claim?.options).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ flags: '--store-hash <hash>' }),
         expect.objectContaining({ flags: '--access-token <token>' }),
@@ -336,6 +351,62 @@ describe('domain API client', () => {
     ).resolves.toBeUndefined();
     expect(deletedDomain).toBe(domain);
   });
+
+  test('claims a domain', async () => {
+    let claimedDomain: string | readonly string[] | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+        ({ params }) => {
+          claimedDomain = params.domain;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    await expect(
+      claimDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).resolves.toBeUndefined();
+    expect(claimedDomain).toBe(domain);
+  });
+
+  test('surfaces the ownership-verification TXT record when a claim is not yet verified', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+        () =>
+          HttpResponse.json(
+            {
+              title: 'Domain ownership could not be verified.',
+              errors: {
+                domain: `No ownership verification TXT record was found at '_bigcommerce-verification.${domain}'. Add the record, then try again.`,
+              },
+              meta: {
+                ownership_verification: {
+                  type: 'TXT',
+                  name: `_bigcommerce-verification.${domain}`,
+                  value: 'bc-verify=019500e2933d70578e81090dd7240795',
+                },
+              },
+            },
+            { status: 422 },
+          ),
+      ),
+    );
+
+    await expect(
+      claimDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).rejects.toMatchObject({
+      name: 'DomainOwnershipVerificationError',
+      ownershipVerification: {
+        type: 'TXT',
+        name: `_bigcommerce-verification.${domain}`,
+        value: 'bc-verify=019500e2933d70578e81090dd7240795',
+      },
+    });
+  });
 });
 
 describe('waitForDomainVerification', () => {
@@ -446,6 +517,51 @@ describe('add command', () => {
     expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
   });
+
+  test('surfaces the ownership TXT record and claim guidance on a cross-store collision', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () =>
+          HttpResponse.json(
+            {
+              title:
+                'The domain is already bound to a different store. Verify ownership using the claim endpoint, then try again.',
+              errors: {
+                domain: `'${domain}' is already bound to a different store; verify ownership, then try again.`,
+              },
+              meta: {
+                ownership_verification: {
+                  type: 'TXT',
+                  name: `_bigcommerce-verification.${domain}`,
+                  value: 'bc-verify=019500e2933d70578e81090dd7240795',
+                },
+              },
+            },
+            { status: 409 },
+          ),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain], { from: 'user' });
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('already in use on another store'),
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('bc-verify=019500e2933d70578e81090dd7240795'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      `Once the record is live, run: catalyst domains claim ${domain}`,
+    );
+    // The raw V3 title/field text isn't echoed — the concise message replaces it.
+    expect(consola.warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('Verify ownership using the claim endpoint'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
 });
 
 describe('list command', () => {
@@ -550,6 +666,90 @@ describe('status command', () => {
     expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
     expect(requests).toBe(2);
+  });
+});
+
+describe('claim command', () => {
+  test('claims a domain for the linked project', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['claim', domain], { from: 'user' });
+
+    expect(consola.start).toHaveBeenCalledWith(`Claiming domain ${domain}...`);
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} claimed.`);
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining(domain));
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prints the ownership TXT record when verification has not completed', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+        () =>
+          HttpResponse.json(
+            {
+              title: 'Domain ownership could not be verified.',
+              errors: {
+                domain: `No ownership verification TXT record was found at '_bigcommerce-verification.${domain}'. Add the record, then try again.`,
+              },
+              meta: {
+                ownership_verification: {
+                  type: 'TXT',
+                  name: `_bigcommerce-verification.${domain}`,
+                  value: 'bc-verify=019500e2933d70578e81090dd7240795',
+                },
+              },
+            },
+            { status: 422 },
+          ),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['claim', domain], { from: 'user' });
+
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('could not be verified'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('bc-verify=019500e2933d70578e81090dd7240795'),
+    );
+    expect(consola.success).not.toHaveBeenCalled();
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('can wait for a claimed domain to leave pending status', async () => {
+    let getRequests = 0;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+        () => new HttpResponse(null, { status: 204 }),
+      ),
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => {
+          getRequests += 1;
+
+          return HttpResponse.json({
+            data: {
+              domain,
+              project_uuid: projectUuid,
+              verification_status: getRequests === 1 ? 'pending' : 'verified',
+            },
+          });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['claim', domain, '--wait'], { from: 'user' });
+
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} claimed.`);
+    expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(getRequests).toBe(2);
   });
 });
 

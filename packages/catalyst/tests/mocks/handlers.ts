@@ -84,6 +84,12 @@ export const handlers = [
     () => new HttpResponse(null, { status: 204 }),
   ),
 
+  // Handler for claimDomain
+  http.post(
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
   // Handler for fetchProjects
   http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
