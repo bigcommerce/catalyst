@@ -1,11 +1,18 @@
-import { confirm } from '@inquirer/prompts';
+import { confirm, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
-import { claimDomain, createDomain, deleteDomain, getDomain, listDomains } from '../lib/domains';
+import {
+  claimDomain,
+  createDomain,
+  deleteDomain,
+  getDomain,
+  listDomains,
+  transferDomain,
+} from '../lib/domains';
 import { UserActionableError } from '../lib/errors';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
@@ -15,9 +22,11 @@ import { domains, formatDomain, formatDomainStatus, waitForDomainVerification } 
 
 vi.mock('@inquirer/prompts', () => ({
   confirm: vi.fn(),
+  select: vi.fn(),
 }));
 
 const confirmMock = vi.mocked(confirm);
+const selectMock = vi.mocked(select);
 
 let exitMock: MockInstance;
 let tmpDir: string;
@@ -67,7 +76,7 @@ afterAll(async () => {
 });
 
 describe('command configuration', () => {
-  test('domains has add, list, status, claim, and remove subcommands', () => {
+  test('domains has add, list, status, claim, transfer, and remove subcommands', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
@@ -78,6 +87,7 @@ describe('command configuration', () => {
     const list = domains.commands.find((command) => command.name() === 'list');
     const status = domains.commands.find((command) => command.name() === 'status');
     const claim = domains.commands.find((command) => command.name() === 'claim');
+    const transfer = domains.commands.find((command) => command.name() === 'transfer');
     const remove = domains.commands.find((command) => command.name() === 'remove');
 
     expect(add).toBeDefined();
@@ -129,6 +139,21 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--access-token <token>' }),
         expect.objectContaining({ flags: '--api-host <host>' }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--wait' }),
+      ]),
+    );
+
+    expect(transfer).toBeDefined();
+    expect(transfer?.description()).toBe(
+      'Transfer a custom domain to another project in the same store.',
+    );
+    expect(transfer?.options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ flags: '--store-hash <hash>' }),
+        expect.objectContaining({ flags: '--access-token <token>' }),
+        expect.objectContaining({ flags: '--api-host <host>' }),
+        expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--to-project-uuid <uuid>' }),
         expect.objectContaining({ flags: '--wait' }),
       ]),
     );
@@ -410,6 +435,30 @@ describe('domain API client', () => {
     expect(claimedDomain).toBe(domain);
   });
 
+  test('transfers a domain with the destination project in the body', async () => {
+    const newProjectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
+    let capturedBody: unknown;
+    let capturedSourceProject: string | readonly string[] | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/transfer',
+        async ({ request, params }) => {
+          capturedBody = await request.json();
+          capturedSourceProject = params.projectUuid;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    await expect(
+      transferDomain(domain, projectUuid, newProjectUuid, storeHash, accessToken, apiHost),
+    ).resolves.toBeUndefined();
+    expect(capturedSourceProject).toBe(projectUuid);
+    expect(capturedBody).toEqual({ new_project_uuid: newProjectUuid });
+  });
+
   test('surfaces the ownership-verification TXT record when a claim is not yet verified', async () => {
     server.use(
       http.post(
@@ -597,6 +646,44 @@ describe('add command', () => {
     // The raw V3 title/field text isn't echoed — the concise message replaces it.
     expect(consola.warn).not.toHaveBeenCalledWith(
       expect.stringContaining('Verify ownership using the claim endpoint'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('suggests the transfer command when the domain is bound to another project in the store', async () => {
+    const boundProjectUuid = 'b23f5785-fd99-4a94-9fb3-945551623924';
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () =>
+          HttpResponse.json(
+            {
+              title:
+                'The domain is already bound to another project in this store. Use the transfer endpoint to move it.',
+              errors: {
+                domain: `'${domain}' is already bound to another project in this store.`,
+              },
+              meta: { project_uuid: boundProjectUuid },
+            },
+            { status: 409 },
+          ),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain], { from: 'user' });
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('already bound to another project in this store'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      `To move it to this project, run: catalyst domains transfer ${domain} --project-uuid ${boundProjectUuid} --to-project-uuid ${projectUuid}`,
+    );
+    // The raw V3 title/field text isn't echoed — the concise message + suggestion replace it.
+    expect(consola.warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('Use the transfer endpoint to move it'),
     );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
@@ -788,6 +875,98 @@ describe('claim command', () => {
     expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
     expect(getRequests).toBe(2);
+  });
+});
+
+describe('transfer command', () => {
+  const destinationProjectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
+
+  test('transfers to the project passed via --to-project-uuid without prompting', async () => {
+    let capturedBody: unknown;
+    let capturedSourceProject: string | readonly string[] | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/transfer',
+        async ({ request, params }) => {
+          capturedBody = await request.json();
+          capturedSourceProject = params.projectUuid;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['transfer', domain, '--to-project-uuid', destinationProjectUuid], {
+      from: 'user',
+    });
+
+    expect(selectMock).not.toHaveBeenCalled();
+    expect(capturedSourceProject).toBe(projectUuid);
+    expect(capturedBody).toEqual({ new_project_uuid: destinationProjectUuid });
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} transferred.`);
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prompts to pick a destination project, excluding the source', async () => {
+    // Default fetchProjects handler returns Project One + Project Two; the
+    // linked (source) project UUID matches neither, so both are offered.
+    selectMock.mockResolvedValue(destinationProjectUuid);
+
+    let capturedBody: unknown;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/transfer',
+        async ({ request }) => {
+          capturedBody = await request.json();
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['transfer', domain], { from: 'user' });
+
+    expect(selectMock).toHaveBeenCalledTimes(1);
+
+    const choiceValues = selectMock.mock.calls[0][0].choices.map((choice) =>
+      typeof choice === 'object' && 'value' in choice ? choice.value : undefined,
+    );
+
+    expect(choiceValues).not.toContain(projectUuid);
+    expect(capturedBody).toEqual({ new_project_uuid: destinationProjectUuid });
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} transferred.`);
+  });
+
+  test('rejects a destination that matches the source project', async () => {
+    writeCredentials();
+
+    await expect(
+      domains.parseAsync(['transfer', domain, '--to-project-uuid', projectUuid], { from: 'user' }),
+    ).rejects.toThrow('destination project must differ from the source project');
+  });
+
+  test('errors when there are no other projects to transfer to', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+        HttpResponse.json({
+          data: [{ uuid: projectUuid, name: 'Only Project', deployment_hostnames: [] }],
+        }),
+      ),
+    );
+
+    writeCredentials();
+
+    await expect(domains.parseAsync(['transfer', domain], { from: 'user' })).rejects.toThrow(
+      'No other projects to transfer to',
+    );
+    expect(selectMock).not.toHaveBeenCalled();
   });
 });
 

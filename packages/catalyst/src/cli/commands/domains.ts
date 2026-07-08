@@ -1,4 +1,4 @@
-import { confirm } from '@inquirer/prompts';
+import { confirm, select } from '@inquirer/prompts';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
@@ -7,14 +7,18 @@ import {
   createDomain,
   deleteDomain,
   Domain,
+  DomainBoundToProjectError,
   DomainOwnershipVerificationError,
   DomainStatus,
   DomainStatusFilter,
   getDomain,
   listDomains,
   OwnershipVerification,
+  transferDomain,
 } from '../lib/domains';
+import { UserActionableError } from '../lib/errors';
 import { consola } from '../lib/logger';
+import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
 import {
@@ -77,6 +81,47 @@ function resolveDomainCommandContext(options: DomainCommandOptions): DomainComma
     accessToken,
     apiHost: options.apiHost,
   };
+}
+
+// Resolves the destination project for a transfer. Uses `--to-project-uuid`
+// when given; otherwise fetches the store's projects and prompts the user to
+// pick one, excluding the source project (a domain can't be transferred to the
+// project it already belongs to).
+async function resolveDestinationProject(
+  domain: string,
+  context: DomainCommandContext,
+  toProjectUuid?: string,
+): Promise<string> {
+  if (toProjectUuid) {
+    if (toProjectUuid === context.projectUuid) {
+      throw new UserActionableError('The destination project must differ from the source project.');
+    }
+
+    return toProjectUuid;
+  }
+
+  consola.start('Fetching projects...');
+
+  const projects = await fetchProjects(context.storeHash, context.accessToken, context.apiHost);
+
+  consola.success('Projects fetched.');
+
+  const destinations = projects.filter((project) => project.uuid !== context.projectUuid);
+
+  if (destinations.length === 0) {
+    throw new UserActionableError(
+      'No other projects to transfer to. Create another project with `catalyst project create` first.',
+    );
+  }
+
+  return select({
+    message: `Select the project to transfer ${domain} to (Press <enter> to select).`,
+    choices: destinations.map((project) => ({
+      name: project.name,
+      value: project.uuid,
+      description: project.uuid,
+    })),
+  });
 }
 
 export function formatDomainStatus(status: DomainStatus): string {
@@ -163,6 +208,16 @@ Examples:
         consola.warn(`${domain} is already in use on another store.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
         consola.info(`Once the record is live, run: catalyst domains claim ${domain}`);
+        process.exit(1);
+
+        return;
+      }
+
+      if (error instanceof DomainBoundToProjectError) {
+        consola.warn(`${domain} is already bound to another project in this store.`);
+        consola.info(
+          `To move it to this project, run: catalyst domains transfer ${domain} --project-uuid ${error.projectUuid} --to-project-uuid ${context.projectUuid}`,
+        );
         process.exit(1);
 
         return;
@@ -350,6 +405,72 @@ Examples:
     process.exit(0);
   });
 
+const transfer = new Command('transfer')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Transfer a custom domain to another project in the same store.')
+  .argument('<domain>', 'Custom domain to transfer.')
+  .addHelpText(
+    'after',
+    `
+The domain is transferred from the current project to the destination project.
+Omit --to-project-uuid to pick the destination from a list of your projects.
+
+Examples:
+  # Pick the destination project interactively
+  $ catalyst domains transfer www.example.com
+
+  # Transfer to a specific project
+  $ catalyst domains transfer www.example.com --to-project-uuid <uuid>`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--to-project-uuid <uuid>', 'Destination project UUID. Prompts to choose one if omitted.')
+  .option('--wait', 'Poll until domain verification completes or times out.')
+  .action(async (domain, options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    const newProjectUuid = await resolveDestinationProject(domain, context, options.toProjectUuid);
+
+    consola.start(`Transferring domain ${domain}...`);
+
+    await transferDomain(
+      domain,
+      context.projectUuid,
+      newProjectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    consola.success(`Domain ${domain} transferred.`);
+
+    let result = await getDomain(
+      domain,
+      newProjectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (options.wait && result.verification_status === 'pending') {
+      consola.start(`Waiting for ${result.domain} to verify...`);
+      result = await waitForDomainVerification({
+        domain: result.domain,
+        projectUuid: newProjectUuid,
+        storeHash: context.storeHash,
+        accessToken: context.accessToken,
+        apiHost: context.apiHost,
+      });
+    }
+
+    consola.log(formatDomain(result));
+    process.exit(0);
+  });
+
 const remove = new Command('remove')
   .configureHelp({ showGlobalOptions: true })
   .description('Remove a custom domain from the current Native Hosting project.')
@@ -418,4 +539,5 @@ export const domains = new Command('domains')
   .addCommand(list)
   .addCommand(showStatus)
   .addCommand(claim)
+  .addCommand(transfer)
   .addCommand(remove);

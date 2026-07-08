@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file -- the two domain-collision error types are co-located with the response parsing that throws them */
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
@@ -49,6 +50,31 @@ function parseOwnershipVerification(body: unknown): OwnershipVerification | unde
   return parsed.success ? parsed.data.meta.ownership_verification : undefined;
 }
 
+const boundProjectMetaSchema = z.object({
+  meta: z.object({
+    project_uuid: z.string(),
+  }),
+});
+
+// Raised when the Domains API rejects an add/claim because the domain is
+// already bound to a different project in the *same* store. Carries the UUID of
+// that project so the caller can point the user at `domains transfer`.
+export class DomainBoundToProjectError extends UserActionableError {
+  readonly projectUuid: string;
+
+  constructor(message: string, projectUuid: string) {
+    super(message);
+    this.name = 'DomainBoundToProjectError';
+    this.projectUuid = projectUuid;
+  }
+}
+
+function parseBoundProjectUuid(body: unknown): string | undefined {
+  const parsed = boundProjectMetaSchema.safeParse(body);
+
+  return parsed.success ? parsed.data.meta.project_uuid : undefined;
+}
+
 const domainResponseSchema = z.object({
   data: domainSchema,
 });
@@ -80,6 +106,15 @@ function domainClaimUrl(storeHash: string, projectUuid: string, domain: string, 
   return `${domainUrl(storeHash, projectUuid, domain, apiHost)}/claim`;
 }
 
+function domainTransferUrl(
+  storeHash: string,
+  projectUuid: string,
+  domain: string,
+  apiHost: string,
+) {
+  return `${domainUrl(storeHash, projectUuid, domain, apiHost)}/transfer`;
+}
+
 function authHeaders(accessToken: string) {
   return {
     Accept: 'application/json',
@@ -104,10 +139,11 @@ function buildErrorMessage(response: Response, body: unknown, action: string): s
   return message ?? `${action}: ${response.statusText}`;
 }
 
-// Throws for any non-OK Domains API response. When the body carries an
-// `meta.ownership_verification` TXT record (a domain bound to another store),
-// surfaces a DomainOwnershipVerificationError so callers can guide the user
-// through the claim flow; otherwise throws a plain formatted error.
+// Throws for any non-OK Domains API response. Surfaces typed errors for the two
+// claimable/movable conflicts so callers can guide the user: a
+// `meta.ownership_verification` TXT record (domain on another store → claim) or
+// a `meta.project_uuid` (domain on another project in this store → transfer).
+// Otherwise throws a plain formatted error.
 async function assertDomainResponse(response: Response, action: string): Promise<void> {
   assertAuthorized(response);
 
@@ -125,6 +161,12 @@ async function assertDomainResponse(response: Response, action: string): Promise
 
   if (ownershipVerification) {
     throw new DomainOwnershipVerificationError(message, ownershipVerification);
+  }
+
+  const boundProjectUuid = parseBoundProjectUuid(body);
+
+  if (boundProjectUuid) {
+    throw new DomainBoundToProjectError(message, boundProjectUuid);
   }
 
   // 5xx responses are server-side failures worth escalating, so keep the
@@ -238,4 +280,27 @@ export async function claimDomain(
   });
 
   await assertDomainResponse(response, 'Failed to claim domain');
+}
+
+// Moves a domain from its current project (`projectUuid`, the source) to
+// `newProjectUuid` (the destination) within the same store. The API rejects a
+// transfer where the destination equals the source.
+export async function transferDomain(
+  domain: string,
+  projectUuid: string,
+  newProjectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<void> {
+  const response = await fetch(domainTransferUrl(storeHash, projectUuid, domain, apiHost), {
+    method: 'POST',
+    headers: {
+      ...authHeaders(accessToken),
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ new_project_uuid: newProjectUuid }),
+  });
+
+  await assertDomainResponse(response, 'Failed to transfer domain');
 }
