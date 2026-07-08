@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
+import { UserActionableError } from './errors';
 import { getTelemetry } from './telemetry';
 
 // `origin` is the CLI-API gateway (configured via `--cli-api-origin`, default
@@ -239,7 +240,7 @@ export async function updateChannelSiteUrl(
   );
 
   if (response.status === 401 || response.status === 403) {
-    throw new Error(
+    throw new UserActionableError(
       `Failed to update channel site (${response.status}). Re-run \`catalyst auth login\` to refresh your access token with the store_channel_settings scope.`,
     );
   }

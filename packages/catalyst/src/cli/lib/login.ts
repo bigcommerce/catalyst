@@ -5,6 +5,7 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { DEVICE_OAUTH_SCOPES, requestDeviceCode, waitForDeviceToken } from './auth';
+import { UserActionableError } from './errors';
 import { consola } from './logger';
 
 export interface LoginResult {
@@ -92,14 +93,14 @@ async function manualLogin(apiHost: string): Promise<LoginResult> {
   const storeHash = storeHashInput.trim();
 
   if (!storeHash) {
-    throw new Error('Store hash is required.');
+    throw new UserActionableError('Store hash is required.');
   }
 
   const accessTokenInput = await password({ message: 'Access token:', mask: true });
   const accessToken = accessTokenInput.trim();
 
   if (!accessToken) {
-    throw new Error('Access token is required.');
+    throw new UserActionableError('Access token is required.');
   }
 
   const spinner = yoctoSpinner().start('Validating credentials...');
@@ -113,7 +114,7 @@ async function manualLogin(apiHost: string): Promise<LoginResult> {
 
     const message = error instanceof Error ? error.message : String(error);
 
-    throw new Error(
+    throw new UserActionableError(
       `Could not validate credentials (${message}). Double-check your store hash and access token, then try again.`,
     );
   }
