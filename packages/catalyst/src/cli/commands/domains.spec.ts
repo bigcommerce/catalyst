@@ -6,6 +6,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, v
 
 import { server } from '../../../tests/mocks/node';
 import { claimDomain, createDomain, deleteDomain, getDomain, listDomains } from '../lib/domains';
+import { UserActionableError } from '../lib/errors';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
@@ -272,10 +273,47 @@ describe('domain API client', () => {
       ),
     );
 
-    await expect(
-      createDomain(domain, projectUuid, storeHash, accessToken, apiHost),
-    ).rejects.toThrow(
+    const error = await createDomain(domain, projectUuid, storeHash, accessToken, apiHost).catch(
+      (err: unknown) => err,
+    );
+
+    expect(error).toBeInstanceOf(Error);
+    // A 5xx is a server-side failure worth escalating, so it stays a plain Error
+    // and keeps the top-level Correlation ID + support framing.
+    expect(error).not.toBeInstanceOf(UserActionableError);
+    expect(error).toHaveProperty(
+      'message',
       'Failed to add domain: 502 Bad Gateway. This is a server-side response from the Domains API.',
+    );
+  });
+
+  test('treats a 4xx conflict as user-actionable (no support/correlation framing)', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/claim',
+        () =>
+          HttpResponse.json(
+            {
+              status: 409,
+              title:
+                'The domain is already bound to another project in this store. Use the transfer endpoint to move it.',
+              errors: {
+                domain: `'${domain}' is already bound to another project in this store.`,
+              },
+            },
+            { status: 409 },
+          ),
+      ),
+    );
+
+    const error = await claimDomain(domain, projectUuid, storeHash, accessToken, apiHost).catch(
+      (err: unknown) => err,
+    );
+
+    expect(error).toBeInstanceOf(UserActionableError);
+    expect(error).toHaveProperty(
+      'message',
+      expect.stringContaining('already bound to another project in this store'),
     );
   });
 

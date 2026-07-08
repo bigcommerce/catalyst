@@ -1,3 +1,5 @@
+import { UserActionableError } from './errors';
+
 // Thrown when an authenticated API call comes back 401 Unauthorized — i.e. the
 // access token was sent but rejected. This covers an expired/revoked token as
 // well as a token that was never valid (e.g. a typo'd `--access-token` flag or
@@ -10,7 +12,7 @@
 // let this propagate to the top-level handler in `index.ts`, which prints the
 // message without the generic "share your Correlation ID with support"
 // bug-report framing.
-export class UnauthorizedError extends Error {
+export class UnauthorizedError extends UserActionableError {
   constructor() {
     super(
       'Your access token is invalid or has expired.\n' +

@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
+import { UserActionableError } from './errors';
 import { formatV3Error } from './observability';
 import { getTelemetry } from './telemetry';
 
@@ -32,7 +33,7 @@ const ownershipVerificationMetaSchema = z.object({
 // domain bound to another store has not been verified. Carries the TXT record
 // the caller must publish so the command can render actionable next steps
 // instead of an opaque error.
-export class DomainOwnershipVerificationError extends Error {
+export class DomainOwnershipVerificationError extends UserActionableError {
   readonly ownershipVerification: OwnershipVerification;
 
   constructor(message: string, ownershipVerification: OwnershipVerification) {
@@ -111,7 +112,7 @@ async function assertDomainResponse(response: Response, action: string): Promise
   assertAuthorized(response);
 
   if (response.status === 403) {
-    throw new Error(DOMAINS_API_NOT_ENABLED);
+    throw new UserActionableError(DOMAINS_API_NOT_ENABLED);
   }
 
   if (response.ok) {
@@ -126,7 +127,14 @@ async function assertDomainResponse(response: Response, action: string): Promise
     throw new DomainOwnershipVerificationError(message, ownershipVerification);
   }
 
-  throw new Error(message);
+  // 5xx responses are server-side failures worth escalating, so keep the
+  // Correlation ID + support framing. A 4xx (validation, not-found, conflict)
+  // is a clear, user-actionable response — surface just the message.
+  if (response.status >= 500) {
+    throw new Error(message);
+  }
+
+  throw new UserActionableError(message);
 }
 
 export async function createDomain(

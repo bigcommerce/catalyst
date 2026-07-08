@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { UnauthorizedError } from './lib/auth-errors';
+import { UserActionableError } from './lib/errors';
 import { consola } from './lib/logger';
 import { getTelemetry } from './lib/telemetry';
 import { program } from './program';
@@ -22,9 +22,11 @@ const handleFatalError = async (error: unknown) => {
     // Don't mask the original error
   }
 
-  // An invalid/expired token is user-actionable, not a bug to report — print the
-  // re-auth guidance without the "share your Correlation ID with support" noise.
-  if (error instanceof UnauthorizedError) {
+  // A user-actionable error (invalid/expired token, a clear 4xx validation or
+  // conflict response, a feature that isn't enabled) already tells the user what
+  // to do — print it without the "share your Correlation ID with support" noise
+  // that only helps for genuine bugs and server-side failures.
+  if (error instanceof UserActionableError) {
     consola.error(errorMessage);
     process.exit(1);
   }
