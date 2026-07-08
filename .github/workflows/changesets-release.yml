@@ -51,10 +51,6 @@ jobs:
           # other workspace packages (client, create-catalyst, the CLI) are
           # released separately and shouldn't count toward this pipeline.
           include_paths: core/**
-          # TODO: one-time bootstrap bound so the first sync doesn't scan this
-          # existing project's full history. Remove once the pipeline has its
-          # own release bookmark.
-          base_ref: ${{ github.ref_name == 'canary' && '@bigcommerce/catalyst-core@1.8.0' || '@bigcommerce/catalyst-makeswift@1.8.0' }}
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
