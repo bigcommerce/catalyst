@@ -548,12 +548,18 @@ describe('add command', () => {
     await domains.parseAsync(['add', domain], { from: 'user' });
 
     expect(consola.warn).toHaveBeenCalledWith(
-      expect.stringContaining('already bound to a different store'),
+      expect.stringContaining('already in use on another store'),
     );
     expect(consola.log).toHaveBeenCalledWith(
       expect.stringContaining('bc-verify=019500e2933d70578e81090dd7240795'),
     );
-    expect(consola.info).toHaveBeenCalledWith(`Then run: catalyst domains claim ${domain}`);
+    expect(consola.info).toHaveBeenCalledWith(
+      `Once the record is live, run: catalyst domains claim ${domain}`,
+    );
+    // The raw V3 title/field text isn't echoed — the concise message replaces it.
+    expect(consola.warn).not.toHaveBeenCalledWith(
+      expect.stringContaining('Verify ownership using the claim endpoint'),
+    );
     expect(exitMock).toHaveBeenCalledWith(1);
   });
 });
@@ -704,9 +710,7 @@ describe('claim command', () => {
 
     await domains.parseAsync(['claim', domain], { from: 'user' });
 
-    expect(consola.warn).toHaveBeenCalledWith(
-      expect.stringContaining('ownership could not be verified'),
-    );
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('could not be verified'));
     expect(consola.log).toHaveBeenCalledWith(
       expect.stringContaining('bc-verify=019500e2933d70578e81090dd7240795'),
     );

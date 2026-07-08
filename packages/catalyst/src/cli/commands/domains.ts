@@ -89,7 +89,7 @@ export function formatDomain(domain: Domain): string {
 
 export function formatOwnershipVerification(record: OwnershipVerification): string {
   const lines = [
-    'Publish this DNS record to verify ownership, then run the claim again:',
+    'Add this DNS record to verify ownership:',
     `  Type:  ${record.type}`,
     `  Name:  ${record.name}`,
   ];
@@ -160,9 +160,9 @@ Examples:
       );
     } catch (error) {
       if (error instanceof DomainOwnershipVerificationError) {
-        consola.warn(error.message);
+        consola.warn(`${domain} is already in use on another store.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
-        consola.info(`Then run: catalyst domains claim ${domain}`);
+        consola.info(`Once the record is live, run: catalyst domains claim ${domain}`);
         process.exit(1);
 
         return;
@@ -318,8 +318,11 @@ Examples:
       );
     } catch (error) {
       if (error instanceof DomainOwnershipVerificationError) {
-        consola.warn(error.message);
+        consola.warn(`Ownership of ${domain} could not be verified yet.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
+        consola.info(
+          `Once the record is live, run the claim again: catalyst domains claim ${domain}`,
+        );
         process.exit(1);
 
         return;
