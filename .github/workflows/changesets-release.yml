@@ -45,8 +45,12 @@ jobs:
       - name: Sync Linear release
         uses: linear/linear-release-action@v0
         with:
-          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          # canary and integrations/makeswift are independently-versioned
+          # products with their own release cadence, so each targets its own
+          # Linear pipeline (and access key) rather than sharing one.
+          access_key: ${{ github.ref_name == 'canary' && secrets.LINEAR_ACCESS_KEY || secrets.LINEAR_MAKESWIFT_ACCESS_KEY }}
           command: sync
+          name: ${{ github.ref_name == 'canary' && '@bigcommerce/catalyst-core (unreleased)' || '@bigcommerce/catalyst-makeswift (unreleased)' }}
           # Only the storefront package ships as its own release; changes to
           # other workspace packages (client, create-catalyst, the CLI) are
           # released separately and shouldn't count toward this pipeline.
@@ -91,7 +95,8 @@ jobs:
         if: steps.headline.outputs.found == 'true'
         uses: linear/linear-release-action@v0
         with:
-          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          access_key: ${{ github.ref_name == 'canary' && secrets.LINEAR_ACCESS_KEY || secrets.LINEAR_MAKESWIFT_ACCESS_KEY }}
           command: complete
+          name: ${{ steps.headline.outputs.tag }}
           version: ${{ steps.headline.outputs.tag }}
           release_notes: /tmp/release-notes.md
