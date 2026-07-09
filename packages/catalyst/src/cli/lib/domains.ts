@@ -221,6 +221,33 @@ export async function getDomain(
   return domainResponseSchema.parse(result).data;
 }
 
+// Like `getDomain`, but returns null when the domain isn't present on the
+// given project (404) instead of throwing. Used by `transfer` to confirm the
+// source project actually owns the domain before attempting the move, so the
+// user gets clear guidance instead of the API's opaque ownership rejection.
+export async function findDomain(
+  domain: string,
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<Domain | null> {
+  const response = await fetch(domainUrl(storeHash, projectUuid, domain, apiHost), {
+    method: 'GET',
+    headers: authHeaders(accessToken),
+  });
+
+  if (response.status === 404) {
+    return null;
+  }
+
+  await assertDomainResponse(response, 'Failed to fetch domain');
+
+  const result: unknown = await response.json();
+
+  return domainResponseSchema.parse(result).data;
+}
+
 export async function listDomains(
   projectUuid: string,
   storeHash: string,

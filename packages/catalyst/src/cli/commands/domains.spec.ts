@@ -9,6 +9,7 @@ import {
   claimDomain,
   createDomain,
   deleteDomain,
+  findDomain,
   getDomain,
   listDomains,
   transferDomain,
@@ -457,6 +458,42 @@ describe('domain API client', () => {
     ).resolves.toBeUndefined();
     expect(capturedSourceProject).toBe(projectUuid);
     expect(capturedBody).toEqual({ new_project_uuid: newProjectUuid });
+  });
+
+  test('findDomain returns the domain when it exists on the project', async () => {
+    await expect(findDomain(domain, projectUuid, storeHash, accessToken, apiHost)).resolves.toEqual(
+      {
+        domain,
+        project_uuid: projectUuid,
+        verification_status: 'verified',
+      },
+    );
+  });
+
+  test('findDomain returns null when the domain is not on the project', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => new HttpResponse(null, { status: 404 }),
+      ),
+    );
+
+    await expect(
+      findDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).resolves.toBeNull();
+  });
+
+  test('findDomain still throws on non-404 errors', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => new HttpResponse(null, { status: 403 }),
+      ),
+    );
+
+    await expect(findDomain(domain, projectUuid, storeHash, accessToken, apiHost)).rejects.toThrow(
+      'Infrastructure Domains API not enabled',
+    );
   });
 
   test('surfaces the ownership-verification TXT record when a claim is not yet verified', async () => {
@@ -942,6 +979,37 @@ describe('transfer command', () => {
     expect(choiceValues).not.toContain(projectUuid);
     expect(capturedBody).toEqual({ new_project_uuid: destinationProjectUuid });
     expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} transferred.`);
+  });
+
+  test('errors with guidance when the domain is not on the source project', async () => {
+    let transferRequests = 0;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () => new HttpResponse(null, { status: 404 }),
+      ),
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/transfer',
+        () => {
+          transferRequests += 1;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await expect(
+      domains.parseAsync(['transfer', domain, '--to-project-uuid', destinationProjectUuid], {
+        from: 'user',
+      }),
+    ).rejects.toThrow(`${domain} isn't on the current project`);
+
+    // The transfer is never attempted, and the user is never prompted.
+    expect(transferRequests).toBe(0);
+    expect(selectMock).not.toHaveBeenCalled();
   });
 
   test('rejects a destination that matches the source project', async () => {

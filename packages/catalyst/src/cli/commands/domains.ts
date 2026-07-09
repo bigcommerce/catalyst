@@ -11,6 +11,7 @@ import {
   DomainOwnershipVerificationError,
   DomainStatus,
   DomainStatusFilter,
+  findDomain,
   getDomain,
   listDomains,
   OwnershipVerification,
@@ -432,6 +433,31 @@ Examples:
     const context = resolveDomainCommandContext(options);
 
     await getTelemetry().identify(context.storeHash);
+
+    // Confirm the domain is on the source project before doing anything else.
+    // `transfer` moves a domain *from* the current project, so a domain that
+    // lives elsewhere can't be transferred from here — catch it now instead of
+    // letting the API reject the transfer with an opaque ownership error after
+    // the user has already picked a destination.
+    consola.start(`Checking ${domain} on the current project...`);
+
+    const owned = await findDomain(
+      domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (!owned) {
+      throw new UserActionableError(
+        `${domain} isn't on the current project (${context.projectUuid}), so there's nothing to transfer from it. ` +
+          `Run this from the project that currently owns ${domain}, or pass its UUID with --project-uuid <uuid>. ` +
+          `Use \`catalyst domains list\` to find which project has it.`,
+      );
+    }
+
+    consola.success(`${domain} found on the current project.`);
 
     const newProjectUuid = await resolveDestinationProject(domain, context, options.toProjectUuid);
 
