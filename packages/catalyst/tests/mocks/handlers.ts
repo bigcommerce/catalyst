@@ -259,6 +259,40 @@ export const handlers = [
     }),
   ),
 
+  // Default handler for checkChannelEligibility — eligible by default. Tests
+  // covering the ineligible path should override with `server.use(...)`.
+  http.get('https://:apiHost/stores/:storeHash/cli-api/v3/channels/catalyst/eligibility', () =>
+    HttpResponse.json({ data: { eligible: true, message: 'Eligible.' } }),
+  ),
+
+  // Default handler for createChannel — returns a freshly-created Catalyst
+  // channel with its storefront token and env vars.
+  http.post('https://:apiHost/stores/:storeHash/cli-api/v3/channels/catalyst', () =>
+    HttpResponse.json({
+      data: {
+        id: 42,
+        storefront_api_token: 'new-sft-token',
+        envVars: {
+          BIGCOMMERCE_STORE_HASH: 'test-store',
+          BIGCOMMERCE_CHANNEL_ID: '42',
+          BIGCOMMERCE_STOREFRONT_TOKEN: 'new-sft-token',
+        },
+      },
+    }),
+  ),
+
+  // Default handler for getAvailableLocales — the channel-creation flow reads
+  // this to populate the language pickers.
+  http.get('https://:apiHost/stores/:storeHash/v3/settings/store/available-locales', () =>
+    HttpResponse.json({
+      data: [
+        { id: 'en', name: 'English', fallback: null, is_supported: true },
+        { id: 'es', name: 'Spanish', fallback: null, is_supported: true },
+        { id: 'fr', name: 'French', fallback: null, is_supported: true },
+      ],
+    }),
+  ),
+
   // Default handler for updateChannelSiteUrl — succeeds with a generic
   // payload. Tests that need to assert error handling should override.
   http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>

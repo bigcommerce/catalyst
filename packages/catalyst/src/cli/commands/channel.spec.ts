@@ -1,8 +1,8 @@
-import { confirm, select } from '@inquirer/prompts';
+import { checkbox, confirm, input, select } from '@inquirer/prompts';
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
@@ -18,6 +18,7 @@ vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
   confirm: vi.fn(),
   input: vi.fn(),
+  checkbox: vi.fn(),
 }));
 // `channel link` can trigger the interactive device-code login (browser +
 // spinner); stub both so the no-credentials path runs headless in tests.
@@ -27,6 +28,8 @@ vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
 
 const mockSelect = vi.mocked(select);
 const mockConfirm = vi.mocked(confirm);
+const mockInput = vi.mocked(input);
+const mockCheckbox = vi.mocked(checkbox);
 
 let exitMock: MockInstance;
 
@@ -105,6 +108,13 @@ describe('channel', () => {
 
     expect(link).toBeDefined();
     expect(link?.description()).toContain('Link this Catalyst project to a BigCommerce channel');
+  });
+
+  test('has the create subcommand', () => {
+    const create = channel.commands.find((cmd) => cmd.name() === 'create');
+
+    expect(create).toBeDefined();
+    expect(create?.description()).toContain('Create a new Catalyst storefront channel');
   });
 });
 
@@ -423,5 +433,199 @@ describe('channel link', () => {
     expect(config.get('storeHash')).toBe('mock-store-hash');
     expect(config.get('accessToken')).toBe('mock-access-token');
     expect(mockIdentify).toHaveBeenCalledWith('mock-store-hash');
+  });
+});
+
+describe('channel create', () => {
+  const eligibilityUrl =
+    'https://cxm-prd.bigcommerceapp.com/stores/:storeHash/cli-api/v3/channels/catalyst/eligibility';
+  const createUrl =
+    'https://cxm-prd.bigcommerceapp.com/stores/:storeHash/cli-api/v3/channels/catalyst';
+
+  test('creates a channel non-interactively and links it with --link', async () => {
+    let createBody: unknown;
+
+    server.use(
+      http.post(createUrl, async ({ request }) => {
+        createBody = await request.json();
+
+        return HttpResponse.json({
+          data: {
+            id: 42,
+            storefront_api_token: 'new-sft-token',
+            envVars: {
+              BIGCOMMERCE_STORE_HASH: storeHash,
+              BIGCOMMERCE_CHANNEL_ID: '42',
+              BIGCOMMERCE_STOREFRONT_TOKEN: 'new-sft-token',
+            },
+          },
+        });
+      }),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'channel',
+      'create',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--name',
+      'My Store',
+      '--locale',
+      'en',
+      '--additional-locales',
+      'es',
+      'fr',
+      '--no-sample-data',
+      '--link',
+    ]);
+
+    // No prompts when every input is flag-provided (including --link).
+    expect(mockInput).not.toHaveBeenCalled();
+    expect(mockSelect).not.toHaveBeenCalled();
+    expect(mockCheckbox).not.toHaveBeenCalled();
+
+    expect(createBody).toEqual({
+      name: 'My Store',
+      initialData: { type: 'none' },
+      deployStorefront: true,
+      devOrigin: 'http://localhost:3000',
+      storefrontLanguage: 'en',
+      additionalLocales: ['es', 'fr'],
+    });
+
+    expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Created channel 42'));
+
+    const envLocal = readFileSync(join(tmpDir, '.env.local'), 'utf8');
+
+    expect(envLocal).toContain('BIGCOMMERCE_CHANNEL_ID=42');
+    expect(envLocal).toContain('BIGCOMMERCE_STOREFRONT_TOKEN=new-sft-token');
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Linked to channel 42'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('aborts cleanly when the store is not eligible', async () => {
+    let createCalled = false;
+
+    server.use(
+      http.get(eligibilityUrl, () =>
+        HttpResponse.json({
+          data: { eligible: false, message: 'Your plan does not support new channels.' },
+        }),
+      ),
+      http.post(createUrl, () => {
+        createCalled = true;
+
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'channel',
+      'create',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--name',
+      'My Store',
+      '--locale',
+      'en',
+      '--additional-locales',
+      'es',
+    ]);
+
+    expect(consola.warn).toHaveBeenCalledWith('Your plan does not support new channels.');
+    expect(createCalled).toBe(false);
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prompts before linking and skips the .env.local write when declined', async () => {
+    const envPath = join(tmpDir, '.env.local');
+
+    rmSync(envPath, { force: true });
+
+    // Only the post-create link prompt should fire (create inputs are all flags).
+    mockSelect.mockResolvedValueOnce(false);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'channel',
+      'create',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--name',
+      'My Store',
+      '--locale',
+      'en',
+      '--additional-locales',
+      'es',
+      '--no-sample-data',
+    ]);
+
+    expect(mockSelect).toHaveBeenCalledTimes(1);
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Created channel 42'));
+    expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('Linked to channel'));
+    expect(existsSync(envPath)).toBe(false);
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('interactive path prompts for name, locale, languages, and sample data', async () => {
+    let createBody: unknown;
+
+    server.use(
+      http.post(createUrl, async ({ request }) => {
+        createBody = await request.json();
+
+        return HttpResponse.json({
+          data: {
+            id: 42,
+            storefront_api_token: 'new-sft-token',
+            envVars: { BIGCOMMERCE_CHANNEL_ID: '42' },
+          },
+        });
+      }),
+    );
+
+    mockInput.mockResolvedValueOnce('Interactive Channel');
+    // select order: default locale, "add languages?", "sample data?", link prompt
+    mockSelect
+      .mockResolvedValueOnce('en')
+      .mockResolvedValueOnce(true)
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(false);
+    mockCheckbox.mockResolvedValueOnce(['es']);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'channel',
+      'create',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(mockInput).toHaveBeenCalledTimes(1);
+    expect(mockCheckbox).toHaveBeenCalledTimes(1);
+    expect(createBody).toEqual({
+      name: 'Interactive Channel',
+      initialData: { type: 'none' },
+      deployStorefront: true,
+      devOrigin: 'http://localhost:3000',
+      storefrontLanguage: 'en',
+      additionalLocales: ['es'],
+    });
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Created channel 42'));
   });
 });
