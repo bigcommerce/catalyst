@@ -677,9 +677,8 @@ describe('add command', () => {
     expect(consola.log).toHaveBeenCalledWith(
       expect.stringContaining('bc-verify=019500e2933d70578e81090dd7240795'),
     );
-    expect(consola.info).toHaveBeenCalledWith(
-      `Once the record is live, run: catalyst domains claim ${domain}`,
-    );
+    expect(consola.info).toHaveBeenCalledWith('Once the record is live, claim it with:');
+    expect(consola.log).toHaveBeenCalledWith(`  catalyst domains claim ${domain}`);
     // The raw V3 title/field text isn't echoed — the concise message replaces it.
     expect(consola.warn).not.toHaveBeenCalledWith(
       expect.stringContaining('Verify ownership using the claim endpoint'),
@@ -715,8 +714,9 @@ describe('add command', () => {
     expect(consola.warn).toHaveBeenCalledWith(
       expect.stringContaining('already bound to another project in this store'),
     );
-    expect(consola.info).toHaveBeenCalledWith(
-      `To move it to this project, run: catalyst domains transfer ${domain} --project-uuid ${boundProjectUuid} --to-project-uuid ${projectUuid}`,
+    expect(consola.info).toHaveBeenCalledWith('To move it to this project, run:');
+    expect(consola.log).toHaveBeenCalledWith(
+      `  catalyst domains transfer ${domain} --project-uuid ${boundProjectUuid} --to-project-uuid ${projectUuid}`,
     );
     // The raw V3 title/field text isn't echoed — the concise message + suggestion replace it.
     expect(consola.warn).not.toHaveBeenCalledWith(

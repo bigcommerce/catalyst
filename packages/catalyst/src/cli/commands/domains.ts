@@ -208,7 +208,8 @@ Examples:
       if (error instanceof DomainOwnershipVerificationError) {
         consola.warn(`${domain} is already in use on another store.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
-        consola.info(`Once the record is live, run: catalyst domains claim ${domain}`);
+        consola.info('Once the record is live, claim it with:');
+        consola.log(`  catalyst domains claim ${domain}`);
         process.exit(1);
 
         return;
@@ -216,8 +217,9 @@ Examples:
 
       if (error instanceof DomainBoundToProjectError) {
         consola.warn(`${domain} is already bound to another project in this store.`);
-        consola.info(
-          `To move it to this project, run: catalyst domains transfer ${domain} --project-uuid ${error.projectUuid} --to-project-uuid ${context.projectUuid}`,
+        consola.info('To move it to this project, run:');
+        consola.log(
+          `  catalyst domains transfer ${domain} --project-uuid ${error.projectUuid} --to-project-uuid ${context.projectUuid}`,
         );
         process.exit(1);
 
@@ -376,9 +378,8 @@ Examples:
       if (error instanceof DomainOwnershipVerificationError) {
         consola.warn(`Ownership of ${domain} could not be verified yet.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
-        consola.info(
-          `Once the record is live, run the claim again: catalyst domains claim ${domain}`,
-        );
+        consola.info('Once the record is live, run the claim again:');
+        consola.log(`  catalyst domains claim ${domain}`);
         process.exit(1);
 
         return;
