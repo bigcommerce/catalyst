@@ -981,7 +981,49 @@ describe('transfer command', () => {
     expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} transferred.`);
   });
 
-  test('errors with guidance when the domain is not on the source project', async () => {
+  test('points at the owning project when the domain lives on another one', async () => {
+    // Default fetchProjects returns Project One (a23f…) + Project Two (b23f…).
+    // The domain is on Project One; the linked project and Project Two 404.
+    const ownerUuid = destinationProjectUuid;
+    let transferRequests = 0;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        ({ params }) =>
+          params.projectUuid === ownerUuid
+            ? HttpResponse.json({
+                data: { domain, project_uuid: ownerUuid, verification_status: 'verified' },
+              })
+            : new HttpResponse(null, { status: 404 }),
+      ),
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain/transfer',
+        () => {
+          transferRequests += 1;
+
+          return new HttpResponse(null, { status: 204 });
+        },
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['transfer', domain], { from: 'user' });
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining(`${domain} is on project "Project One" (${ownerUuid})`),
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      `  catalyst domains transfer ${domain} --project-uuid ${ownerUuid}`,
+    );
+    // The transfer is never attempted, and the user is never prompted.
+    expect(transferRequests).toBe(0);
+    expect(selectMock).not.toHaveBeenCalled();
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('errors when the domain is on no project in the store', async () => {
     let transferRequests = 0;
 
     server.use(
@@ -1005,7 +1047,7 @@ describe('transfer command', () => {
       domains.parseAsync(['transfer', domain, '--to-project-uuid', destinationProjectUuid], {
         from: 'user',
       }),
-    ).rejects.toThrow(`${domain} isn't on the current project`);
+    ).rejects.toThrow(`${domain} isn't on any project in this store`);
 
     // The transfer is never attempted, and the user is never prompted.
     expect(transferRequests).toBe(0);

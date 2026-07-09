@@ -451,11 +451,45 @@ Examples:
     );
 
     if (!owned) {
-      throw new UserActionableError(
-        `${domain} isn't on the current project (${context.projectUuid}), so there's nothing to transfer from it. ` +
-          `Run this from the project that currently owns ${domain}, or pass its UUID with --project-uuid <uuid>. ` +
-          `Use \`catalyst domains list\` to find which project has it.`,
+      // The domain isn't on the linked project. Scan the store's other projects
+      // so we can point the user at the exact owner — `domains list` only shows
+      // the *current* project's domains, so it can't help them find where the
+      // domain actually lives.
+      consola.start(`Locating the project that owns ${domain}...`);
+
+      const projects = await fetchProjects(context.storeHash, context.accessToken, context.apiHost);
+      const candidates = projects.filter((project) => project.uuid !== context.projectUuid);
+      const matches = await Promise.all(
+        candidates.map(async (project) => ({
+          project,
+          found: await findDomain(
+            domain,
+            project.uuid,
+            context.storeHash,
+            context.accessToken,
+            context.apiHost,
+          ),
+        })),
       );
+      const owner = matches.find((match) => match.found)?.project;
+
+      if (!owner) {
+        throw new UserActionableError(
+          `${domain} isn't on any project in this store. If it's in use on another store, ` +
+            `claim it with \`catalyst domains claim ${domain}\`; otherwise double-check the domain name.`,
+        );
+      }
+
+      const toSuffix = options.toProjectUuid ? ` --to-project-uuid ${options.toProjectUuid}` : '';
+
+      consola.warn(
+        `${domain} is on project "${owner.name}" (${owner.uuid}), not the current project.`,
+      );
+      consola.info('Re-run the transfer from that project:');
+      consola.log(`  catalyst domains transfer ${domain} --project-uuid ${owner.uuid}${toSuffix}`);
+      process.exit(1);
+
+      return;
     }
 
     consola.success(`${domain} found on the current project.`);
