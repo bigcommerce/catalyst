@@ -152,7 +152,9 @@ export async function createProject(
     throw new InfrastructureProjectValidationError(message);
   }
 
-  if (response.status === 403) {
+  // The API returns 403 (or 404 when the flag is off) if the store isn't in the
+  // Infrastructure Projects beta; both mean "not enabled for this store".
+  if (response.status === 403 || response.status === 404) {
     throw new UserActionableError(
       'Infrastructure Projects API not enabled. If you are part of the beta, contact support@bigcommerce.com to enable it.',
     );
