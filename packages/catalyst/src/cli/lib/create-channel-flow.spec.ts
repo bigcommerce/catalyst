@@ -74,9 +74,9 @@ describe('runCreateChannelFlow', () => {
       UserActionableError,
     );
 
-    await expect(
-      runCreateChannelFlow({ ...baseOptions, name: "Bob's Store" }),
-    ).rejects.toThrow(/not a valid channel name/);
+    await expect(runCreateChannelFlow({ ...baseOptions, name: "Bob's Store" })).rejects.toThrow(
+      /not a valid channel name/,
+    );
 
     expect(mockCreateChannel).not.toHaveBeenCalled();
     expect(mockInput).not.toHaveBeenCalled();

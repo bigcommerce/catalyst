@@ -7,8 +7,7 @@ import { getAvailableLocales } from './localization';
 
 // Human-readable summary of the allowed characters, reused in the prompt
 // validation and the flag-path error so both surface the same guidance.
-const ALLOWED_CHANNEL_NAME_CHARS =
-  'letters, numbers, spaces, hyphens (-), and underscores (_)';
+const ALLOWED_CHANNEL_NAME_CHARS = 'letters, numbers, spaces, hyphens (-), and underscores (_)';
 
 // The Catalyst channels API rejects names containing other punctuation (e.g. an
 // apostrophe in "Bob's Store") with an opaque server error. Validate up front so
