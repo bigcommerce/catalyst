@@ -63,59 +63,27 @@ describe('CLI program', () => {
   });
 });
 
-describe('--env-path option', () => {
+describe('env-file loading', () => {
   afterEach(() => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
   });
 
-  test('loads environment variables from file when --env-path points to existing file', async () => {
-    const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
-    const envPath = join(tmpDir, '.env');
+  test('--env-path is not a global option', () => {
+    const hasGlobalEnvPath = program.options.some((option) => option.long === '--env-path');
 
-    await writeFile(
-      envPath,
-      'CATALYST_STORE_HASH=test-store-hash\nCATALYST_ACCESS_TOKEN=test-access-token',
-      'utf-8',
-    );
-
-    try {
-      await program.parseAsync(['--env-path', envPath, 'version'], { from: 'user' });
-
-      expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
-      expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
-    } finally {
-      await cleanup();
-    }
+    expect(hasGlobalEnvPath).toBe(false);
   });
 
-  test('loads environment variables when --env-path is relative to cwd', async () => {
-    const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
-    const envFileName = '.env.catalyst-test';
-    const envPath = join(tmpDir, envFileName);
+  test('build and deploy expose an --env-path option', () => {
+    ['build', 'deploy'].forEach((name) => {
+      const command = program.commands.find((cmd) => cmd.name() === name);
 
-    await writeFile(
-      envPath,
-      'CATALYST_STORE_HASH=test-store-hash\nCATALYST_ACCESS_TOKEN=test-access-token',
-      'utf-8',
-    );
-
-    const originalCwd = process.cwd();
-
-    process.chdir(tmpDir);
-
-    try {
-      await program.parseAsync(['--env-path', envFileName, 'version'], { from: 'user' });
-
-      expect(process.env.CATALYST_STORE_HASH).toBe('test-store-hash');
-      expect(process.env.CATALYST_ACCESS_TOKEN).toBe('test-access-token');
-    } finally {
-      process.chdir(originalCwd);
-      await cleanup();
-    }
+      expect(command?.options.some((option) => option.long === '--env-path')).toBe(true);
+    });
   });
 
-  test('does not auto-load a .env.local from cwd when --env-path is omitted', async () => {
+  test('a non-build command does not load a .env.local from cwd', async () => {
     const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
     const envPath = join(tmpDir, '.env.local');
 
@@ -136,19 +104,6 @@ describe('--env-path option', () => {
       expect(process.env.CATALYST_ACCESS_TOKEN).toBeUndefined();
     } finally {
       process.chdir(originalCwd);
-      await cleanup();
-    }
-  });
-
-  test('throws when --env-path points to non-existent file', async () => {
-    const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
-    const nonExistentPath = join(tmpDir, '.env.missing');
-
-    try {
-      await expect(
-        program.parseAsync(['--env-path', nonExistentPath, 'version'], { from: 'user' }),
-      ).rejects.toThrow(/Env file not found/);
-    } finally {
       await cleanup();
     }
   });
