@@ -2,7 +2,33 @@ import { checkbox, input, select } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
 
 import { createChannel, type CreatedChannel } from './channels';
+import { UserActionableError } from './errors';
 import { getAvailableLocales } from './localization';
+
+// Human-readable summary of the allowed characters, reused in the prompt
+// validation and the flag-path error so both surface the same guidance.
+const ALLOWED_CHANNEL_NAME_CHARS =
+  'letters, numbers, spaces, hyphens (-), and underscores (_)';
+
+// The Catalyst channels API rejects names containing other punctuation (e.g. an
+// apostrophe in "Bob's Store") with an opaque server error. Validate up front so
+// the user gets an immediate, actionable message instead. Letters/numbers are
+// matched with Unicode classes so non-ASCII names (accents, other scripts) pass.
+const CHANNEL_NAME_PATTERN = /^[\p{L}\p{N} _-]+$/u;
+
+// Returns an error message when `name` is not a valid channel name, or
+// `undefined` when it is. Shared by the interactive prompt and the `--name` flag.
+export function getChannelNameError(name: string): string | undefined {
+  if (name.trim().length === 0) {
+    return 'Channel name cannot be empty.';
+  }
+
+  if (!CHANNEL_NAME_PATTERN.test(name)) {
+    return `"${name}" is not a valid channel name. Channel names may contain only ${ALLOWED_CHANNEL_NAME_CHARS}.`;
+  }
+
+  return undefined;
+}
 
 export interface CreateChannelFlowOptions {
   storeHash: string;
@@ -25,10 +51,21 @@ export async function runCreateChannelFlow(
 ): Promise<CreatedChannel> {
   const { storeHash, accessToken, apiHost, cliApiOrigin } = options;
 
+  // A `--name` flag skips the prompt (and its validation), so check it here to
+  // fail fast with the same clear message rather than an opaque API rejection.
+  if (options.name !== undefined) {
+    const nameError = getChannelNameError(options.name);
+
+    if (nameError) {
+      throw new UserActionableError(nameError);
+    }
+  }
+
   const name =
     options.name ??
     (await input({
       message: 'What would you like to name your new channel?',
+      validate: (value) => getChannelNameError(value) ?? true,
     }));
 
   // The locale list backs both the default-locale and additional-locales
