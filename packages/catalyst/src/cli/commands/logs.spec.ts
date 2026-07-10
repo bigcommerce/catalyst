@@ -320,7 +320,7 @@ describe('error handling', () => {
     );
 
     await expect(tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default')).rejects.toThrow(
-      'Failed to open log stream: 404 Not Found',
+      'Failed to open log stream: The request was rejected. Check your input — your access token may be missing a required scope, or the resource may not exist.',
     );
   });
 
@@ -446,7 +446,7 @@ describe('retry and reconnect', () => {
     );
 
     await expect(tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default')).rejects.toThrow(
-      'Failed to open log stream: 404 Not Found',
+      'Failed to open log stream: The request was rejected. Check your input — your access token may be missing a required scope, or the resource may not exist.',
     );
 
     // Server disconnect warnings should NOT contain "attempt X/5"
@@ -461,7 +461,7 @@ describe('retry and reconnect', () => {
       let requestCount = 0;
       const ttlMs = 200;
 
-      // Stream that stays open but never enqueues — simulates an API proxy
+      // Stream that stays open but never enqueues â simulates an API proxy
       // half-closing the socket: bytes stop arriving but no FIN or error is
       // surfaced, so reader.read() would otherwise block forever.
       const createStalledStream = () =>
@@ -491,7 +491,9 @@ describe('retry and reconnect', () => {
 
       await expect(
         tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default', ttlMs),
-      ).rejects.toThrow('Failed to open log stream: 404 Not Found');
+      ).rejects.toThrow(
+        'Failed to open log stream: The request was rejected. Check your input — your access token may be missing a required scope, or the resource may not exist.',
+      );
 
       expect(requestCount).toBe(3);
       expect(consola.warn).toHaveBeenCalledWith('Log stream idle, reconnecting...');
@@ -541,7 +543,9 @@ describe('retry and reconnect', () => {
 
     await expect(
       tailLogs(projectUuid, storeHash, accessToken, apiHost, 'default', ttlMs),
-    ).rejects.toThrow('Failed to open log stream: 404 Not Found');
+    ).rejects.toThrow(
+      'Failed to open log stream: The request was rejected. Check your input — your access token may be missing a required scope, or the resource may not exist.',
+    );
 
     // Should have connected 3 times: 2 TTL-triggered reconnects + final 404
     expect(requestCount).toBe(3);
