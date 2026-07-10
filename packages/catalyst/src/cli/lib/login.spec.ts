@@ -74,13 +74,7 @@ describe('device-code login', () => {
   test('waits for Enter before opening the browser when interactive', async () => {
     restoreTty = withTtyValue(true);
 
-    // The browser must not open until the user has pressed Enter, so assert it
-    // hasn't been called yet at the moment we prompt.
-    inputMock.mockImplementationOnce(() => {
-      expect(openMock).not.toHaveBeenCalled();
-
-      return Promise.resolve('');
-    });
+    inputMock.mockResolvedValueOnce('');
 
     const result = await login(LOGIN_URL, API_HOST);
 
@@ -88,6 +82,11 @@ describe('device-code login', () => {
       expect.objectContaining({ message: 'Press Enter to open your browser and sign in' }),
     );
     expect(openMock).toHaveBeenCalledWith(DEVICE_CODE.verification_uri);
+    // The browser must not open until the user has pressed Enter: the prompt has
+    // to be invoked before the call to open the browser.
+    expect(inputMock.mock.invocationCallOrder[0]).toBeLessThan(
+      openMock.mock.invocationCallOrder[0],
+    );
     expect(result).toEqual({ storeHash: 'store-hash', accessToken: 'access-token' });
   });
 
