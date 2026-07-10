@@ -43,7 +43,7 @@ program
   .version(PACKAGE_INFO.version)
   .summary('CLI tool for Catalyst development')
   .description(
-    'CLI tool for Catalyst development.\n\nEnv files are not loaded automatically. Pass `--env-path <path>` to load one (e.g. `--env-path .env.local`).\n\nConfiguration priority: flags > env file (--env-path) > process.env > .bigcommerce/project.json.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
+    'CLI tool for Catalyst development.\n\nConfiguration priority: flags > env file (--env-path) > process.env > .bigcommerce/project.json.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
   )
   .configureHelp({ showGlobalOptions: true })
   .addOption(
