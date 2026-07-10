@@ -8,12 +8,18 @@ import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
+import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
 const WRANGLER_VERSION = '4.90.0';
 
 export async function buildCatalystProject(projectUuid: string): Promise<void> {
+  // Fail fast with an actionable message if the vars the build reads aren't
+  // loaded — otherwise the missing values surface as a raw stack trace deep in
+  // the OpenNext/Next.js prerender.
+  assertRequiredBuildEnv();
+
   const coreDir = process.cwd();
   const openNextOutDir = join(coreDir, '.open-next');
   const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
