@@ -115,6 +115,31 @@ describe('--env-path option', () => {
     }
   });
 
+  test('does not auto-load a .env.local from cwd when --env-path is omitted', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
+    const envPath = join(tmpDir, '.env.local');
+
+    await writeFile(
+      envPath,
+      'CATALYST_STORE_HASH=should-not-load\nCATALYST_ACCESS_TOKEN=should-not-load',
+      'utf-8',
+    );
+
+    const originalCwd = process.cwd();
+
+    process.chdir(tmpDir);
+
+    try {
+      await program.parseAsync(['version'], { from: 'user' });
+
+      expect(process.env.CATALYST_STORE_HASH).toBeUndefined();
+      expect(process.env.CATALYST_ACCESS_TOKEN).toBeUndefined();
+    } finally {
+      process.chdir(originalCwd);
+      await cleanup();
+    }
+  });
+
   test('throws when --env-path points to non-existent file', async () => {
     const [tmpDir, cleanup] = await mkTempDir('catalyst-env-path-');
     const nonExistentPath = join(tmpDir, '.env.missing');

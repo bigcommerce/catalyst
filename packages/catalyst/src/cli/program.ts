@@ -2,7 +2,6 @@ import { Option } from '@commander-js/extra-typings';
 import { Command } from 'commander';
 import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
-import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import PACKAGE_INFO from '../../package.json';
@@ -23,13 +22,9 @@ import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
 
-// Auto-load .env.local from cwd if present, matching Next.js convention.
-// `--env-path` (loaded later via argParser) overrides anything we load here.
-const defaultEnvPath = resolve(process.cwd(), '.env.local');
-
-if (existsSync(defaultEnvPath)) {
-  config({ path: defaultEnvPath });
-}
+// Env files are never auto-loaded. Pass `--env-path <path>` to load one
+// explicitly (see the option below). This avoids the confusing `.env` vs
+// `.env.local` asymmetry and keeps configuration explicit.
 
 // CATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH so freshly-scaffolded
 // projects work without duplicating the same value under two names. Aliasing
@@ -48,13 +43,13 @@ program
   .version(PACKAGE_INFO.version)
   .summary('CLI tool for Catalyst development')
   .description(
-    'CLI tool for Catalyst development.\n\nConfiguration priority: flags > env file (--env-path) > process.env > .env.local (auto-loaded from cwd) > .bigcommerce/project.json.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
+    'CLI tool for Catalyst development.\n\nEnv files are not loaded automatically. Pass `--env-path <path>` to load one (e.g. `--env-path .env.local`).\n\nConfiguration priority: flags > env file (--env-path) > process.env > .bigcommerce/project.json.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
   )
   .configureHelp({ showGlobalOptions: true })
   .addOption(
     new Option(
       '--env-path <path>',
-      'Path to environment file to load (relative to current working directory)',
+      'Path to an environment file to load (relative to the current working directory). Env files are not loaded automatically; pass e.g. `--env-path .env.local` to load one.',
       // We are using argParser, because commander loads in environment variables before executing hooks.
     ).argParser((value) => {
       if (value) {
