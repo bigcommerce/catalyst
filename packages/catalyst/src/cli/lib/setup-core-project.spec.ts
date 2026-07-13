@@ -12,6 +12,7 @@ const packageJsonSchema = z.looseObject({
   name: z.string().optional(),
   scripts: z.record(z.string(), z.string()).optional(),
   dependencies: z.record(z.string(), z.string()).optional(),
+  devDependencies: z.record(z.string(), z.string()).optional(),
 });
 
 let projectDir: string;
@@ -81,14 +82,25 @@ describe('setupCoreProject', () => {
     });
   });
 
-  it('adds @bigcommerce/catalyst dep at the CLI version', () => {
+  it('adds @bigcommerce/catalyst as a devDependency at the CLI version', () => {
+    writeCorePackageJson({ devDependencies: { prettier: '^3.0.0' } });
+
+    setupCoreProject(projectDir);
+
+    const pkg = readCorePackageJson();
+
+    expect(pkg.devDependencies?.['@bigcommerce/catalyst']).toBe(PACKAGE_INFO.version);
+    expect(pkg.devDependencies?.prettier).toBe('^3.0.0');
+  });
+
+  it('does not add @bigcommerce/catalyst to runtime dependencies', () => {
     writeCorePackageJson({ dependencies: { next: '^15.0.0' } });
 
     setupCoreProject(projectDir);
 
     const pkg = readCorePackageJson();
 
-    expect(pkg.dependencies?.['@bigcommerce/catalyst']).toBe(PACKAGE_INFO.version);
+    expect(pkg.dependencies?.['@bigcommerce/catalyst']).toBeUndefined();
     expect(pkg.dependencies?.next).toBe('^15.0.0');
   });
 
