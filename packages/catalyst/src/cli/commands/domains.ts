@@ -1,4 +1,4 @@
-import { confirm } from '@inquirer/prompts';
+import { confirm, select } from '@inquirer/prompts';
 import { Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
@@ -7,14 +7,19 @@ import {
   createDomain,
   deleteDomain,
   Domain,
+  DomainBoundToProjectError,
   DomainOwnershipVerificationError,
   DomainStatus,
   DomainStatusFilter,
+  findDomain,
   getDomain,
   listDomains,
   OwnershipVerification,
+  transferDomain,
 } from '../lib/domains';
+import { UserActionableError } from '../lib/errors';
 import { consola } from '../lib/logger';
+import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
 import {
@@ -77,6 +82,47 @@ function resolveDomainCommandContext(options: DomainCommandOptions): DomainComma
     accessToken,
     apiHost: options.apiHost,
   };
+}
+
+// Resolves the destination project for a transfer. Uses `--to-project-uuid`
+// when given; otherwise fetches the store's projects and prompts the user to
+// pick one, excluding the source project (a domain can't be transferred to the
+// project it already belongs to).
+async function resolveDestinationProject(
+  domain: string,
+  context: DomainCommandContext,
+  toProjectUuid?: string,
+): Promise<string> {
+  if (toProjectUuid) {
+    if (toProjectUuid === context.projectUuid) {
+      throw new UserActionableError('The destination project must differ from the source project.');
+    }
+
+    return toProjectUuid;
+  }
+
+  consola.start('Fetching projects...');
+
+  const projects = await fetchProjects(context.storeHash, context.accessToken, context.apiHost);
+
+  consola.success('Projects fetched.');
+
+  const destinations = projects.filter((project) => project.uuid !== context.projectUuid);
+
+  if (destinations.length === 0) {
+    throw new UserActionableError(
+      'No other projects to transfer to. Create another project with `catalyst project create` first.',
+    );
+  }
+
+  return select({
+    message: `Select the project to transfer ${domain} to (Press <enter> to select).`,
+    choices: destinations.map((project) => ({
+      name: project.name,
+      value: project.uuid,
+      description: project.uuid,
+    })),
+  });
 }
 
 export function formatDomainStatus(status: DomainStatus): string {
@@ -162,7 +208,19 @@ Examples:
       if (error instanceof DomainOwnershipVerificationError) {
         consola.warn(`${domain} is already in use on another store.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
-        consola.info(`Once the record is live, run: catalyst domains claim ${domain}`);
+        consola.info('Once the record is live, claim it with:');
+        consola.log(`  catalyst domains claim ${domain}`);
+        process.exit(1);
+
+        return;
+      }
+
+      if (error instanceof DomainBoundToProjectError) {
+        consola.warn(`${domain} is already bound to another project in this store.`);
+        consola.info('To move it to this project, run:');
+        consola.log(
+          `  catalyst domains transfer ${domain} --project-uuid ${error.projectUuid} --to-project-uuid ${context.projectUuid}`,
+        );
         process.exit(1);
 
         return;
@@ -320,9 +378,8 @@ Examples:
       if (error instanceof DomainOwnershipVerificationError) {
         consola.warn(`Ownership of ${domain} could not be verified yet.`);
         consola.log(formatOwnershipVerification(error.ownershipVerification));
-        consola.info(
-          `Once the record is live, run the claim again: catalyst domains claim ${domain}`,
-        );
+        consola.info('Once the record is live, run the claim again:');
+        consola.log(`  catalyst domains claim ${domain}`);
         process.exit(1);
 
         return;
@@ -344,6 +401,131 @@ Examples:
     if (options.wait && result.verification_status === 'pending') {
       consola.start(`Waiting for ${result.domain} to verify...`);
       result = await waitForDomainVerification({ domain: result.domain, ...context });
+    }
+
+    consola.log(formatDomain(result));
+    process.exit(0);
+  });
+
+const transfer = new Command('transfer')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Transfer a custom domain to another project in the same store.')
+  .argument('<domain>', 'Custom domain to transfer.')
+  .addHelpText(
+    'after',
+    `
+The domain is transferred from the current project to the destination project.
+Omit --to-project-uuid to pick the destination from a list of your projects.
+
+Examples:
+  # Pick the destination project interactively
+  $ catalyst domains transfer www.example.com
+
+  # Transfer to a specific project
+  $ catalyst domains transfer www.example.com --to-project-uuid <uuid>`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(projectUuidOption())
+  .option('--to-project-uuid <uuid>', 'Destination project UUID. Prompts to choose one if omitted.')
+  .option('--wait', 'Poll until domain verification completes or times out.')
+  .action(async (domain, options) => {
+    const context = resolveDomainCommandContext(options);
+
+    await getTelemetry().identify(context.storeHash);
+
+    // Confirm the domain is on the source project before doing anything else.
+    // `transfer` moves a domain *from* the current project, so a domain that
+    // lives elsewhere can't be transferred from here — catch it now instead of
+    // letting the API reject the transfer with an opaque ownership error after
+    // the user has already picked a destination.
+    consola.start(`Checking ${domain} on the current project...`);
+
+    const owned = await findDomain(
+      domain,
+      context.projectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (!owned) {
+      // The domain isn't on the linked project. Scan the store's other projects
+      // so we can point the user at the exact owner — `domains list` only shows
+      // the *current* project's domains, so it can't help them find where the
+      // domain actually lives.
+      consola.start(`Locating the project that owns ${domain}...`);
+
+      const projects = await fetchProjects(context.storeHash, context.accessToken, context.apiHost);
+      const candidates = projects.filter((project) => project.uuid !== context.projectUuid);
+      const matches = await Promise.all(
+        candidates.map(async (project) => ({
+          project,
+          found: await findDomain(
+            domain,
+            project.uuid,
+            context.storeHash,
+            context.accessToken,
+            context.apiHost,
+          ),
+        })),
+      );
+      const owner = matches.find((match) => match.found)?.project;
+
+      if (!owner) {
+        throw new UserActionableError(
+          `${domain} isn't on any project in this store. If it's in use on another store, ` +
+            `claim it with \`catalyst domains claim ${domain}\`; otherwise double-check the domain name.`,
+        );
+      }
+
+      const toSuffix = options.toProjectUuid ? ` --to-project-uuid ${options.toProjectUuid}` : '';
+
+      consola.warn(
+        `${domain} is on project "${owner.name}" (${owner.uuid}), not the current project.`,
+      );
+      consola.info('Re-run the transfer from that project:');
+      consola.log(`  catalyst domains transfer ${domain} --project-uuid ${owner.uuid}${toSuffix}`);
+      process.exit(1);
+
+      return;
+    }
+
+    consola.success(`${domain} found on the current project.`);
+
+    const newProjectUuid = await resolveDestinationProject(domain, context, options.toProjectUuid);
+
+    consola.start(`Transferring domain ${domain}...`);
+
+    await transferDomain(
+      domain,
+      context.projectUuid,
+      newProjectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    consola.success(`Domain ${domain} transferred.`);
+
+    let result = await getDomain(
+      domain,
+      newProjectUuid,
+      context.storeHash,
+      context.accessToken,
+      context.apiHost,
+    );
+
+    if (options.wait && result.verification_status === 'pending') {
+      consola.start(`Waiting for ${result.domain} to verify...`);
+      result = await waitForDomainVerification({
+        domain: result.domain,
+        projectUuid: newProjectUuid,
+        storeHash: context.storeHash,
+        accessToken: context.accessToken,
+        apiHost: context.apiHost,
+      });
     }
 
     consola.log(formatDomain(result));
@@ -418,4 +600,5 @@ export const domains = new Command('domains')
   .addCommand(list)
   .addCommand(showStatus)
   .addCommand(claim)
+  .addCommand(transfer)
   .addCommand(remove);

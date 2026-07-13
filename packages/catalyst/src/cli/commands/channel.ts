@@ -8,11 +8,13 @@ import { join } from 'node:path';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   channelPlatformLabel,
+  checkChannelEligibility,
   fetchAvailableChannels,
   getChannelInit,
   sortChannelsByPlatform,
 } from '../lib/channels';
 import { NoLinkedProjectError } from '../lib/commerce-hosting';
+import { runCreateChannelFlow } from '../lib/create-channel-flow';
 import { parseEnvAssignment } from '../lib/env-config';
 import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
@@ -26,6 +28,7 @@ import {
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
+import { writeEnv } from '../lib/write-env';
 
 const parseChannelId = (value: string): number => {
   const parsed = Number.parseInt(value, 10);
@@ -245,8 +248,124 @@ Examples:
     process.exit(0);
   });
 
+const create = new Command('create')
+  .configureHelp({ showGlobalOptions: true })
+  .description('Create a new Catalyst storefront channel on your BigCommerce store.')
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Create a channel interactively (logs you in if needed)
+  $ catalyst channel create
+
+  # Non-interactive, and link it to this project afterwards
+  $ catalyst channel create --name "My Store" --locale en --no-sample-data --link
+
+  # Add additional storefront languages (max 4)
+  $ catalyst channel create --name "My Store" --additional-locales es fr`,
+  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
+  .addOption(loginUrlOption())
+  .option('--name <name>', 'Name for the new channel. Skips the name prompt.')
+  .option(
+    '--locale <locale>',
+    'Default storefront locale (e.g. "en"). Skips the default-language prompt.',
+  )
+  .option(
+    '--additional-locales <locales...>',
+    'Additional storefront locales, max 4 (e.g. --additional-locales es fr). Skips the additional-languages prompt.',
+  )
+  .addOption(new Option('--sample-data', 'Install sample data on the new channel.'))
+  .addOption(new Option('--no-sample-data', 'Create the channel without sample data.'))
+  .option(
+    '--link',
+    'Link the new channel to this project — write its credentials to .env.local without prompting.',
+  )
+  .addOption(
+    new Option('--cli-api-origin <origin>', 'Catalyst CLI API origin')
+      .default('https://cxm-prd.bigcommerceapp.com')
+      .hideHelp(),
+  )
+  .action(async (options) => {
+    if (options.additionalLocales && options.additionalLocales.length > 4) {
+      consola.error('You can only set up to 4 additional locales.');
+      process.exit(1);
+
+      return;
+    }
+
+    const config = getProjectConfig();
+
+    const credentials = await resolveCredentialsWithLogin(options, config);
+
+    if (!credentials) {
+      consola.info(
+        'Login aborted. Re-run `catalyst channel create` when you have your credentials ready.',
+      );
+      process.exit(0);
+
+      return;
+    }
+
+    const { storeHash, accessToken } = credentials;
+
+    await getTelemetry().identify(storeHash);
+
+    const eligibility = await checkChannelEligibility(storeHash, accessToken, options.cliApiOrigin);
+
+    if (!eligibility.eligible) {
+      consola.warn(eligibility.message);
+      process.exit(0);
+
+      return;
+    }
+
+    const channelData = await runCreateChannelFlow({
+      storeHash,
+      accessToken,
+      apiHost: options.apiHost,
+      cliApiOrigin: options.cliApiOrigin,
+      name: options.name,
+      locale: options.locale,
+      additionalLocales: options.additionalLocales,
+      sampleData: options.sampleData,
+    });
+
+    consola.success(`Created channel ${channelData.channelId}.`);
+    consola.warn(
+      'A preview storefront has been deployed in your BigCommerce control panel. This preview may look different from your local environment as it may be running different code. Additionally, it may take a few minutes for the channel storefront to be accessible.',
+    );
+
+    // `--link` opts in non-interactively; otherwise ask before touching .env.local.
+    const shouldLink = options.link
+      ? true
+      : await select({
+          message: 'Would you like to link this channel to your project?',
+          choices: [
+            { name: 'Yes', value: true },
+            { name: 'No', value: false },
+          ],
+        });
+
+    if (shouldLink) {
+      // Same write path as `channel link`: write the channel's credentials to
+      // .env.local in the current working directory (where `dev`/`build`/`deploy` run).
+      writeEnv(process.cwd(), channelData.envVars);
+
+      consola.success(
+        `Linked to channel ${channelData.channelId} and wrote ${colorize('cyanBright', '.env.local')}.`,
+      );
+      consola.log(`Next steps:\n\n  ${colorize('yellow', 'pnpm run dev')}`);
+    }
+
+    process.exit(0);
+  });
+
 export const channel = new Command('channel')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage BigCommerce channels.')
+  .addCommand(create)
   .addCommand(link)
   .addCommand(update);

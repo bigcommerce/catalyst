@@ -1,5 +1,5 @@
 import { Command, InvalidArgumentError, Option } from '@commander-js/extra-typings';
-import { checkbox, input, select } from '@inquirer/prompts';
+import { input, select } from '@inquirer/prompts';
 import { execSync } from 'child_process';
 import { colorize } from 'consola/utils';
 import { pathExistsSync } from 'fs-extra/esm';
@@ -10,17 +10,16 @@ import { DEFAULT_LOGIN_URL } from '../lib/auth';
 import {
   channelPlatformLabel,
   checkChannelEligibility,
-  createChannel,
   fetchAvailableChannels,
   getChannelInit,
   sortChannelsByPlatform,
 } from '../lib/channels';
 import { promptForCommerceHostingProject, setupCommerceHosting } from '../lib/commerce-hosting';
+import { runCreateChannelFlow } from '../lib/create-channel-flow';
 import { detectPackageManager } from '../lib/detect-package-manager';
 import { extractCatalyst } from '../lib/extract-catalyst';
 import { initGitRepo } from '../lib/init-git-repo';
 import { installDependencies } from '../lib/install-dependencies';
-import { getAvailableLocales } from '../lib/localization';
 import { consola } from '../lib/logger';
 import { login, LoginAbortedError } from '../lib/login';
 import { hasProjectsAccess, type ProjectListItem } from '../lib/project';
@@ -66,70 +65,6 @@ function parseEnvFlag(
   }
 
   return { ...previous, [key]: val };
-}
-
-async function handleChannelCreation(
-  storeHash: string,
-  accessToken: string,
-  apiHost: string,
-  cliApiOrigin: string,
-) {
-  const newChannelName = await input({
-    message: 'What would you like to name your new channel?',
-  });
-
-  const availableLocales = await getAvailableLocales(storeHash, accessToken, apiHost);
-
-  const storefrontLocale = await select({
-    message: 'Which default language would you like to set for your channel?',
-    default: 'en',
-    choices: availableLocales,
-    theme: {
-      style: {
-        help: () => colorize('dim', '(Select locale from the list or start typing the name)'),
-      },
-    },
-  });
-
-  const shouldAddAdditionalLocales = await select({
-    message: 'Would you like to add additional languages?',
-    choices: [
-      { name: 'Yes', value: true },
-      { name: 'No', value: false },
-    ],
-  });
-
-  let additionalLocales: string[] = [];
-
-  if (shouldAddAdditionalLocales) {
-    const localeChoices = availableLocales
-      .filter(({ value }) => value !== storefrontLocale)
-      .map(({ name, value }) => ({ name, value, description: value }));
-
-    additionalLocales = await checkbox({
-      message: 'Which additional languages would you like to add to your channel?',
-      choices: localeChoices,
-      validate: (items) => items.length <= 4 || 'You can only select up to 4 additional languages.',
-    });
-  }
-
-  const shouldInstallSampleData = await select({
-    message: 'Would you like to install sample data?',
-    choices: [
-      { name: 'Yes', value: true },
-      { name: 'No', value: false },
-    ],
-  });
-
-  return createChannel(
-    newChannelName,
-    storefrontLocale,
-    additionalLocales,
-    shouldInstallSampleData,
-    storeHash,
-    accessToken,
-    cliApiOrigin,
-  );
 }
 
 async function handleChannelSelection(storeHash: string, accessToken: string, apiHost: string) {
@@ -357,12 +292,12 @@ Examples:
         }
 
         if (shouldCreateChannel) {
-          const channelData = await handleChannelCreation(
+          const channelData = await runCreateChannelFlow({
             storeHash,
             accessToken,
             apiHost,
             cliApiOrigin,
-          );
+          });
 
           channelId = channelData.channelId;
           storefrontToken = channelData.storefrontToken;

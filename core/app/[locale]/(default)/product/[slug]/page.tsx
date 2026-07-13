@@ -7,6 +7,7 @@ import { SearchParams } from 'nuqs/server';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
+import { ProductVideos } from '@/vibes/soul/sections/product-detail/product-videos';
 import { auth, getSessionCustomerAccessToken } from '~/auth';
 import { rewriteWysiwygContentUrls } from '~/data-transformers/html-content-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -196,6 +197,18 @@ export default async function Product({ params, searchParams }: Props) {
         : images,
       pageInfo: product.images.pageInfo,
     };
+  });
+
+  // Product videos render in their own section below the primary content, so
+  // they're streamed independently of the gallery images. The Storefront
+  // GraphQL API returns each video as { title, url } (a YouTube watch URL).
+  const streamableVideos = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return removeEdgesAndNodes(product.videos).map((video) => ({
+      url: video.url,
+      title: video.title,
+    }));
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
@@ -601,6 +614,10 @@ export default async function Product({ params, searchParams }: Props) {
           user={streamableUser}
         />
       </ProductAnalyticsProvider>
+
+      <Stream fallback={null} value={streamableVideos}>
+        {(videos) => videos.length > 0 && <ProductVideos videos={videos} />}
+      </Stream>
 
       <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
