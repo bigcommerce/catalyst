@@ -10,6 +10,7 @@ import {
 const completeEnv = (): NodeJS.ProcessEnv => ({
   BIGCOMMERCE_STORE_HASH: 'abc123',
   BIGCOMMERCE_STOREFRONT_TOKEN: 'token',
+  BIGCOMMERCE_CHANNEL_ID: '1',
   AUTH_SECRET: 'secret',
 });
 

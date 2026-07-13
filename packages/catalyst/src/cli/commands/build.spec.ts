@@ -17,6 +17,12 @@ vi.mock('../lib/project-state', () => ({
   getProjectState: vi.fn(),
 }));
 
+// The required-env check has its own unit tests; here we only care about
+// command routing, so keep it a no-op regardless of the ambient environment.
+vi.mock('../lib/required-build-env', () => ({
+  assertRequiredBuildEnv: vi.fn(),
+}));
+
 const untransformedState = {
   projectUuid: undefined,
   hasMiddleware: false,

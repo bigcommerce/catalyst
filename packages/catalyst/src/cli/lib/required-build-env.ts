@@ -1,14 +1,17 @@
 import { UserActionableError } from './errors';
 
 // Env vars the core storefront build genuinely asserts on. Without these the
-// OpenNext/Next.js build fails deep inside prerendering with a raw stack trace
-// (empty storefront token/store hash make Storefront API calls fail; a missing
-// AUTH_SECRET throws "AUTH_SECRET is not set" during static generation). These
-// are the values with no default in core/.env.example that the app reads at
-// build time — see core/client/index.ts and core/auth/anonymous-session.ts.
+// OpenNext/Next.js build fails deep inside prerendering with a raw stack trace:
+// BIGCOMMERCE_CHANNEL_ID is passed straight to createClient() with no fallback,
+// so the client constructor throws "Client configuration must include a
+// channelId" immediately; empty storefront token/store hash make Storefront API
+// calls fail; a missing AUTH_SECRET throws "AUTH_SECRET is not set" during
+// static generation. These are the values the app reads at build time — see
+// core/client/index.ts and core/auth/anonymous-session.ts.
 export const REQUIRED_BUILD_ENV_VARS = [
   'BIGCOMMERCE_STORE_HASH',
   'BIGCOMMERCE_STOREFRONT_TOKEN',
+  'BIGCOMMERCE_CHANNEL_ID',
   'AUTH_SECRET',
 ] as const;
 

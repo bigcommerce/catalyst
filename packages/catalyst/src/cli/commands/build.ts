@@ -125,6 +125,11 @@ Examples:
       consola.info('Project is not set up for Commerce Hosting — running `next build`.');
       consola.info('To deploy to Commerce Hosting, run `catalyst deploy`.');
 
+      // `next build` reads the same storefront env vars; fail fast with an
+      // actionable message here too, since this path doesn't go through
+      // buildCatalystProject where the check normally runs.
+      assertRequiredBuildEnv();
+
       await execa('pnpm', ['exec', 'next', 'build'], {
         stdio: 'inherit',
         cwd: process.cwd(),
