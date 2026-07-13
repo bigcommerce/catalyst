@@ -12,6 +12,7 @@ const CategoryPageQuery = graphql(
         category(entityId: $entityId) {
           entityId
           name
+          defaultProductSort
           ...BreadcrumbsFragment
           seo {
             pageTitle
