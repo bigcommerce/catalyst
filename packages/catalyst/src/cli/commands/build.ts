@@ -8,12 +8,18 @@ import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
+import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
 const WRANGLER_VERSION = '4.90.0';
 
 export async function buildCatalystProject(projectUuid: string): Promise<void> {
+  // Fail fast with an actionable message if the vars the build reads aren't
+  // loaded — otherwise the missing values surface as a raw stack trace deep in
+  // the OpenNext/Next.js prerender.
+  assertRequiredBuildEnv();
+
   const coreDir = process.cwd();
   const openNextOutDir = join(coreDir, '.open-next');
   const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
@@ -118,6 +124,11 @@ Examples:
     if (!state.isTransformed) {
       consola.info('Project is not set up for Commerce Hosting — running `next build`.');
       consola.info('To deploy to Commerce Hosting, run `catalyst deploy`.');
+
+      // `next build` reads the same storefront env vars; fail fast with an
+      // actionable message here too, since this path doesn't go through
+      // buildCatalystProject where the check normally runs.
+      assertRequiredBuildEnv();
 
       await execa('pnpm', ['exec', 'next', 'build'], {
         stdio: 'inherit',
