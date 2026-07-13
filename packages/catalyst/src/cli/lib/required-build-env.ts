@@ -41,11 +41,10 @@ export const assertRequiredBuildEnv = (env: NodeJS.ProcessEnv = process.env): vo
   throw new UserActionableError(
     `Missing required environment variable${missing.length === 1 ? '' : 's'} for the build:\n` +
       `${missingList}\n\n` +
-      'These are read by the build itself, so they must be present in your ' +
-      'environment before it runs. If your values live in a `.env.local` file, ' +
-      'load it with `--env-path` — for example:\n' +
-      '  catalyst deploy --env-path .env.local\n' +
-      "If you're running from a subdirectory, point at the project root instead " +
-      '(e.g. `--env-path ../.env.local`).',
+      'These are read by the build itself, so they must be set before it runs. ' +
+      'The build automatically loads a `.env.local` from the current directory ' +
+      `(${process.cwd()}) — create or update it there with the variables above.\n` +
+      'To load an env file from a different location, pass `--env-path <path>` ' +
+      '(for example `--env-path ../.env.local` when running from a subdirectory).',
   );
 };
