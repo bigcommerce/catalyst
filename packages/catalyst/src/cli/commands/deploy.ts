@@ -8,6 +8,7 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { assertAuthorized } from '../lib/auth-errors';
+import { loadBuildEnv } from '../lib/build-env';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   cleanupCloudflareIncompatibilities,
@@ -30,6 +31,7 @@ import { resolveCredentials } from '../lib/resolve-credentials';
 import {
   accessTokenOption,
   apiHostOption,
+  envPathOption,
   projectUuidOption,
   storeHashOption,
 } from '../lib/shared-options';
@@ -398,6 +400,7 @@ Example:
     '--prebuilt',
     'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
   )
+  .addOption(envPathOption())
   .action(async (options) => {
     const config = getProjectConfig();
     const { storeHash, accessToken } = resolveCredentials(options, config);
@@ -513,6 +516,11 @@ Example:
 
       consola.info('Using existing build output (--prebuilt).');
     } else {
+      // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
+      // env file(s) before building so both the build and any pre-build checks
+      // see them. Skipped for --prebuilt above, which doesn't run the build.
+      loadBuildEnv({ envPath: options.envPath });
+
       await buildCatalystProject(projectUuid);
     }
 

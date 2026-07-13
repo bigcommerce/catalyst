@@ -33,6 +33,12 @@ export const projectUuidOption = () =>
     'BigCommerce infrastructure project UUID. Read from .bigcommerce/project.json or .env when not provided.',
   ).env('CATALYST_PROJECT_UUID');
 
+export const envPathOption = () =>
+  new Option(
+    '--env-path <path>',
+    'Path to an environment file to load for the build (relative to the current working directory). When omitted, .env.local and .env are auto-loaded from the current directory. Other commands never load env files.',
+  );
+
 export const resolveProjectUuid = (options: { projectUuid?: string }) => {
   const config = getProjectConfig();
   const projectUuid = options.projectUuid ?? config.get('projectUuid');
