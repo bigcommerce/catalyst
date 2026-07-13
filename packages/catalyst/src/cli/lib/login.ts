@@ -5,6 +5,7 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { DEVICE_OAUTH_SCOPES, requestDeviceCode, waitForDeviceToken } from './auth';
+import { copyToClipboard } from './clipboard';
 import { UserActionableError } from './errors';
 import { consola } from './logger';
 
@@ -58,6 +59,23 @@ async function deviceCodeLogin(loginUrl: string): Promise<LoginResult> {
   consola.info(
     `${colorize('yellow', 'Your one-time code:')} ${colorize('bold', deviceCode.user_code)}`,
   );
+
+  // Wait for the user to acknowledge before hijacking their browser. This keeps
+  // the UX consistent across `create`, `auth login`, and the channel commands.
+  // In non-interactive contexts (CI, piped stdin) there's nobody to press
+  // Enter, so skip straight to opening the verification URL.
+  if (process.stdin.isTTY) {
+    await input({ message: 'Press Enter to open your browser and sign in' });
+
+    // Best-effort: drop the code on the clipboard so the user can paste it
+    // straight into the verification page. We already printed it above as a
+    // fallback, and a clipboard failure must never interrupt the flow.
+    const copied = await copyToClipboard(deviceCode.user_code);
+
+    if (copied) {
+      consola.info('Copied the code to your clipboard — paste it into the sign-in page.');
+    }
+  }
 
   try {
     await open(deviceCode.verification_uri);
