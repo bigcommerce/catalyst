@@ -3,10 +3,12 @@ import { execa } from 'execa';
 import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
+import { loadBuildEnv } from '../lib/build-env';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
+import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
 const WRANGLER_VERSION = '4.90.0';
@@ -101,7 +103,13 @@ Examples:
       'Project UUID to be included in the deployment configuration.',
     ).env('CATALYST_PROJECT_UUID'),
   )
+  .addOption(envPathOption())
   .action(async (options) => {
+    // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
+    // env file(s) before building so both the build and any pre-build checks
+    // see them.
+    loadBuildEnv({ envPath: options.envPath });
+
     // Project must be transformed (middleware swapped in, OpenNext dep installed)
     // before the OpenNext build pipeline can run. If it isn't, fall through to
     // `next build` so this command works for self-hosted Catalyst projects too.
