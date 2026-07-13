@@ -42,8 +42,9 @@ export const assertRequiredBuildEnv = (env: NodeJS.ProcessEnv = process.env): vo
     `Missing required environment variable${missing.length === 1 ? '' : 's'} for the build:\n` +
       `${missingList}\n\n` +
       'These are read by the build itself, so they must be set before it runs. ' +
-      'The build automatically loads a `.env.local` from the current directory ' +
-      `(${process.cwd()}) — create or update it there with the variables above.\n` +
+      'The build automatically loads `.env.local` and `.env` from the current ' +
+      `directory (${process.cwd()}) — add the variables above to one of those ` +
+      'files (`.env.local` takes precedence).\n' +
       'To load an env file from a different location, pass `--env-path <path>` ' +
       '(for example `--env-path ../.env.local` when running from a subdirectory).',
   );
