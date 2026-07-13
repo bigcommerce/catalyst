@@ -1,16 +1,18 @@
 'use client';
 
-import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
-import { parseWithZod } from '@conform-to/zod';
+import { SubmissionResult, useForm } from '@conform-to/react';
 import { clsx } from 'clsx';
+import debounce from 'lodash.debounce';
 import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
 import {
   ComponentPropsWithoutRef,
+  FormEvent,
   startTransition,
   useActionState,
   useEffect,
   useMemo,
-  useOptimistic,
+  useRef,
+  useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -27,7 +29,6 @@ import { useEvents } from '~/components/analytics/events';
 import { Image } from '~/components/image';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
-import { cartLineItemActionFormDataSchema } from './schema';
 import { ShippingForm, ShippingFormState } from './shipping-form';
 
 import { CartEmptyState } from '.';
@@ -178,6 +179,8 @@ const defaultEmptyState = {
   cta: { label: 'Continue shopping', href: '#' },
 };
 
+type PendingLineItemIntent = { intent: 'update'; quantity: number } | { intent: 'delete' };
+
 // eslint-disable-next-line valid-jsdoc
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
@@ -227,6 +230,20 @@ export function CartClient<LineItem extends CartLineItem>({
 
   const [form] = useForm({ lastResult: state.lastResult });
 
+  // Server actions run strictly serially, so rapid clicks coalesce into pending intents
+  // (one per line item, newer clicks overwrite) flushed at most one action at a time.
+  // Instance-level on purpose: if a consumer remounts this section mid-flight (e.g. by
+  // keying it on cart version), intents die with the instance and the UI snaps back to
+  // server truth, instead of a longer-lived dispatcher deadlocking on an action React
+  // silently dropped at unmount.
+  const [pendingLineItemIntents] = useState(() => new Map<string, PendingLineItemIntent>());
+  const inFlightIntentRef = useRef<{ id: string; entry: PendingLineItemIntent } | null>(null);
+
+  // Bumped whenever pendingLineItemIntents changes so renders re-read the mutable map.
+  const [, setPendingIntentsRevision] = useState(0);
+
+  const isCartMutationPending = isLineItemActionPending || pendingLineItemIntents.size > 0;
+
   useEffect(() => {
     if (form.errors) {
       form.errors.forEach((error) => {
@@ -235,10 +252,131 @@ export function CartClient<LineItem extends CartLineItem>({
     }
   }, [form.errors]);
 
-  // Prevent page unload when line item action is pending
+  const flushNextIntent = () => {
+    if (inFlightIntentRef.current !== null) return;
+
+    // Resolve each intent against server truth once: an intent is stale if its row is
+    // gone or already matches the confirmed quantity.
+    const resolved = Array.from(pendingLineItemIntents.entries()).map(([intentId, intentEntry]) => {
+      const item = cart.lineItems.find((lineItem) => lineItem.id === intentId);
+
+      return {
+        id: intentId,
+        entry: intentEntry,
+        item,
+        isStale:
+          !item || (intentEntry.intent === 'update' && intentEntry.quantity === item.quantity),
+      };
+    });
+
+    const staleEntries = resolved.filter(({ isStale }) => isStale);
+
+    if (staleEntries.length > 0) {
+      staleEntries.forEach(({ id: staleId }) => pendingLineItemIntents.delete(staleId));
+      setPendingIntentsRevision((revision) => revision + 1);
+    }
+
+    const next = resolved.find(({ isStale }) => !isStale);
+
+    if (!next?.item) return;
+
+    const { id, entry, item: confirmedItem } = next;
+
+    inFlightIntentRef.current = { id, entry };
+
+    const formData = new FormData();
+
+    formData.append('id', id);
+    formData.append('intent', entry.intent);
+
+    if (entry.intent === 'update') {
+      formData.append('quantity', entry.quantity.toString());
+    }
+
+    // Analytics fire once per flush with the net change, not once per click.
+    const analyticsFormData = new FormData();
+
+    analyticsFormData.append('id', id);
+    analyticsFormData.append('intent', entry.intent);
+
+    if (entry.intent === 'update') {
+      const netChange = entry.quantity - confirmedItem.quantity;
+
+      analyticsFormData.append('quantity', Math.abs(netChange).toString());
+
+      if (netChange > 0) events.onAddToCart?.(analyticsFormData);
+      if (netChange < 0) events.onRemoveFromCart?.(analyticsFormData);
+    } else {
+      analyticsFormData.append('quantity', confirmedItem.quantity.toString());
+      events.onRemoveFromCart?.(analyticsFormData);
+    }
+
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
+
+  const flushRef = useRef(flushNextIntent);
+
+  useEffect(() => {
+    flushRef.current = flushNextIntent;
+  });
+
+  // Trailing debounce with no maxWait: a mid-burst flush would spend a request on a
+  // quantity the user is still changing, and the final absolute value supersedes it
+  // anyway. The pagehide and nav-guard flushes cover leaving before the timer fires.
+  const debouncedFlush = useMemo(() => debounce(() => flushRef.current(), 400), []);
+
+  useEffect(() => () => debouncedFlush.cancel(), [debouncedFlush]);
+
+  const queueLineItemIntent = (id: string, entry: PendingLineItemIntent) => {
+    pendingLineItemIntents.set(id, entry);
+    setPendingIntentsRevision((revision) => revision + 1);
+    debouncedFlush();
+
+    // Quantity clicks coalesce inside the debounce window, but removal flushes right away.
+    if (entry.intent === 'delete') {
+      debouncedFlush.flush();
+    }
+  };
+
+  // Settle observer: when a flush completes, clear its intent and flush any backlog
+  // queued while it was in flight (flushNextIntent prunes intents the settled action
+  // already confirmed). The section is keyed stably, so this instance survives the
+  // revalidation and dispatching from here is safe.
+  useEffect(() => {
+    if (isLineItemActionPending) return;
+    if (inFlightIntentRef.current === null) return;
+
+    const { id, entry } = inFlightIntentRef.current;
+
+    inFlightIntentRef.current = null;
+
+    // Clear the intent we just flushed unless newer clicks replaced it mid-flight; if
+    // the action failed this reverts the row to server truth (the error toast explains why).
+    if (pendingLineItemIntents.get(id) === entry) {
+      pendingLineItemIntents.delete(id);
+      setPendingIntentsRevision((revision) => revision + 1);
+    }
+
+    if (pendingLineItemIntents.size > 0) {
+      flushRef.current();
+    }
+  }, [isLineItemActionPending, state, pendingLineItemIntents]);
+
+  // A full page unload can't wait on the debounce timer.
+  useEffect(() => {
+    const flushPendingIntents = () => debouncedFlush.flush();
+
+    window.addEventListener('pagehide', flushPendingIntents);
+
+    return () => window.removeEventListener('pagehide', flushPendingIntents);
+  }, [debouncedFlush]);
+
+  // Prevent page unload when a cart mutation is pending
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isLineItemActionPending) {
+      if (isCartMutationPending) {
         event.preventDefault();
         // eslint-disable-next-line @typescript-eslint/no-deprecated
         event.returnValue = ''; // Chrome requires returnValue to be set
@@ -247,19 +385,19 @@ export function CartClient<LineItem extends CartLineItem>({
       }
     };
 
-    if (isLineItemActionPending) {
+    if (isCartMutationPending) {
       window.addEventListener('beforeunload', handleBeforeUnload);
     }
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [isLineItemActionPending]);
+  }, [isCartMutationPending]);
 
-  // Prevent client-side navigation when line item action is pending
+  // Prevent client-side navigation when a cart mutation is pending
   useEffect(() => {
     const handleClick = (event: MouseEvent) => {
-      if (isLineItemActionPending && event.target instanceof HTMLElement) {
+      if (isCartMutationPending && event.target instanceof HTMLElement) {
         const link = event.target.closest('a[href]');
 
         if (
@@ -271,7 +409,10 @@ export function CartClient<LineItem extends CartLineItem>({
           // eslint-disable-next-line no-alert
           const shouldNavigate = window.confirm(lineItemActionPendingLabel);
 
-          if (!shouldNavigate) {
+          if (shouldNavigate) {
+            // Dispatch any debounced intent now, while this instance can still send it.
+            debouncedFlush.flush();
+          } else {
             event.preventDefault();
             event.stopPropagation();
           }
@@ -281,7 +422,7 @@ export function CartClient<LineItem extends CartLineItem>({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        isLineItemActionPending &&
+        isCartMutationPending &&
         (event.key === 'Enter' || event.key === ' ') &&
         event.target instanceof HTMLElement
       ) {
@@ -296,7 +437,10 @@ export function CartClient<LineItem extends CartLineItem>({
           // eslint-disable-next-line no-alert
           const shouldNavigate = window.confirm(lineItemActionPendingLabel);
 
-          if (!shouldNavigate) {
+          if (shouldNavigate) {
+            // Dispatch any debounced intent now, while this instance can still send it.
+            debouncedFlush.flush();
+          } else {
             event.preventDefault();
             event.stopPropagation();
           }
@@ -304,7 +448,7 @@ export function CartClient<LineItem extends CartLineItem>({
       }
     };
 
-    if (isLineItemActionPending) {
+    if (isCartMutationPending) {
       document.addEventListener('click', handleClick, true);
       document.addEventListener('keydown', handleKeyDown, true);
     }
@@ -313,50 +457,21 @@ export function CartClient<LineItem extends CartLineItem>({
       document.removeEventListener('click', handleClick, true);
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [isLineItemActionPending, lineItemActionPendingLabel]);
+  }, [isCartMutationPending, lineItemActionPendingLabel, debouncedFlush]);
 
-  const [optimisticLineItems, setOptimisticLineItems] = useOptimistic<CartLineItem[], FormData>(
-    state.lineItems,
-    (prevState, formData) => {
-      const submission = parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
+  // Server truth (the revalidation-refreshed cart prop, not useActionState's mount-frozen
+  // state) overlaid with pending intents; pendingIntentsRevision invalidates this on change.
+  const displayLineItems: CartLineItem[] = cart.lineItems
+    .filter((item) => pendingLineItemIntents.get(item.id)?.intent !== 'delete')
+    .map((item) => {
+      const pending = pendingLineItemIntents.get(item.id);
 
-      if (submission.status !== 'success') return prevState;
+      return pending?.intent === 'update' ? { ...item, quantity: pending.quantity } : item;
+    });
 
-      switch (submission.value.intent) {
-        case 'increment': {
-          const { id } = submission.value;
+  const displayTotalQuantity = displayLineItems.reduce((total, item) => total + item.quantity, 0);
 
-          return prevState.map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
-          );
-        }
-
-        case 'decrement': {
-          const { id } = submission.value;
-
-          return prevState.map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
-          );
-        }
-
-        case 'delete': {
-          const { id } = submission.value;
-
-          return prevState.filter((item) => item.id !== id);
-        }
-
-        default:
-          return prevState;
-      }
-    },
-  );
-
-  const optimisticQuantity = useMemo(
-    () => optimisticLineItems.reduce((total, item) => total + item.quantity, 0),
-    [optimisticLineItems],
-  );
-
-  if (optimisticQuantity === 0) {
+  if (displayTotalQuantity === 0) {
     return <CartEmptyState {...emptyState} />;
   }
 
@@ -373,7 +488,7 @@ export function CartClient<LineItem extends CartLineItem>({
               {cart.summaryItems.map((summaryItem, index) => (
                 <div className="flex justify-between py-4" key={index}>
                   <dt>{summaryItem.label}</dt>
-                  {isLineItemActionPending ? (
+                  {isCartMutationPending ? (
                     <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
                   ) : (
                     <dd>{summaryItem.value}</dd>
@@ -408,7 +523,7 @@ export function CartClient<LineItem extends CartLineItem>({
             <div className="border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6">
               <div className="flex justify-between text-xl font-bold">
                 <dt>{cart.totalLabel ?? 'Total'}</dt>
-                {isLineItemActionPending ? (
+                {isCartMutationPending ? (
                   <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
                 ) : (
                   <dd>{cart.total}</dd>
@@ -424,7 +539,7 @@ export function CartClient<LineItem extends CartLineItem>({
           <CheckoutButton
             action={checkoutAction}
             className="mt-4 w-full"
-            isCartUpdatePending={isLineItemActionPending}
+            isCartUpdatePending={isCartMutationPending}
           >
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
@@ -438,12 +553,12 @@ export function CartClient<LineItem extends CartLineItem>({
         <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none @xl:text-5xl">
           {title}
           <span className="ml-4 text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
-            {optimisticQuantity}
+            {displayTotalQuantity}
           </span>
         </h1>
         {/* Cart Items */}
         <ul className="flex flex-col gap-5">
-          {optimisticLineItems.map((lineItem) => (
+          {displayLineItems.map((lineItem) => (
             <li
               className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
               key={lineItem.id}
@@ -478,32 +593,10 @@ export function CartClient<LineItem extends CartLineItem>({
                   deleteLabel={deleteLineItemLabel}
                   incrementLabel={incrementLineItemLabel}
                   lineItem={lineItem}
-                  onSubmit={(formData) => {
-                    startTransition(() => {
-                      formAction(formData);
-                      setOptimisticLineItems(formData);
-
-                      const intent = formData.get('intent');
-
-                      if (intent === 'increment') {
-                        formData.set('quantity', '1');
-
-                        events.onAddToCart?.(formData);
-                      }
-
-                      if (intent === 'decrement') {
-                        formData.set('quantity', '1');
-
-                        events.onRemoveFromCart?.(formData);
-                      }
-
-                      if (intent === 'delete') {
-                        formData.set('quantity', lineItem.quantity.toString());
-
-                        events.onRemoveFromCart?.(formData);
-                      }
-                    });
-                  }}
+                  onDelete={() => queueLineItemIntent(lineItem.id, { intent: 'delete' })}
+                  onUpdateQuantity={(quantity) =>
+                    queueLineItemIntent(lineItem.id, { intent: 'update', quantity })
+                  }
                 />
               </div>
             </li>
@@ -517,7 +610,8 @@ export function CartClient<LineItem extends CartLineItem>({
 function CounterForm({
   lineItem,
   action,
-  onSubmit,
+  onDelete,
+  onUpdateQuantity,
   incrementLabel = 'Increase count',
   decrementLabel = 'Decrease count',
   deleteLabel = 'Remove item',
@@ -527,26 +621,30 @@ function CounterForm({
   decrementLabel?: string;
   deleteLabel?: string;
   action: (payload: FormData) => void;
-  onSubmit: (formData: FormData) => void;
+  onDelete: () => void;
+  onUpdateQuantity: (quantity: number) => void;
 }) {
-  const [form, fields] = useForm({
-    defaultValue: { id: lineItem.id },
-    shouldValidate: 'onBlur',
-    shouldRevalidate: 'onInput',
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
-    },
-    onSubmit(event, { formData }) {
-      event.preventDefault();
+  // Every control is its own micro-form (`display: contents`, so layout is unaffected)
+  // rather than one form per line item, because the quantity buttons each need their own
+  // hidden `quantity` field and forms can't nest. Without JS, each posts its pre-computed
+  // absolute quantity (or delete) straight to the server action. With JS, onSubmit
+  // intercepts and routes through the coalescing dispatcher instead, so rapid clicks
+  // debounce into one request rather than one per click.
+  const handleDeleteSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    onDelete();
+  };
 
-      onSubmit(formData);
-    },
-  });
+  const handleUpdateQuantitySubmit = (quantity: number) => (event: FormEvent) => {
+    event.preventDefault();
+    onUpdateQuantity(quantity);
+  };
 
   if (lineItem.typename === 'CartGiftCertificate') {
     return (
-      <form {...getFormProps(form)} action={action}>
-        <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
+      <form action={action} onSubmit={handleDeleteSubmit}>
+        <input name="id" type="hidden" value={lineItem.id} />
+        <input name="intent" type="hidden" value="delete" />
         <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
           {typeof lineItem.price === 'string' && (
             <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
@@ -559,9 +657,7 @@ function CounterForm({
           <button
             aria-label={deleteLabel}
             className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-            name="intent"
             type="submit"
-            value="delete"
           >
             <Trash2
               className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
@@ -575,21 +671,27 @@ function CounterForm({
   }
 
   return (
-    <form {...getFormProps(form)} action={action}>
-      <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
-      <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        <PriceLabel className="mt-3 self-start @xl:ml-auto" price={lineItem.price} />
-        <div className="flex size-min flex-col gap-y-0">
-          <div className="mb-1 mt-1 flex items-center gap-x-5">
-            {/* Counter */}
-            <div
-              className={clsx(
-                'flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]',
-                (lineItem.inventoryMessages?.outOfStockMessage != null ||
-                  lineItem.inventoryMessages?.quantityOutOfStockMessage != null) &&
-                  'border-red-500',
-              )}
+    <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
+      <PriceLabel className="mt-3 self-start @xl:ml-auto" price={lineItem.price} />
+      <div className="flex size-min flex-col gap-y-0">
+        <div className="mb-1 mt-1 flex items-center gap-x-5">
+          {/* Counter */}
+          <div
+            className={clsx(
+              'flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]',
+              (lineItem.inventoryMessages?.outOfStockMessage != null ||
+                lineItem.inventoryMessages?.quantityOutOfStockMessage != null) &&
+                'border-red-500',
+            )}
+          >
+            <form
+              action={action}
+              className="contents"
+              onSubmit={handleUpdateQuantitySubmit(lineItem.quantity - 1)}
             >
+              <input name="id" type="hidden" value={lineItem.id} />
+              <input name="intent" type="hidden" value="update" />
+              <input name="quantity" type="hidden" value={lineItem.quantity - 1} />
               <button
                 aria-label={decrementLabel}
                 className={clsx(
@@ -599,9 +701,7 @@ function CounterForm({
                     : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
                 )}
                 disabled={lineItem.quantity === 1}
-                name="intent"
                 type="submit"
-                value="decrement"
               >
                 <Minus
                   className={clsx(
@@ -613,17 +713,24 @@ function CounterForm({
                   strokeWidth={1.5}
                 />
               </button>
-              <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
-                {lineItem.quantity}
-              </span>
+            </form>
+            <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
+              {lineItem.quantity}
+            </span>
+            <form
+              action={action}
+              className="contents"
+              onSubmit={handleUpdateQuantitySubmit(lineItem.quantity + 1)}
+            >
+              <input name="id" type="hidden" value={lineItem.id} />
+              <input name="intent" type="hidden" value="update" />
+              <input name="quantity" type="hidden" value={lineItem.quantity + 1} />
               <button
                 aria-label={incrementLabel}
                 className={clsx(
                   'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
                 )}
-                name="intent"
                 type="submit"
-                value="increment"
               >
                 <Plus
                   className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
@@ -631,13 +738,15 @@ function CounterForm({
                   strokeWidth={1.5}
                 />
               </button>
-            </div>
+            </form>
+          </div>
+          <form action={action} className="contents" onSubmit={handleDeleteSubmit}>
+            <input name="id" type="hidden" value={lineItem.id} />
+            <input name="intent" type="hidden" value="delete" />
             <button
               aria-label={deleteLabel}
               className="group -ml-1 mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-              name="intent"
               type="submit"
-              value="delete"
             >
               <Trash2
                 className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
@@ -645,35 +754,35 @@ function CounterForm({
                 strokeWidth={1}
               />
             </button>
-          </div>
-          {lineItem.inventoryMessages?.outOfStockMessage != null && (
-            <span className="text-xs/5 font-light text-red-500">
-              {lineItem.inventoryMessages.outOfStockMessage}
-            </span>
-          )}
-          {lineItem.inventoryMessages?.quantityOutOfStockMessage != null && (
-            <span className="mb-3 text-xs/5 font-light text-red-500">
-              {lineItem.inventoryMessages.quantityOutOfStockMessage}
-            </span>
-          )}
-          {lineItem.inventoryMessages?.quantityReadyToShipMessage != null && (
-            <span className="text-xs/5 font-light">
-              {lineItem.inventoryMessages.quantityReadyToShipMessage}
-            </span>
-          )}
-          {lineItem.inventoryMessages?.quantityBackorderedMessage != null && (
-            <span className="text-xs/5 font-light">
-              {lineItem.inventoryMessages.quantityBackorderedMessage}
-            </span>
-          )}
-          {lineItem.inventoryMessages?.backorderMessage != null && (
-            <span className="text-xs/5 font-light">
-              {lineItem.inventoryMessages.backorderMessage}
-            </span>
-          )}
+          </form>
         </div>
+        {lineItem.inventoryMessages?.outOfStockMessage != null && (
+          <span className="text-xs/5 font-light text-red-500">
+            {lineItem.inventoryMessages.outOfStockMessage}
+          </span>
+        )}
+        {lineItem.inventoryMessages?.quantityOutOfStockMessage != null && (
+          <span className="mb-3 text-xs/5 font-light text-red-500">
+            {lineItem.inventoryMessages.quantityOutOfStockMessage}
+          </span>
+        )}
+        {lineItem.inventoryMessages?.quantityReadyToShipMessage != null && (
+          <span className="text-xs/5 font-light">
+            {lineItem.inventoryMessages.quantityReadyToShipMessage}
+          </span>
+        )}
+        {lineItem.inventoryMessages?.quantityBackorderedMessage != null && (
+          <span className="text-xs/5 font-light">
+            {lineItem.inventoryMessages.quantityBackorderedMessage}
+          </span>
+        )}
+        {lineItem.inventoryMessages?.backorderMessage != null && (
+          <span className="text-xs/5 font-light">
+            {lineItem.inventoryMessages.backorderMessage}
+          </span>
+        )}
       </div>
-    </form>
+    </div>
   );
 }
 
@@ -688,8 +797,24 @@ function CheckoutButton({
   const [lastResult, formAction] = useActionState(
     async (state: SubmissionResult | null, formData: FormData) => {
       if (typeof action === 'string') {
-        await new Promise<void>(() => {
-          window.location.assign(action);
+        window.location.assign(action);
+
+        // The page normally unloads before this settles. If the navigation is
+        // cancelled instead (Esc, "Stay" on the beforeunload prompt, a stalled
+        // redirect) or the page is restored from bfcache, settle so the button
+        // re-enables as a retry, rather than spinning forever with subsequent
+        // clicks queued behind a never-resolving action.
+        await new Promise<void>((resolve) => {
+          let fallbackTimer: ReturnType<typeof setTimeout>;
+
+          const settle = () => {
+            clearTimeout(fallbackTimer);
+            window.removeEventListener('pageshow', settle);
+            resolve();
+          };
+
+          fallbackTimer = setTimeout(settle, 8000);
+          window.addEventListener('pageshow', settle);
         });
 
         return null;

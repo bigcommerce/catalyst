@@ -1,11 +1,12 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 import { getCartId } from '~/lib/cart';
 
 import { removeItem } from './remove-item';
@@ -87,7 +88,7 @@ export const updateQuantity = async ({
     throw new Error(t('failedToUpdateQuantity'));
   }
 
-  revalidatePath('/cart');
+  revalidateTag(TAGS.cart, { expire: 0 });
 
   return cart;
 };

@@ -2,12 +2,11 @@ import { z } from 'zod';
 
 export const cartLineItemActionFormDataSchema = z.discriminatedUnion('intent', [
   z.object({
-    intent: z.literal('increment'),
+    intent: z.literal('update'),
     id: z.string(),
-  }),
-  z.object({
-    intent: z.literal('decrement'),
-    id: z.string(),
+    // Quantity is absolute so rapid clicks can coalesce into a single request;
+    // 0 is never sent because removal is a separate 'delete' intent.
+    quantity: z.coerce.number().int().min(1),
   }),
   z.object({
     intent: z.literal('delete'),
