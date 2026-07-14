@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
+import { httpError } from './http-errors';
 import { getTelemetry } from './telemetry';
 
 const allowedLocales = [
@@ -56,9 +57,7 @@ export const getAvailableLocales = async (
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(
-      `GET /v3/settings/store/available-locales failed: ${response.status} ${response.statusText}`,
-    );
+    throw await httpError(response, 'Failed to fetch available locales');
   }
 
   return AvailableLocalesSuccessSchema.parse(await response.json())

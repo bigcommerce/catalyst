@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { httpError } from './http-errors';
+
 export const DEVICE_OAUTH_CLIENT_ID = 'b8063bu6hhml4e0lqh22yut63atsbyv';
 export const DEVICE_OAUTH_SCOPES = [
   'store_v2_information',
@@ -36,7 +38,7 @@ export async function requestDeviceCode(loginUrl: string) {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to request device code: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to request device code');
   }
 
   const res: unknown = await response.json();
