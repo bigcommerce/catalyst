@@ -478,6 +478,66 @@ test('--dry-run skips upload and deployment', async () => {
   expect(exitMock).toHaveBeenCalledWith(0);
 });
 
+test('passes --wrangler-version through to the build', async () => {
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'deploy',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--api-host',
+    apiHost,
+    '--project-uuid',
+    projectUuid,
+    '--wrangler-version',
+    '4.24.3',
+    '--dry-run',
+  ]);
+
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3');
+});
+
+test('builds with the default Wrangler version when --wrangler-version is omitted', async () => {
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'deploy',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--api-host',
+    apiHost,
+    '--project-uuid',
+    projectUuid,
+    '--dry-run',
+  ]);
+
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined);
+});
+
+test('rejects an invalid --wrangler-version value', async () => {
+  await expect(
+    program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--project-uuid',
+      projectUuid,
+      '--wrangler-version',
+      'foo; rm -rf /',
+    ]),
+  ).rejects.toThrow(/not a valid Wrangler version/);
+
+  expect(buildCatalystProject).not.toHaveBeenCalled();
+});
+
 test('--dry-run uses storeHash and accessToken from .bigcommerce/project.json when not provided', async () => {
   const config = getProjectConfig();
 
