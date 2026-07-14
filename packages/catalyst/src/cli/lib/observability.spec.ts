@@ -469,6 +469,9 @@ describe('queryLogs', () => {
     // and keeps the top-level Correlation ID + support framing.
     expect(error).toBeInstanceOf(Error);
     expect(error).not.toBeInstanceOf(UserActionableError);
-    expect(error).toHaveProperty('message', 'Failed to fetch logs: 500 Server Error');
+    expect(error).toHaveProperty(
+      'message',
+      'Failed to fetch logs: Something went wrong on our end. Please try again. If the issue persists, contact support.',
+    );
   });
 });

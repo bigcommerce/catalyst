@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
 import { UserActionableError } from './errors';
+import { httpError } from './http-errors';
 import { getTelemetry } from './telemetry';
 
 // `origin` is the CLI-API gateway (configured via `--cli-api-origin`, default
@@ -111,9 +112,7 @@ export async function getChannelInit(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `GET /channels/${channelId}/init failed: ${response.status} ${response.statusText}`,
-    );
+    throw await httpError(response, 'Failed to initialize channel');
   }
 
   const { data } = initResponseSchema.parse(await response.json());
@@ -137,9 +136,7 @@ export async function checkChannelEligibility(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `GET /channels/catalyst/eligibility failed: ${response.status} ${response.statusText}`,
-    );
+    throw await httpError(response, 'Failed to check Catalyst eligibility');
   }
 
   return eligibilityResponseSchema.parse(await response.json()).data;
@@ -174,7 +171,7 @@ export async function createChannel(
   });
 
   if (!response.ok) {
-    throw new Error(`POST /channels/catalyst failed: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to create channel');
   }
 
   const { data } = createChannelResponseSchema.parse(await response.json());
@@ -206,7 +203,7 @@ export async function fetchAvailableChannels(
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(`GET /v3/channels failed: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to fetch channels');
   }
 
   return channelsResponseSchema.parse(await response.json()).data;
@@ -246,7 +243,7 @@ export async function updateChannelSiteUrl(
   }
 
   if (!response.ok) {
-    throw new Error(`Failed to update channel site: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to update channel site');
   }
 
   const res: unknown = await response.json();

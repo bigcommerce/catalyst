@@ -23,6 +23,7 @@ import {
   parseEnvAssignment,
   toDeploymentSecrets,
 } from '../lib/env-config';
+import { httpError } from '../lib/http-errors';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
@@ -153,7 +154,7 @@ export const generateUploadSignature = async (
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch upload signature: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to generate upload signature');
   }
 
   const res: unknown = await response.json();
@@ -181,7 +182,7 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to upload bundle: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to upload bundle');
   }
 
   consola.success('Bundle uploaded successfully.');
@@ -232,7 +233,7 @@ export const createDeployment = async (
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(`Failed to create deployment: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to create deployment');
   }
 
   const res: unknown = await response.json();
@@ -269,7 +270,7 @@ export const getDeploymentStatus = async (
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(`Failed to open event stream: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to open deployment event stream');
   }
 
   const reader = response.body?.getReader();
@@ -358,7 +359,7 @@ export const fetchProject = async (
   assertAuthorized(response);
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to fetch projects');
   }
 
   const res: unknown = await response.json();

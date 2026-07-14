@@ -3,6 +3,7 @@ import { colorize } from 'consola/utils';
 import { z } from 'zod';
 
 import { UnauthorizedError } from '../lib/auth-errors';
+import { httpError } from '../lib/http-errors';
 import { consola } from '../lib/logger';
 import { formatLogEntry, LOG_LEVELS, queryLogs, resolveTimeWindow } from '../lib/observability';
 import { getProjectConfig } from '../lib/project-config';
@@ -180,10 +181,9 @@ const openLogStream = async (
   }
 
   if (!response.ok) {
-    throw new StreamError(
-      `Failed to open log stream: ${response.status} ${response.statusText}`,
-      isFatalStatusCode(response.status),
-    );
+    const error = await httpError(response, 'Failed to open log stream');
+
+    throw new StreamError(error.message, isFatalStatusCode(response.status));
   }
 
   const reader = response.body?.getReader();

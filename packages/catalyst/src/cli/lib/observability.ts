@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
 import { UserActionableError } from './errors';
+import { httpError } from './http-errors';
 import { getTelemetry } from './telemetry';
 
 export const LOG_LEVELS = ['debug', 'info', 'warn', 'error'] as const;
@@ -267,7 +268,7 @@ export async function queryLogs(
   }
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch logs: ${response.status} ${response.statusText}`);
+    throw await httpError(response, 'Failed to fetch logs');
   }
 
   const res: unknown = await response.json();

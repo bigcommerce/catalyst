@@ -39,7 +39,7 @@ describe('requestDeviceCode', () => {
     );
 
     await expect(requestDeviceCode(DEFAULT_LOGIN_URL)).rejects.toThrow(
-      'Failed to request device code: 500 Internal Server Error',
+      'Failed to request device code: Something went wrong on our end. Please try again. If the issue persists, contact support.',
     );
   });
 

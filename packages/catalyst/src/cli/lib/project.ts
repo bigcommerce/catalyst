@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { assertAuthorized } from './auth-errors';
 import { UserActionableError } from './errors';
+import { httpError } from './http-errors';
 import { getTelemetry } from './telemetry';
 
 export class InfrastructureProjectValidationError extends UserActionableError {
@@ -53,9 +54,7 @@ export async function hasProjectsAccess(
   if (response.status === 200) return true;
   if (response.status === 403) return false;
 
-  throw new Error(
-    `GET /v3/infrastructure/projects failed: ${response.status} ${response.statusText}`,
-  );
+  throw await httpError(response, 'Failed to check project access');
 }
 
 export async function fetchProjects(
@@ -77,7 +76,7 @@ export async function fetchProjects(
   }
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch projects: ${response.statusText}`);
+    throw await httpError(response, 'Failed to fetch projects');
   }
 
   const res: unknown = await response.json();
@@ -166,7 +165,7 @@ export async function createProject(
   }
 
   if (!response.ok) {
-    throw new Error(`Failed to create project: ${response.statusText}`);
+    throw await httpError(response, 'Failed to create project');
   }
 
   const res: unknown = await response.json();
@@ -200,6 +199,6 @@ export async function deleteProject(
   }
 
   if (!response.ok) {
-    throw new Error(`Failed to delete project: ${response.statusText}`);
+    throw await httpError(response, 'Failed to delete project');
   }
 }

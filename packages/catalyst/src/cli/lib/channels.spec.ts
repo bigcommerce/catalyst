@@ -98,7 +98,7 @@ describe('updateChannelSiteUrl', () => {
     ).rejects.toThrow('Re-run `catalyst auth login`');
   });
 
-  test('throws with status on other errors', async () => {
+  test('throws a readable error on other errors', async () => {
     server.use(
       http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
         HttpResponse.json({}, { status: 500 }),
@@ -107,7 +107,7 @@ describe('updateChannelSiteUrl', () => {
 
     await expect(
       updateChannelSiteUrl(channelId, 'https://x.example', storeHash, accessToken, apiHost),
-    ).rejects.toThrow('Failed to update channel site: 500');
+    ).rejects.toThrow('Failed to update channel site: Something went wrong on our end.');
   });
 });
 
