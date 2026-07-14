@@ -8,6 +8,7 @@ import {
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
+import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
@@ -59,7 +60,11 @@ async function offerCommerceHostingSetup(
 
   consola.success('Commerce Hosting setup complete.');
 
-  await installDependencies(projectDir);
+  // Match the manager the project was scaffolded with (from its lockfile),
+  // rather than forcing pnpm on npm/yarn/bun projects.
+  const packageManager = await detectProjectPackageManager(projectDir);
+
+  await installDependencies(projectDir, packageManager);
 }
 
 const list = new Command('list')

@@ -768,7 +768,7 @@ describe('transformation guard', () => {
       storeHash,
       accessToken,
     });
-    expect(installDependencies).toHaveBeenCalledWith(tmpDir);
+    expect(installDependencies).toHaveBeenCalledWith(tmpDir, expect.any(String));
   });
 
   test('exits gracefully when user declines to run setup', async () => {

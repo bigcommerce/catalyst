@@ -17,6 +17,7 @@ import {
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
+import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import {
   getStoredEnv,
   mergeDeploymentSecrets,
@@ -487,7 +488,11 @@ Example:
       await setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
       consola.success('Commerce Hosting setup complete.');
 
-      await installDependencies(projectDir);
+      // Match the manager the project was scaffolded with (from its lockfile),
+      // rather than forcing pnpm on npm/yarn/bun projects.
+      const packageManager = await detectProjectPackageManager(projectDir);
+
+      await installDependencies(projectDir, packageManager);
     } else {
       // Existing Commerce Hosting users may carry artifacts incompatible with
       // the Cloudflare worker bundle from earlier Catalyst versions
