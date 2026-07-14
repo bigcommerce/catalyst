@@ -2,8 +2,6 @@ import { select } from '@inquirer/prompts';
 import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
-import { outputFileSync } from 'fs-extra/esm';
-import { join } from 'node:path';
 
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
@@ -231,12 +229,7 @@ Examples:
 
     // Writes .env.local in the current working directory — `channel link`
     // runs from inside `core/`, the same place `dev`/`build`/`deploy` run.
-    outputFileSync(
-      join(process.cwd(), '.env.local'),
-      `${Object.entries(envVars)
-        .map(([key, value]) => `${key}=${value}`)
-        .join('\n')}\n`,
-    );
+    writeEnv(process.cwd(), envVars);
 
     const label = channelName ? `"${channelName}" (${channelId})` : `${channelId}`;
 
