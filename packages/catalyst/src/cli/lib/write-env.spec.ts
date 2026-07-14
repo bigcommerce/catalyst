@@ -121,6 +121,32 @@ ENABLE_ADMIN_ROUTE=false
     expect(local).toContain('ENABLE_ADMIN_ROUTE=false');
   });
 
+  it('does not clobber an existing value when the CLI supplies an empty placeholder', () => {
+    // The channel init API returns blank placeholders for keys it does not own
+    // (e.g. MAKESWIFT_SITE_API_KEY). Those must not wipe a value the user
+    // already set on disk.
+    writeExample(`# Store hash comment.
+BIGCOMMERCE_STORE_HASH=
+
+# Makeswift comment.
+MAKESWIFT_SITE_API_KEY=
+`);
+    writeLocal(`BIGCOMMERCE_STORE_HASH=old_hash
+MAKESWIFT_SITE_API_KEY=user_makeswift_key
+`);
+
+    writeEnv(projectDir, {
+      BIGCOMMERCE_STORE_HASH: 'new_hash',
+      MAKESWIFT_SITE_API_KEY: '',
+    });
+
+    const local = readLocal();
+
+    expect(local).toContain('BIGCOMMERCE_STORE_HASH=new_hash');
+    // The empty CLI value falls back to the user's existing value.
+    expect(local).toContain('MAKESWIFT_SITE_API_KEY=user_makeswift_key');
+  });
+
   it('reconciles a stale .env.local by inserting a newly documented key in canonical position', () => {
     // The existing file predates ENABLE_ADMIN_ROUTE being documented and also
     // carries an unknown key the user added by hand.

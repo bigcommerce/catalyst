@@ -50,9 +50,17 @@ export const writeEnv = (projectDir: string, envVars: Record<string, string>) =>
 
   // CLI-supplied vars win over what's already on disk so a re-run (e.g.
   // `channel link`) updates credentials in place; anything the CLI didn't touch
-  // falls back to the user's existing value.
-  const resolve = (key: string): string | undefined =>
-    key in envVars ? envVars[key] : existingLocal.get(key);
+  // falls back to the user's existing value. An empty CLI value is treated as
+  // "not supplied" — the channel init API returns blank placeholders for keys it
+  // doesn't own (e.g. MAKESWIFT_SITE_API_KEY), and those must not clobber a real
+  // value the user already has on disk.
+  const resolve = (key: string): string | undefined => {
+    if (key in envVars && envVars[key] !== '') {
+      return envVars[key];
+    }
+
+    return existingLocal.get(key);
+  };
 
   // Without a template we can't follow the documented ordering/comments, so fall
   // back to a flat merge that still preserves the user's existing values.
