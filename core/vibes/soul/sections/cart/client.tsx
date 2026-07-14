@@ -579,7 +579,7 @@ function CounterForm({
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
         <PriceLabel className="mt-3 self-start @xl:ml-auto" price={lineItem.price} />
-        <div className="flex size-min flex-col gap-y-0">
+        <div className="flex size-min flex-col gap-y-0 [&>span]:[overflow-wrap:anywhere]">
           <div className="mb-1 mt-1 flex items-center gap-x-5">
             {/* Counter */}
             <div
