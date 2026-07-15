@@ -18,6 +18,14 @@ const formatResolved = (value: ResolvedValue): string =>
 const formatSource = (source: ConfigSource): string =>
   source === 'unset' ? 'not set' : `set (${source})`;
 
+const formatCore = (name: string | null, version: string | null): string => {
+  if (!version) {
+    return '(unknown)';
+  }
+
+  return name ? `${name}@${version}` : version;
+};
+
 const formatList = (values: string[]): string => (values.length > 0 ? values.join(', ') : '(none)');
 
 // Build a human-readable, copy-pasteable report. Kept to plain text (no colors)
@@ -38,6 +46,7 @@ const formatReport = (d: Diagnostics): string => {
     '',
     'Project',
     `  Directory:          ${d.project.cwd}`,
+    `  Catalyst core:      ${formatCore(d.project.coreName, d.project.coreVersion)}`,
     `  Project UUID:       ${d.project.projectUuid ?? '(not linked)'}`,
     `  Linked:             ${yesNo(d.project.isLinked)}`,
     `  Transformed:        ${yesNo(d.project.isTransformed)}`,

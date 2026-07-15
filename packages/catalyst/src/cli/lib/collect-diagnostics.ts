@@ -68,6 +68,10 @@ export interface Diagnostics {
   };
   project: {
     cwd: string;
+    // The storefront (Catalyst core) package name + version from the project's
+    // package.json, resolved the same way `upgrade` does. null when absent.
+    coreName: string | null;
+    coreVersion: string | null;
     projectUuid: string | null;
     isLinked: boolean;
     isTransformed: boolean;
@@ -193,6 +197,28 @@ const readProjectJson = (cwd: string): Record<string, unknown> | null => {
   return result.success ? result.data : null;
 };
 
+// Mirrors upgrade.ts: `catalyst.version` is the source of truth for the core
+// version, falling back to the plain `version`. `name` identifies which
+// Catalyst family the project is on (e.g. @bigcommerce/catalyst-core).
+const corePackageSchema = z.looseObject({
+  name: z.string().optional(),
+  version: z.string().optional(),
+  catalyst: z.looseObject({ version: z.string().optional() }).optional(),
+});
+
+const readCoreInfo = (cwd: string): { name: string | null; version: string | null } => {
+  const result = corePackageSchema.safeParse(safeReadJson(join(cwd, 'package.json')));
+
+  if (!result.success) {
+    return { name: null, version: null };
+  }
+
+  return {
+    name: result.data.name ?? null,
+    version: result.data.catalyst?.version ?? result.data.version ?? null,
+  };
+};
+
 const readStoredEnvKeys = (projectJson: Record<string, unknown> | null): string[] => {
   const env = projectJson?.env;
 
@@ -214,6 +240,7 @@ export function collectDiagnostics({
   const telemetry = getTelemetry();
   const projectJson = readProjectJson(cwd);
   const envLayers = buildEnvLayers(cwd, env);
+  const core = readCoreInfo(cwd);
 
   return {
     cli: {
@@ -229,6 +256,8 @@ export function collectDiagnostics({
     },
     project: {
       cwd,
+      coreName: core.name,
+      coreVersion: core.version,
       projectUuid: state.projectUuid ?? null,
       isLinked: state.isLinked,
       isTransformed: state.isTransformed,

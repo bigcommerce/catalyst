@@ -57,6 +57,8 @@ describe('collectDiagnostics', () => {
 
     expect(d.project).toEqual({
       cwd: tmpDir,
+      coreName: null,
+      coreVersion: null,
       projectUuid: null,
       isLinked: false,
       isTransformed: false,
@@ -226,6 +228,55 @@ describe('collectDiagnostics', () => {
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
       expect(['npm', 'pnpm', 'yarn', 'bun']).toContain(d.runtime.packageManager);
+    });
+  });
+
+  describe('Catalyst core version', () => {
+    const writePackageJson = (value: unknown) =>
+      writeFileEnsured(join(tmpDir, 'package.json'), JSON.stringify(value));
+
+    test('reads name and version from package.json', async () => {
+      await writePackageJson({ name: '@bigcommerce/catalyst-core', version: '1.8.0' });
+
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(d.project.coreName).toBe('@bigcommerce/catalyst-core');
+      expect(d.project.coreVersion).toBe('1.8.0');
+    });
+
+    test('prefers catalyst.version over the plain version', async () => {
+      await writePackageJson({
+        name: '@bigcommerce/catalyst-core',
+        version: '0.0.0',
+        catalyst: { version: '1.9.1', ref: '@bigcommerce/catalyst-core@1.9.1' },
+      });
+
+      expect(collectDiagnostics({ cwd: tmpDir, env: emptyEnv }).project.coreVersion).toBe('1.9.1');
+    });
+
+    test('null when package.json is absent', () => {
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(d.project.coreName).toBeNull();
+      expect(d.project.coreVersion).toBeNull();
+    });
+
+    test('null version when package.json has no version field', async () => {
+      await writePackageJson({ name: 'some-project' });
+
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(d.project.coreName).toBe('some-project');
+      expect(d.project.coreVersion).toBeNull();
+    });
+
+    test('null when package.json is malformed', async () => {
+      await writeFileEnsured(join(tmpDir, 'package.json'), '{not json');
+
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(d.project.coreName).toBeNull();
+      expect(d.project.coreVersion).toBeNull();
     });
   });
 
