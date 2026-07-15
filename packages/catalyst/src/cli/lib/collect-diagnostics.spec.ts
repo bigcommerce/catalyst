@@ -70,7 +70,7 @@ describe('collectDiagnostics', () => {
     expect(d.config.projectUuid).toEqual({ present: false, source: 'unset' });
     expect(d.config.projectJsonKeys).toEqual([]);
     expect(d.config.storedEnvKeys).toEqual([]);
-    expect(Object.values(d.config.envVars).every((v) => !v)).toBe(true);
+    expect(Object.values(d.config.envVars).every((v) => v === 'unset')).toBe(true);
     expect(Object.keys(d.config.envVars)).toEqual([...REPORTED_ENV_VARS]);
     expect(d.files).toEqual({
       '.env.local': false,
@@ -145,18 +145,88 @@ describe('collectDiagnostics', () => {
     });
 
     expect(d.config.storeHash).toEqual({ present: false, source: 'unset' });
-    expect(d.config.envVars.AUTH_SECRET).toBe(false);
+    expect(d.config.envVars.AUTH_SECRET).toBe('unset');
   });
 
-  test('reports each env var by presence only', () => {
+  test('reports each env var by source only (never the value)', () => {
     const d = collectDiagnostics({
       cwd: tmpDir,
       env: { AUTH_SECRET: 'super-secret', BIGCOMMERCE_CHANNEL_ID: '1' },
     });
 
-    expect(d.config.envVars.AUTH_SECRET).toBe(true);
-    expect(d.config.envVars.BIGCOMMERCE_CHANNEL_ID).toBe(true);
-    expect(d.config.envVars.BIGCOMMERCE_LOGIN_URL).toBe(false);
+    expect(d.config.envVars.AUTH_SECRET).toBe('process.env');
+    expect(d.config.envVars.BIGCOMMERCE_CHANNEL_ID).toBe('process.env');
+    expect(d.config.envVars.BIGCOMMERCE_LOGIN_URL).toBe('unset');
+  });
+
+  describe('env files (.env.local / .env)', () => {
+    test('resolves env vars and credentials from .env.local without loading them', async () => {
+      await writeFileEnsured(
+        join(tmpDir, '.env.local'),
+        'CATALYST_STORE_HASH=fromlocal\nBIGCOMMERCE_CHANNEL_ID=42\n',
+      );
+
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(d.config.envVars.CATALYST_STORE_HASH).toBe('.env.local');
+      expect(d.config.envVars.BIGCOMMERCE_CHANNEL_ID).toBe('.env.local');
+      expect(d.config.storeHash).toEqual({ present: true, source: '.env.local' });
+      // Never leaked into the real environment.
+      expect(process.env.CATALYST_STORE_HASH).toBeUndefined();
+    });
+
+    test('process.env wins over .env.local, which wins over .env', async () => {
+      await writeFileEnsured(join(tmpDir, '.env.local'), 'CATALYST_ACCESS_TOKEN=local\n');
+      await writeFileEnsured(
+        join(tmpDir, '.env'),
+        'CATALYST_ACCESS_TOKEN=base\nAUTH_SECRET=base\n',
+      );
+
+      const d = collectDiagnostics({
+        cwd: tmpDir,
+        env: { CATALYST_ACCESS_TOKEN: 'real' },
+      });
+
+      // Present in all three — process.env is highest priority.
+      expect(d.config.accessToken).toEqual({ present: true, source: 'process.env' });
+      // Present in .env.local and .env — .env.local wins.
+      expect(d.config.envVars.CATALYST_ACCESS_TOKEN).toBe('process.env');
+      // Only in .env.
+      expect(d.config.envVars.AUTH_SECRET).toBe('.env');
+    });
+
+    test('a malformed/unreadable env file does not break the report', async () => {
+      // A directory named .env.local makes readFileSync throw — the layer is
+      // skipped rather than crashing.
+      await mkdir(join(tmpDir, '.env.local'), { recursive: true });
+
+      const d = collectDiagnostics({ cwd: tmpDir, env: { AUTH_SECRET: 'x' } });
+
+      expect(d.config.envVars.AUTH_SECRET).toBe('process.env');
+      expect(d.files['.env.local']).toBe(true);
+    });
+  });
+
+  describe('project package manager detection', () => {
+    test.each([
+      ['pnpm-lock.yaml', 'pnpm'],
+      ['yarn.lock', 'yarn'],
+      ['bun.lock', 'bun'],
+      ['bun.lockb', 'bun'],
+      ['package-lock.json', 'npm'],
+    ])('detects %s -> %s', async (lockfile, expected) => {
+      await writeFileEnsured(join(tmpDir, lockfile), '');
+
+      expect(collectDiagnostics({ cwd: tmpDir, env: emptyEnv }).runtime.packageManager).toBe(
+        expected,
+      );
+    });
+
+    test('falls back to the invoking package manager when no lockfile exists', () => {
+      const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
+
+      expect(['npm', 'pnpm', 'yarn', 'bun']).toContain(d.runtime.packageManager);
+    });
   });
 
   test('detects present files and directories', async () => {

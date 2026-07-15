@@ -1,3 +1,4 @@
+import { parse } from 'dotenv';
 import { existsSync, readFileSync } from 'node:fs';
 import { release } from 'node:os';
 import { join } from 'node:path';
@@ -10,8 +11,9 @@ import { getProjectState } from './project-state';
 import { getTelemetry } from './telemetry';
 
 // Env vars the CLI reads (see the config-priority chain in program.ts and
-// required-build-env.ts). We report only whether each is SET — never its value —
-// so the diagnostic report can never leak a token, secret, or store identifier.
+// required-build-env.ts). We report only WHERE each is set (or that it is
+// unset) — never its value — so the diagnostic report can never leak a token,
+// secret, or store identifier.
 export const REPORTED_ENV_VARS = [
   'CATALYST_STORE_HASH',
   'BIGCOMMERCE_STORE_HASH',
@@ -25,10 +27,27 @@ export const REPORTED_ENV_VARS = [
   'CATALYST_TELEMETRY_DISABLED',
 ] as const;
 
-// Where a resolved config value came from, following the CLI's priority chain
-// (process.env > .bigcommerce/project.json). Flags are excluded because `debug`
-// takes none of the credential flags itself.
-export type ConfigSource = 'process.env' | 'project.json' | 'unset';
+// Env files `build`/`deploy` auto-load, in precedence order (see build-env.ts).
+// `debug` doesn't load them into process.env — it only inspects their KEYS so
+// the report reflects what a build would resolve, without side effects.
+const ENV_FILES = ['.env.local', '.env'] as const;
+
+// Lockfile -> package manager, checked in this order. This detects the
+// project's package manager (what `build`/`deploy` shell out to) rather than
+// whatever invoked the CLI, which is what a bug report actually needs.
+const PROJECT_LOCKFILES: ReadonlyArray<readonly [string, PackageManager]> = [
+  ['pnpm-lock.yaml', 'pnpm'],
+  ['yarn.lock', 'yarn'],
+  ['bun.lock', 'bun'],
+  ['bun.lockb', 'bun'],
+  ['package-lock.json', 'npm'],
+];
+
+// Where a value resolved from, following the CLI's priority chain
+// (process.env > .env.local > .env > .bigcommerce/project.json). Flags are
+// excluded because `debug` takes none of the credential flags itself.
+export type EnvSource = 'process.env' | (typeof ENV_FILES)[number];
+export type ConfigSource = EnvSource | 'project.json' | 'unset';
 
 export interface ResolvedValue {
   present: boolean;
@@ -66,8 +85,9 @@ export interface Diagnostics {
     projectJsonKeys: string[];
     // Names of persisted deployment env vars (project.json `env` map keys only).
     storedEnvKeys: string[];
-    // Reported env var name -> whether it is set (never the value).
-    envVars: Record<string, boolean>;
+    // Reported env var name -> where it resolved from ('unset' if nowhere).
+    // The value is never included, only the source.
+    envVars: Record<string, ConfigSource>;
   };
   telemetry: {
     enabled: boolean;
@@ -87,14 +107,47 @@ export interface CollectDiagnosticsOptions {
 // mirroring how the build treats "" the same as unset (see required-build-env.ts).
 const hasValue = (value: string | undefined): boolean => value !== undefined && value.trim() !== '';
 
+interface EnvLayer {
+  source: EnvSource;
+  values: Record<string, string | undefined>;
+}
+
+// Build the ordered env layers the CLI resolves against: the real environment
+// first, then the auto-loaded env files. File values are parsed into memory
+// only to detect presence — they are never surfaced in the report.
+const buildEnvLayers = (cwd: string, env: NodeJS.ProcessEnv): EnvLayer[] => {
+  const layers: EnvLayer[] = [{ source: 'process.env', values: env }];
+
+  ENV_FILES.forEach((file) => {
+    const path = join(cwd, file);
+
+    if (!existsSync(path)) {
+      return;
+    }
+
+    try {
+      layers.push({ source: file, values: parse(readFileSync(path, 'utf-8')) });
+    } catch {
+      // A malformed/unreadable env file shouldn't break the report.
+    }
+  });
+
+  return layers;
+};
+
+// The first layer (process.env > .env.local > .env) that carries a non-empty
+// value for any of the given keys. Returns only the source — never a value.
+const resolveEnvSource = (layers: EnvLayer[], ...keys: string[]): EnvSource | undefined =>
+  layers.find((layer) => keys.some((key) => hasValue(layer.values[key])))?.source;
+
 // Resolve which source (if any) supplies a credential, without exposing the
-// value itself. process.env wins over project.json, matching program.ts.
+// value itself. Env layers win over project.json, matching build/deploy.
 const resolveValue = (
-  envValue: string | undefined,
+  envSource: EnvSource | undefined,
   configValue: string | undefined,
 ): ResolvedValue => {
-  if (hasValue(envValue)) {
-    return { present: true, source: 'process.env' };
+  if (envSource) {
+    return { present: true, source: envSource };
   }
 
   if (hasValue(configValue)) {
@@ -106,6 +159,14 @@ const resolveValue = (
 
 const asString = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
+
+// Detect the project's package manager from its lockfile, falling back to the
+// manager that invoked the CLI when no lockfile is present.
+const detectProjectPackageManager = (cwd: string): PackageManager => {
+  const match = PROJECT_LOCKFILES.find(([file]) => existsSync(join(cwd, file)));
+
+  return match ? match[1] : detectPackageManager();
+};
 
 // An open object schema: known credential fields plus any other keys the file
 // may carry, all kept as `unknown` so we can enumerate key names without
@@ -152,8 +213,7 @@ export function collectDiagnostics({
   const state = getProjectState(cwd);
   const telemetry = getTelemetry();
   const projectJson = readProjectJson(cwd);
-
-  const storeHashEnv = env.CATALYST_STORE_HASH ?? env.BIGCOMMERCE_STORE_HASH;
+  const envLayers = buildEnvLayers(cwd, env);
 
   return {
     cli: {
@@ -165,7 +225,7 @@ export function collectDiagnostics({
       platform: process.platform,
       arch: process.arch,
       osRelease: release(),
-      packageManager: detectPackageManager(),
+      packageManager: detectProjectPackageManager(cwd),
     },
     project: {
       cwd,
@@ -178,12 +238,23 @@ export function collectDiagnostics({
       hasOpenNextDep: state.hasOpenNextDep,
     },
     config: {
-      storeHash: resolveValue(storeHashEnv, asString(projectJson?.storeHash)),
-      accessToken: resolveValue(env.CATALYST_ACCESS_TOKEN, asString(projectJson?.accessToken)),
-      projectUuid: resolveValue(env.CATALYST_PROJECT_UUID, asString(projectJson?.projectUuid)),
+      storeHash: resolveValue(
+        resolveEnvSource(envLayers, 'CATALYST_STORE_HASH', 'BIGCOMMERCE_STORE_HASH'),
+        asString(projectJson?.storeHash),
+      ),
+      accessToken: resolveValue(
+        resolveEnvSource(envLayers, 'CATALYST_ACCESS_TOKEN'),
+        asString(projectJson?.accessToken),
+      ),
+      projectUuid: resolveValue(
+        resolveEnvSource(envLayers, 'CATALYST_PROJECT_UUID'),
+        asString(projectJson?.projectUuid),
+      ),
       projectJsonKeys: projectJson ? Object.keys(projectJson).sort() : [],
       storedEnvKeys: readStoredEnvKeys(projectJson),
-      envVars: Object.fromEntries(REPORTED_ENV_VARS.map((name) => [name, hasValue(env[name])])),
+      envVars: Object.fromEntries(
+        REPORTED_ENV_VARS.map((name) => [name, resolveEnvSource(envLayers, name) ?? 'unset']),
+      ),
     },
     telemetry: {
       enabled: telemetry.isEnabled(),

@@ -2,6 +2,7 @@ import { Command, Option } from 'commander';
 
 import {
   collectDiagnostics,
+  type ConfigSource,
   type Diagnostics,
   type ResolvedValue,
 } from '../lib/collect-diagnostics';
@@ -13,6 +14,9 @@ const presence = (value: boolean): string => (value ? 'present' : 'absent');
 
 const formatResolved = (value: ResolvedValue): string =>
   value.present ? `present (source: ${value.source})` : 'not set';
+
+const formatSource = (source: ConfigSource): string =>
+  source === 'unset' ? 'not set' : `set (${source})`;
 
 const formatList = (values: string[]): string => (values.length > 0 ? values.join(', ') : '(none)');
 
@@ -50,7 +54,7 @@ const formatReport = (d: Diagnostics): string => {
     `  Stored env keys:    ${formatList(d.config.storedEnvKeys)}`,
     '  Environment variables:',
     ...Object.entries(d.config.envVars).map(
-      ([name, isSet]) => `    ${name}: ${isSet ? 'set' : 'not set'}`,
+      ([name, source]) => `    ${name}: ${formatSource(source)}`,
     ),
     '',
     'Telemetry',

@@ -36,8 +36,8 @@ const fullDiagnostics: Diagnostics = {
     projectUuid: { present: true, source: 'project.json' },
     projectJsonKeys: ['projectUuid', 'storeHash'],
     storedEnvKeys: ['FOO', 'BAR'],
-    // Both branches of the "set/not set" formatter.
-    envVars: { AUTH_SECRET: true, BIGCOMMERCE_CHANNEL_ID: false },
+    // Both branches of the source formatter (set-with-source and unset).
+    envVars: { AUTH_SECRET: 'process.env', BIGCOMMERCE_CHANNEL_ID: '.env.local', DB_URL: 'unset' },
   },
   telemetry: { enabled: true, correlationId: 'corr-abc' },
   // Both branches of the presence formatter.
@@ -123,8 +123,9 @@ test('prints a human-readable report by default', async () => {
   expect(output).toContain('Access token:       present (source: process.env)');
   expect(output).toContain('project.json keys:  projectUuid, storeHash');
   expect(output).toContain('Stored env keys:    FOO, BAR');
-  expect(output).toContain('AUTH_SECRET: set');
-  expect(output).toContain('BIGCOMMERCE_CHANNEL_ID: not set');
+  expect(output).toContain('AUTH_SECRET: set (process.env)');
+  expect(output).toContain('BIGCOMMERCE_CHANNEL_ID: set (.env.local)');
+  expect(output).toContain('DB_URL: not set');
   expect(output).toContain('Enabled:            yes');
   expect(output).toContain('Correlation ID:     corr-abc');
   expect(output).toContain('.env.local: present');
