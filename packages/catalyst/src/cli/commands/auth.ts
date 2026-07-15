@@ -6,7 +6,7 @@ import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
-import { loginUrlOption } from '../lib/shared-options';
+import { loginUrlOption, resolveApiHost } from '../lib/shared-options';
 
 const StoreProfileSchema = z.object({
   data: z.object({
@@ -64,13 +64,13 @@ Example:
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
+      .env('CATALYST_API_HOST')
       .hideHelp(),
   )
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
 
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
@@ -85,12 +85,12 @@ Example:
         return;
       }
 
-      const store = await fetchStoreProfile(storeHash, accessToken, options.apiHost);
+      const store = await fetchStoreProfile(storeHash, accessToken, apiHost);
 
       const projectUuid = config.get('projectUuid');
 
       if (projectUuid) {
-        const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+        const projects = await fetchProjects(storeHash, accessToken, apiHost);
         const linkedProject = projects.find((p) => p.uuid === projectUuid);
 
         if (linkedProject) {
@@ -153,14 +153,14 @@ Examples:
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
+      .env('CATALYST_API_HOST')
       .hideHelp(),
   )
   .addOption(loginUrlOption())
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
 
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
@@ -173,7 +173,7 @@ Examples:
         return;
       }
 
-      const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
+      const credentials = await runInteractiveLogin(options.loginUrl, apiHost);
 
       config.set('storeHash', credentials.storeHash);
       config.set('accessToken', credentials.accessToken);

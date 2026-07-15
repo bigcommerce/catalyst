@@ -12,6 +12,7 @@ import {
   accessTokenOption,
   apiHostOption,
   projectUuidOption,
+  resolveApiHost,
   resolveProjectUuid,
   storeHashOption,
 } from '../lib/shared-options';
@@ -335,13 +336,14 @@ Examples:
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
       const { storeHash, accessToken } = resolveCredentials(options, config);
 
       await telemetry.identify(storeHash);
 
       const projectUuid = resolveProjectUuid(options);
 
-      await tailLogs(projectUuid, storeHash, accessToken, options.apiHost, options.format);
+      await tailLogs(projectUuid, storeHash, accessToken, apiHost, options.format);
     } catch (error) {
       consola.error(error);
       process.exit(1);
@@ -426,6 +428,7 @@ Examples:
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
       const { storeHash, accessToken } = resolveCredentials(options, config);
 
       await telemetry.identify(storeHash);
@@ -433,7 +436,7 @@ Examples:
       const projectUuid = resolveProjectUuid(options);
       const { start, end } = resolveTimeWindow(options);
 
-      const result = await queryLogs(projectUuid, storeHash, accessToken, options.apiHost, {
+      const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
         start,
         end,
         method: options.method,
