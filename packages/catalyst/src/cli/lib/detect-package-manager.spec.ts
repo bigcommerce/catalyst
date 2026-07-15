@@ -1,9 +1,20 @@
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { detectPackageManager as detectFromDir } from 'nypm';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { detectProjectPackageManager } from './detect-package-manager';
+
+// nypm's own fallback sniffs process.argv[1] for a package manager's name, which
+// spuriously matches 'pnpm' in this pnpm-managed monorepo (test runner path
+// contains `.pnpm`). Spy on it so the "nothing detectable" case below tests our
+// fallback instead of that environment artifact.
+vi.mock('nypm', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('nypm')>();
+
+  return { ...actual, detectPackageManager: vi.fn(actual.detectPackageManager) };
+});
 
 let projectDir: string;
 
@@ -49,7 +60,9 @@ describe('detectProjectPackageManager', () => {
     await expect(detectProjectPackageManager(projectDir)).resolves.toBe('yarn');
   });
 
-  it('falls back to pnpm when nothing is detectable', async () => {
-    await expect(detectProjectPackageManager(projectDir)).resolves.toBe('pnpm');
+  it('falls back to npm when nothing is detectable', async () => {
+    vi.mocked(detectFromDir).mockResolvedValueOnce(undefined);
+
+    await expect(detectProjectPackageManager(projectDir)).resolves.toBe('npm');
   });
 });

@@ -27,8 +27,9 @@ export const detectPackageManager = (): PackageManager => {
 // package.json `packageManager` field. Used by flows that run inside an
 // already-scaffolded project (e.g. `project link`), where a lockfile exists —
 // unlike detectPackageManager(), which infers the INVOKING manager for a freshly
-// extracted project that has no lockfile yet. Falls back to pnpm (Catalyst's
-// default) when detection is inconclusive or returns a manager we don't support.
+// extracted project that has no lockfile yet. Falls back to npm, since most
+// users will have it installed, when detection is inconclusive or returns a
+// manager we don't support.
 export const detectProjectPackageManager = async (projectDir: string): Promise<PackageManager> => {
   const detected = await detectFromDir(projectDir);
   const name = detected?.name;
@@ -37,5 +38,5 @@ export const detectProjectPackageManager = async (projectDir: string): Promise<P
     return name;
   }
 
-  return 'pnpm';
+  return 'npm';
 };
