@@ -85,6 +85,7 @@ export type SearchResult =
     };
 
 type CurrencyAction = Action<SubmissionResult | null, FormData>;
+type LocaleAction = (locale: string) => Promise<void> | void;
 type SearchAction<S extends SearchResult> = Action<
   {
     searchResults: S[] | null;
@@ -105,6 +106,7 @@ interface Props<S extends SearchResult> {
   linksPosition?: 'center' | 'left' | 'right';
   locales?: Locale[];
   activeLocaleId?: string;
+  localeAction?: LocaleAction;
   currencies?: Currency[];
   activeCurrencyId?: Streamable<string | undefined>;
   currencyAction?: CurrencyAction;
@@ -283,6 +285,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     linksPosition = 'center',
     activeLocaleId,
     locales,
+    localeAction,
     currencies: streamableCurrencies,
     activeCurrencyId: streamableActiveCurrencyId,
     currencyAction,
@@ -408,6 +411,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                       {/* Locale / Language Dropdown */}
                       {locales.length > 1 ? (
                         <LocaleSwitcher
+                          action={localeAction}
                           activeLocaleId={activeLocaleId}
                           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                           locales={locales as [Locale, Locale, ...Locale[]]}
@@ -626,6 +630,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
             <LocaleSwitcher
+              action={localeAction}
               activeLocaleId={activeLocaleId}
               className="hidden @4xl:block"
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -912,9 +917,11 @@ const useSwitchLocale = () => {
 function LocaleSwitcher({
   locales,
   activeLocaleId,
+  action,
   className,
 }: {
   activeLocaleId?: string;
+  action?: LocaleAction;
   locales: [Locale, ...Locale[]];
   className?: string;
 }) {
@@ -951,7 +958,14 @@ function LocaleSwitcher({
                   },
                 )}
                 key={id}
-                onSelect={() => startTransition(() => switchLocale(id))}
+                onSelect={() =>
+                  startTransition(async () => {
+                    // Sync the cart's locale first so the shopper lands on the
+                    // new locale with an already-updated cart.
+                    await action?.(id);
+                    switchLocale(id);
+                  })
+                }
               >
                 {label}
               </DropdownMenu.Item>

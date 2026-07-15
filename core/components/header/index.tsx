@@ -16,6 +16,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
+import { switchLocale } from './_actions/switch-locale';
 import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
@@ -176,6 +177,7 @@ export const Header = async () => {
         cartCount: streamableCartCount,
         activeLocaleId: locale,
         locales,
+        localeAction: switchLocale,
         currencies,
         activeCurrencyId: streamableActiveCurrencyId,
         currencyAction: switchCurrency,
