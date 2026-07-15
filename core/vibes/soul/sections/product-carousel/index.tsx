@@ -32,6 +32,7 @@ export interface ProductCarouselProps {
   showButtons?: boolean;
   showScrollbar?: boolean;
   hideOverflow?: boolean;
+  moreOffersLabel?: (count: number) => string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -64,6 +65,7 @@ export function ProductCarousel({
   showButtons = true,
   showScrollbar = true,
   hideOverflow = true,
+  moreOffersLabel,
 }: ProductCarouselProps) {
   return (
     <Stream
@@ -102,6 +104,7 @@ export function ProductCarousel({
                     aspectRatio={aspectRatio}
                     colorScheme={colorScheme}
                     imageSizes="(min-width: 42rem) 25vw, (min-width: 32rem) 33vw, (min-width: 28rem) 50vw, 100vw"
+                    moreOffersLabel={moreOffersLabel}
                     product={{ id, ...product }}
                   />
                 </CarouselItem>

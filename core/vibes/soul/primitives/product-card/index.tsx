@@ -40,7 +40,7 @@ export interface ProductCardProps {
   imageSizes?: string;
   compareLabel?: string;
   compareParamName?: string;
-  moreOffersLabel?: string;
+  moreOffersLabel?: (count: number) => string;
   product: Product;
   showRating?: boolean;
 }
@@ -88,7 +88,7 @@ export function ProductCard({
   aspectRatio = '5:6',
   compareLabel,
   compareParamName,
-  moreOffersLabel = 'more offers',
+  moreOffersLabel = (count) => `+${count} more ${count === 1 ? 'offer' : 'offers'}`,
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: ProductCardProps) {
@@ -196,7 +196,7 @@ export function ProductCard({
                       </CalloutTitle>
                       {promotions.length > 1 && (
                         <CalloutDescription className="text-xs text-yellow-900/70">
-                          +{promotions.length - 1} {moreOffersLabel}
+                          {moreOffersLabel(promotions.length - 1)}
                         </CalloutDescription>
                       )}
                     </CalloutHeader>

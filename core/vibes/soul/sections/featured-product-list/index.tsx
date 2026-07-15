@@ -17,6 +17,7 @@ export interface FeaturedProductsListProps {
   emptyStateTitle?: Streamable<string>;
   emptyStateSubtitle?: Streamable<string>;
   placeholderCount?: number;
+  moreOffersLabel?: (count: number) => string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -41,6 +42,7 @@ export function FeaturedProductList({
   emptyStateTitle,
   emptyStateSubtitle,
   placeholderCount,
+  moreOffersLabel,
 }: FeaturedProductsListProps) {
   return (
     <StickySidebarLayout
@@ -68,6 +70,7 @@ export function FeaturedProductList({
         <ProductList
           emptyStateSubtitle={emptyStateSubtitle}
           emptyStateTitle={emptyStateTitle}
+          moreOffersLabel={moreOffersLabel}
           placeholderCount={placeholderCount}
           products={products}
           showCompare={false}
