@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import PACKAGE_INFO from '../../../package.json';
 
-import { collectDiagnostics, REPORTED_ENV_VARS } from './collect-diagnostics';
+import { BUILD_ENV_VARS, CLI_ENV_VARS, collectDiagnostics } from './collect-diagnostics';
 import { mkTempDir } from './mk-temp-dir';
 
 vi.mock('./telemetry', () => ({
@@ -72,8 +72,10 @@ describe('collectDiagnostics', () => {
     expect(d.config.projectUuid).toEqual({ present: false, source: 'unset' });
     expect(d.config.projectJsonKeys).toEqual([]);
     expect(d.config.storedEnvKeys).toEqual([]);
-    expect(Object.values(d.config.envVars).every((v) => v === 'unset')).toBe(true);
-    expect(Object.keys(d.config.envVars)).toEqual([...REPORTED_ENV_VARS]);
+    expect(Object.keys(d.config.cliEnvVars)).toEqual([...CLI_ENV_VARS]);
+    expect(Object.keys(d.config.buildEnvVars)).toEqual([...BUILD_ENV_VARS]);
+    expect(Object.values(d.config.cliEnvVars).every((v) => v === 'unset')).toBe(true);
+    expect(Object.values(d.config.buildEnvVars).every((v) => v === 'unset')).toBe(true);
     expect(d.files).toEqual({
       '.env.local': false,
       '.env': false,
@@ -147,18 +149,25 @@ describe('collectDiagnostics', () => {
     });
 
     expect(d.config.storeHash).toEqual({ present: false, source: 'unset' });
-    expect(d.config.envVars.AUTH_SECRET).toBe('unset');
+    expect(d.config.buildEnvVars.AUTH_SECRET).toBe('unset');
   });
 
-  test('reports each env var by source only (never the value)', () => {
+  test('reports env vars by source only (never the value), split by consumer', () => {
     const d = collectDiagnostics({
       cwd: tmpDir,
-      env: { AUTH_SECRET: 'super-secret', BIGCOMMERCE_CHANNEL_ID: '1' },
+      env: {
+        CATALYST_ACCESS_TOKEN: 'tok',
+        AUTH_SECRET: 'super-secret',
+        BIGCOMMERCE_CHANNEL_ID: '1',
+      },
     });
 
-    expect(d.config.envVars.AUTH_SECRET).toBe('process.env');
-    expect(d.config.envVars.BIGCOMMERCE_CHANNEL_ID).toBe('process.env');
-    expect(d.config.envVars.BIGCOMMERCE_LOGIN_URL).toBe('unset');
+    // CLI-consumed vars land in cliEnvVars.
+    expect(d.config.cliEnvVars.CATALYST_ACCESS_TOKEN).toBe('process.env');
+    expect(d.config.cliEnvVars.BIGCOMMERCE_LOGIN_URL).toBe('unset');
+    // Build-consumed vars land in buildEnvVars.
+    expect(d.config.buildEnvVars.AUTH_SECRET).toBe('process.env');
+    expect(d.config.buildEnvVars.BIGCOMMERCE_CHANNEL_ID).toBe('process.env');
   });
 
   describe('env files (.env.local / .env)', () => {
@@ -170,8 +179,8 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.config.envVars.CATALYST_STORE_HASH).toBe('.env.local');
-      expect(d.config.envVars.BIGCOMMERCE_CHANNEL_ID).toBe('.env.local');
+      expect(d.config.cliEnvVars.CATALYST_STORE_HASH).toBe('.env.local');
+      expect(d.config.buildEnvVars.BIGCOMMERCE_CHANNEL_ID).toBe('.env.local');
       expect(d.config.storeHash).toEqual({ present: true, source: '.env.local' });
       // Never leaked into the real environment.
       expect(process.env.CATALYST_STORE_HASH).toBeUndefined();
@@ -192,9 +201,9 @@ describe('collectDiagnostics', () => {
       // Present in all three — process.env is highest priority.
       expect(d.config.accessToken).toEqual({ present: true, source: 'process.env' });
       // Present in .env.local and .env — .env.local wins.
-      expect(d.config.envVars.CATALYST_ACCESS_TOKEN).toBe('process.env');
+      expect(d.config.cliEnvVars.CATALYST_ACCESS_TOKEN).toBe('process.env');
       // Only in .env.
-      expect(d.config.envVars.AUTH_SECRET).toBe('.env');
+      expect(d.config.buildEnvVars.AUTH_SECRET).toBe('.env');
     });
 
     test('a malformed/unreadable env file does not break the report', async () => {
@@ -204,7 +213,7 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: { AUTH_SECRET: 'x' } });
 
-      expect(d.config.envVars.AUTH_SECRET).toBe('process.env');
+      expect(d.config.buildEnvVars.AUTH_SECRET).toBe('process.env');
       expect(d.files['.env.local']).toBe(true);
     });
   });

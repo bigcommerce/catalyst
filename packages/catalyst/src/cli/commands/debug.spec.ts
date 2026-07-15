@@ -39,7 +39,8 @@ const fullDiagnostics: Diagnostics = {
     projectJsonKeys: ['projectUuid', 'storeHash'],
     storedEnvKeys: ['FOO', 'BAR'],
     // Both branches of the source formatter (set-with-source and unset).
-    envVars: { AUTH_SECRET: 'process.env', BIGCOMMERCE_CHANNEL_ID: '.env.local', DB_URL: 'unset' },
+    cliEnvVars: { CATALYST_STORE_HASH: 'process.env', CATALYST_PROJECT_UUID: 'unset' },
+    buildEnvVars: { AUTH_SECRET: '.env.local', BIGCOMMERCE_CHANNEL_ID: 'unset' },
   },
   telemetry: { enabled: true, correlationId: 'corr-abc' },
   // Both branches of the presence formatter.
@@ -73,7 +74,8 @@ const emptyDiagnostics: Diagnostics = {
     projectUuid: { present: false, source: 'unset' },
     projectJsonKeys: [],
     storedEnvKeys: [],
-    envVars: {},
+    cliEnvVars: {},
+    buildEnvVars: {},
   },
   telemetry: { enabled: false, correlationId: 'corr-xyz' },
   files: {},
@@ -128,9 +130,12 @@ test('prints a human-readable report by default', async () => {
   expect(output).toContain('Access token:       present (source: process.env)');
   expect(output).toContain('project.json keys:  projectUuid, storeHash');
   expect(output).toContain('Stored env keys:    FOO, BAR');
-  expect(output).toContain('AUTH_SECRET: set (process.env)');
-  expect(output).toContain('BIGCOMMERCE_CHANNEL_ID: set (.env.local)');
-  expect(output).toContain('DB_URL: not set');
+  expect(output).toContain('CLI environment variables (used to run the CLI)');
+  expect(output).toContain('CATALYST_STORE_HASH: set (process.env)');
+  expect(output).toContain('CATALYST_PROJECT_UUID: not set');
+  expect(output).toContain('Build environment variables (used to build the Next.js app)');
+  expect(output).toContain('AUTH_SECRET: set (.env.local)');
+  expect(output).toContain('BIGCOMMERCE_CHANNEL_ID: not set');
   expect(output).toContain('Enabled:            yes');
   expect(output).toContain('Correlation ID:     corr-abc');
   expect(output).toContain('.env.local: present');

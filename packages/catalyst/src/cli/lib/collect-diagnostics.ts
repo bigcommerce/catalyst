@@ -10,21 +10,27 @@ import { detectPackageManager, type PackageManager } from './detect-package-mana
 import { getProjectState } from './project-state';
 import { getTelemetry } from './telemetry';
 
-// Env vars the CLI reads (see the config-priority chain in program.ts and
-// required-build-env.ts). We report only WHERE each is set (or that it is
-// unset) — never its value — so the diagnostic report can never leak a token,
-// secret, or store identifier.
-export const REPORTED_ENV_VARS = [
+// Env vars the CLI itself reads to run commands (credential/flag bindings in
+// shared-options.ts plus the telemetry opt-out). We report only WHERE each is
+// set (or that it is unset) — never its value — so the report can never leak a
+// token, secret, or store identifier.
+export const CLI_ENV_VARS = [
   'CATALYST_STORE_HASH',
-  'BIGCOMMERCE_STORE_HASH',
   'CATALYST_ACCESS_TOKEN',
   'CATALYST_PROJECT_UUID',
   'BIGCOMMERCE_API_HOST',
   'BIGCOMMERCE_LOGIN_URL',
+  'CATALYST_TELEMETRY_DISABLED',
+] as const;
+
+// Env vars the storefront (Next.js app) build reads, not the CLI. Mirrors
+// REQUIRED_BUILD_ENV_VARS in required-build-env.ts — the values `build`/`deploy`
+// assert on before shelling out to the OpenNext/Next.js build.
+export const BUILD_ENV_VARS = [
+  'BIGCOMMERCE_STORE_HASH',
   'BIGCOMMERCE_STOREFRONT_TOKEN',
   'BIGCOMMERCE_CHANNEL_ID',
   'AUTH_SECRET',
-  'CATALYST_TELEMETRY_DISABLED',
 ] as const;
 
 // Env files `build`/`deploy` auto-load, in precedence order (see build-env.ts).
@@ -89,9 +95,11 @@ export interface Diagnostics {
     projectJsonKeys: string[];
     // Names of persisted deployment env vars (project.json `env` map keys only).
     storedEnvKeys: string[];
-    // Reported env var name -> where it resolved from ('unset' if nowhere).
-    // The value is never included, only the source.
-    envVars: Record<string, ConfigSource>;
+    // Env var name -> where it resolved from ('unset' if nowhere), split by
+    // consumer: `cliEnvVars` are read by the CLI, `buildEnvVars` by the Next.js
+    // app build. The value is never included, only the source.
+    cliEnvVars: Record<string, ConfigSource>;
+    buildEnvVars: Record<string, ConfigSource>;
   };
   telemetry: {
     enabled: boolean;
@@ -143,6 +151,13 @@ const buildEnvLayers = (cwd: string, env: NodeJS.ProcessEnv): EnvLayer[] => {
 // value for any of the given keys. Returns only the source — never a value.
 const resolveEnvSource = (layers: EnvLayer[], ...keys: string[]): EnvSource | undefined =>
   layers.find((layer) => keys.some((key) => hasValue(layer.values[key])))?.source;
+
+// Map each named var to the layer it resolves from (or 'unset'), values omitted.
+const resolveEnvVars = (
+  layers: EnvLayer[],
+  names: readonly string[],
+): Record<string, ConfigSource> =>
+  Object.fromEntries(names.map((name) => [name, resolveEnvSource(layers, name) ?? 'unset']));
 
 // Resolve which source (if any) supplies a credential, without exposing the
 // value itself. Env layers win over project.json, matching build/deploy.
@@ -281,9 +296,8 @@ export function collectDiagnostics({
       ),
       projectJsonKeys: projectJson ? Object.keys(projectJson).sort() : [],
       storedEnvKeys: readStoredEnvKeys(projectJson),
-      envVars: Object.fromEntries(
-        REPORTED_ENV_VARS.map((name) => [name, resolveEnvSource(envLayers, name) ?? 'unset']),
-      ),
+      cliEnvVars: resolveEnvVars(envLayers, CLI_ENV_VARS),
+      buildEnvVars: resolveEnvVars(envLayers, BUILD_ENV_VARS),
     },
     telemetry: {
       enabled: telemetry.isEnabled(),

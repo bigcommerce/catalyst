@@ -28,6 +28,9 @@ const formatCore = (name: string | null, version: string | null): string => {
 
 const formatList = (values: string[]): string => (values.length > 0 ? values.join(', ') : '(none)');
 
+const envVarLines = (vars: Record<string, ConfigSource>): string[] =>
+  Object.entries(vars).map(([name, source]) => `  ${name}: ${formatSource(source)}`);
+
 // Build a human-readable, copy-pasteable report. Kept to plain text (no colors)
 // so it survives a paste into a GitHub issue or support ticket unchanged.
 const formatReport = (d: Diagnostics): string => {
@@ -61,10 +64,12 @@ const formatReport = (d: Diagnostics): string => {
     `  Project UUID:       ${formatResolved(d.config.projectUuid)}`,
     `  project.json keys:  ${formatList(d.config.projectJsonKeys)}`,
     `  Stored env keys:    ${formatList(d.config.storedEnvKeys)}`,
-    '  Environment variables:',
-    ...Object.entries(d.config.envVars).map(
-      ([name, source]) => `    ${name}: ${formatSource(source)}`,
-    ),
+    '',
+    'CLI environment variables (used to run the CLI)',
+    ...envVarLines(d.config.cliEnvVars),
+    '',
+    'Build environment variables (used to build the Next.js app)',
+    ...envVarLines(d.config.buildEnvVars),
     '',
     'Telemetry',
     `  Enabled:            ${yesNo(d.telemetry.enabled)}`,
