@@ -1,4 +1,4 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import { z } from 'zod';
 
 import { assertAuthorized, UnauthorizedError } from '../lib/auth-errors';
@@ -6,7 +6,13 @@ import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
-import { loginUrlOption, resolveApiHost } from '../lib/shared-options';
+import {
+  accessTokenOption,
+  apiHostOption,
+  loginUrlOption,
+  resolveApiHost,
+  storeHashOption,
+} from '../lib/shared-options';
 
 const StoreProfileSchema = z.object({
   data: z.object({
@@ -50,23 +56,9 @@ Example:
 
   Logged in to My Store (abc123), connected to project my-project (43eba682-0c48-11f1-9bd5-827a48b0ce1e)`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('CATALYST_API_HOST')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .action(async (options) => {
     try {
       const config = getProjectConfig();
@@ -139,23 +131,9 @@ Examples:
   # Login with existing credentials (skips interactive flow)
   $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('CATALYST_API_HOST')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .addOption(loginUrlOption())
   .action(async (options) => {
     try {
