@@ -1,7 +1,7 @@
 import { parse } from 'dotenv';
 import { existsSync, readFileSync } from 'node:fs';
 import { release } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { z } from 'zod';
 
 import PACKAGE_INFO from '../../../package.json';
@@ -183,12 +183,32 @@ const resolveValue = (
 const asString = (value: unknown): string | undefined =>
   typeof value === 'string' ? value : undefined;
 
-// Detect the project's package manager from its lockfile, falling back to the
-// manager that invoked the CLI when no lockfile is present.
-const detectProjectPackageManager = (cwd: string): PackageManager => {
-  const match = PROJECT_LOCKFILES.find(([file]) => existsSync(join(cwd, file)));
+const lockfileManager = (dir: string): PackageManager | undefined =>
+  PROJECT_LOCKFILES.find(([file]) => existsSync(join(dir, file)))?.[1];
 
-  return match ? match[1] : detectPackageManager();
+// Detect the project's package manager from the nearest lockfile, walking up
+// from cwd so it still works when the CLI is run from a subdirectory (e.g.
+// `core/` in a monorepo, where the lockfile lives at the repo root). Falls back
+// to the manager that invoked the CLI when no lockfile is found anywhere.
+const detectProjectPackageManager = (cwd: string): PackageManager => {
+  let dir = cwd;
+
+  for (;;) {
+    const match = lockfileManager(dir);
+
+    if (match) {
+      return match;
+    }
+
+    const parent = dirname(dir);
+
+    if (parent === dir) {
+      // Reached the filesystem root without finding a lockfile.
+      return detectPackageManager();
+    }
+
+    dir = parent;
+  }
 };
 
 // An open object schema: known credential fields plus any other keys the file

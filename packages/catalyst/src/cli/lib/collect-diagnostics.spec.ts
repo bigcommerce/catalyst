@@ -247,6 +247,18 @@ describe('collectDiagnostics', () => {
       );
     });
 
+    test('finds a lockfile in an ancestor directory (run from a subdirectory)', async () => {
+      await writeFileEnsured(join(tmpDir, 'pnpm-lock.yaml'), '');
+
+      const nested = join(tmpDir, 'apps', 'storefront');
+
+      await mkdir(nested, { recursive: true });
+
+      expect(collectDiagnostics({ cwd: nested, env: emptyEnv }).runtime.packageManager).toBe(
+        'pnpm',
+      );
+    });
+
     test('falls back to the invoking package manager when no lockfile exists', () => {
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
