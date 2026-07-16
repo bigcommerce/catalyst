@@ -1,3 +1,5 @@
+import { detectPackageManager as detectFromDir } from 'nypm';
+
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
 
 // Detect the package manager that INVOKED the CLI (via npx / pnpm dlx / yarn dlx
@@ -16,6 +18,24 @@ export const detectPackageManager = (): PackageManager => {
   // Some bunx versions omit npm_config_user_agent; fall back to the bun runtime marker.
   if (process.versions.bun) {
     return 'bun';
+  }
+
+  return 'npm';
+};
+
+// Detect the package manager an EXISTING project uses, from its lockfile or the
+// package.json `packageManager` field. Used by flows that run inside an
+// already-scaffolded project (e.g. `project link`), where a lockfile exists —
+// unlike detectPackageManager(), which infers the INVOKING manager for a freshly
+// extracted project that has no lockfile yet. Falls back to npm, since most
+// users will have it installed, when detection is inconclusive or returns a
+// manager we don't support.
+export const detectProjectPackageManager = async (projectDir: string): Promise<PackageManager> => {
+  const detected = await detectFromDir(projectDir);
+  const name = detected?.name;
+
+  if (name === 'pnpm' || name === 'yarn' || name === 'bun' || name === 'npm') {
+    return name;
   }
 
   return 'npm';
