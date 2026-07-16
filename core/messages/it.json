@@ -526,6 +526,11 @@
             "backorderQuantity": "{quantity, number} sarà in arretrato",
             "loadingMoreImages": "Caricamento di altre immagini",
             "imagesLoaded": "{count, plural, =1 {1 altra immagine caricata} other {# altre immagini caricate}}",
+            "playVideo": "Riproduci video",
+            "viewVideo": "Guarda il video",
+            "videosTitle": "Video",
+            "hideVideos": "Nascondi i video",
+            "showVideos": "Mostra i video",
             "Submit": {
                 "addToCart": "Aggiungi al carrello",
                 "outOfStock": "Esaurito",

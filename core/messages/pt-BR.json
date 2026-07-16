@@ -526,6 +526,11 @@
             "backorderQuantity": "{quantity, number} will be on backorder",
             "loadingMoreImages": "Loading more images",
             "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
+            "playVideo": "Play video",
+            "viewVideo": "View video",
+            "videosTitle": "Vídeos",
+            "hideVideos": "Hide videos",
+            "showVideos": "Show videos",
             "Submit": {
                 "addToCart": "Adicionar ao carrinho",
                 "outOfStock": "Fora do estoque",

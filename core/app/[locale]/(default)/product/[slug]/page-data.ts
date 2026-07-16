@@ -196,6 +196,14 @@ const ProductQuery = graphql(
             numberOfReviews
           }
           description
+          featuredPromotions {
+            edges {
+              node {
+                entityId
+                text
+              }
+            }
+          }
           ...ProductOptionsFragment
         }
       }
@@ -296,6 +304,18 @@ const StreamableProductQuery = graphql(
           defaultImage {
             altText
             url: urlTemplate(lossy: true)
+          }
+          # Product videos. The Storefront GraphQL API only returns the video
+          # title and url (a YouTube watch URL); the dedicated PDP Videos section
+          # renders them via lite-youtube-embed. 25 covers realistic product
+          # video counts without needing pagination.
+          videos(first: 25) {
+            edges {
+              node {
+                title
+                url
+              }
+            }
           }
           sku
           weight {

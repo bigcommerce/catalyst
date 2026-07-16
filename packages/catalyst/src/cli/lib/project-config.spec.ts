@@ -1,7 +1,7 @@
 import Conf from 'conf';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, beforeAll, expect, test } from 'vitest';
+import { afterAll, beforeAll, expect, test, vi } from 'vitest';
 
 import { mkTempDir } from './mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from './project-config';
@@ -15,10 +15,13 @@ const projectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
 beforeAll(async () => {
   [tmpDir, cleanup] = await mkTempDir();
 
-  config = getProjectConfig(tmpDir);
+  vi.spyOn(process, 'cwd').mockReturnValue(tmpDir);
+
+  config = getProjectConfig();
 });
 
 afterAll(async () => {
+  vi.restoreAllMocks();
   await cleanup();
 });
 
@@ -40,17 +43,20 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   await writeFile(projectJsonPath, JSON.stringify({}));
 
   config.set('projectUuid', projectUuid);
+  config.set('storeHash', 'abc123');
+  config.set('accessToken', 'secret-token');
 
-  const modifiedProjectUuid = config.get('projectUuid');
-
-  expect(modifiedProjectUuid).toBe(projectUuid);
+  expect(config.get('projectUuid')).toBe(projectUuid);
+  expect(config.get('storeHash')).toBe('abc123');
+  expect(config.get('accessToken')).toBe('secret-token');
 });
 
-test('sets default framework to nextjs', async () => {
-  const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+test('env defaults to an empty object and round-trips a map', () => {
+  expect(config.get('env')).toEqual({});
 
-  await mkdir(dirname(projectJsonPath), { recursive: true });
-  await writeFile(projectJsonPath, JSON.stringify({}));
+  config.set('env', { FOO: 'bar', BAZ: 'qux' });
 
-  expect(config.get('framework')).toBe('nextjs');
+  expect(config.get('env')).toEqual({ FOO: 'bar', BAZ: 'qux' });
+
+  config.delete('env');
 });

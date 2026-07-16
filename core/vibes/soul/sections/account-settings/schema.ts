@@ -2,18 +2,23 @@ import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import {
+  Field,
+  FieldGroup,
   FormErrorTranslationMap,
+  getFieldsShape,
   getPasswordSchema,
   PasswordComplexitySettings,
 } from '@/vibes/soul/form/dynamic-form/schema';
 import { ExistingResultType } from '~/client/util';
 
-export const updateAccountSchema = z.object({
-  firstName: z.string().min(2).trim(),
-  lastName: z.string().min(2).trim(),
-  email: z.string().email().trim(),
-  company: z.string().trim().optional(),
-});
+export const updateAccountSchema = (customFields: Array<Field | FieldGroup<Field>> = []) =>
+  z.object({
+    firstName: z.string().min(2).trim(),
+    lastName: z.string().min(2).trim(),
+    email: z.string().email().trim(),
+    company: z.string().trim().optional(),
+    ...getFieldsShape(customFields),
+  });
 
 export const updateAccountErrorTranslations = (
   t: ExistingResultType<typeof getTranslations<'Account.Settings'>>,

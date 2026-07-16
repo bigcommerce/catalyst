@@ -1,7 +1,12 @@
 {
   "name": "@bigcommerce/catalyst",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigcommerce/catalyst",
+    "directory": "packages/catalyst"
+  },
   "bin": {
     "catalyst": "dist/cli.js"
   },
@@ -9,7 +14,6 @@
     "dist",
     "templates"
   ],
-  "private": true,
   "scripts": {
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
@@ -23,22 +27,35 @@
     "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
   },
   "dependencies": {
+    "@commander-js/extra-typings": "^14.0.0",
+    "@inquirer/prompts": "^7.5.3",
     "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
     "commander": "^14.0.0",
     "conf": "^13.1.0",
     "consola": "^3.4.2",
+    "cross-spawn": "^7.0.6",
     "dotenv": "^16.5.0",
     "execa": "^9.6.0",
+    "fs-extra": "^11.3.0",
+    "lodash.kebabcase": "^4.1.1",
+    "nypm": "^0.5.4",
+    "open": "^10.1.0",
+    "semver": "^7.7.4",
+    "std-env": "^3.9.0",
+    "tar": "^7.5.7",
     "yocto-spinner": "^1.0.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@commander-js/extra-typings": "^14.0.0",
     "@types/adm-zip": "^0.5.7",
+    "@types/cross-spawn": "^6.0.6",
+    "@types/fs-extra": "^11.0.4",
+    "@types/lodash.kebabcase": "^4.1.9",
     "@types/node": "^22.15.30",
+    "@types/semver": "^7.7.0",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "eslint": "^8.57.1",
@@ -49,6 +66,6 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "^1.8.0"
+    "@opennextjs/cloudflare": "1.17.3"
   }
 }

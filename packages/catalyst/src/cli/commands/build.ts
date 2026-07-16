@@ -1,130 +1,180 @@
-import { Command, Option } from 'commander';
+import { Command, InvalidArgumentError, Option } from 'commander';
 import { execa } from 'execa';
-import { existsSync } from 'node:fs';
-import { copyFile, cp, writeFile } from 'node:fs/promises';
+import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { valid as validSemver } from 'semver';
 
+import { loadBuildEnv } from '../lib/build-env';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
+import { getProjectState } from '../lib/project-state';
+import { assertRequiredBuildEnv } from '../lib/required-build-env';
+import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-const WRANGLER_VERSION = '4.24.3';
+export const WRANGLER_VERSION = '4.90.0';
+
+// npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
+// through a narrow character allowlist. This also guards the value before
+// it's interpolated into the `wrangler@<version>` spec passed to `pnpm dlx`,
+// rejecting anything that could smuggle extra args or shell metacharacters in.
+const DIST_TAG_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
+export const parseWranglerVersion = (value: string): string => {
+  if (!validSemver(value) && !DIST_TAG_PATTERN.test(value)) {
+    throw new InvalidArgumentError(
+      `"${value}" is not a valid Wrangler version or dist-tag (e.g. 4.90.0 or latest).`,
+    );
+  }
+
+  return value;
+};
+
+export async function buildCatalystProject(
+  projectUuid: string,
+  wranglerVersion: string = WRANGLER_VERSION,
+): Promise<void> {
+  // Fail fast with an actionable message if the vars the build reads aren't
+  // loaded — otherwise the missing values surface as a raw stack trace deep in
+  // the OpenNext/Next.js prerender.
+  assertRequiredBuildEnv();
+
+  const coreDir = process.cwd();
+  const openNextOutDir = join(coreDir, '.open-next');
+  const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
+
+  const wranglerConfig = getWranglerConfig(projectUuid);
+
+  // Wrangler's --outdir writes alongside existing files instead of replacing
+  // the directory. Stale artifacts (e.g. wasm modules named by an older
+  // Wrangler version) end up in the bundle and break the Cloudflare upload.
+  await rm(bigcommerceDistDir, { recursive: true, force: true });
+
+  consola.start('Copying templates...');
+
+  await copyFile(
+    join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
+    join(coreDir, '.bigcommerce', 'open-next.config.ts'),
+  );
+  await writeFile(
+    join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+    JSON.stringify(wranglerConfig, null, 2),
+  );
+
+  consola.success('Templates copied');
+
+  consola.start('Building project...');
+
+  await execa(
+    'pnpm',
+    [
+      'exec',
+      'opennextjs-cloudflare',
+      'build',
+      '--skipWranglerConfigCheck',
+      '--openNextConfigPath',
+      join(coreDir, '.bigcommerce', 'open-next.config.ts'),
+    ],
+    {
+      stdout: ['pipe', 'inherit'],
+      cwd: coreDir,
+    },
+  );
+
+  await execa(
+    'pnpm',
+    [
+      'dlx',
+      `wrangler@${wranglerVersion}`,
+      'deploy',
+      '--config',
+      join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+      '--keep-vars',
+      '--outdir',
+      bigcommerceDistDir,
+      '--dry-run',
+    ],
+    {
+      stdout: ['pipe', 'inherit'],
+      cwd: coreDir,
+    },
+  );
+
+  consola.success('Project built');
+
+  await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
+    recursive: true,
+    force: true,
+  });
+}
 
 export const build = new Command('build')
-  .allowUnknownOption()
-  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
-  .argument(
-    '[next-build-options...]',
-    'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',
+  .configureHelp({ showGlobalOptions: true })
+  .description(
+    'Build your Catalyst project using the OpenNext/Cloudflare build pipeline. Also runs a Wrangler dry-run to generate deployment artifacts.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  $ catalyst build
+
+  # Include project UUID
+  $ catalyst build --project-uuid <UUID>
+
+  # Build with a specific Wrangler version
+  $ catalyst build --wrangler-version 4.24.3`,
   )
   .addOption(
     new Option(
       '--project-uuid <uuid>',
       'Project UUID to be included in the deployment configuration.',
-    ).env('BIGCOMMERCE_PROJECT_UUID'),
+    ).env('CATALYST_PROJECT_UUID'),
   )
   .addOption(
-    new Option('--framework <framework>', 'The framework to use for the build.').choices([
-      'nextjs',
-      'catalyst',
-    ]),
+    new Option(
+      '--wrangler-version <version>',
+      `Wrangler version or dist-tag to build with. Defaults to ${WRANGLER_VERSION}.`,
+    ).argParser(parseWranglerVersion),
   )
-  .action(async (nextBuildOptions, options) => {
-    const coreDir = process.cwd();
+  .addOption(envPathOption())
+  .action(async (options) => {
+    // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
+    // env file(s) before building so both the build and any pre-build checks
+    // see them.
+    loadBuildEnv({ envPath: options.envPath });
 
-    try {
-      const config = getProjectConfig();
-      const framework = options.framework ?? config.get('framework');
+    // Project must be transformed (middleware swapped in, OpenNext dep installed)
+    // before the OpenNext build pipeline can run. If it isn't, fall through to
+    // `next build` so this command works for self-hosted Catalyst projects too.
+    const state = getProjectState();
 
-      if (framework === 'nextjs') {
-        const nextBin = join('node_modules', '.bin', 'next');
+    if (!state.isTransformed) {
+      consola.info('Project is not set up for Commerce Hosting — running `next build`.');
+      consola.info('To deploy to Commerce Hosting, run `catalyst deploy`.');
 
-        if (!existsSync(nextBin)) {
-          throw new Error(
-            `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
-          );
-        }
+      // `next build` reads the same storefront env vars; fail fast with an
+      // actionable message here too, since this path doesn't go through
+      // buildCatalystProject where the check normally runs.
+      assertRequiredBuildEnv();
 
-        await execa(nextBin, ['build', ...nextBuildOptions], {
-          stdio: 'inherit',
-          cwd: coreDir,
-        });
-      }
+      await execa('pnpm', ['exec', 'next', 'build'], {
+        stdio: 'inherit',
+        cwd: process.cwd(),
+      });
 
-      if (framework === 'catalyst') {
-        const openNextOutDir = join(coreDir, '.open-next');
-        const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
-
-        const projectUuid = options.projectUuid ?? config.get('projectUuid');
-
-        if (!projectUuid) {
-          throw new Error(
-            'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
-          );
-        }
-
-        const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
-
-        consola.start('Copying templates...');
-
-        await copyFile(
-          join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
-          join(coreDir, '.bigcommerce', 'open-next.config.ts'),
-        );
-        await writeFile(
-          join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
-          JSON.stringify(wranglerConfig, null, 2),
-        );
-
-        consola.success('Templates copied');
-
-        consola.start('Building project...');
-
-        await execa(
-          'pnpm',
-          [
-            'exec',
-            'opennextjs-cloudflare',
-            'build',
-            '--skipWranglerConfigCheck',
-            '--openNextConfigPath',
-            join(coreDir, '.bigcommerce', 'open-next.config.ts'),
-          ],
-          {
-            stdout: ['pipe', 'inherit'],
-            cwd: coreDir,
-          },
-        );
-
-        await execa(
-          'pnpm',
-          [
-            'dlx',
-            `wrangler@${WRANGLER_VERSION}`,
-            'deploy',
-            '--config',
-            join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
-            '--keep-vars',
-            '--outdir',
-            bigcommerceDistDir,
-            '--dry-run',
-          ],
-          {
-            stdout: ['pipe', 'inherit'],
-            cwd: coreDir,
-          },
-        );
-
-        consola.success('Project built');
-
-        await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
-          recursive: true,
-          force: true,
-        });
-      }
-    } catch (error) {
-      consola.error(error);
-      process.exit(1);
+      return;
     }
+
+    const config = getProjectConfig();
+    const projectUuid = options.projectUuid ?? config.get('projectUuid');
+
+    if (!projectUuid) {
+      throw new Error(
+        'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+      );
+    }
+
+    await buildCatalystProject(projectUuid, options.wranglerVersion);
   });

@@ -369,7 +369,9 @@ export default async function Cart({ params }: Props) {
               : undefined
           }
           incrementLineItemLabel={t('increment')}
-          key={`${cart.entityId}-${cart.version}`}
+          // Keyed by entityId only; keying by version too would remount the section on
+          // every mutation (see the pending-intent dispatcher notes in the Cart section).
+          key={cart.entityId}
           lineItemAction={updateLineItem}
           lineItemActionPendingLabel={t('cartUpdateInProgress')}
           shipping={{

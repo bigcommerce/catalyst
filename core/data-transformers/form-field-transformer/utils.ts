@@ -25,6 +25,20 @@ export enum FieldNameToFieldId {
 
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [FieldNameToFieldId.currentPassword];
 
+/* Account Settings only manages the fields below directly; anything else returned by
+ site.settings.formFields.customer is a genuinely merchant-defined custom field. */
+export const ACCOUNT_SETTINGS_FIELDS_TO_EXCLUDE = [
+  FieldNameToFieldId.email,
+  FieldNameToFieldId.password,
+  FieldNameToFieldId.confirmPassword,
+  FieldNameToFieldId.currentPassword,
+  FieldNameToFieldId.firstName,
+  FieldNameToFieldId.lastName,
+  FieldNameToFieldId.company,
+  FieldNameToFieldId.phone,
+  FieldNameToFieldId.exclusiveOffers,
+];
+
 export const REGISTER_CUSTOMER_FORM_LAYOUT = [
   [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName],
   FieldNameToFieldId.email,

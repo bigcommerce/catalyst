@@ -526,6 +526,11 @@
             "backorderQuantity": "{antall, nummer} vil være restordre",
             "loadingMoreImages": "Laster inn flere bilder",
             "imagesLoaded": "{count, plural, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
+            "playVideo": "Spill av video",
+            "viewVideo": "Vis video",
+            "videosTitle": "Videoer",
+            "hideVideos": "Skjul videoer",
+            "showVideos": "Vis videoer",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",

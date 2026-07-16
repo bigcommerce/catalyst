@@ -4,6 +4,7 @@ import { cache } from 'react';
 
 import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -45,44 +46,48 @@ interface PageLink {
   href: string;
 }
 
-const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
-  const { data } = await client.fetch({
-    document: WebPageChildrenQuery,
-    variables: { id: decodeURIComponent(id) },
-    fetchOptions: { next: { revalidate } },
-  });
+const getWebPageChildren = cache(
+  async (id: string, customerAccessToken?: string): Promise<PageLink[]> => {
+    const { data } = await client.fetch({
+      document: WebPageChildrenQuery,
+      variables: { id: decodeURIComponent(id) },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  if (!data.node) {
-    return [];
-  }
-
-  if (!('children' in data.node)) {
-    return [];
-  }
-
-  const { children } = data.node;
-
-  return removeEdgesAndNodes(children).reduce((acc: PageLink[], child) => {
-    if ('path' in child) {
-      return [...acc, { label: child.name, href: child.path }];
+    if (!data.node) {
+      return [];
     }
 
-    if ('link' in child) {
-      return [...acc, { label: child.name, href: child.link }];
+    if (!('children' in data.node)) {
+      return [];
     }
 
-    return acc;
-  }, []);
-});
+    const { children } = data.node;
+
+    return removeEdgesAndNodes(children).reduce((acc: PageLink[], child) => {
+      if ('path' in child) {
+        return [...acc, { label: child.name, href: child.path }];
+      }
+
+      if ('link' in child) {
+        return [...acc, { label: child.name, href: child.link }];
+      }
+
+      return acc;
+    }, []);
+  },
+);
 
 export default async function WebPageLayout({ params, children }: Props) {
   const { locale, id } = await params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   setRequestLocale(locale);
 
   return (
     <StickySidebarLayout
-      sidebar={<SidebarMenu links={getWebPageChildren(id)} />}
+      sidebar={<SidebarMenu links={getWebPageChildren(id, customerAccessToken)} />}
       sidebarSize="small"
     >
       {children}

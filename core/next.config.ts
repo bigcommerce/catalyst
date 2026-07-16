@@ -68,6 +68,10 @@ export default async (): Promise<NextConfig> => {
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
     },
+    images: {
+      // Allow product-video poster thumbnails (YouTube) through next/image.
+      remotePatterns: [{ protocol: 'https', hostname: 'i.ytimg.com', pathname: '/vi/**' }],
+    },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
     },

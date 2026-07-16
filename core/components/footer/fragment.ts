@@ -42,6 +42,7 @@ export const FooterSectionsFragment = graphql(`
           node {
             __typename
             name
+            isVisibleInNavigation
             ... on RawHtmlPage {
               path
             }

@@ -526,6 +526,11 @@
             "backorderQuantity": "{antal, number} vil være i restordre",
             "loadingMoreImages": "Indlæser flere billeder",
             "imagesLoaded": "{count, plural, =1 {1 yderligere billede indlæst} other {# yderligere billeder indlæst}}",
+            "playVideo": "Afspil video",
+            "viewVideo": "Se video",
+            "videosTitle": "Videoer",
+            "hideVideos": "Skjul videoer",
+            "showVideos": "Vis videoer",
             "Submit": {
                 "addToCart": "Føj til kurv",
                 "outOfStock": "Udsolgt",
