@@ -185,7 +185,7 @@ describe('collectDiagnostics', () => {
   });
 
   describe('env files (.env.local / .env)', () => {
-    test('resolves env vars and credentials from .env.local without loading them', async () => {
+    test('build vars resolve from .env.local, but CLI vars/credentials do not', async () => {
       await writeFileEnsured(
         join(tmpDir, '.env.local'),
         'CATALYST_STORE_HASH=fromlocal\nBIGCOMMERCE_CHANNEL_ID=42\n',
@@ -193,29 +193,33 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.config.cliEnvVars.CATALYST_STORE_HASH).toBe('.env.local');
+      // Build vars ARE loaded from .env files (by build/deploy).
       expect(d.config.buildEnvVars.BIGCOMMERCE_CHANNEL_ID).toBe('.env.local');
-      expect(d.config.storeHash).toEqual({ present: true, source: '.env.local' });
-      // Never leaked into the real environment.
+      // CLI vars are read only from process.env — a .env.local value is ignored,
+      // matching how the CLI actually resolves them (no other command loads env
+      // files). So a store hash sitting only in .env.local reads as unset.
+      expect(d.config.cliEnvVars.CATALYST_STORE_HASH).toBe('unset');
+      expect(d.config.storeHash).toEqual({ present: false, source: 'unset' });
+      // Never loaded into the real environment either.
       expect(process.env.CATALYST_STORE_HASH).toBeUndefined();
     });
 
-    test('process.env wins over .env.local, which wins over .env', async () => {
-      await writeFileEnsured(join(tmpDir, '.env.local'), 'CATALYST_ACCESS_TOKEN=local\n');
+    test('build var precedence: process.env > .env.local > .env', async () => {
+      await writeFileEnsured(join(tmpDir, '.env.local'), 'BIGCOMMERCE_STORE_HASH=local\n');
       await writeFileEnsured(
         join(tmpDir, '.env'),
-        'CATALYST_ACCESS_TOKEN=base\nAUTH_SECRET=base\n',
+        'BIGCOMMERCE_STORE_HASH=base\nAUTH_SECRET=base\n',
       );
 
       const d = collectDiagnostics({
         cwd: tmpDir,
-        env: { CATALYST_ACCESS_TOKEN: 'real' },
+        env: { BIGCOMMERCE_STOREFRONT_TOKEN: 'real' },
       });
 
-      // Present in all three — process.env is highest priority.
-      expect(d.config.accessToken).toEqual({ present: true, source: 'process.env' });
-      // Present in .env.local and .env — .env.local wins.
-      expect(d.config.cliEnvVars.CATALYST_ACCESS_TOKEN).toBe('process.env');
+      // Only in process.env.
+      expect(d.config.buildEnvVars.BIGCOMMERCE_STOREFRONT_TOKEN).toBe('process.env');
+      // In .env.local and .env — .env.local wins.
+      expect(d.config.buildEnvVars.BIGCOMMERCE_STORE_HASH).toBe('.env.local');
       // Only in .env.
       expect(d.config.buildEnvVars.AUTH_SECRET).toBe('.env');
     });

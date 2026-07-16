@@ -278,8 +278,15 @@ export function collectDiagnostics({
   const state = getProjectState(cwd);
   const telemetry = getTelemetry();
   const projectJson = readProjectJson(cwd);
-  const envLayers = buildEnvLayers(cwd, env);
   const storefront = readStorefrontInfo(cwd);
+
+  // The CLI reads its own config only from the real environment (Commander
+  // `.env()` bindings) and .bigcommerce/project.json — never from .env files
+  // (see the note in program.ts). Only the storefront BUILD vars are loaded
+  // from .env.local/.env, and only by `build`/`deploy`, so only those are
+  // resolved across the file layers.
+  const cliEnv: EnvLayer[] = [{ source: 'process.env', values: env }];
+  const buildEnv = buildEnvLayers(cwd, env);
 
   return {
     cli: {
@@ -307,25 +314,25 @@ export function collectDiagnostics({
     },
     config: {
       storeHash: resolveValue(
-        resolveEnvSource(envLayers, 'CATALYST_STORE_HASH', 'BIGCOMMERCE_STORE_HASH'),
+        resolveEnvSource(cliEnv, 'CATALYST_STORE_HASH', 'BIGCOMMERCE_STORE_HASH'),
         asString(projectJson?.storeHash),
       ),
       accessToken: resolveValue(
-        resolveEnvSource(envLayers, 'CATALYST_ACCESS_TOKEN'),
+        resolveEnvSource(cliEnv, 'CATALYST_ACCESS_TOKEN'),
         asString(projectJson?.accessToken),
       ),
       projectUuid: resolveValue(
-        resolveEnvSource(envLayers, 'CATALYST_PROJECT_UUID'),
+        resolveEnvSource(cliEnv, 'CATALYST_PROJECT_UUID'),
         asString(projectJson?.projectUuid),
       ),
       apiHost: resolveValue(
-        resolveEnvSource(envLayers, 'CATALYST_API_HOST'),
+        resolveEnvSource(cliEnv, 'CATALYST_API_HOST'),
         asString(projectJson?.apiHost),
       ),
       projectJsonKeys: projectJson ? Object.keys(projectJson).sort() : [],
       storedEnvKeys: readStoredEnvKeys(projectJson),
-      cliEnvVars: resolveEnvVars(envLayers, CLI_ENV_VARS),
-      buildEnvVars: resolveEnvVars(envLayers, BUILD_ENV_VARS),
+      cliEnvVars: resolveEnvVars(cliEnv, CLI_ENV_VARS),
+      buildEnvVars: resolveEnvVars(buildEnv, BUILD_ENV_VARS),
     },
     telemetry: {
       enabled: telemetry.isEnabled(),
