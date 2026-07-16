@@ -26,7 +26,6 @@ interface ProductListProps {
   removeLabel?: Streamable<string>;
   maxItems?: number;
   maxCompareLimitMessage?: Streamable<string>;
-  moreOffersLabel?: (count: number) => string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -62,7 +61,6 @@ export function ProductList({
   removeLabel: streamableRemoveLabel,
   maxItems,
   maxCompareLimitMessage: streamableMaxCompareLimitMessage,
-  moreOffersLabel,
 }: ProductListProps) {
   return (
     <Stream
@@ -110,7 +108,6 @@ export function ProductList({
                     compareParamName={compareParamName}
                     imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
                     key={product.id}
-                    moreOffersLabel={moreOffersLabel}
                     product={product}
                     showCompare={showCompare}
                     showRating={showRating}

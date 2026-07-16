@@ -32,10 +32,7 @@ export default async function Home({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
-  const tProductCard = await getTranslations('Components.ProductCard');
   const format = await getFormatter();
-
-  const moreOffersLabel = (count: number) => tProductCard('moreOffers', { count });
 
   const streamablePageData = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -97,7 +94,6 @@ export default async function Home({ params }: Props) {
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
         emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
-        moreOffersLabel={moreOffersLabel}
         products={streamableFeaturedProducts}
         title={t('FeaturedProducts.title')}
       />
@@ -107,7 +103,6 @@ export default async function Home({ params }: Props) {
         description={t('NewestProducts.description')}
         emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
-        moreOffersLabel={moreOffersLabel}
         nextLabel={t('NewestProducts.nextProducts')}
         previousLabel={t('NewestProducts.previousProducts')}
         products={streamableNewestProducts}

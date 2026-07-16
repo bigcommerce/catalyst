@@ -103,7 +103,6 @@ export default async function Category(props: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Faceted');
-  const tProductCard = await getTranslations('Components.ProductCard');
 
   const categoryId = Number(slug);
 
@@ -270,7 +269,6 @@ export default async function Category(props: Props) {
         filtersPanelTitle={t('FacetedSearch.filters')}
         maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}
-        moreOffersLabel={(count) => tProductCard('moreOffers', { count })}
         paginationInfo={streamablePagination}
         products={streamableProducts}
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}

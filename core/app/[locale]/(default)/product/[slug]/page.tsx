@@ -86,7 +86,6 @@ export default async function Product({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
-  const tProductCard = await getTranslations('Components.ProductCard');
   const format = await getFormatter();
 
   const productId = Number(slug);
@@ -624,7 +623,6 @@ export default async function Product({ params, searchParams }: Props) {
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
-        moreOffersLabel={(count) => tProductCard('moreOffers', { count })}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
         products={streameableRelatedProducts}

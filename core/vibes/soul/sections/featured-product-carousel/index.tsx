@@ -21,7 +21,6 @@ export interface FeaturedProductCarouselProps {
   previousLabel?: string;
   nextLabel?: string;
   hideOverflow?: boolean;
-  moreOffersLabel?: (count: number) => string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -50,7 +49,6 @@ export function FeaturedProductCarousel({
   previousLabel,
   nextLabel,
   hideOverflow = false,
-  moreOffersLabel,
 }: FeaturedProductCarouselProps) {
   return (
     <SectionLayout containerSize="2xl">
@@ -76,7 +74,6 @@ export function FeaturedProductCarousel({
           emptyStateSubtitle={emptyStateSubtitle}
           emptyStateTitle={emptyStateTitle}
           hideOverflow={hideOverflow}
-          moreOffersLabel={moreOffersLabel}
           nextLabel={nextLabel}
           placeholderCount={placeholderCount}
           previousLabel={previousLabel}
