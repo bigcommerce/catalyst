@@ -38,7 +38,7 @@ import {
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
-import { buildCatalystProject } from './build';
+import { buildCatalystProject, parseWranglerVersion, WRANGLER_VERSION } from './build';
 
 const stepsEnum = z.enum([
   'initializing',
@@ -401,6 +401,12 @@ Example:
     '--prebuilt',
     'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
   )
+  .addOption(
+    new Option(
+      '--wrangler-version <version>',
+      `Wrangler version or dist-tag to build with. Ignored with --prebuilt. Defaults to ${WRANGLER_VERSION}.`,
+    ).argParser(parseWranglerVersion),
+  )
   .addOption(envPathOption())
   .action(async (options) => {
     const config = getProjectConfig();
@@ -522,7 +528,7 @@ Example:
       // see them. Skipped for --prebuilt above, which doesn't run the build.
       loadBuildEnv({ envPath: options.envPath });
 
-      await buildCatalystProject(projectUuid);
+      await buildCatalystProject(projectUuid, options.wranglerVersion);
     }
 
     await generateBundleZip();

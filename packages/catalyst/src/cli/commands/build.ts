@@ -1,7 +1,8 @@
-import { Command, Option } from 'commander';
+import { Command, InvalidArgumentError, Option } from 'commander';
 import { execa } from 'execa';
 import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { valid as validSemver } from 'semver';
 
 import { loadBuildEnv } from '../lib/build-env';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -12,9 +13,28 @@ import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-const WRANGLER_VERSION = '4.90.0';
+export const WRANGLER_VERSION = '4.90.0';
 
-export async function buildCatalystProject(projectUuid: string): Promise<void> {
+// npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
+// through a narrow character allowlist. This also guards the value before
+// it's interpolated into the `wrangler@<version>` spec passed to `pnpm dlx`,
+// rejecting anything that could smuggle extra args or shell metacharacters in.
+const DIST_TAG_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
+
+export const parseWranglerVersion = (value: string): string => {
+  if (!validSemver(value) && !DIST_TAG_PATTERN.test(value)) {
+    throw new InvalidArgumentError(
+      `"${value}" is not a valid Wrangler version or dist-tag (e.g. 4.90.0 or latest).`,
+    );
+  }
+
+  return value;
+};
+
+export async function buildCatalystProject(
+  projectUuid: string,
+  wranglerVersion: string = WRANGLER_VERSION,
+): Promise<void> {
   // Fail fast with an actionable message if the vars the build reads aren't
   // loaded — otherwise the missing values surface as a raw stack trace deep in
   // the OpenNext/Next.js prerender.
@@ -66,7 +86,7 @@ export async function buildCatalystProject(projectUuid: string): Promise<void> {
     'pnpm',
     [
       'dlx',
-      `wrangler@${WRANGLER_VERSION}`,
+      `wrangler@${wranglerVersion}`,
       'deploy',
       '--config',
       join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
@@ -101,13 +121,22 @@ Examples:
   $ catalyst build
 
   # Include project UUID
-  $ catalyst build --project-uuid <UUID>`,
+  $ catalyst build --project-uuid <UUID>
+
+  # Build with a specific Wrangler version
+  $ catalyst build --wrangler-version 4.24.3`,
   )
   .addOption(
     new Option(
       '--project-uuid <uuid>',
       'Project UUID to be included in the deployment configuration.',
     ).env('CATALYST_PROJECT_UUID'),
+  )
+  .addOption(
+    new Option(
+      '--wrangler-version <version>',
+      `Wrangler version or dist-tag to build with. Defaults to ${WRANGLER_VERSION}.`,
+    ).argParser(parseWranglerVersion),
   )
   .addOption(envPathOption())
   .action(async (options) => {
@@ -147,5 +176,5 @@ Examples:
       );
     }
 
-    await buildCatalystProject(projectUuid);
+    await buildCatalystProject(projectUuid, options.wranglerVersion);
   });
