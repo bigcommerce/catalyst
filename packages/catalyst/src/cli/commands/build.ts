@@ -2,6 +2,7 @@ import { Command, InvalidArgumentError, Option } from 'commander';
 import { execa } from 'execa';
 import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { valid as validSemver } from 'semver';
 
 import { loadBuildEnv } from '../lib/build-env';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -14,14 +15,14 @@ import { getWranglerConfig } from '../lib/wrangler-config';
 
 export const WRANGLER_VERSION = '4.90.0';
 
-// Guard the value before it's interpolated into the `wrangler@<version>` spec
-// passed to `pnpm dlx`. Accepts semver-like versions (e.g. 4.90.0,
-// 4.90.0-beta.1) and npm dist-tags (e.g. latest, beta), and rejects anything
-// with characters that could smuggle extra args or shell metacharacters in.
-const WRANGLER_VERSION_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._+-]*$/;
+// npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
+// through a narrow character allowlist. This also guards the value before
+// it's interpolated into the `wrangler@<version>` spec passed to `pnpm dlx`,
+// rejecting anything that could smuggle extra args or shell metacharacters in.
+const DIST_TAG_PATTERN = /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/;
 
 export const parseWranglerVersion = (value: string): string => {
-  if (!WRANGLER_VERSION_PATTERN.test(value)) {
+  if (!validSemver(value) && !DIST_TAG_PATTERN.test(value)) {
     throw new InvalidArgumentError(
       `"${value}" is not a valid Wrangler version or dist-tag (e.g. 4.90.0 or latest).`,
     );
