@@ -13,5 +13,5 @@
   },
   "baseBranch": "integrations/makeswift",
   "updateInternalDependencies": "patch",
-  "ignore": ["@bigcommerce/catalyst"]
+  "ignore": ["@bigcommerce/catalyst", "@bigcommerce/create-catalyst"]
 }
