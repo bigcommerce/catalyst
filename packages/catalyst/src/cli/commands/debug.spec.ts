@@ -22,8 +22,8 @@ const fullDiagnostics: Diagnostics = {
   },
   project: {
     cwd: '/tmp/project',
-    coreName: '@bigcommerce/catalyst-core',
-    coreVersion: '1.8.0',
+    storefrontName: '@bigcommerce/catalyst-core',
+    storefrontVersion: '1.8.0',
     projectUuid: 'uuid-123',
     isLinked: true,
     isTransformed: true,
@@ -59,8 +59,8 @@ const emptyDiagnostics: Diagnostics = {
   },
   project: {
     cwd: '/tmp/empty',
-    coreName: null,
-    coreVersion: null,
+    storefrontName: null,
+    storefrontVersion: null,
     projectUuid: null,
     isLinked: false,
     isTransformed: false,
@@ -122,7 +122,7 @@ test('prints a human-readable report by default', async () => {
   expect(output).toContain('Catalyst CLI Diagnostics');
   expect(output).toContain('@bigcommerce/catalyst');
   expect(output).toContain('pnpm');
-  expect(output).toContain('Catalyst core:      @bigcommerce/catalyst-core@1.8.0');
+  expect(output).toContain('Storefront:         @bigcommerce/catalyst-core@1.8.0');
   expect(output).toContain('Project UUID:       uuid-123');
   expect(output).toContain('Linked:             yes');
   expect(output).toContain('middleware.ts:      present');
@@ -152,7 +152,7 @@ test('renders the empty-project branches', async () => {
 
   const output = lastLogOutput();
 
-  expect(output).toContain('Catalyst core:      (unknown)');
+  expect(output).toContain('Storefront:         (unknown)');
   expect(output).toContain('Project UUID:       (not linked)');
   expect(output).toContain('Linked:             no');
   expect(output).toContain('OpenNext dep:       not installed');
@@ -163,15 +163,15 @@ test('renders the empty-project branches', async () => {
   expect(output).toContain('Enabled:            no');
 });
 
-test('shows the core version alone when the package name is unknown', async () => {
+test('shows the storefront version alone when the package name is unknown', async () => {
   vi.mocked(collectDiagnostics).mockReturnValue({
     ...emptyDiagnostics,
-    project: { ...emptyDiagnostics.project, coreName: null, coreVersion: '3.2.1' },
+    project: { ...emptyDiagnostics.project, storefrontName: null, storefrontVersion: '3.2.1' },
   });
 
   await program.parseAsync(['node', 'catalyst', 'debug']);
 
-  expect(lastLogOutput()).toContain('Catalyst core:      3.2.1');
+  expect(lastLogOutput()).toContain('Storefront:         3.2.1');
 });
 
 test('--json prints machine-readable output', async () => {

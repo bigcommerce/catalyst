@@ -18,7 +18,7 @@ const formatResolved = (value: ResolvedValue): string =>
 const formatSource = (source: ConfigSource): string =>
   source === 'unset' ? 'not set' : `set (${source})`;
 
-const formatCore = (name: string | null, version: string | null): string => {
+const formatStorefront = (name: string | null, version: string | null): string => {
   if (!version) {
     return '(unknown)';
   }
@@ -49,7 +49,7 @@ const formatReport = (d: Diagnostics): string => {
     '',
     'Project',
     `  Directory:          ${d.project.cwd}`,
-    `  Catalyst core:      ${formatCore(d.project.coreName, d.project.coreVersion)}`,
+    `  Storefront:         ${formatStorefront(d.project.storefrontName, d.project.storefrontVersion)}`,
     `  Project UUID:       ${d.project.projectUuid ?? '(not linked)'}`,
     `  Linked:             ${yesNo(d.project.isLinked)}`,
     `  Transformed:        ${yesNo(d.project.isTransformed)}`,

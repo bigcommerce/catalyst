@@ -74,10 +74,11 @@ export interface Diagnostics {
   };
   project: {
     cwd: string;
-    // The storefront (Catalyst core) package name + version from the project's
-    // package.json, resolved the same way `upgrade` does. null when absent.
-    coreName: string | null;
-    coreVersion: string | null;
+    // The storefront package name + version from the project's package.json,
+    // resolved the same way `upgrade` does. `name` identifies the Catalyst
+    // family (catalyst-core, catalyst-makeswift, …). null when absent.
+    storefrontName: string | null;
+    storefrontVersion: string | null;
     projectUuid: string | null;
     isLinked: boolean;
     isTransformed: boolean;
@@ -215,17 +216,17 @@ const readProjectJson = (cwd: string): Record<string, unknown> | null => {
   return result.success ? result.data : null;
 };
 
-// Mirrors upgrade.ts: `catalyst.version` is the source of truth for the core
-// version, falling back to the plain `version`. `name` identifies which
-// Catalyst family the project is on (e.g. @bigcommerce/catalyst-core).
-const corePackageSchema = z.looseObject({
+// Mirrors upgrade.ts: `catalyst.version` is the source of truth for the
+// storefront version, falling back to the plain `version`. `name` identifies
+// which Catalyst family the project is on (e.g. @bigcommerce/catalyst-core).
+const storefrontPackageSchema = z.looseObject({
   name: z.string().optional(),
   version: z.string().optional(),
   catalyst: z.looseObject({ version: z.string().optional() }).optional(),
 });
 
-const readCoreInfo = (cwd: string): { name: string | null; version: string | null } => {
-  const result = corePackageSchema.safeParse(safeReadJson(join(cwd, 'package.json')));
+const readStorefrontInfo = (cwd: string): { name: string | null; version: string | null } => {
+  const result = storefrontPackageSchema.safeParse(safeReadJson(join(cwd, 'package.json')));
 
   if (!result.success) {
     return { name: null, version: null };
@@ -258,7 +259,7 @@ export function collectDiagnostics({
   const telemetry = getTelemetry();
   const projectJson = readProjectJson(cwd);
   const envLayers = buildEnvLayers(cwd, env);
-  const core = readCoreInfo(cwd);
+  const storefront = readStorefrontInfo(cwd);
 
   return {
     cli: {
@@ -274,8 +275,8 @@ export function collectDiagnostics({
     },
     project: {
       cwd,
-      coreName: core.name,
-      coreVersion: core.version,
+      storefrontName: storefront.name,
+      storefrontVersion: storefront.version,
       projectUuid: state.projectUuid ?? null,
       isLinked: state.isLinked,
       isTransformed: state.isTransformed,

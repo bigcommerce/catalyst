@@ -57,8 +57,8 @@ describe('collectDiagnostics', () => {
 
     expect(d.project).toEqual({
       cwd: tmpDir,
-      coreName: null,
-      coreVersion: null,
+      storefrontName: null,
+      storefrontVersion: null,
       projectUuid: null,
       isLinked: false,
       isTransformed: false,
@@ -254,7 +254,7 @@ describe('collectDiagnostics', () => {
     });
   });
 
-  describe('Catalyst core version', () => {
+  describe('Storefront version', () => {
     const writePackageJson = (value: unknown) =>
       writeFileEnsured(join(tmpDir, 'package.json'), JSON.stringify(value));
 
@@ -263,8 +263,8 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.project.coreName).toBe('@bigcommerce/catalyst-core');
-      expect(d.project.coreVersion).toBe('1.8.0');
+      expect(d.project.storefrontName).toBe('@bigcommerce/catalyst-core');
+      expect(d.project.storefrontVersion).toBe('1.8.0');
     });
 
     test('prefers catalyst.version over the plain version', async () => {
@@ -274,14 +274,16 @@ describe('collectDiagnostics', () => {
         catalyst: { version: '1.9.1', ref: '@bigcommerce/catalyst-core@1.9.1' },
       });
 
-      expect(collectDiagnostics({ cwd: tmpDir, env: emptyEnv }).project.coreVersion).toBe('1.9.1');
+      expect(collectDiagnostics({ cwd: tmpDir, env: emptyEnv }).project.storefrontVersion).toBe(
+        '1.9.1',
+      );
     });
 
     test('null when package.json is absent', () => {
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.project.coreName).toBeNull();
-      expect(d.project.coreVersion).toBeNull();
+      expect(d.project.storefrontName).toBeNull();
+      expect(d.project.storefrontVersion).toBeNull();
     });
 
     test('null version when package.json has no version field', async () => {
@@ -289,8 +291,8 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.project.coreName).toBe('some-project');
-      expect(d.project.coreVersion).toBeNull();
+      expect(d.project.storefrontName).toBe('some-project');
+      expect(d.project.storefrontVersion).toBeNull();
     });
 
     test('null when package.json is malformed', async () => {
@@ -298,8 +300,8 @@ describe('collectDiagnostics', () => {
 
       const d = collectDiagnostics({ cwd: tmpDir, env: emptyEnv });
 
-      expect(d.project.coreName).toBeNull();
-      expect(d.project.coreVersion).toBeNull();
+      expect(d.project.storefrontName).toBeNull();
+      expect(d.project.storefrontVersion).toBeNull();
     });
   });
 
