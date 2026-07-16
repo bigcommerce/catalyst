@@ -1,0 +1,350 @@
+import { parse } from 'dotenv';
+import { existsSync, readFileSync } from 'node:fs';
+import { release } from 'node:os';
+import { dirname, join } from 'node:path';
+import { z } from 'zod';
+
+import PACKAGE_INFO from '../../../package.json';
+
+import { detectPackageManager, type PackageManager } from './detect-package-manager';
+import { getProjectState } from './project-state';
+import { getTelemetry } from './telemetry';
+
+// Env vars the CLI itself reads to run commands (credential/flag bindings in
+// shared-options.ts plus the telemetry opt-out). We report only WHERE each is
+// set (or that it is unset) — never its value — so the report can never leak a
+// token, secret, or store identifier.
+export const CLI_ENV_VARS = [
+  'CATALYST_STORE_HASH',
+  'CATALYST_ACCESS_TOKEN',
+  'CATALYST_PROJECT_UUID',
+  'CATALYST_API_HOST',
+  'BIGCOMMERCE_LOGIN_URL',
+  'CATALYST_TELEMETRY_DISABLED',
+] as const;
+
+// Env vars the storefront (Next.js app) build reads, not the CLI. Mirrors
+// REQUIRED_BUILD_ENV_VARS in required-build-env.ts — the values `build`/`deploy`
+// assert on before shelling out to the OpenNext/Next.js build.
+export const BUILD_ENV_VARS = [
+  'BIGCOMMERCE_STORE_HASH',
+  'BIGCOMMERCE_STOREFRONT_TOKEN',
+  'BIGCOMMERCE_CHANNEL_ID',
+  'AUTH_SECRET',
+] as const;
+
+// Env files `build`/`deploy` auto-load, in precedence order (see build-env.ts).
+// `debug` doesn't load them into process.env — it only inspects their KEYS so
+// the report reflects what a build would resolve, without side effects.
+const ENV_FILES = ['.env.local', '.env'] as const;
+
+// Lockfile -> package manager, checked in this order. This detects the
+// project's package manager (what `build`/`deploy` shell out to) rather than
+// whatever invoked the CLI, which is what a bug report actually needs.
+const PROJECT_LOCKFILES: ReadonlyArray<readonly [string, PackageManager]> = [
+  ['pnpm-lock.yaml', 'pnpm'],
+  ['yarn.lock', 'yarn'],
+  ['bun.lock', 'bun'],
+  ['bun.lockb', 'bun'],
+  ['package-lock.json', 'npm'],
+];
+
+// Where a value resolved from, following the CLI's priority chain
+// (process.env > .env.local > .env > .bigcommerce/project.json). Flags are
+// excluded because `debug` takes none of the credential flags itself.
+export type EnvSource = 'process.env' | (typeof ENV_FILES)[number];
+export type ConfigSource = EnvSource | 'project.json' | 'unset';
+
+export interface ResolvedValue {
+  present: boolean;
+  source: ConfigSource;
+}
+
+export interface Diagnostics {
+  cli: {
+    name: string;
+    version: string;
+  };
+  runtime: {
+    node: string;
+    platform: string;
+    arch: string;
+    osRelease: string;
+    packageManager: PackageManager;
+  };
+  project: {
+    cwd: string;
+    // The storefront package name + version from the project's package.json,
+    // resolved the same way `upgrade` does. `name` identifies the Catalyst
+    // family (catalyst-core, catalyst-makeswift, …). null when absent.
+    storefrontName: string | null;
+    storefrontVersion: string | null;
+    projectUuid: string | null;
+    isLinked: boolean;
+    isTransformed: boolean;
+    isFullySetUp: boolean;
+    hasMiddleware: boolean;
+    hasProxy: boolean;
+    hasOpenNextDep: boolean;
+  };
+  config: {
+    storeHash: ResolvedValue;
+    accessToken: ResolvedValue;
+    projectUuid: ResolvedValue;
+    // The API host override. 'unset' means the CLI falls back to its default
+    // (api.bigcommerce.com). Resolved like the credentials above.
+    apiHost: ResolvedValue;
+    // Top-level keys present in .bigcommerce/project.json (names only — values
+    // are never included so masked secrets like accessToken can't leak).
+    projectJsonKeys: string[];
+    // Names of persisted deployment env vars (project.json `env` map keys only).
+    storedEnvKeys: string[];
+    // Env var name -> where it resolved from ('unset' if nowhere), split by
+    // consumer: `cliEnvVars` are read by the CLI, `buildEnvVars` by the Next.js
+    // app build. The value is never included, only the source.
+    cliEnvVars: Record<string, ConfigSource>;
+    buildEnvVars: Record<string, ConfigSource>;
+  };
+  telemetry: {
+    enabled: boolean;
+    correlationId: string;
+  };
+  // Relative path -> whether the file/directory exists on disk. Presence only;
+  // contents are never read into the report.
+  files: Record<string, boolean>;
+}
+
+export interface CollectDiagnosticsOptions {
+  cwd?: string;
+  env?: NodeJS.ProcessEnv;
+}
+
+// A value counts as present only when it is a non-empty, non-whitespace string —
+// mirroring how the build treats "" the same as unset (see required-build-env.ts).
+const hasValue = (value: string | undefined): boolean => value !== undefined && value.trim() !== '';
+
+interface EnvLayer {
+  source: EnvSource;
+  values: Record<string, string | undefined>;
+}
+
+// Build the ordered env layers the CLI resolves against: the real environment
+// first, then the auto-loaded env files. File values are parsed into memory
+// only to detect presence — they are never surfaced in the report.
+const buildEnvLayers = (cwd: string, env: NodeJS.ProcessEnv): EnvLayer[] => {
+  const layers: EnvLayer[] = [{ source: 'process.env', values: env }];
+
+  ENV_FILES.forEach((file) => {
+    const path = join(cwd, file);
+
+    if (!existsSync(path)) {
+      return;
+    }
+
+    try {
+      layers.push({ source: file, values: parse(readFileSync(path, 'utf-8')) });
+    } catch {
+      // A malformed/unreadable env file shouldn't break the report.
+    }
+  });
+
+  return layers;
+};
+
+// The first layer (process.env > .env.local > .env) that carries a non-empty
+// value for any of the given keys. Returns only the source — never a value.
+const resolveEnvSource = (layers: EnvLayer[], ...keys: string[]): EnvSource | undefined =>
+  layers.find((layer) => keys.some((key) => hasValue(layer.values[key])))?.source;
+
+// Map each named var to the layer it resolves from (or 'unset'), values omitted.
+const resolveEnvVars = (
+  layers: EnvLayer[],
+  names: readonly string[],
+): Record<string, ConfigSource> =>
+  Object.fromEntries(names.map((name) => [name, resolveEnvSource(layers, name) ?? 'unset']));
+
+// Resolve which source (if any) supplies a credential, without exposing the
+// value itself. Env layers win over project.json, matching build/deploy.
+const resolveValue = (
+  envSource: EnvSource | undefined,
+  configValue: string | undefined,
+): ResolvedValue => {
+  if (envSource) {
+    return { present: true, source: envSource };
+  }
+
+  if (hasValue(configValue)) {
+    return { present: true, source: 'project.json' };
+  }
+
+  return { present: false, source: 'unset' };
+};
+
+const asString = (value: unknown): string | undefined =>
+  typeof value === 'string' ? value : undefined;
+
+const lockfileManager = (dir: string): PackageManager | undefined =>
+  PROJECT_LOCKFILES.find(([file]) => existsSync(join(dir, file)))?.[1];
+
+// Detect the project's package manager from the nearest lockfile, walking up
+// from cwd so it still works when the CLI is run from a subdirectory (e.g.
+// `core/` in a monorepo, where the lockfile lives at the repo root). Falls back
+// to the manager that invoked the CLI when no lockfile is found anywhere.
+const detectProjectPackageManager = (cwd: string): PackageManager => {
+  let dir = cwd;
+
+  for (;;) {
+    const match = lockfileManager(dir);
+
+    if (match) {
+      return match;
+    }
+
+    const parent = dirname(dir);
+
+    if (parent === dir) {
+      // Reached the filesystem root without finding a lockfile.
+      return detectPackageManager();
+    }
+
+    dir = parent;
+  }
+};
+
+// An open object schema: known credential fields plus any other keys the file
+// may carry, all kept as `unknown` so we can enumerate key names without
+// coercing (or trusting the type of) their values.
+const projectJsonSchema = z.looseObject({});
+
+const safeReadJson = (path: string): unknown => {
+  try {
+    return JSON.parse(readFileSync(path, 'utf-8'));
+  } catch {
+    return null;
+  }
+};
+
+// Read .bigcommerce/project.json as a raw object without going through
+// getProjectConfig() — that instantiates Conf and would create .bigcommerce/ as
+// a side effect (see project-state.ts). Returns null when absent, malformed, or
+// not a JSON object.
+const readProjectJson = (cwd: string): Record<string, unknown> | null => {
+  const result = projectJsonSchema.safeParse(
+    safeReadJson(join(cwd, '.bigcommerce', 'project.json')),
+  );
+
+  return result.success ? result.data : null;
+};
+
+// Mirrors upgrade.ts: `catalyst.version` is the source of truth for the
+// storefront version, falling back to the plain `version`. `name` identifies
+// which Catalyst family the project is on (e.g. @bigcommerce/catalyst-core).
+const storefrontPackageSchema = z.looseObject({
+  name: z.string().optional(),
+  version: z.string().optional(),
+  catalyst: z.looseObject({ version: z.string().optional() }).optional(),
+});
+
+const readStorefrontInfo = (cwd: string): { name: string | null; version: string | null } => {
+  const result = storefrontPackageSchema.safeParse(safeReadJson(join(cwd, 'package.json')));
+
+  if (!result.success) {
+    return { name: null, version: null };
+  }
+
+  return {
+    name: result.data.name ?? null,
+    version: result.data.catalyst?.version ?? result.data.version ?? null,
+  };
+};
+
+const readStoredEnvKeys = (projectJson: Record<string, unknown> | null): string[] => {
+  const env = projectJson?.env;
+
+  if (typeof env === 'object' && env !== null && !Array.isArray(env)) {
+    return Object.keys(env).sort();
+  }
+
+  return [];
+};
+
+// Gather a diagnostic snapshot of the CLI, runtime, project, and config state.
+// By construction this never includes secret values — credentials are reported
+// as presence + source only, and file/env checks report existence only.
+export function collectDiagnostics({
+  cwd = process.cwd(),
+  env = process.env,
+}: CollectDiagnosticsOptions = {}): Diagnostics {
+  const state = getProjectState(cwd);
+  const telemetry = getTelemetry();
+  const projectJson = readProjectJson(cwd);
+  const storefront = readStorefrontInfo(cwd);
+
+  // The CLI reads its own config only from the real environment (Commander
+  // `.env()` bindings) and .bigcommerce/project.json — never from .env files
+  // (see the note in program.ts). Only the storefront BUILD vars are loaded
+  // from .env.local/.env, and only by `build`/`deploy`, so only those are
+  // resolved across the file layers.
+  const cliEnv: EnvLayer[] = [{ source: 'process.env', values: env }];
+  const buildEnv = buildEnvLayers(cwd, env);
+
+  return {
+    cli: {
+      name: PACKAGE_INFO.name,
+      version: PACKAGE_INFO.version,
+    },
+    runtime: {
+      node: process.version,
+      platform: process.platform,
+      arch: process.arch,
+      osRelease: release(),
+      packageManager: detectProjectPackageManager(cwd),
+    },
+    project: {
+      cwd,
+      storefrontName: storefront.name,
+      storefrontVersion: storefront.version,
+      projectUuid: state.projectUuid ?? null,
+      isLinked: state.isLinked,
+      isTransformed: state.isTransformed,
+      isFullySetUp: state.isFullySetUp,
+      hasMiddleware: state.hasMiddleware,
+      hasProxy: state.hasProxy,
+      hasOpenNextDep: state.hasOpenNextDep,
+    },
+    config: {
+      storeHash: resolveValue(
+        resolveEnvSource(cliEnv, 'CATALYST_STORE_HASH', 'BIGCOMMERCE_STORE_HASH'),
+        asString(projectJson?.storeHash),
+      ),
+      accessToken: resolveValue(
+        resolveEnvSource(cliEnv, 'CATALYST_ACCESS_TOKEN'),
+        asString(projectJson?.accessToken),
+      ),
+      projectUuid: resolveValue(
+        resolveEnvSource(cliEnv, 'CATALYST_PROJECT_UUID'),
+        asString(projectJson?.projectUuid),
+      ),
+      apiHost: resolveValue(
+        resolveEnvSource(cliEnv, 'CATALYST_API_HOST'),
+        asString(projectJson?.apiHost),
+      ),
+      projectJsonKeys: projectJson ? Object.keys(projectJson).sort() : [],
+      storedEnvKeys: readStoredEnvKeys(projectJson),
+      cliEnvVars: resolveEnvVars(cliEnv, CLI_ENV_VARS),
+      buildEnvVars: resolveEnvVars(buildEnv, BUILD_ENV_VARS),
+    },
+    telemetry: {
+      enabled: telemetry.isEnabled(),
+      correlationId: telemetry.correlationId,
+    },
+    files: {
+      '.env.local': existsSync(join(cwd, '.env.local')),
+      '.env': existsSync(join(cwd, '.env')),
+      '.bigcommerce/project.json': existsSync(join(cwd, '.bigcommerce', 'project.json')),
+      '.bigcommerce/wrangler.jsonc': existsSync(join(cwd, '.bigcommerce', 'wrangler.jsonc')),
+      '.open-next/': existsSync(join(cwd, '.open-next')),
+      'package.json': existsSync(join(cwd, 'package.json')),
+    },
+  };
+}
