@@ -62,6 +62,7 @@ const formatReport = (d: Diagnostics): string => {
     `  Store hash:         ${formatResolved(d.config.storeHash)}`,
     `  Access token:       ${formatResolved(d.config.accessToken)}`,
     `  Project UUID:       ${formatResolved(d.config.projectUuid)}`,
+    `  API host:           ${d.config.apiHost.present ? formatResolved(d.config.apiHost) : 'default (api.bigcommerce.com)'}`,
     `  project.json keys:  ${formatList(d.config.projectJsonKeys)}`,
     `  Stored env keys:    ${formatList(d.config.storedEnvKeys)}`,
     '',

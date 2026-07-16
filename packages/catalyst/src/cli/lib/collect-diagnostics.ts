@@ -18,7 +18,7 @@ export const CLI_ENV_VARS = [
   'CATALYST_STORE_HASH',
   'CATALYST_ACCESS_TOKEN',
   'CATALYST_PROJECT_UUID',
-  'BIGCOMMERCE_API_HOST',
+  'CATALYST_API_HOST',
   'BIGCOMMERCE_LOGIN_URL',
   'CATALYST_TELEMETRY_DISABLED',
 ] as const;
@@ -90,6 +90,9 @@ export interface Diagnostics {
     storeHash: ResolvedValue;
     accessToken: ResolvedValue;
     projectUuid: ResolvedValue;
+    // The API host override. 'unset' means the CLI falls back to its default
+    // (api.bigcommerce.com). Resolved like the credentials above.
+    apiHost: ResolvedValue;
     // Top-level keys present in .bigcommerce/project.json (names only — values
     // are never included so masked secrets like accessToken can't leak).
     projectJsonKeys: string[];
@@ -293,6 +296,10 @@ export function collectDiagnostics({
       projectUuid: resolveValue(
         resolveEnvSource(envLayers, 'CATALYST_PROJECT_UUID'),
         asString(projectJson?.projectUuid),
+      ),
+      apiHost: resolveValue(
+        resolveEnvSource(envLayers, 'CATALYST_API_HOST'),
+        asString(projectJson?.apiHost),
       ),
       projectJsonKeys: projectJson ? Object.keys(projectJson).sort() : [],
       storedEnvKeys: readStoredEnvKeys(projectJson),

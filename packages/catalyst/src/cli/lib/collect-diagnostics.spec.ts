@@ -70,6 +70,7 @@ describe('collectDiagnostics', () => {
     expect(d.config.storeHash).toEqual({ present: false, source: 'unset' });
     expect(d.config.accessToken).toEqual({ present: false, source: 'unset' });
     expect(d.config.projectUuid).toEqual({ present: false, source: 'unset' });
+    expect(d.config.apiHost).toEqual({ present: false, source: 'unset' });
     expect(d.config.projectJsonKeys).toEqual([]);
     expect(d.config.storedEnvKeys).toEqual([]);
     expect(Object.keys(d.config.cliEnvVars)).toEqual([...CLI_ENV_VARS]);
@@ -92,6 +93,7 @@ describe('collectDiagnostics', () => {
       framework: 'catalyst',
       storeHash: 'store-secret',
       accessToken: 'token-secret',
+      apiHost: 'api.example.com',
       env: { ZEBRA: 'z', ALPHA: 'a' },
     });
 
@@ -101,8 +103,10 @@ describe('collectDiagnostics', () => {
     expect(d.config.storeHash).toEqual({ present: true, source: 'project.json' });
     expect(d.config.accessToken).toEqual({ present: true, source: 'project.json' });
     expect(d.config.projectUuid).toEqual({ present: true, source: 'project.json' });
+    expect(d.config.apiHost).toEqual({ present: true, source: 'project.json' });
     expect(d.config.projectJsonKeys).toEqual([
       'accessToken',
+      'apiHost',
       'env',
       'framework',
       'projectUuid',
@@ -110,6 +114,16 @@ describe('collectDiagnostics', () => {
     ]);
     // Sorted, keys only.
     expect(d.config.storedEnvKeys).toEqual(['ALPHA', 'ZEBRA']);
+  });
+
+  test('resolves the API host from CATALYST_API_HOST', () => {
+    const d = collectDiagnostics({
+      cwd: tmpDir,
+      env: { CATALYST_API_HOST: 'api.staging.example.com' },
+    });
+
+    expect(d.config.apiHost).toEqual({ present: true, source: 'process.env' });
+    expect(d.config.cliEnvVars.CATALYST_API_HOST).toBe('process.env');
   });
 
   test('process.env wins over project.json for resolved source', async () => {

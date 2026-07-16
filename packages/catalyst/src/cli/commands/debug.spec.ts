@@ -36,6 +36,7 @@ const fullDiagnostics: Diagnostics = {
     storeHash: { present: true, source: 'project.json' },
     accessToken: { present: true, source: 'process.env' },
     projectUuid: { present: true, source: 'project.json' },
+    apiHost: { present: true, source: 'project.json' },
     projectJsonKeys: ['projectUuid', 'storeHash'],
     storedEnvKeys: ['FOO', 'BAR'],
     // Both branches of the source formatter (set-with-source and unset).
@@ -72,6 +73,7 @@ const emptyDiagnostics: Diagnostics = {
     storeHash: { present: false, source: 'unset' },
     accessToken: { present: false, source: 'unset' },
     projectUuid: { present: false, source: 'unset' },
+    apiHost: { present: false, source: 'unset' },
     projectJsonKeys: [],
     storedEnvKeys: [],
     cliEnvVars: {},
@@ -128,6 +130,7 @@ test('prints a human-readable report by default', async () => {
   expect(output).toContain('OpenNext dep:       installed');
   expect(output).toContain('Store hash:         present (source: project.json)');
   expect(output).toContain('Access token:       present (source: process.env)');
+  expect(output).toContain('API host:           present (source: project.json)');
   expect(output).toContain('project.json keys:  projectUuid, storeHash');
   expect(output).toContain('Stored env keys:    FOO, BAR');
   expect(output).toContain('CLI environment variables (used to run the CLI)');
@@ -154,6 +157,7 @@ test('renders the empty-project branches', async () => {
   expect(output).toContain('Linked:             no');
   expect(output).toContain('OpenNext dep:       not installed');
   expect(output).toContain('Store hash:         not set');
+  expect(output).toContain('API host:           default (api.bigcommerce.com)');
   expect(output).toContain('project.json keys:  (none)');
   expect(output).toContain('Stored env keys:    (none)');
   expect(output).toContain('Enabled:            no');
