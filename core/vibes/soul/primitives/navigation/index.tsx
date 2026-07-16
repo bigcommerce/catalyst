@@ -979,7 +979,7 @@ function LocaleSwitcher({
                     // Sync the cart's locale first so the shopper lands on the
                     // new locale with an already-updated cart.
                     await action?.(id);
-                    switchLocale(id);
+                    await switchLocale(id);
                   })
                 }
               >
