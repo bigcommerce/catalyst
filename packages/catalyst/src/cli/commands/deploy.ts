@@ -35,6 +35,7 @@ import {
   apiHostOption,
   envPathOption,
   projectUuidOption,
+  resolveApiHost,
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
@@ -411,6 +412,7 @@ Example:
   .addOption(envPathOption())
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
     const { storeHash, accessToken } = resolveCredentials(options, config);
     const telemetry = getTelemetry();
 
@@ -428,7 +430,7 @@ Example:
         return await selectOrCreateInfrastructureProject({
           storeHash,
           accessToken,
-          apiHost: options.apiHost,
+          apiHost,
         });
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
@@ -443,12 +445,7 @@ Example:
     };
 
     if (linkedProjectUuid) {
-      const existing = await fetchProject(
-        linkedProjectUuid,
-        storeHash,
-        accessToken,
-        options.apiHost,
-      );
+      const existing = await fetchProject(linkedProjectUuid, storeHash, accessToken, apiHost);
 
       if (existing) {
         projectUuid = linkedProjectUuid;
@@ -548,7 +545,7 @@ Example:
       process.exit(0);
     }
 
-    const uploadSignature = await generateUploadSignature(storeHash, accessToken, options.apiHost);
+    const uploadSignature = await generateUploadSignature(storeHash, accessToken, apiHost);
 
     await uploadBundleZip(uploadSignature.upload_url);
 
@@ -566,7 +563,7 @@ Example:
       uploadSignature.upload_uuid,
       storeHash,
       accessToken,
-      options.apiHost,
+      apiHost,
       environmentVariables,
     );
 
@@ -574,7 +571,7 @@ Example:
       deploymentUuid,
       storeHash,
       accessToken,
-      options.apiHost,
+      apiHost,
     );
 
     if (!options.updateSiteUrl) {
@@ -585,7 +582,7 @@ Example:
       await runChannelSiteUrlFlow({
         storeHash,
         accessToken,
-        apiHost: options.apiHost,
+        apiHost,
         projectUuid,
         preferHostname: deploymentHostname,
       });

@@ -26,6 +26,7 @@ import {
   accessTokenOption,
   apiHostOption,
   projectUuidOption,
+  resolveApiHost,
   resolveProjectUuid,
   storeHashOption,
 } from '../lib/shared-options';
@@ -59,7 +60,7 @@ interface DomainCommandContext {
 interface DomainCommandOptions {
   storeHash?: string;
   accessToken?: string;
-  apiHost: string;
+  apiHost?: string;
   projectUuid?: string;
 }
 
@@ -73,6 +74,7 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function resolveDomainCommandContext(options: DomainCommandOptions): DomainCommandContext {
   const config = getProjectConfig();
+  const apiHost = resolveApiHost(options, config);
   const { storeHash, accessToken } = resolveCredentials(options, config);
   const projectUuid = resolveProjectUuid(options);
 
@@ -80,7 +82,7 @@ function resolveDomainCommandContext(options: DomainCommandOptions): DomainComma
     projectUuid,
     storeHash,
     accessToken,
-    apiHost: options.apiHost,
+    apiHost,
   };
 }
 

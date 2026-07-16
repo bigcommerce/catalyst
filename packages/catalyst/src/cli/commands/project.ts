@@ -21,6 +21,7 @@ import {
   apiHostOption,
   loginUrlOption,
   projectUuidOption,
+  resolveApiHost,
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
@@ -81,13 +82,14 @@ Example:
   .addOption(apiHostOption())
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
     const { storeHash, accessToken } = resolveCredentials(options, config);
 
     await getTelemetry().identify(storeHash);
 
     consola.start('Fetching projects...');
 
-    const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+    const projects = await fetchProjects(storeHash, accessToken, apiHost);
 
     consola.success('Projects fetched.');
 
@@ -136,6 +138,7 @@ Example:
   .addOption(loginUrlOption())
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
 
     let storeHash = options.storeHash ?? config.get('storeHash');
     let accessToken = options.accessToken ?? config.get('accessToken');
@@ -146,7 +149,7 @@ Example:
       );
 
       try {
-        const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
+        const credentials = await runInteractiveLogin(options.loginUrl, apiHost);
 
         storeHash = credentials.storeHash;
         accessToken = credentials.accessToken;
@@ -173,7 +176,7 @@ Example:
 
     const newProjectName = await input({ message: 'Enter a name for the new project:' });
 
-    const data = await createProject(newProjectName, storeHash, accessToken, options.apiHost);
+    const data = await createProject(newProjectName, storeHash, accessToken, apiHost);
 
     consola.success(`Project "${data.name}" created successfully.`);
 
@@ -207,6 +210,7 @@ Examples:
   .addOption(projectUuidOption())
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
 
     const writeProjectConfig = (
       uuid: string,
@@ -240,7 +244,7 @@ Examples:
 
     try {
       selected = await selectOrCreateInfrastructureProject(
-        { storeHash, accessToken, apiHost: options.apiHost },
+        { storeHash, accessToken, apiHost },
         config.get('projectUuid'),
       );
     } catch (error) {
@@ -288,6 +292,7 @@ Examples:
   .option('--force', 'Skip the confirmation prompt before deleting.')
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
     const { storeHash, accessToken } = resolveCredentials(options, config);
 
     await getTelemetry().identify(storeHash);
@@ -298,7 +303,7 @@ Examples:
     if (!targetUuid) {
       consola.start('Fetching projects...');
 
-      const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+      const projects = await fetchProjects(storeHash, accessToken, apiHost);
 
       consola.success('Projects fetched.');
 
@@ -359,7 +364,7 @@ Examples:
 
     consola.start(`Deleting project ${targetUuid}...`);
 
-    await deleteProject(targetUuid, storeHash, accessToken, options.apiHost);
+    await deleteProject(targetUuid, storeHash, accessToken, apiHost);
 
     consola.success(`Project ${targetUuid} deleted.`);
 
