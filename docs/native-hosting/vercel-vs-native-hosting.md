@@ -2,16 +2,11 @@
 
 > Tracking issue: [LTRAC-1076](https://linear.app/commerce/issue/LTRAC-1076/vercel-vs-native-hosting-feature-comparison-matrix) · Project: Catalyst Native Hosting (GA milestone)
 
-**Native Hosting** (branded **"Commerce Hosting"**) deploys Catalyst storefronts to
-Commerce's **Cloudflare Workers for Platforms** infrastructure through the **Ignition**
-deploy service. Builds are produced with **OpenNext**, and the entire lifecycle is driven by
-the `catalyst` **CLI** — there is no control-panel deploy flow. The CLI ships as a dependency
-of a scaffolded project and is run through the package manager (e.g. `pnpm catalyst deploy`).
+**Native Hosting** (branded **"Commerce Hosting"**) deploys Catalyst storefronts to Commerce's **Cloudflare Workers for Platforms** infrastructure through the **Ignition** deploy service. Builds are produced with **OpenNext**, and the entire lifecycle is driven by the `catalyst` **CLI** — there is no control-panel deploy flow. The CLI ships as a dependency of a scaffolded project and is run through the package manager (e.g. `pnpm catalyst deploy`).
 
 **Vercel** is the third-party platform most Catalyst developers use today (Next.js's first-party host).
 
-This matrix reflects the state of Native Hosting as it approaches GA. Row-level references point
-at the Linear issues that track each capability, with status as of this writing.
+This matrix reflects the state of Native Hosting as it approaches GA. Row-level references point at the Linear issues that track each capability, with status as of this writing.
 
 **Legend:** ✅ Supported · 🟡 Partial / in progress · 🔜 Planned / spike · ❌ Not supported · ➖ N/A
 
@@ -58,8 +53,7 @@ at the Linear issues that track each capability, with status as of this writing.
 | Automatic SSL/TLS | ✅ | ✅ (single-level); ⚠️ two-level subdomains can't auto-provision Cloudflare SSL |
 | Merchant's own Cloudflare (Orange-to-Orange) | ➖ | 🔜 Enterprise requirement, spike (LTRAC-448, GA cycle) |
 
-> Note: `catalyst domains add --wait` polls for verification but times out after ~5 min; DNS
-> propagation can take longer, so re-check with `catalyst domains status`.
+> Note: `catalyst domains add --wait` polls for verification but times out after ~5 min; DNS propagation can take longer, so re-check with `catalyst domains status`.
 
 ## 4. Caching & performance
 
@@ -129,31 +123,18 @@ at the Linear issues that track each capability, with status as of this writing.
 
 ## Summary — where Native Hosting stands vs. Vercel
 
-**At or near parity (shipped):** CLI deploy workflow, custom/vanity domains + DNS verification +
-claim/transfer, automatic SSL, real-time log tailing and 7-day historical log querying, geo headers,
-channel site-URL assignment, multi-channel creation, framework upgrade tooling, and first-party
-BigCommerce integration (something Vercel can't match).
+**At or near parity (shipped):** CLI deploy workflow, custom/vanity domains + DNS verification + claim/transfer, automatic SSL, real-time log tailing and 7-day historical log querying, geo headers, channel site-URL assignment, multi-channel creation, framework upgrade tooling, and first-party BigCommerce integration (something Vercel can't match).
 
-**In progress toward GA:** routing-KV auto-configuration, configurable checkout URL, log-query
-pagination, metrics/OTel dashboards, O2O custom domains, deployment-not-found page.
+**In progress toward GA:** routing-KV auto-configuration, configurable checkout URL, log-query pagination, metrics/OTel dashboards, O2O custom domains, deployment-not-found page.
 
-**Deferred to Post-GA ("nice to have"):** instant rollback, centralized/backend-persisted env vars,
-deployment history/activity feed, Git-based preview deployments.
+**Deferred to Post-GA ("nice to have"):** instant rollback, centralized/backend-persisted env vars, deployment history/activity feed, Git-based preview deployments.
 
-**Structural differences (not necessarily gaps):** CLI-only (no control-panel deploy or Git-push
-CI/CD trigger), env vars are client-side today, bundled pricing with soft limits vs. Vercel's plan
-tiers, and migration-from-Vercel complexity being the developer's responsibility.
+**Structural differences (not necessarily gaps):** CLI-only (no control-panel deploy or Git-push CI/CD trigger), env vars are client-side today, bundled pricing with soft limits vs. Vercel's plan tiers, and migration-from-Vercel complexity being the developer's responsibility.
 
-**Native Hosting's advantages:** single vendor/invoice with BigCommerce, no third-party relationship,
-purpose-built for Catalyst, lower total cost of ownership (the SLG sales pitch), and Cloudflare's edge
-with inherited WAF/DDoS protection.
+**Native Hosting's advantages:** single vendor/invoice with BigCommerce, no third-party relationship, purpose-built for Catalyst, lower total cost of ownership (the SLG sales pitch), and Cloudflare's edge with inherited WAF/DDoS protection.
 
 ---
 
-_Not represented as tracked Native Hosting features (confirm before treating as committed): image
-optimization, ISR, WAF config, web analytics, and cron jobs — these reflect inherited
-Cloudflare/OpenNext behavior rather than product features._
+_Not represented as tracked Native Hosting features (confirm before treating as committed): image optimization, ISR, WAF config, web analytics, and cron jobs — these reflect inherited Cloudflare/OpenNext behavior rather than product features._
 
-_Sources: Catalyst Native Hosting Linear project (verified against individual issues LTRAC-399, 447,
-448, 478, 966, 969, 970, 975, 1019, 1029, 1093), the Native Hosting Beta Onboarding doc, the CLI source
-in `packages/catalyst/src/cli/commands/`, and the project brief._
+_Sources: Catalyst Native Hosting Linear project (verified against individual issues LTRAC-399, 447, 448, 478, 966, 969, 970, 975, 1019, 1029, 1093), the Native Hosting Beta Onboarding doc, the CLI source in `packages/catalyst/src/cli/commands/`, and the project brief._
