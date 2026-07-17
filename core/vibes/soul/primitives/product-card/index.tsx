@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import { useTranslations } from 'next-intl';
 import {
   Content as CalloutContent,
   Description as CalloutDescription,
@@ -40,7 +41,6 @@ export interface ProductCardProps {
   imageSizes?: string;
   compareLabel?: string;
   compareParamName?: string;
-  moreOffersLabel?: string;
   product: Product;
   showRating?: boolean;
 }
@@ -88,10 +88,11 @@ export function ProductCard({
   aspectRatio = '5:6',
   compareLabel,
   compareParamName,
-  moreOffersLabel = 'more offers',
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: ProductCardProps) {
+  const t = useTranslations('Components.ProductCard');
+
   return (
     <article
       className={clsx(
@@ -196,7 +197,7 @@ export function ProductCard({
                       </CalloutTitle>
                       {promotions.length > 1 && (
                         <CalloutDescription className="text-xs text-yellow-900/70">
-                          +{promotions.length - 1} {moreOffersLabel}
+                          {t('moreOffers', { count: promotions.length - 1 })}
                         </CalloutDescription>
                       )}
                     </CalloutHeader>

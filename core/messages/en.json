@@ -624,6 +624,9 @@
     "search": "Search"
   },
   "Components": {
+    "ProductCard": {
+      "moreOffers": "+{count, plural, =1 {# more offer} other {# more offers}}"
+    },
     "Header": {
       "home": "Home",
       "toggleNavigation": "Toggle navigation",
