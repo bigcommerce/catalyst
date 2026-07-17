@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.0
+
+### Minor Changes
+
+- [#3108](https://github.com/bigcommerce/catalyst/pull/3108) [`84c0d5c`](https://github.com/bigcommerce/catalyst/commit/84c0d5c2aa6ce1f0b70138d8cfd46c7d88fc2adf) Thanks [@bc-vivekaggarwal](https://github.com/bc-vivekaggarwal)! - Show featured promotion callouts on the homepage product cards (featured and newest carousels), consistent with the existing PDP and PLP callouts.
+
 ## 1.9.0
 
 ### Minor Changes

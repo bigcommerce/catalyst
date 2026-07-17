@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.1.1
+
+### Patch Changes
+
+- [#3119](https://github.com/bigcommerce/catalyst/pull/3119) [`bd72110`](https://github.com/bigcommerce/catalyst/commit/bd721106dbded48e823acad6548019d1210258f6) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add `store_v2_products`, `store_v2_content`, and `store_sites` OAuth scopes so `catalyst create` no longer errors when creating a new channel with sample data.
+
 ## 1.1.0
 
 ### Minor Changes
