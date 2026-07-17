@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.9.0
+
+### Minor Changes
+
+- [#3104](https://github.com/bigcommerce/catalyst/pull/3104) [`25d6471`](https://github.com/bigcommerce/catalyst/commit/25d6471123219902fd3e8d9eb71330cd86849f84) Thanks [@parthshahp](https://github.com/parthshahp)! - Respect default product search sort and product category sort settings from the control panel.
+
+- [#3083](https://github.com/bigcommerce/catalyst/pull/3083) [`2b7f2cc`](https://github.com/bigcommerce/catalyst/commit/2b7f2cc662bdffca50a6be4c87b5863eac2d2351) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Display product videos (YouTube) on the PDP in a dedicated section below the primary product content, mirroring the Stencil/Cornerstone layout. The Storefront GraphQL API exposes product videos as a `{ title, url }` pair (`Product.videos`); Catalyst now fetches them and renders a featured player with a thumbnail strip (clicking a thumbnail swaps the featured video) using [`lite-youtube-embed`](https://github.com/paulirish/lite-youtube-embed) — a lightweight facade that loads the YouTube player only when a shopper clicks. A small `getYouTubeId()` helper extracts the video id from the watch URL the API returns.
+
+  ## Migration
+
+  Additive — no breaking changes; existing PDP markup, the image gallery, and image pagination are unchanged. Forks adopting this manually need to:
+  - add the `lite-youtube-embed` dependency;
+  - request `videos(first: 25) { edges { node { title url } } }` on the PDP product query (`product/[slug]/page-data.ts`);
+  - stream those videos and render the new `ProductVideos` section below `ProductDetail` (`product/[slug]/page.tsx`);
+  - allow `i.ytimg.com/vi/**` in `next.config.ts` `images.remotePatterns` for poster thumbnails.
+
+- [#3057](https://github.com/bigcommerce/catalyst/pull/3057) [`a763acc`](https://github.com/bigcommerce/catalyst/commit/a763acced11a4c1b6f068b390bdc2a6b0145a405) Thanks [@bc-vivekaggarwal](https://github.com/bc-vivekaggarwal)! - Wire promotion callouts into PDP and PLP pages using live data from the Storefront GraphQL API (`featuredPromotions` on the `Product` type).
+  - **PDP**: stacked callout boxes render inline below the price, one per active promotion.
+  - **PLP (category, brand, search)**: each product card shows its first promotion inline below the price; if there are multiple, a "+N more" label appears within the same callout.
+
+### Patch Changes
+
+- [#3076](https://github.com/bigcommerce/catalyst/pull/3076) [`c6b3b07`](https://github.com/bigcommerce/catalyst/commit/c6b3b07133cbc7d438e4b9bd2c71d43d89ca2df4) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix Account Settings failing to save for customers when a merchant-defined required custom customer field exists. BigCommerce revalidates required custom fields on every `updateCustomer` call, so Account Settings now renders and resubmits those fields (mirroring the existing Register/Address form-field support) instead of only supporting first name, last name, email, and company.
+
+- [#3106](https://github.com/bigcommerce/catalyst/pull/3106) [`4975333`](https://github.com/bigcommerce/catalyst/commit/49753331777acb81b378b9969986d6487b00e934) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Disable caching for the webpage sidebar navigation and route/raw-page resolution when a customer access token is present, so customer-only navigation links and pages aren't leaked to (or hidden from) other visitors via a shared cache.
+
+- [#3109](https://github.com/bigcommerce/catalyst/pull/3109) [`8256b46`](https://github.com/bigcommerce/catalyst/commit/8256b4681c06cd20a8ac1f316cd23f56b6724848) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Keep the cart's locale in sync when a shopper switches their storefront locale. Previously, changing the locale only updated the storefront URL and left the cart on its original locale. The locale switcher now calls the new `updateCartLocale` Storefront GraphQL mutation to update the active cart in place before navigating, mirroring the existing currency-switch behavior. This mutation is currently gated behind a store-side feature flag; until it's enabled, `updateCartLocale` returns `null` and the switch is a no-op.
+
+- [#3103](https://github.com/bigcommerce/catalyst/pull/3103) [`d09f8dc`](https://github.com/bigcommerce/catalyst/commit/d09f8dc06a200d4ebb8dd8ef32cd41baa02e3fd5) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Coalesce rapid cart line item quantity and delete clicks into at most one in-flight server action. Quantity buttons now update an optimistic pending intent that flushes a single absolute-quantity `update` intent after a short debounce (replacing the per-click `increment`/`decrement` intents), and deletes are serialized instead of queueing unboundedly. This prevents the serial server-action queue buildup that could lock up navigation on the cart page, and unifies cart revalidation on `revalidateTag`.
+
+  The cart section is now keyed by cart `entityId` only (previously `entityId`-`version`) and renders line items from the revalidation-refreshed `cart` prop. Remounting on every mutation swallowed clicks landing during the DOM swap and could drop queued actions, leaving the summary skeletons and checkout button stuck in a pending state until hard refresh.
+
+  Each quantity/delete control is now its own progressive-enhancement form that posts a real absolute quantity or delete request to the server action; JS intercepts the submit to route through the coalescing dispatcher, but the buttons keep working (as full page round-trips) before hydration or if the app bundle fails to load.
+
+  Also fixes the checkout button getting stuck spinning forever if its navigation is cancelled (Esc, "Stay" on the leave-page prompt, a flaky connection). The URL-string checkout action previously awaited a promise that never resolved, leaving retry clicks queued behind a dead action; it now settles after a short timeout and on bfcache restore, re-enabling the button as a retry.
+
+- [#3087](https://github.com/bigcommerce/catalyst/pull/3087) [`cb7d025`](https://github.com/bigcommerce/catalyst/commit/cb7d025eb7c70295c7e1e7c739d38788d852997f) Thanks [@jairo-bc](https://github.com/jairo-bc)! - Respect the Blog visibility setting (Control Panel > Storefront > Blogs) in the footer navigation. The Blog link no longer appears in the footer's "Navigate" section when Blog visibility is turned off.
+
+- [#3101](https://github.com/bigcommerce/catalyst/pull/3101) [`f60aea6`](https://github.com/bigcommerce/catalyst/commit/f60aea669b3dc1d2b01da996ad1570e7e70b514c) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.8.0
 
 ### Minor Changes

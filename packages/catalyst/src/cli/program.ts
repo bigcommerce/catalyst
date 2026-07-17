@@ -7,6 +7,7 @@ import { auth } from './commands/auth';
 import { build } from './commands/build';
 import { channel } from './commands/channel';
 import { create } from './commands/create';
+import { debug } from './commands/debug';
 import { deploy } from './commands/deploy';
 import { domains } from './commands/domains';
 import { env } from './commands/env';
@@ -56,5 +57,6 @@ program
   .addCommand(auth)
   .addCommand(upgrade)
   .addCommand(telemetry)
+  .addCommand(debug)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);

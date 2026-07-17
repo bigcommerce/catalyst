@@ -71,7 +71,7 @@ const getRoute = async (path: string, channelId?: string, customerAccessToken?: 
     document: GetRouteQuery,
     variables: { path },
     customerAccessToken,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     channelId,
   });
 
@@ -93,7 +93,7 @@ const getRawWebPageContent = async (id: string, customerAccessToken?: string) =>
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     customerAccessToken,
   });
 

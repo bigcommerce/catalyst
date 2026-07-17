@@ -23,6 +23,7 @@ import {
   apiHostOption,
   loginUrlOption,
   projectUuidOption,
+  resolveApiHost,
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
@@ -44,8 +45,9 @@ const parseChannelId = (value: string): number => {
 // .env.local nor .bigcommerce/project.json — so it logs the user in like
 // `catalyst project create`, rather than erroring like the operational commands.
 async function resolveCredentialsWithLogin(
-  options: { storeHash?: string; accessToken?: string; loginUrl: string; apiHost: string },
+  options: { storeHash?: string; accessToken?: string; loginUrl: string },
   config: Conf<ProjectConfigSchema>,
+  apiHost: string,
 ): Promise<{ storeHash: string; accessToken: string } | null> {
   const storeHash = options.storeHash ?? config.get('storeHash');
   const accessToken = options.accessToken ?? config.get('accessToken');
@@ -55,7 +57,7 @@ async function resolveCredentialsWithLogin(
   }
 
   try {
-    const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
+    const credentials = await runInteractiveLogin(options.loginUrl, apiHost);
 
     config.set('storeHash', credentials.storeHash);
     config.set('accessToken', credentials.accessToken);
@@ -103,6 +105,7 @@ Examples:
   )
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
     const { storeHash, accessToken } = resolveCredentials(options, config);
 
     await getTelemetry().identify(storeHash);
@@ -111,7 +114,7 @@ Examples:
       await runChannelSiteUrlFlow({
         storeHash,
         accessToken,
-        apiHost: options.apiHost,
+        apiHost,
         projectUuid: options.projectUuid ?? config.get('projectUuid'),
         channelId: options.channelId,
         hostname: options.hostname,
@@ -171,8 +174,9 @@ Examples:
   )
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
 
-    const credentials = await resolveCredentialsWithLogin(options, config);
+    const credentials = await resolveCredentialsWithLogin(options, config, apiHost);
 
     if (!credentials) {
       consola.info(
@@ -191,7 +195,7 @@ Examples:
     let channelName: string | undefined;
 
     if (channelId === undefined) {
-      const channels = await fetchAvailableChannels(storeHash, accessToken, options.apiHost);
+      const channels = await fetchAvailableChannels(storeHash, accessToken, apiHost);
 
       if (channels.length === 0) {
         consola.info(
@@ -290,8 +294,9 @@ Examples:
     }
 
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
 
-    const credentials = await resolveCredentialsWithLogin(options, config);
+    const credentials = await resolveCredentialsWithLogin(options, config, apiHost);
 
     if (!credentials) {
       consola.info(
@@ -318,7 +323,7 @@ Examples:
     const channelData = await runCreateChannelFlow({
       storeHash,
       accessToken,
-      apiHost: options.apiHost,
+      apiHost,
       cliApiOrigin: options.cliApiOrigin,
       name: options.name,
       locale: options.locale,

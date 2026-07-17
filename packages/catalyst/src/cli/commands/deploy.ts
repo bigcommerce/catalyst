@@ -17,6 +17,7 @@ import {
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
+import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import {
   getStoredEnv,
   mergeDeploymentSecrets,
@@ -34,11 +35,12 @@ import {
   apiHostOption,
   envPathOption,
   projectUuidOption,
+  resolveApiHost,
   storeHashOption,
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
-import { buildCatalystProject } from './build';
+import { buildCatalystProject, parseWranglerVersion, WRANGLER_VERSION } from './build';
 
 const stepsEnum = z.enum([
   'initializing',
@@ -401,9 +403,16 @@ Example:
     '--prebuilt',
     'Skip the build step. Requires .bigcommerce/dist/ to already contain build output.',
   )
+  .addOption(
+    new Option(
+      '--wrangler-version <version>',
+      `Wrangler version or dist-tag to build with. Ignored with --prebuilt. Defaults to ${WRANGLER_VERSION}.`,
+    ).argParser(parseWranglerVersion),
+  )
   .addOption(envPathOption())
   .action(async (options) => {
     const config = getProjectConfig();
+    const apiHost = resolveApiHost(options, config);
     const { storeHash, accessToken } = resolveCredentials(options, config);
     const telemetry = getTelemetry();
 
@@ -421,7 +430,7 @@ Example:
         return await selectOrCreateInfrastructureProject({
           storeHash,
           accessToken,
-          apiHost: options.apiHost,
+          apiHost,
         });
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
@@ -436,12 +445,7 @@ Example:
     };
 
     if (linkedProjectUuid) {
-      const existing = await fetchProject(
-        linkedProjectUuid,
-        storeHash,
-        accessToken,
-        options.apiHost,
-      );
+      const existing = await fetchProject(linkedProjectUuid, storeHash, accessToken, apiHost);
 
       if (existing) {
         projectUuid = linkedProjectUuid;
@@ -487,7 +491,11 @@ Example:
       await setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
       consola.success('Commerce Hosting setup complete.');
 
-      await installDependencies(projectDir);
+      // Match the manager the project was scaffolded with (from its lockfile),
+      // rather than forcing pnpm on npm/yarn/bun projects.
+      const packageManager = await detectProjectPackageManager(projectDir);
+
+      await installDependencies(projectDir, packageManager);
     } else {
       // Existing Commerce Hosting users may carry artifacts incompatible with
       // the Cloudflare worker bundle from earlier Catalyst versions
@@ -522,7 +530,7 @@ Example:
       // see them. Skipped for --prebuilt above, which doesn't run the build.
       loadBuildEnv({ envPath: options.envPath });
 
-      await buildCatalystProject(projectUuid);
+      await buildCatalystProject(projectUuid, options.wranglerVersion);
     }
 
     await generateBundleZip();
@@ -537,7 +545,7 @@ Example:
       process.exit(0);
     }
 
-    const uploadSignature = await generateUploadSignature(storeHash, accessToken, options.apiHost);
+    const uploadSignature = await generateUploadSignature(storeHash, accessToken, apiHost);
 
     await uploadBundleZip(uploadSignature.upload_url);
 
@@ -555,7 +563,7 @@ Example:
       uploadSignature.upload_uuid,
       storeHash,
       accessToken,
-      options.apiHost,
+      apiHost,
       environmentVariables,
     );
 
@@ -563,7 +571,7 @@ Example:
       deploymentUuid,
       storeHash,
       accessToken,
-      options.apiHost,
+      apiHost,
     );
 
     if (!options.updateSiteUrl) {
@@ -574,7 +582,7 @@ Example:
       await runChannelSiteUrlFlow({
         storeHash,
         accessToken,
-        apiHost: options.apiHost,
+        apiHost,
         projectUuid,
         preferHostname: deploymentHostname,
       });

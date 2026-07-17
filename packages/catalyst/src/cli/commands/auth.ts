@@ -1,4 +1,4 @@
-import { Command, Option } from 'commander';
+import { Command } from 'commander';
 import { z } from 'zod';
 
 import { assertAuthorized, UnauthorizedError } from '../lib/auth-errors';
@@ -6,7 +6,13 @@ import { consola } from '../lib/logger';
 import { LoginAbortedError, login as runInteractiveLogin } from '../lib/login';
 import { fetchProjects } from '../lib/project';
 import { getProjectConfig } from '../lib/project-config';
-import { loginUrlOption } from '../lib/shared-options';
+import {
+  accessTokenOption,
+  apiHostOption,
+  loginUrlOption,
+  resolveApiHost,
+  storeHashOption,
+} from '../lib/shared-options';
 
 const StoreProfileSchema = z.object({
   data: z.object({
@@ -50,27 +56,13 @@ Example:
 
   Logged in to My Store (abc123), connected to project my-project (43eba682-0c48-11f1-9bd5-827a48b0ce1e)`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
 
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
@@ -85,12 +77,12 @@ Example:
         return;
       }
 
-      const store = await fetchStoreProfile(storeHash, accessToken, options.apiHost);
+      const store = await fetchStoreProfile(storeHash, accessToken, apiHost);
 
       const projectUuid = config.get('projectUuid');
 
       if (projectUuid) {
-        const projects = await fetchProjects(storeHash, accessToken, options.apiHost);
+        const projects = await fetchProjects(storeHash, accessToken, apiHost);
         const linkedProject = projects.find((p) => p.uuid === projectUuid);
 
         if (linkedProject) {
@@ -139,28 +131,14 @@ Examples:
   # Login with existing credentials (skips interactive flow)
   $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>`,
   )
-  .addOption(
-    new Option(
-      '--store-hash <hash>',
-      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('CATALYST_STORE_HASH'),
-  )
-  .addOption(
-    new Option(
-      '--access-token <token>',
-      'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('CATALYST_ACCESS_TOKEN'),
-  )
-  .addOption(
-    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-      .env('BIGCOMMERCE_API_HOST')
-      .default('api.bigcommerce.com')
-      .hideHelp(),
-  )
+  .addOption(storeHashOption())
+  .addOption(accessTokenOption())
+  .addOption(apiHostOption())
   .addOption(loginUrlOption())
   .action(async (options) => {
     try {
       const config = getProjectConfig();
+      const apiHost = resolveApiHost(options, config);
 
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
@@ -173,7 +151,7 @@ Examples:
         return;
       }
 
-      const credentials = await runInteractiveLogin(options.loginUrl, options.apiHost);
+      const credentials = await runInteractiveLogin(options.loginUrl, apiHost);
 
       config.set('storeHash', credentials.storeHash);
       config.set('accessToken', credentials.accessToken);

@@ -1,7 +1,10 @@
 import { Option } from 'commander';
+import type Conf from 'conf';
 
 import { DEFAULT_LOGIN_URL } from './auth';
-import { getProjectConfig } from './project-config';
+import { getProjectConfig, ProjectConfigSchema } from './project-config';
+
+export const DEFAULT_API_HOST = 'api.bigcommerce.com';
 
 export const storeHashOption = () =>
   new Option(
@@ -16,9 +19,11 @@ export const accessTokenOption = () =>
   ).env('CATALYST_ACCESS_TOKEN');
 
 export const apiHostOption = () =>
-  new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
-    .env('BIGCOMMERCE_API_HOST')
-    .default('api.bigcommerce.com')
+  new Option(
+    '--api-host <host>',
+    'BigCommerce API host. Read from .bigcommerce/project.json or CATALYST_API_HOST when not provided. Defaults to api.bigcommerce.com.',
+  )
+    .env('CATALYST_API_HOST')
     .hideHelp();
 
 export const loginUrlOption = () =>
@@ -51,3 +56,8 @@ export const resolveProjectUuid = (options: { projectUuid?: string }) => {
 
   return projectUuid;
 };
+
+export const resolveApiHost = (
+  options: { apiHost?: string },
+  config: Conf<ProjectConfigSchema>,
+): string => options.apiHost ?? config.get('apiHost') ?? DEFAULT_API_HOST;
