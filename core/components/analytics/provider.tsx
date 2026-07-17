@@ -6,7 +6,9 @@ import { PropsWithChildren, useEffect, useRef } from 'react';
 import { FragmentOf } from '~/client/graphql';
 import { Analytics } from '~/lib/analytics';
 import { GoogleAnalyticsProvider } from '~/lib/analytics/providers/google-analytics';
+import { MetaPixelProvider } from '~/lib/analytics/providers/meta-pixel';
 import { AnalyticsProvider as AnalyticsProviderLib } from '~/lib/analytics/react';
+import { AnalyticsProvider as AnalyticsProviderType } from '~/lib/analytics/types';
 import { getConsentCookie } from '~/lib/consent-manager/cookies/client';
 
 import { WebAnalyticsFragment } from './fragment';
@@ -33,21 +35,38 @@ const getConsent = () => {
 };
 
 const getAnalytics = ({ channelId, isCookieConsentEnabled, settings }: Props): Analytics | null => {
-  if (settings?.webAnalytics?.ga4?.tagId && channelId) {
-    const googleAnalytics = new GoogleAnalyticsProvider({
-      gaId: settings.webAnalytics.ga4.tagId,
-      consentModeEnabled: isCookieConsentEnabled,
-      developerId: 'dMjk3Nj',
-      getConsent,
-    });
-
-    return new Analytics({
-      channelId,
-      providers: [googleAnalytics],
-    });
+  if (!channelId) {
+    return null;
   }
 
-  return null;
+  const providers: AnalyticsProviderType[] = [];
+
+  if (settings?.webAnalytics?.ga4?.tagId) {
+    providers.push(
+      new GoogleAnalyticsProvider({
+        gaId: settings.webAnalytics.ga4.tagId,
+        consentModeEnabled: isCookieConsentEnabled,
+        developerId: 'dMjk3Nj',
+        getConsent,
+      }),
+    );
+  }
+
+  if (settings?.webAnalytics?.metaPixel?.pixelId) {
+    providers.push(
+      new MetaPixelProvider({
+        pixelId: settings.webAnalytics.metaPixel.pixelId,
+        consentModeEnabled: isCookieConsentEnabled,
+        getConsent,
+      }),
+    );
+  }
+
+  if (providers.length === 0) {
+    return null;
+  }
+
+  return new Analytics({ channelId, providers });
 };
 
 export function AnalyticsProvider({

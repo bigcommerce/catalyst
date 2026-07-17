@@ -6,6 +6,9 @@ export const WebAnalyticsFragment = graphql(`
       ga4 {
         tagId
       }
+      metaPixel {
+        pixelId
+      }
     }
   }
 `);
