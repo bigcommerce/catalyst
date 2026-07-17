@@ -93,5 +93,10 @@ jobs:
         with:
           access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
           command: complete
-          version: ${{ steps.headline.outputs.tag }}
+          # No `version`: the `catalyst-release` pipeline is a scheduled pipeline
+          # whose started release is unversioned (the accumulating `sync` steps
+          # above run without a version). Passing `version` makes `complete` look
+          # up an existing release with that exact version, which never exists and
+          # fails with `No release found with version "…"`. Omitting it completes
+          # the latest started release — the one sync has been accumulating into.
           release_notes: /tmp/release-notes.md
