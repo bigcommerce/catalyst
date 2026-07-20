@@ -568,6 +568,9 @@
         "search": "Szukaj na stronie"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# more offer} other {# more offers}}"
+        },
         "Header": {
             "home": "Strona główna",
             "toggleNavigation": "Przełącz nawigację",
