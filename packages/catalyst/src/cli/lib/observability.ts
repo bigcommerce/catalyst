@@ -27,9 +27,29 @@ const logEntrySchema = z.object({
     .optional(),
 });
 
-// TODO(TRAC-934): any `meta.cursor_pagination` the backend still returns is ignored (zod strips unknown keys)
 const queryLogsSchema = z.object({
   data: z.array(logEntrySchema),
+  meta: z
+    .object({
+      cursor_pagination: z
+        .object({
+          // The REST proxy exposes page availability via links, while the
+          // gRPC response uses has_next_page/has_prev_page. Accept both while
+          // the API contract is transitioning.
+          has_next_page: z.boolean().optional(),
+          has_prev_page: z.boolean().optional(),
+          start_cursor: z.string().nullable().optional(),
+          end_cursor: z.string().nullable().optional(),
+          links: z
+            .object({
+              next: z.string().optional(),
+              previous: z.string().optional(),
+            })
+            .optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 export type LogEntry = z.infer<typeof logEntrySchema>;
@@ -43,6 +63,8 @@ export interface QueryLogsParams {
   urlLike?: string;
   levelMin?: LogLevel;
   limit?: number;
+  after?: string;
+  before?: string;
 }
 
 const v3ErrorSchema = z.object({
@@ -234,6 +256,8 @@ export async function queryLogs(
   if (params.urlLike) search.set('url:like', params.urlLike); // colon param
   if (params.levelMin) search.set('level:min', params.levelMin); // colon param
   if (params.limit != null) search.set('limit', String(params.limit));
+  if (params.after) search.set('after', params.after);
+  if (params.before) search.set('before', params.before);
 
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/infrastructure/logs/${projectUuid}?${search.toString()}`,
@@ -256,7 +280,12 @@ export async function queryLogs(
   }
 
   if (response.status === 404) {
-    throw new UserActionableError('Project not found. Check the project UUID.');
+    // The gateway also 404s when the token belongs to a different store than
+    // the one in the URL, so a bad credential pairing looks identical to a
+    // missing project.
+    throw new UserActionableError(
+      'Project not found. Check the project UUID, and that --store-hash and --access-token belong to the store that owns the project.',
+    );
   }
 
   // 400 (bad UUID) and 422 (invalid window/filter) both carry the field-keyed

@@ -1,7 +1,17 @@
 import { Command } from 'commander';
 import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
-import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  MockInstance,
+  test,
+  vi,
+} from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 import { consola } from '../lib/logger';
@@ -91,6 +101,7 @@ beforeAll(async () => {
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
   config.delete('storeHash');
   config.delete('accessToken');
   config.delete('projectUuid');
@@ -137,6 +148,9 @@ describe('command configuration', () => {
         expect.objectContaining({ flags: '--access-token <token>' }),
         expect.objectContaining({ flags: '--api-host <host>' }),
         expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+        expect.objectContaining({ flags: '--limit <count>' }),
+        expect.objectContaining({ flags: '--after <cursor>' }),
+        expect.objectContaining({ flags: '--before <cursor>' }),
         expect.objectContaining({ flags: '--format <format>', defaultValue: 'default' }),
       ]),
     );
@@ -589,6 +603,13 @@ describe('query subcommand', () => {
   const start = '2026-06-01T00:00:00Z';
   const end = '2026-06-02T00:00:00Z';
 
+  beforeEach(() => {
+    // The vitest process itself runs under pnpm, which would leak a
+    // `pnpm catalyst` prefix into the pagination hints. Tests assert the bare
+    // binary unless they stub a specific package-manager user agent.
+    vi.stubEnv('npm_config_user_agent', '');
+  });
+
   const queryArgs = (extra: string[] = []) => [
     'node',
     'catalyst',
@@ -613,39 +634,9 @@ describe('query subcommand', () => {
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('/cart'));
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('[TypeError]'));
     expect(consola.info).toHaveBeenCalledWith('1 entry shown (oldest first, times in UTC).');
-    // TODO(TRAC-934): no next-page hint is printed while pagination is removed.
-    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('More available'));
-  });
-
-  test('warns when the result fills --limit exactly', async () => {
-    server.use(
-      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
-        HttpResponse.json({
-          data: [
-            { id: '2', timestamp: '2026-06-01T13:00:00Z', level: 'info', messages: ['newer'] },
-            { id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['older'] },
-          ],
-        }),
-      ),
+    expect(consola.info).not.toHaveBeenCalledWith(
+      expect.stringContaining('More results available'),
     );
-
-    await program.parseAsync(queryArgs(['--limit', '2']));
-
-    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('Limit of 2 reached'));
-  });
-
-  test('does not warn when the result is below --limit', async () => {
-    server.use(
-      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
-        HttpResponse.json({
-          data: [{ id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['only'] }],
-        }),
-      ),
-    );
-
-    await program.parseAsync(queryArgs(['--limit', '5']));
-
-    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('reached'));
   });
 
   test('prints entries oldest-first', async () => {
@@ -657,7 +648,12 @@ describe('query subcommand', () => {
             { id: '1', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['older'] },
           ],
           meta: {
-            cursor_pagination: { count: 2, per_page: 50, start_cursor: null, end_cursor: null },
+            cursor_pagination: {
+              has_next_page: false,
+              has_prev_page: false,
+              start_cursor: '2',
+              end_cursor: '1',
+            },
           },
         }),
       ),
@@ -685,7 +681,12 @@ describe('query subcommand', () => {
           return HttpResponse.json({
             data: [],
             meta: {
-              cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+              cursor_pagination: {
+                has_next_page: false,
+                has_prev_page: false,
+                start_cursor: null,
+                end_cursor: null,
+              },
             },
           });
         },
@@ -738,9 +739,36 @@ describe('query subcommand', () => {
   test('outputs one raw JSON entry per line with --format json', async () => {
     await program.parseAsync(queryArgs(['--format', 'json']));
 
-    // NDJSON to stdout (like `tail --format json`), no footer chrome.
+    // NDJSON to stdout, no footer chrome; pagination meta arrives as a final
+    // JSON line so scripts can page without re-running interactively.
     expect(stdoutWriteMock).toHaveBeenCalledWith(expect.stringContaining('"is_exception":true'));
+    expect(stdoutWriteMock).toHaveBeenLastCalledWith(
+      `${JSON.stringify({
+        meta: {
+          cursor_pagination: {
+            has_next_page: false,
+            has_prev_page: false,
+            start_cursor: 'cursor_start',
+            end_cursor: 'cursor_end',
+          },
+        },
+      })}\n`,
+    );
     expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('entry shown'));
+  });
+
+  test('omits the trailing meta line with --format json when the backend omits meta', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '9', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['hi'] }],
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--format', 'json']));
+
+    expect(stdoutWriteMock).not.toHaveBeenCalledWith(expect.stringContaining('cursor_pagination'));
   });
 
   test('includes request details with --format request', async () => {
@@ -755,7 +783,12 @@ describe('query subcommand', () => {
         HttpResponse.json({
           data: [],
           meta: {
-            cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+            cursor_pagination: {
+              has_next_page: false,
+              has_prev_page: false,
+              start_cursor: null,
+              end_cursor: null,
+            },
           },
         }),
       ),
@@ -780,7 +813,12 @@ describe('query subcommand', () => {
           return HttpResponse.json({
             data: [],
             meta: {
-              cursor_pagination: { count: 0, per_page: 50, start_cursor: null, end_cursor: null },
+              cursor_pagination: {
+                has_next_page: false,
+                has_prev_page: false,
+                start_cursor: null,
+                end_cursor: null,
+              },
             },
           });
         },
@@ -797,8 +835,6 @@ describe('query subcommand', () => {
         '/cart',
         '--level-min',
         'warn',
-        '--limit',
-        '10',
       ]),
     );
 
@@ -806,8 +842,201 @@ describe('query subcommand', () => {
     expect(captured?.get('status_code')).toBe('500');
     expect(captured?.get('url:like')).toBe('/cart');
     expect(captured?.get('level:min')).toBe('warn');
-    expect(captured?.get('limit')).toBe('10');
+    expect(captured?.get('limit')).toBeNull();
     expect(captured?.get('after')).toBeNull();
+    expect(captured?.get('before')).toBeNull();
+  });
+
+  test('forwards --limit and --after as query params', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid',
+        ({ request }) => {
+          captured = new URL(request.url).searchParams;
+
+          return HttpResponse.json({ data: [] });
+        },
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '25', '--after', 'cursor_end']));
+
+    expect(captured?.get('limit')).toBe('25');
+    expect(captured?.get('after')).toBe('cursor_end');
+  });
+
+  test('forwards --before as a query param', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid',
+        ({ request }) => {
+          captured = new URL(request.url).searchParams;
+
+          return HttpResponse.json({ data: [] });
+        },
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--before', 'cursor_start']));
+
+    expect(captured?.get('before')).toBe('cursor_start');
+    expect(captured?.get('after')).toBeNull();
+  });
+
+  test('prints a runnable next-page hint when more entries are available', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '9', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['hi'] }],
+          meta: {
+            cursor_pagination: {
+              start_cursor: '9',
+              end_cursor: '9',
+              links: {
+                next: '?start=2026-06-01T00%3A00%3A00Z&end=2026-06-01T01%3A00%3A00Z&after=9',
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--level-min', 'info', '--limit', '1']));
+
+    const hint = vi
+      .mocked(consola.info)
+      .mock.calls.map(([line]) => String(line))
+      .find((line) => line.includes('More results available'));
+
+    expect(hint).toBeDefined();
+    expect(hint).toMatch(/^More results available\. Next page:\n {2}catalyst logs query /);
+    // The window is pinned to the resolved absolute timestamps.
+    expect(hint).toContain(`--start ${start}`);
+    expect(hint).toContain(`--end ${end}`);
+    expect(hint).toContain('--level-min info');
+    expect(hint).toContain('--limit 1');
+    expect(hint).toContain('--after 9');
+  });
+
+  test('prints a runnable previous-page hint when newer entries are available', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '5', timestamp: '2026-06-01T11:00:00Z', level: 'info', messages: ['hi'] }],
+          meta: {
+            cursor_pagination: {
+              start_cursor: '5',
+              end_cursor: '5',
+              links: {
+                previous: '?start=2026-06-01T00%3A00%3A00Z&end=2026-06-02T00%3A00%3A00Z&before=5',
+              },
+            },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '1', '--after', '9']));
+
+    const hint = vi
+      .mocked(consola.info)
+      .mock.calls.map(([line]) => String(line))
+      .find((line) => line.includes('Newer results available'));
+
+    expect(hint).toBeDefined();
+    expect(hint).toMatch(/^Newer results available\. Previous page:\n {2}catalyst logs query /);
+    expect(hint).toContain(`--start ${start}`);
+    expect(hint).toContain(`--end ${end}`);
+    expect(hint).toContain('--limit 1');
+    // The hint swaps the consumed --after cursor for the new page's --before.
+    expect(hint).toContain('--before 5');
+    expect(hint).not.toContain('--after');
+  });
+
+  test('prefixes pagination hints with the invoking package manager', async () => {
+    vi.stubEnv('npm_config_user_agent', 'pnpm/10.0.0 npm/? node/v24.14.0 darwin arm64');
+
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '9', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['hi'] }],
+          meta: {
+            cursor_pagination: {
+              start_cursor: '9',
+              end_cursor: '9',
+              links: { next: '?after=9' },
+            },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '1']));
+
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining('\n  pnpm catalyst logs query '),
+    );
+  });
+
+  test('uses npx in pagination hints when invoked via npm', async () => {
+    vi.stubEnv('npm_config_user_agent', 'npm/10.9.2 node/v24.14.0 darwin arm64 workspaces/false');
+
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '9', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['hi'] }],
+          meta: {
+            cursor_pagination: {
+              start_cursor: '9',
+              end_cursor: '9',
+              links: { next: '?after=9' },
+            },
+          },
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs(['--limit', '1']));
+
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining('\n  npx catalyst logs query '),
+    );
+  });
+
+  test('prints no hint when the backend omits pagination meta', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({
+          data: [{ id: '9', timestamp: '2026-06-01T12:00:00Z', level: 'info', messages: ['hi'] }],
+        }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs());
+
+    expect(consola.info).not.toHaveBeenCalledWith(
+      expect.stringContaining('More results available'),
+    );
+  });
+
+  test('rejects --after combined with --before', async () => {
+    await program.parseAsync(queryArgs(['--after', 'a', '--before', 'b'])).catch(() => {
+      // commander throws in test mode; the assertion below covers the outcome
+    });
+
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  test('rejects an out-of-range --limit', async () => {
+    await program.parseAsync(queryArgs(['--limit', '501'])).catch(() => {
+      // commander throws in test mode; the assertion below covers the outcome
+    });
+
+    expect(exitMock).toHaveBeenCalledWith(1);
   });
 
   test('exits with error when no project UUID can be resolved', async () => {
