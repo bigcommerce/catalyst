@@ -71,6 +71,9 @@ interface Props {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug, locale } = await props.params;
+
+  setRequestLocale(locale);
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const categoryId = Number(slug);
