@@ -3,7 +3,7 @@ name: Prevent invalid packages for Changesets
 on:
   pull_request:
     branches:
-      - integrations/makeswift
+      - integrations/b2b-makeswift
 
 permissions:
   contents: read
@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Validate changesets only target @bigcommerce/catalyst-makeswift
+      - name: Validate changesets only target @bigcommerce/catalyst-b2b-makeswift
         uses: actions/github-script@v7
         with:
           script: |

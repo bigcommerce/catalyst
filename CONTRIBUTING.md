@@ -68,11 +68,11 @@ To pull the latest code from `canary` into `integrations/makeswift`, follow the 
 > [!WARNING]
 > There are a number of "gotchas" that you need to be aware of when merging `canary` into `integrations/makeswift`:
 >
-> - The `name` field in `core/package.json` should remain `@bigcommerce/catalyst-makeswift`
-> - The `version` field in `core/package.json` should remain whatever the latest published `@bigcommerce/catalyst-makeswift` version was
-> - The `.changeset/` directory should not include any files that reference the `"@bigcommerce/catalyst-core"` package. If these files are merged into `integrations/makeswift`, they will cause the `Changesets Release` GitHub Action in `.github/workflows/changesets-release.yml` to fail with the error: `Error: Found changeset for package @bigcommerce/catalyst-core which is not in the workspace`
+> - The `name` field in `core/package.json` should remain `@bigcommerce/catalyst-b2b-makeswift`
+> - The `version` field in `core/package.json` should remain whatever the latest published `@bigcommerce/catalyst-b2b-makeswift` version was
+> - The `.changeset/` directory should only include files that reference the `"@bigcommerce/catalyst-b2b-makeswift"` package (not `"@bigcommerce/catalyst-core"` or `"@bigcommerce/catalyst-makeswift"`). If files referencing other packages are merged into `integrations/b2b-makeswift`, they will cause the `Changesets Release` GitHub Action in `.github/workflows/changesets-release.yml` to fail with an error like: `Error: Found changeset for package @bigcommerce/catalyst-core which is not in the workspace`
 >
-> _Note: A [GitHub Action is in place](.github/workflows/prevent-invalid-changesets.yml) to help prevent invalid changesets from being merged into `integrations/makeswift`. Do not merge your PR if this GitHub Action fails._
+> _Note: A [GitHub Action is in place](.github/workflows/prevent-invalid-changesets.yml) to help prevent invalid changesets from being merged into `integrations/b2b-makeswift`. Do not merge your PR if this GitHub Action fails._
 
 5. After resolving any merge conflicts, open a new PR in GitHub to merge your `{new-branch-name}` into `integrations/makeswift`. This PR should be code reviewed and approved before the next steps.
 
