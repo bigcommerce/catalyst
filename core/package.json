@@ -79,7 +79,7 @@
     "schema-dts": "^1.1.5",
     "server-only": "^0.0.1",
     "sonner": "^1.7.4",
-    "storefront-kit": "^0.24.0",
+    "storefront-kit": "^0.32.3",
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.1.0",
     "zod": "^3.25.51"
