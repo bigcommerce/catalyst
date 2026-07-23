@@ -18,7 +18,8 @@
     "build": "dotenv -e .env.local -- turbo run build",
     "lint": "dotenv -e .env.local -- turbo lint",
     "test": "turbo run test",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "changeset:version": "changeset version && node .github/scripts/sync-catalyst-version.mts"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",

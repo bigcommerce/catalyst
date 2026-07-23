@@ -5,18 +5,18 @@ module.exports = async ({ core, exec }) => {
     await exec.exec("git", [
       "fetch",
       "https://github.com/bigcommerce/catalyst.git",
-      "integrations/makeswift",
+      "integrations/b2b-makeswift",
     ]);
 
     const { stdout } = await exec.getExecOutput("git", [
       "diff",
       "--name-only",
-      `origin/integrations/makeswift...HEAD`,
+      `origin/integrations/b2b-makeswift...HEAD`,
     ]);
 
     const allFilenames = stdout.split("\n").filter((line) => line.trim());
     const changesetFilenames = allFilenames.filter(
-      (file) => file.startsWith(".changeset/") && file.endsWith(".md")
+      (file) => file.startsWith(".changeset/") && file.endsWith(".md"),
     );
 
     if (changesetFilenames.length === 0) {
@@ -45,8 +45,10 @@ module.exports = async ({ core, exec }) => {
       }
 
       if (!fs.existsSync(filename)) {
-        core.setFailed(`File not found: ${filename}`);
-        return;
+        core.warning(
+          `File not found: ${filename}. This is likely a version PR where the changeset was already consumed. Skipping validation for this file.`,
+        );
+        continue;
       }
 
       // check file size (limit to 100KB)
@@ -83,18 +85,18 @@ module.exports = async ({ core, exec }) => {
 
       if (packageMatches) {
         const invalidPackages = packageMatches.filter(
-          (pkg) => pkg !== '"@bigcommerce/catalyst-makeswift"'
+          (pkg) => pkg !== '"@bigcommerce/catalyst-b2b-makeswift"',
         );
 
         if (invalidPackages.length > 0) {
           core.error(
-            `Invalid package found in changeset file. Only @bigcommerce/catalyst-makeswift is allowed.`,
-            { file: filename }
+            `Invalid package found in changeset file. Only @bigcommerce/catalyst-b2b-makeswift is allowed.`,
+            { file: filename },
           );
           core.setFailed(
             `File ${filename} contains invalid packages: ${invalidPackages.join(
-              ", "
-            )}`
+              ", ",
+            )}`,
           );
           return;
         }

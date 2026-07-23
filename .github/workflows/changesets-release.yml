@@ -5,8 +5,15 @@ on:
     branches:
       - canary
       - integrations/makeswift
+      - integrations/b2b-makeswift
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  id-token: write
+  contents: write
+  packages: write
+  pull-requests: write
 
 jobs:
   changesets-release:
@@ -15,6 +22,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          # Full history required for linear-release-action to scan commits.
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
@@ -33,13 +43,63 @@ jobs:
         env:
           CLI_SEGMENT_WRITE_KEY: ${{ secrets.CLI_SEGMENT_WRITE_KEY }}
 
+      - name: Sync Linear release
+        uses: linear/linear-release-action@v0
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          command: sync
+          # Only the storefront package ships as its own release; changes to
+          # other workspace packages (client, create-catalyst, the CLI) are
+          # released separately and shouldn't count toward this pipeline.
+          include_paths: core/**
+
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
         with:
+          # Runs `changeset version`, then syncs core/package.json's `catalyst`
+          # field (version + git ref) to the freshly-bumped version.
+          version: pnpm changeset:version
           publish: pnpm exec changeset publish
           title: "Version Packages (`${{ github.ref_name }}`)"
           commit: "Version Packages (`${{ github.ref_name }}`)"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Resolve headline package
+        id: headline
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          PACKAGE_NAME="@bigcommerce/catalyst-core"
+          if [ "${{ github.ref_name }}" = "integrations/makeswift" ]; then
+            PACKAGE_NAME="@bigcommerce/catalyst-makeswift"
+          elif [ "${{ github.ref_name }}" = "integrations/b2b-makeswift" ]; then
+            PACKAGE_NAME="@bigcommerce/catalyst-b2b-makeswift"
+          fi
+          VERSION=$(echo '${{ steps.changesets.outputs.publishedPackages }}' | jq -r --arg name "$PACKAGE_NAME" '.[] | select(.name == $name) | .version')
+          if [ -z "$VERSION" ]; then
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$PACKAGE_NAME@$VERSION" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch release notes
+        if: steps.headline.outputs.found == 'true'
+        run: gh release view "${{ steps.headline.outputs.tag }}" --json body -q .body > /tmp/release-notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Complete Linear release
+        if: steps.headline.outputs.found == 'true'
+        uses: linear/linear-release-action@v0
+        with:
+          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          command: complete
+          # No `version`: the `catalyst-release` pipeline is a scheduled pipeline
+          # whose started release is unversioned (the accumulating `sync` steps
+          # above run without a version). Passing `version` makes `complete` look
+          # up an existing release with that exact version, which never exists and
+          # fails with `No release found with version "…"`. Omitting it completes
+          # the latest started release — the one sync has been accumulating into.
+          release_notes: /tmp/release-notes.md

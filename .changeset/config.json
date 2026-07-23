@@ -11,7 +11,7 @@
     "version": true,
     "tag": true
   },
-  "baseBranch": "integrations/makeswift",
+  "baseBranch": "integrations/b2b-makeswift",
   "updateInternalDependencies": "patch",
-  "ignore": ["@bigcommerce/catalyst"]
+  "ignore": ["@bigcommerce/catalyst", "@bigcommerce/create-catalyst"]
 }
