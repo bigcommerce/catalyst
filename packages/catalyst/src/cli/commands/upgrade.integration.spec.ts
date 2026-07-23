@@ -89,9 +89,8 @@ async function initGitProject(dir: string): Promise<void> {
   await execa('git', ['commit', '-qm', 'base'], { cwd: dir });
 }
 
-// 300s per test: Windows CI runners are ~10× slower than Linux, so 120 s
-// is too tight for tests that run the full download-and-merge pipeline.
-const TIMEOUT = 300_000;
+// 120s per test to allow cold-cache downloads on first run.
+const TIMEOUT = 120_000;
 
 describe.each(engines)('integration (engine: %s)', (engine) => {
   const runMerge = (baseDir: string, theirsDir: string, oursDir: string, emptyFile: string) =>
