@@ -185,18 +185,12 @@ export function ProductCard({
             )}
             {promotions != null && promotions.length > 0 && (
               <div className="mt-1.5">
-                <CalloutRoot
-                  className="items-start rounded-md border border-yellow-300 bg-yellow-50 px-2.5 py-1.5"
-                  size="small"
-                  variant="warning"
-                >
+                <CalloutRoot size="small" variant="warning">
                   <CalloutContent>
                     <CalloutHeader>
-                      <CalloutTitle className="text-xs font-semibold leading-snug text-yellow-900">
-                        {promotions[0]?.text ?? ''}
-                      </CalloutTitle>
+                      <CalloutTitle>{promotions[0]?.text ?? ''}</CalloutTitle>
                       {promotions.length > 1 && (
-                        <CalloutDescription className="text-xs text-yellow-900/70">
+                        <CalloutDescription>
                           {t('moreOffers', { count: promotions.length - 1 })}
                         </CalloutDescription>
                       )}
