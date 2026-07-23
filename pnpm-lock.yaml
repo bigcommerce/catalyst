@@ -213,8 +213,8 @@ importers:
         specifier: ^1.7.4
         version: 1.7.4(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       storefront-kit:
-        specifier: ^0.24.0
-        version: 0.24.0(2eea54938541e43338f6c40ea8e1cef3)
+        specifier: ^0.32.3
+        version: 0.32.3(@base-ui/react@1.6.0(@date-fns/tz@1.2.0)(@types/react@19.2.7)(date-fns@4.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(@tailwindcss/typography@0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(embla-carousel-react@9.0.0-rc01(react@19.1.7))(lucide-react@0.474.0(react@19.1.7))(react-day-picker@9.7.0(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(sonner@1.7.4(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(tailwindcss-animate@1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3)))
       tailwindcss-radix:
         specifier: ^3.0.5
         version: 3.0.5(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3)))
@@ -8872,27 +8872,11 @@ packages:
     resolution: {integrity: sha512-KXDYZ9dszj6bzvnEMRYvxgeTHU74QBFL54XKtP3nyMuJ81CFYtABZ3bAzL2EdFUaEwJOBOgENyFj3R7oTzDyyw==}
     engines: {node: '>=4', npm: '>=6'}
 
-  storefront-kit@0.24.0:
-    resolution: {integrity: sha512-Mo+FcFpNs4AogAGAmhuQiteAMzPr1AvARfPzzfs2NVYZSkJ48ptVCGmmGzWXI3I7WX4D9u/I/wU2jsyUS7NtHA==}
+  storefront-kit@0.32.3:
+    resolution: {integrity: sha512-oI16AjLoqG84wkVlwMRVd3JQWpMWxayRp/HAJUAf+9wj2GuhDvcyO3HXrQGLsY6L5VT29CGkQQW+/Fv154MQng==}
     engines: {node: '>=18'}
     peerDependencies:
       '@base-ui/react': ^1.5.0
-      '@radix-ui/react-accordion': ^1.2.0
-      '@radix-ui/react-checkbox': ^1.3.0
-      '@radix-ui/react-dialog': ^1.1.0
-      '@radix-ui/react-dropdown-menu': ^2.1.0
-      '@radix-ui/react-hover-card': ^1.1.15
-      '@radix-ui/react-label': ^2.1.0
-      '@radix-ui/react-navigation-menu': ^1.2.0
-      '@radix-ui/react-popover': ^1.1.0
-      '@radix-ui/react-portal': ^1.1.0
-      '@radix-ui/react-radio-group': ^1.3.0
-      '@radix-ui/react-scroll-area': ^1.2.0
-      '@radix-ui/react-select': ^2.2.0
-      '@radix-ui/react-slot': ^1.2.0
-      '@radix-ui/react-tabs': ^1.1.0
-      '@radix-ui/react-toggle': ^1.1.0
-      '@radix-ui/react-toggle-group': ^1.1.0
       '@tailwindcss/container-queries': ^0.1.0
       '@tailwindcss/typography': ^0.5.0
       embla-carousel-react: ^8.0.0
@@ -8905,38 +8889,6 @@ packages:
       tailwindcss-animate: ^1.0.0
     peerDependenciesMeta:
       '@base-ui/react':
-        optional: true
-      '@radix-ui/react-accordion':
-        optional: true
-      '@radix-ui/react-checkbox':
-        optional: true
-      '@radix-ui/react-dialog':
-        optional: true
-      '@radix-ui/react-dropdown-menu':
-        optional: true
-      '@radix-ui/react-hover-card':
-        optional: true
-      '@radix-ui/react-label':
-        optional: true
-      '@radix-ui/react-navigation-menu':
-        optional: true
-      '@radix-ui/react-popover':
-        optional: true
-      '@radix-ui/react-portal':
-        optional: true
-      '@radix-ui/react-radio-group':
-        optional: true
-      '@radix-ui/react-scroll-area':
-        optional: true
-      '@radix-ui/react-select':
-        optional: true
-      '@radix-ui/react-slot':
-        optional: true
-      '@radix-ui/react-tabs':
-        optional: true
-      '@radix-ui/react-toggle':
-        optional: true
-      '@radix-ui/react-toggle-group':
         optional: true
       embla-carousel-react:
         optional: true
@@ -19983,7 +19935,7 @@ snapshots:
 
   stoppable@1.1.0: {}
 
-  storefront-kit@0.24.0(2eea54938541e43338f6c40ea8e1cef3):
+  storefront-kit@0.32.3(@base-ui/react@1.6.0(@date-fns/tz@1.2.0)(@types/react@19.2.7)(date-fns@4.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(@tailwindcss/container-queries@0.1.1(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(@tailwindcss/typography@0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(embla-carousel-react@9.0.0-rc01(react@19.1.7))(lucide-react@0.474.0(react@19.1.7))(react-day-picker@9.7.0(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(sonner@1.7.4(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(tailwindcss-animate@1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))))(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3))):
     dependencies:
       '@tailwindcss/container-queries': 0.1.1(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3)))
       '@tailwindcss/typography': 0.5.16(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3)))
@@ -19999,19 +19951,6 @@ snapshots:
       tailwindcss-animate: 1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18)(@types/node@22.15.30)(typescript@5.8.3)))
     optionalDependencies:
       '@base-ui/react': 1.6.0(@date-fns/tz@1.2.0)(@types/react@19.2.7)(date-fns@4.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-accordion': 1.2.11(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-checkbox': 1.3.2(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-dialog': 1.1.14(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-dropdown-menu': 2.1.15(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-label': 2.1.7(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-navigation-menu': 1.2.13(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-popover': 1.1.14(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-portal': 1.1.9(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-radio-group': 1.3.7(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-select': 2.2.5(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-slot': 1.2.3(@types/react@19.2.7)(react@19.1.7)
-      '@radix-ui/react-toggle': 1.1.9(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      '@radix-ui/react-toggle-group': 1.1.10(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       embla-carousel-react: 9.0.0-rc01(react@19.1.7)
       lucide-react: 0.474.0(react@19.1.7)
       react-day-picker: 9.7.0(react@19.1.7)
