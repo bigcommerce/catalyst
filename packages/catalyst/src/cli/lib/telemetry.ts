@@ -9,6 +9,12 @@ import { getUserConfig, UserConfigSchema } from './user-config';
 const TELEMETRY_KEY_ENABLED = 'telemetry.enabled';
 const TELEMETRY_KEY_ID = `telemetry.anonymousId`;
 
+// CLI telemetry is best-effort: command completion must never be delayed by a
+// slow or unreachable analytics endpoint. `closeAndFlush()` uses the flush
+// interval to derive its timeout, so keep both bounds intentionally short.
+const TELEMETRY_FLUSH_INTERVAL_MS = 200;
+const TELEMETRY_HTTP_REQUEST_TIMEOUT_MS = 200;
+
 export class Telemetry {
   readonly correlationId: string;
   readonly analytics: Analytics;
@@ -30,6 +36,9 @@ export class Telemetry {
     this.startTime = Date.now();
     this.analytics = new Analytics({
       writeKey: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
+      flushInterval: TELEMETRY_FLUSH_INTERVAL_MS,
+      httpRequestTimeout: TELEMETRY_HTTP_REQUEST_TIMEOUT_MS,
+      maxRetries: 0,
     });
   }
 

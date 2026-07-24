@@ -5,7 +5,13 @@ import { z } from 'zod';
 import { UnauthorizedError } from '../lib/auth-errors';
 import { httpError } from '../lib/http-errors';
 import { consola } from '../lib/logger';
-import { formatLogEntry, LOG_LEVELS, queryLogs, resolveTimeWindow } from '../lib/observability';
+import {
+  formatLogEntry,
+  LOG_LEVELS,
+  queryLogs,
+  QueryLogsResult,
+  resolveTimeWindow,
+} from '../lib/observability';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
 import {
@@ -16,11 +22,9 @@ import {
   resolveProjectUuid,
   storeHashOption,
 } from '../lib/shared-options';
-import { Telemetry } from '../lib/telemetry';
+import { getTelemetry } from '../lib/telemetry';
 
 type LogFormat = 'json' | 'pretty' | 'default' | 'short' | 'request';
-
-const telemetry = new Telemetry();
 
 const DEFAULT_CONNECTION_TTL_MS = 1 * 60 * 1000; // 1 minute
 const MAX_RETRIES = 5;
@@ -339,7 +343,7 @@ Examples:
       const apiHost = resolveApiHost(options, config);
       const { storeHash, accessToken } = resolveCredentials(options, config);
 
-      await telemetry.identify(storeHash);
+      await getTelemetry().identify(storeHash);
 
       const projectUuid = resolveProjectUuid(options);
 
@@ -362,6 +366,79 @@ const parseIntInRange = (flag: string, min: number, max: number) => (value: stri
   return parsed;
 };
 
+// A bare `catalyst` is only on PATH for global installs. When the CLI runs
+// through a package manager (`pnpm catalyst`, `npx catalyst`, ...) the printed
+// hint must include that wrapper or copy-pasting it fails with
+// "command not found".
+function invocationPrefix(): string {
+  const packageManager = process.env.npm_config_user_agent?.split('/')[0];
+
+  switch (packageManager) {
+    case 'pnpm':
+    case 'yarn':
+      return `${packageManager} catalyst`;
+
+    case 'bun':
+      return 'bunx catalyst';
+
+    case 'npm':
+      return 'npx catalyst';
+
+    default:
+      return 'catalyst';
+  }
+}
+
+interface QueryHintOptions {
+  method?: string;
+  statusCode?: number;
+  urlLike?: string;
+  levelMin?: string;
+  limit?: number;
+  format: string;
+}
+
+function printPaginationHints(
+  pagination: NonNullable<QueryLogsResult['meta']>['cursor_pagination'],
+  start: string,
+  end: string,
+  options: QueryHintOptions,
+): void {
+  // The REST API signals availability with `links` URLs. Retain the gRPC
+  // booleans as a compatibility fallback for direct API consumers.
+  const hasNextPage = Boolean(pagination?.links?.next) || pagination?.has_next_page === true;
+  const hasPrevPage = Boolean(pagination?.links?.previous) || pagination?.has_prev_page === true;
+  const endCursor = pagination?.end_cursor;
+  const startCursor = pagination?.start_cursor;
+
+  if (!(hasNextPage && endCursor) && !(hasPrevPage && startCursor)) return;
+
+  const quoteArg = (value: string) => (/\s/.test(value) ? `'${value}'` : value);
+  // Cursors are only valid with the same window and filters, so pin the
+  // resolved absolute timestamps (a --since window drifts with "now").
+  const baseFlags = [
+    `--start ${quoteArg(start)}`,
+    `--end ${quoteArg(end)}`,
+    ...(options.method ? [`--method ${quoteArg(options.method)}`] : []),
+    ...(options.statusCode != null ? [`--status-code ${options.statusCode}`] : []),
+    ...(options.urlLike ? [`--url-like ${quoteArg(options.urlLike)}`] : []),
+    ...(options.levelMin ? [`--level-min ${options.levelMin}`] : []),
+    ...(options.limit != null ? [`--limit ${options.limit}`] : []),
+    ...(options.format !== 'default' ? [`--format ${options.format}`] : []),
+  ];
+  const command = `${invocationPrefix()} logs query ${baseFlags.join(' ')}`;
+
+  if (hasNextPage && endCursor) {
+    consola.info(`More results available. Next page:\n  ${command} --after ${quoteArg(endCursor)}`);
+  }
+
+  if (hasPrevPage && startCursor) {
+    consola.info(
+      `Newer results available. Previous page:\n  ${command} --before ${quoteArg(startCursor)}`,
+    );
+  }
+}
+
 const query = new Command('query')
   .configureHelp({ showGlobalOptions: true })
   .description('Query historical logs from your deployed application.')
@@ -370,11 +447,19 @@ const query = new Command('query')
     `
 Specify a time window with \`--since\` (relative to now) or \`--start\`/\`--end\`
 (ISO-8601 timestamps or Unix epoch seconds, UTC). The window may not exceed
-7 days. Entries print oldest-first; timestamps are UTC.
+7 days. Entries print oldest-first; timestamps are UTC. Page toward older
+entries by passing a previous page's end cursor to \`--after\` (the CLI prints
+a ready-to-run command when more entries are available), or toward newer
+entries with \`--before\`. Cursors are only valid with the same window and
+filters they came from. With \`--format json\`, the pagination cursors are
+emitted as a final \`{"meta": ...}\` line after the entries.
 
 Examples:
   # Last hour of logs
   $ catalyst logs query --since 1h
+
+  # Newest 20 errors in the window (follow the printed --after hint for more)
+  $ catalyst logs query --since 24h --level-min error --limit 20
 
   # Everything from today (UTC)
   $ catalyst logs query --start 2026-06-11T00:00:00Z
@@ -414,12 +499,23 @@ Examples:
     new Option('--level-min <level>', 'Minimum log level.').choices(Array.from(LOG_LEVELS)),
   )
   .addOption(
-    new Option('--limit <n>', 'Maximum number of entries to return (1-500).')
-      .argParser(parseIntInRange('--limit', 1, 500))
-      .default(100),
+    new Option(
+      '--limit <count>',
+      'Maximum entries per page (1-500). Defaults to the API default (100).',
+    ).argParser(parseIntInRange('--limit', 1, 500)),
   )
-  // TODO(TRAC-934): --after (cursor) and --all (follow pagination) were
-  // removed until Cloudflare fixes invocations-view pagination
+  .addOption(
+    new Option(
+      '--after <cursor>',
+      "Return the page after (older than) this cursor, from a previous page's end_cursor.",
+    ).conflicts('before'),
+  )
+  .addOption(
+    new Option(
+      '--before <cursor>',
+      "Return the page before (newer than) this cursor, from a previous page's start_cursor.",
+    ),
+  )
   .addOption(
     new Option('--format <format>', 'Output format for log entries.')
       .choices(['json', 'pretty', 'default', 'short', 'request'])
@@ -431,7 +527,7 @@ Examples:
       const apiHost = resolveApiHost(options, config);
       const { storeHash, accessToken } = resolveCredentials(options, config);
 
-      await telemetry.identify(storeHash);
+      await getTelemetry().identify(storeHash);
 
       const projectUuid = resolveProjectUuid(options);
       const { start, end } = resolveTimeWindow(options);
@@ -444,6 +540,8 @@ Examples:
         urlLike: options.urlLike,
         levelMin: options.levelMin,
         limit: options.limit,
+        after: options.after,
+        before: options.before,
       });
 
       const entries = result.data;
@@ -451,6 +549,16 @@ Examples:
 
       if (options.format === 'json') {
         ordered.forEach((entry) => process.stdout.write(`${JSON.stringify(entry)}\n`));
+
+        // Entries carry no cursors, so scripted pagination needs the meta
+        // echoed back; a trailing line keeps the stream line-delimited.
+        const cursorPagination = result.meta?.cursor_pagination;
+
+        if (cursorPagination) {
+          process.stdout.write(
+            `${JSON.stringify({ meta: { cursor_pagination: cursorPagination } })}\n`,
+          );
+        }
 
         return;
       }
@@ -477,12 +585,7 @@ Examples:
         `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} shown (oldest first, times in UTC).`,
       );
 
-      if (entries.length === options.limit) {
-        consola.info(
-          `Limit of ${options.limit} reached; older entries may exist. ` +
-            'Narrow the time window or raise --limit (max 500) to see more.',
-        );
-      }
+      printPaginationHints(result.meta?.cursor_pagination, start, end, options);
     } catch (error) {
       consola.error(error instanceof Error ? error.message : error);
       process.exit(1);
