@@ -314,10 +314,10 @@ describe('queryLogs', () => {
           meta: {
             cursor_pagination: {
               count: 1,
-              per_page: 50,
+              per_page: 1,
               start_cursor: 'cursor_start',
               end_cursor: 'cursor_end',
-              links: {},
+              links: { next: '?after=cursor_end' },
             },
           },
         }),
@@ -331,8 +331,46 @@ describe('queryLogs', () => {
 
     expect(result.data).toHaveLength(1);
     expect(result.data[0].level).toBe('error');
-    // TODO(TRAC-934): meta.cursor_pagination is no longer parsed; the
-    // fixture keeps it to confirm the schema tolerates (ignores) extra keys.
+    expect(result.meta?.cursor_pagination?.links?.next).toBe('?after=cursor_end');
+    expect(result.meta?.cursor_pagination?.end_cursor).toBe('cursor_end');
+  });
+
+  test('tolerates a response without meta (pre-pagination backend)', async () => {
+    server.use(http.get(logsUrl, () => HttpResponse.json({ data: [] })));
+
+    const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    });
+
+    expect(result.data).toHaveLength(0);
+    expect(result.meta?.cursor_pagination?.end_cursor).toBeUndefined();
+  });
+
+  test('tolerates null cursors on an empty page', async () => {
+    server.use(
+      http.get(logsUrl, () =>
+        HttpResponse.json({
+          data: [],
+          meta: {
+            cursor_pagination: {
+              has_next_page: false,
+              has_prev_page: true,
+              start_cursor: null,
+              end_cursor: null,
+            },
+          },
+        }),
+      ),
+    );
+
+    const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    });
+
+    expect(result.meta?.cursor_pagination?.has_next_page).toBe(false);
+    expect(result.meta?.cursor_pagination?.end_cursor).toBeNull();
   });
 
   test('accepts levels outside the known set and non-string messages', async () => {
@@ -385,7 +423,6 @@ describe('queryLogs', () => {
       statusCode: 500,
       urlLike: '/cart',
       levelMin: 'warn',
-      limit: 25,
     });
 
     expect(captured?.get('start')).toBe('2026-06-01T00:00:00Z');
@@ -394,7 +431,52 @@ describe('queryLogs', () => {
     expect(captured?.get('status_code')).toBe('500');
     expect(captured?.get('url:like')).toBe('/cart');
     expect(captured?.get('level:min')).toBe('warn');
+    expect(captured?.get('limit')).toBeNull();
+    expect(captured?.get('after')).toBeNull();
+    expect(captured?.get('before')).toBeNull();
+  });
+
+  test('forwards limit and cursor params', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(logsUrl, ({ request }) => {
+        captured = new URL(request.url).searchParams;
+
+        return HttpResponse.json({ data: [] });
+      }),
+    );
+
+    await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+      limit: 25,
+      after: 'cursor_end',
+    });
+
     expect(captured?.get('limit')).toBe('25');
+    expect(captured?.get('after')).toBe('cursor_end');
+    expect(captured?.get('before')).toBeNull();
+  });
+
+  test('forwards a before cursor', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(logsUrl, ({ request }) => {
+        captured = new URL(request.url).searchParams;
+
+        return HttpResponse.json({ data: [] });
+      }),
+    );
+
+    await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+      before: 'cursor_start',
+    });
+
+    expect(captured?.get('before')).toBe('cursor_start');
     expect(captured?.get('after')).toBeNull();
   });
 

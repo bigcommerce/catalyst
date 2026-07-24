@@ -1,10 +1,10 @@
 {
   "name": "@bigcommerce/catalyst-core",
   "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
-  "version": "1.9.0",
+  "version": "1.10.1",
   "catalyst": {
-    "version": "1.9.0",
-    "ref": "@bigcommerce/catalyst-core@1.9.0"
+    "version": "1.10.1",
+    "ref": "@bigcommerce/catalyst-core@1.10.1"
   },
   "private": true,
   "engines": {
@@ -66,7 +66,7 @@
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.474.0",
-    "next": "~16.2.6",
+    "next": "~16.2.11",
     "next-auth": "5.0.0-beta.30",
     "next-intl": "^4.6.1",
     "nuqs": "^2.4.3",
@@ -79,7 +79,7 @@
     "schema-dts": "^1.1.5",
     "server-only": "^0.0.1",
     "sonner": "^1.7.4",
-    "storefront-kit": "^0.24.0",
+    "storefront-kit": "^0.32.3",
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.1.0",
     "zod": "^3.25.51"

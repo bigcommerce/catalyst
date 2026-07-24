@@ -27,6 +27,12 @@ If the merge completes cleanly, skip to changeset cleanup. Otherwise, resolve co
 - `pnpm-lock.yaml`: accept canary's version (`git checkout --theirs pnpm-lock.yaml`), then regenerate with `pnpm install --no-frozen-lockfile`.
 - For all other conflicts, prefer canary's structure/patterns while preserving makeswift-specific additions (imports, components, config).
 
+**Check `core/package.json`'s nested `catalyst.version`/`catalyst.ref` fields even when they don't show up as a textual conflict.** These must always mirror the top-level `name`/`version` on this branch (e.g. `"version": "1.9.0"` → `catalyst.ref: "@bigcommerce/catalyst-makeswift@1.9.0"`), matching what the automated "Version Packages (`integrations/makeswift`)" bump sets them to. Because this is a small, self-contained hunk, git often merges it cleanly by taking canary's raw value (`@bigcommerce/catalyst-core@<version>`) without flagging a conflict — check it by hand every time:
+
+```bash
+grep -A3 '"catalyst"' core/package.json
+```
+
 After resolving all conflicts, stage everything and verify no unresolved conflicts remain:
 
 ```bash

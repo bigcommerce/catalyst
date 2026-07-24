@@ -216,17 +216,10 @@ export function ProductDetail<F extends Field>({
                           callouts.length > 0 ? (
                             <div className="flex flex-col gap-2">
                               {callouts.map((callout) => (
-                                <CalloutRoot
-                                  className="items-start rounded-md border border-yellow-300 bg-yellow-50 px-2.5 py-1.5"
-                                  key={callout.id}
-                                  size="small"
-                                  variant="warning"
-                                >
+                                <CalloutRoot key={callout.id} size="small" variant="warning">
                                   <CalloutContent>
                                     <CalloutHeader>
-                                      <CalloutTitle className="text-xs font-semibold leading-snug text-yellow-900">
-                                        {callout.text}
-                                      </CalloutTitle>
+                                      <CalloutTitle>{callout.text}</CalloutTitle>
                                     </CalloutHeader>
                                   </CalloutContent>
                                 </CalloutRoot>

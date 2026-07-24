@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.10.1
+
+### Patch Changes
+
+- [#3112](https://github.com/bigcommerce/catalyst/pull/3112) [`b80584d`](https://github.com/bigcommerce/catalyst/commit/b80584d040c74a943f46f9f294cf1dcccfc8f1ad) Thanks [@jairo-bc](https://github.com/jairo-bc)! - Fix product, category, and brand content falling back to the default language after ISR revalidation. `generateMetadata` fetched page data through `cache()`-memoized loaders before calling `setRequestLocale`, so during background regeneration (no request) next-intl could not resolve the locale, the storefront client omitted `Accept-Language`, and the default-locale response poisoned the memoized cache for the whole render. `setRequestLocale(locale)` is now called before the fetch in each `generateMetadata`.
+
+- [#3128](https://github.com/bigcommerce/catalyst/pull/3128) [`a14b9fd`](https://github.com/bigcommerce/catalyst/commit/a14b9fdc70609b33f69c6b040ecd2a71a0bf3bac) Thanks [@bc-vivekaggarwal](https://github.com/bc-vivekaggarwal)! - Style the promotion callouts with Storefront Kit's built-in `warning` variant instead of custom Tailwind classes. Bumps `storefront-kit` to `^0.32.3` (whose `styles` stylesheet is now plain CSS, so it imports cleanly under Turbopack) and wires up `storefront-kit/styles` plus the Storefront Kit `dist` content path so the Callout's design-system tokens resolve out of the box.
+
+- [#3129](https://github.com/bigcommerce/catalyst/pull/3129) [`9264ad8`](https://github.com/bigcommerce/catalyst/commit/9264ad808a84434f095de9a1ed13fbea25a2025c) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Upgrade Next.js from 16.2.6 to 16.2.11 to pick up the July 2026 security release (https://nextjs.org/blog/july-2026-security-release).
+
+## 1.10.0
+
+### Minor Changes
+
+- [#3108](https://github.com/bigcommerce/catalyst/pull/3108) [`84c0d5c`](https://github.com/bigcommerce/catalyst/commit/84c0d5c2aa6ce1f0b70138d8cfd46c7d88fc2adf) Thanks [@bc-vivekaggarwal](https://github.com/bc-vivekaggarwal)! - Show featured promotion callouts on the homepage product cards (featured and newest carousels), consistent with the existing PDP and PLP callouts.
+
 ## 1.9.0
 
 ### Minor Changes
