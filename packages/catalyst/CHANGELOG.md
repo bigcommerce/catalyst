@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.2.0
+
+### Minor Changes
+
+- [#3124](https://github.com/bigcommerce/catalyst/pull/3124) [`bb04eca`](https://github.com/bigcommerce/catalyst/commit/bb04ecab9e0e905efd04da10536083479f9e8ed3) Thanks [@parthshahp](https://github.com/parthshahp)! - Add pagination to `catalyst logs query`. Use `--limit <count>` (1–500) to cap the page size, `--after <cursor>` to page toward older entries, and `--before <cursor>` to page toward newer ones. When more entries are available, the CLI prints a ready-to-run command for the next page with the time window pinned to absolute timestamps.
+
 ## 1.1.1
 
 ### Patch Changes
