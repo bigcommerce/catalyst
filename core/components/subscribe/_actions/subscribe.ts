@@ -21,5 +21,5 @@ export const subscribe = async (
   // Simulate a network request
   await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  return { lastResult: submission.reply(), successMessage: t('success') };
+  return { lastResult: submission.reply(), successMessage: t('subscribedToNewsletter') };
 };

@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-makeswift": patch
+"@bigcommerce/catalyst-b2b-makeswift": patch
 ---
 
 Fix B2B company registration to correctly resolve the Storefront GraphQL API domain.

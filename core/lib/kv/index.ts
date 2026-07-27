@@ -82,16 +82,11 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
-  if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
-    const { BcKvAdapter } = await import('./adapters/bc');
+  // Prioritize Runtime Cache for Vercel environments
+  if (process.env.VERCEL === '1') {
+    const { RuntimeCacheAdapter } = await import('./adapters/vercel-runtime-cache');
 
-    return new BcKvAdapter();
-  }
-
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-    const { VercelKvAdapter } = await import('./adapters/vercel');
-
-    return new VercelKvAdapter();
+    return new RuntimeCacheAdapter();
   }
 
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {

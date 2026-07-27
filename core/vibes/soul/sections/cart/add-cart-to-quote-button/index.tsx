@@ -12,7 +12,7 @@ interface Props {
 }
 
 export const AddCartToQuoteButton = ({ cartId, className }: Props) => {
-  const t = useTranslations('Components.AddToQuoteButton');
+  const t = useTranslations('Cart');
   const [loading, setLoading] = useState(false);
 
   const addCartToQuote = useSDK()?.utils?.quote?.addProductsFromCartId;
@@ -40,7 +40,7 @@ export const AddCartToQuoteButton = ({ cartId, className }: Props) => {
       type="button"
       variant="secondary"
     >
-      {t('addCartToQuote')}
+      {t('addToQuoteFromCart')}
     </Button>
   );
 };

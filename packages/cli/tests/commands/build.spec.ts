@@ -1,24 +1,42 @@
-import { describe, expect, test } from 'vitest';
+import { Command } from 'commander';
+import { execa } from 'execa';
+import { expect, test, vi } from 'vitest';
 
-import { createFilter } from '../../src/commands/build';
+import { build } from '../../src/commands/build';
+import { program } from '../../src/program';
 
-describe('createFilter', () => {
-  const ROOT = '/my/project';
-  const SKIP_DIRS = new Set(['node_modules', '.git', 'dist']);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+vi.spyOn(process, 'exit').mockImplementation(() => null as never);
 
-  const filter = createFilter(ROOT, SKIP_DIRS);
+vi.mock('node:fs', () => ({
+  existsSync: vi.fn(() => true),
+}));
 
-  test('allows files not in skip list', () => {
-    expect(filter('/my/project/src/index.ts')).toBe(true);
-  });
+vi.mock('execa', () => ({
+  execa: vi.fn(() => Promise.resolve({ stdout: '' })),
+  __esModule: true,
+}));
 
-  test('skips files inside a skipped directory', () => {
-    expect(filter('/my/project/node_modules/lodash/index.js')).toBe(false);
-    expect(filter('/my/project/.git/config')).toBe(false);
-    expect(filter('/my/project/dist/main.js')).toBe(false);
-  });
+test('properly configured Command instance', () => {
+  expect(build).toBeInstanceOf(Command);
+  expect(build.name()).toBe('build');
+  expect(build.options).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ long: '--framework' }),
+      expect.objectContaining({ long: '--project-uuid' }),
+    ]),
+  );
+});
 
-  test('handles nested skipped folders', () => {
-    expect(filter('/my/project/src/node_modules/whatever.js')).toBe(false);
-  });
+test('calls execa with Next.js build if framework is nextjs', async () => {
+  await program.parseAsync(['node', 'catalyst', 'build', '--framework', 'nextjs', '--debug']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'node_modules/.bin/next',
+    ['build', '--debug'],
+    expect.objectContaining({
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    }),
+  );
 });

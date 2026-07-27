@@ -190,6 +190,11 @@ const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
       site {
+        settings {
+          url {
+            checkoutUrl
+          }
+        }
         cart(entityId: $cartId) {
           entityId
           version

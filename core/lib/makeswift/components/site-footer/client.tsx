@@ -43,7 +43,7 @@ interface Props {
     title: string;
     links: Array<{
       label: string;
-      link: { href: string };
+      link: { href: string; target?: string };
     }>;
   }>;
   copyright?: string;
@@ -57,7 +57,7 @@ function combineSections(
     passedSections,
     makeswiftSections.map(({ title, links }) => ({
       title,
-      links: links.map(({ label, link }) => ({ label, href: link.href })),
+      links: links.map(({ label, link }) => ({ label, href: link.href, target: link.target })),
     })),
     (left, right) => ({ ...left, links: [...left.links, ...right.links] }),
   );
