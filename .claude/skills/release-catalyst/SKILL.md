@@ -54,7 +54,7 @@ Record the **version number** and **bump type** (patch/minor/major) for use in S
 
 ### 2a. Sync branches
 
-Invoke the `/sync-makeswift` skill, with one addition: during the sync (after merge, before pushing), also add a changeset for `@bigcommerce/catalyst-makeswift`:
+Invoke the `/sync-integration-branch` skill with target `integrations/makeswift`, with one addition: during the sync (after merge, before pushing), also add a changeset for `@bigcommerce/catalyst-makeswift`:
 
 **Determine bump type**: Match the bump type from Stage 1 (e.g., if core went `1.4.2` → `1.5.0`, that's a `minor`).
 
