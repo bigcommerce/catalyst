@@ -19,6 +19,7 @@ interface Props<F extends Field> {
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
   recaptchaSiteKey?: string;
+  countriesWithoutStates?: string[];
 }
 
 export function DynamicFormSection<F extends Field>({
@@ -31,6 +32,7 @@ export function DynamicFormSection<F extends Field>({
   passwordComplexity,
   errorTranslations,
   recaptchaSiteKey,
+  countriesWithoutStates,
 }: Props<F>) {
   return (
     <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)} containerSize="lg">
@@ -46,6 +48,7 @@ export function DynamicFormSection<F extends Field>({
       )}
       <DynamicForm
         action={action}
+        countriesWithoutStates={countriesWithoutStates}
         errorTranslations={errorTranslations}
         fields={fields}
         passwordComplexity={passwordComplexity}

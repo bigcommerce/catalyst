@@ -352,11 +352,26 @@ export function schema(
   fields: Array<Field | FieldGroup<Field>>,
   passwordComplexity?: PasswordComplexitySettings | null,
   errorTranslations?: FormErrorTranslationMap,
+  countriesWithoutStates?: string[],
+  currentCountry?: string,
 ) {
   const shape = getFieldsShape(fields, passwordComplexity, errorTranslations);
   const flatFields = fields.flatMap((field) => (Array.isArray(field) ? field : [field]));
   const passwordFieldName = flatFields.find((f) => f.type === 'password')?.name;
   const confirmPasswordFieldName = flatFields.find((f) => f.type === 'confirm-password')?.name;
+  const stateFieldName = flatFields.find((f) => f.name === 'stateOrProvince')?.name;
+  const countryIsStateless =
+    countriesWithoutStates != null &&
+    currentCountry != null &&
+    countriesWithoutStates.includes(currentCountry);
+
+  if (countryIsStateless && stateFieldName != null) {
+    const existing = shape[stateFieldName];
+
+    if (existing instanceof z.ZodString) {
+      shape[stateFieldName] = existing.optional();
+    }
+  }
 
   return z.object(shape).superRefine((data, ctx) => {
     if (
