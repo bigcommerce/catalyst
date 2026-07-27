@@ -568,6 +568,9 @@
         "search": "Sök"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+ {count, plural, =1 {# erbjudande till} other {# erbjudanden till}}"
+        },
         "Header": {
             "home": "Hem",
             "toggleNavigation": "Växla navigering",

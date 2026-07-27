@@ -568,6 +568,9 @@
         "search": "Søk"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# flere tilbud} other {# flere tilbud}}"
+        },
         "Header": {
             "home": "Hjem",
             "toggleNavigation": "Veksle navigasjon",
