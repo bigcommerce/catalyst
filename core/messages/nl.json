@@ -568,6 +568,9 @@
         "search": "Zoeken"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+ nog {count, plural, =1 {# aanbieding} other {# aanbiedingen}}"
+        },
         "Header": {
             "home": "Home",
             "toggleNavigation": "Navigatie in- of uitschakelen",

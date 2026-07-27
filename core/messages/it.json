@@ -568,6 +568,9 @@
         "search": "Cerca"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# ulteriore offerta} other {# ulteriori offerte}}"
+        },
         "Header": {
             "home": "Home",
             "toggleNavigation": "Attiva/Disattiva navigazione",
