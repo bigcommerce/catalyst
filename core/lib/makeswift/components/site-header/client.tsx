@@ -25,6 +25,7 @@ type ContextProps = Omit<HeaderSectionProps, 'navigation'> & {
 
 const PropsContext = createContext<ContextProps>({
   navigation: {
+    giftCertificatesHref: '',
     accountHref: '',
     cartHref: '',
     searchHref: '',

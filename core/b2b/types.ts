@@ -59,7 +59,6 @@ interface ToastOptions {
   dismissLabel?: string;
 }
 
-
 declare global {
   interface Window {
     catalyst?: {

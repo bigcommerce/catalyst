@@ -6,6 +6,7 @@ import { OrdersApi, ordersHttpClient } from '~/tests/fixtures/utils/api/orders';
 import { PromotionsApi, promotionsHttpClient } from '~/tests/fixtures/utils/api/promotions';
 import { RedirectsApi, redirectsHttpClient } from '~/tests/fixtures/utils/api/redirects';
 import { SettingsApi, settingsHttpClient } from '~/tests/fixtures/utils/api/settings';
+import { SubscribeApi, subscribeHttpClient } from '~/tests/fixtures/utils/api/subscribe';
 import { WebPagesApi, webPagesHttpClient } from '~/tests/fixtures/utils/api/webpages';
 
 export interface ApiClient {
@@ -16,6 +17,7 @@ export interface ApiClient {
   orders: OrdersApi;
   promotions: PromotionsApi;
   settings: SettingsApi;
+  subscribe: SubscribeApi;
   webPages: WebPagesApi;
   redirects: RedirectsApi;
 }
@@ -28,6 +30,7 @@ export const httpApiClient: ApiClient = {
   orders: ordersHttpClient,
   promotions: promotionsHttpClient,
   settings: settingsHttpClient,
+  subscribe: subscribeHttpClient,
   webPages: webPagesHttpClient,
   redirects: redirectsHttpClient,
 };

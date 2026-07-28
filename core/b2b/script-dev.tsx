@@ -15,7 +15,14 @@ interface DevProps {
   bcGraphqlDomain?: string;
 }
 
-export function ScriptDev({ cartId, hostname, storeHash, channelId, token, bcGraphqlDomain }: DevProps) {
+export function ScriptDev({
+  cartId,
+  hostname,
+  storeHash,
+  channelId,
+  token,
+  bcGraphqlDomain,
+}: DevProps) {
   useB2BAuth(token);
   useB2BCart(cartId);
 

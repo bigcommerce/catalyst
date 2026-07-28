@@ -54,6 +54,8 @@
             "password": "Contraseña",
             "invalidCredentials": "Tu dirección de correo electrónico o contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
+            "passwordResetRequired": "Es necesario restablecer la contraseña. Consulta tu correo electrónico para recibir instrucciones sobre cómo restablecer tu contraseña.",
+            "invalidToken": "Tu enlace de inicio de sesión no es válido o ha caducado. Intenta conectarte de nuevo.",
             "CreateAccount": {
                 "title": "¿Cliente nuevo?",
                 "accountBenefits": "Cree una cuenta con nosotros y podrá:",
@@ -197,7 +199,13 @@
             "currentPassword": "Contraseña actual",
             "newPassword": "Nueva contraseña",
             "confirmPassword": "Confirmar contraseña",
-            "cta": "Actualizar"
+            "cta": "Actualizar",
+            "NewsletterSubscription": {
+                "title": "Preferencias de marketing",
+                "label": "Suscríbase a nuestro boletín.",
+                "marketingPreferencesUpdated": "¡Las preferencias de marketing se han actualizado correctamente!",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         }
     },
     "Wishlist": {
@@ -363,7 +371,7 @@
                 "couponCode": "Código de cupón",
                 "removeCouponCode": "Elimina el código de cupón",
                 "invalidCouponCode": "Introduce un código de cupón válido",
-                "cartNotFound": "No se ha encontrado ninguna cookie cartId."
+                "cartNotFound": "Se ha producido un error al recuperar tu carrito"
             },
             "Shipping": {
                 "shipping": "Envío",
@@ -380,7 +388,7 @@
                 "shippingOptions": "Opciones de envío",
                 "updateShipping": "Actualizar envío",
                 "addShipping": "Añadir envío",
-                "cartNotFound": "No se ha encontrado ninguna cookie cartId.",
+                "cartNotFound": "Se ha producido un error al recuperar tu carrito",
                 "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
             }
         },
@@ -392,7 +400,7 @@
             "to": "a",
             "message": "Mensaje",
             "invalidGiftCertificate": "Introduce un código de cupón de regalo válido",
-            "cartNotFound": "No se ha encontrado ninguna cookie cartId."
+            "cartNotFound": "Se ha producido un error al recuperar tu carrito"
         },
         "Empty": {
             "title": "Su carrito está vacío.",
@@ -400,7 +408,7 @@
             "cta": "Seguir comprando"
         },
         "Errors": {
-            "cartNotFound": "No se ha encontrado ninguna cookie cartId.",
+            "cartNotFound": "Se ha producido un error al recuperar tu carrito",
             "lineItemNotFound": "No se ha encontrado el elemento.",
             "failedToUpdateQuantity": "No se pudo actualizar la cantidad.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
@@ -439,7 +447,8 @@
             "decreaseNumber": "Disminuir número",
             "thumbnail": "Ver número de imagen",
             "additionalInformation": "Información adicional",
-            "currentStock": "Stock actual: {cantidad, número}",
+            "currentStock": "{cantidad, número} en existencias",
+            "backorderQuantity": "{cantidad, número} en pedidos pendientes",
             "Submit": {
                 "addToCart": "Añadir al carrito",
                 "outOfStock": "Sin existencias",
@@ -467,7 +476,19 @@
             "title": "Reseñas",
             "empty": "No se han escrito opiniones para este producto.",
             "previous": "Reseñas anteriores",
-            "next": "Próximas reseñas"
+            "next": "Próximas reseñas",
+            "Form": {
+                "button": "Escribir una reseña",
+                "title": "Escribir una reseña",
+                "submit": "Enviar",
+                "ratingLabel": "Calificación",
+                "titleLabel": "Título",
+                "reviewLabel": "Reseña",
+                "nameLabel": "Nombre",
+                "emailLabel": "Correo electrónico",
+                "successMessage": "¡Tu reseña se ha enviado correctamente!",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         }
     },
     "WebPages": {
@@ -514,7 +535,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrito",
-                "search": "Abrir ventana de búsqueda"
+                "search": "Abrir ventana de búsqueda",
+                "giftCertificates": "Certificados de regalo"
             },
             "SwitchCurrency": {
                 "label": "Cambiar divisa",
@@ -538,13 +560,18 @@
             "socialMediaLinks": "Vínculos a redes sociales",
             "categories": "Categorías",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Certificados de regalo"
         },
         "Subscribe": {
             "title": "Suscribirse a nuestro boletín",
             "placeholder": "Introduzca su correo electrónico",
             "description": "Entérate de todas las novedades y ofertas de nuestra tienda.",
-            "success": "Gracias por tu interés. ¡La función de boletín estará disponible pronto!"
+            "subscribedToNewsletter": "¡Te has suscrito a nuestro boletín!",
+            "Errors": {
+                "invalidEmail": "Ingrese una dirección de correo electrónico válida.",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         },
         "ConsentManager": {
             "Common": {
@@ -555,7 +582,8 @@
             },
             "CookieBanner": {
                 "title": "Valoramos tu privacidad",
-                "description": "Este sitio utiliza cookies para mejorar tu experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado."
+                "description": "Este sitio utiliza cookies para mejorar tu experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado.",
+                "privacyPolicy": "Política de privacidad"
             },
             "Dialog": {
                 "title": "Configuración de privacidad",

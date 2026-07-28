@@ -1,0 +1,44 @@
+name: Production Tag Deployment
+env:
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+on:
+    push:
+        tags:
+            - "@bigcommerce/catalyst-core@latest"
+            - "@bigcommerce/catalyst-makeswift@latest"
+            - "@bigcommerce/catalyst-b2b-makeswift@latest"
+jobs:
+    deploy-tag:
+        name: Deploy `{{ github.ref_name }}` tag
+        runs-on: ubuntu-latest
+        concurrency:
+            group: ${{ github.workflow }}-${{ github.ref_name }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Install Vercel CLI
+              run: npm install --global vercel@latest
+
+            - name: Parse Tag and Build Domain
+              id: parse-tag
+              run: |
+                  TAG="${{ github.ref_name }}"
+                  PACKAGE_NAME=$(echo "$TAG" | sed -E 's/^@bigcommerce\/([^@]+)@.*$/\1/')
+                  case "$PACKAGE_NAME" in
+                    "catalyst-core") DOMAIN="catalyst-demo.site" ;;
+                    "catalyst-makeswift") DOMAIN="makeswift.catalyst-demo.site" ;;
+                    "catalyst-b2b-makeswift") DOMAIN="b2b-makeswift.catalyst-demo.site" ;;
+                    *) echo "Error: Unknown package name: $PACKAGE_NAME"; exit 1 ;;
+                  esac
+                  echo "domain=$DOMAIN" >> $GITHUB_OUTPUT
+
+            - name: Deploy to Vercel
+              id: deploy
+              run: |
+                  DEPLOYMENT_URL=$(vercel deploy --token=${{ secrets.VERCEL_TOKEN }})
+                  echo "deployment_url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+            - name: Set Vercel Domain Alias
+              run: |
+                  vercel alias ${{ steps.deploy.outputs.deployment_url }} ${{ steps.parse-tag.outputs.domain }} --token=${{ secrets.VERCEL_TOKEN }}

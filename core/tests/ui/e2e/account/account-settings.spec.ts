@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
+import { TAGS } from '~/tests/tags';
 
 test('Updating account information works as expected', async ({ page, customer }) => {
   const t = await getTranslations('Account.Settings');
@@ -18,7 +19,7 @@ test('Updating account information works as expected', async ({ page, customer }
   // TODO: Account settings form fields need to be translated
   await expect(page.getByLabel('First Name')).toHaveValue(testCustomer.firstName);
   await expect(page.getByLabel('Last Name')).toHaveValue(testCustomer.lastName);
-  await expect(page.getByLabel('Email')).toHaveValue(testCustomer.email);
+  await expect(page.getByLabel('Email').first()).toHaveValue(testCustomer.email);
 
   await page.getByLabel('First Name').fill(updatedFirstName);
   await page.getByLabel('Last Name').fill(updatedLastName);
@@ -61,7 +62,7 @@ test('Changing password works as expected', async ({ page, customer }) => {
   await page.getByLabel(t('confirmPassword')).fill(newPassword);
   await page
     .getByRole('button', { name: t('cta') })
-    .last()
+    .nth(1) // The second button is the update password button
     .click();
 
   await page.waitForLoadState('networkidle');
@@ -77,3 +78,93 @@ test('Changing password works as expected', async ({ page, customer }) => {
 
   await expect(page).toHaveURL('/account/orders/');
 });
+
+test(
+  'Subscribing to newsletter works as expected',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer, subscribe }) => {
+    const t = await getTranslations('Account.Settings');
+    const tNewsletter = await getTranslations('Account.Settings.NewsletterSubscription');
+    const testCustomer = await customer.createNewCustomer();
+
+    // Ensure customer is unsubscribed initially
+    await subscribe.unsubscribe(testCustomer.email);
+
+    await customer.loginAs(testCustomer);
+
+    await page.goto('/account/settings');
+    await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
+
+    // Find the newsletter subscription switch
+    const newsletterSwitch = page.getByLabel(t('NewsletterSubscription.label'));
+
+    await expect(newsletterSwitch).toBeVisible();
+
+    // Verify switch is unchecked (customer is not subscribed)
+    const switchElement = page.getByRole('switch', { name: t('NewsletterSubscription.label') });
+
+    await expect(switchElement).not.toBeChecked();
+
+    // Click the switch to subscribe
+    await switchElement.click();
+
+    // Click the submit button (should be the last button on the page)
+    await page
+      .getByRole('button', { name: t('cta') })
+      .last()
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    // Verify success message appears
+    await expect(page.getByText(tNewsletter('marketingPreferencesUpdated'))).toBeVisible();
+
+    // Track subscription for cleanup
+    subscribe.trackSubscription(testCustomer.email);
+  },
+);
+
+test(
+  'Unsubscribing from newsletter works as expected',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer, subscribe }) => {
+    const t = await getTranslations('Account.Settings');
+    const tNewsletter = await getTranslations('Account.Settings.NewsletterSubscription');
+    const testCustomer = await customer.createNewCustomer();
+
+    // Ensure customer is subscribed initially
+    await subscribe.subscribe(testCustomer.email, testCustomer.firstName, testCustomer.lastName);
+
+    await customer.loginAs(testCustomer);
+
+    await page.goto('/account/settings');
+    await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
+
+    // Find the newsletter subscription switch
+    const newsletterSwitch = page.getByLabel(t('NewsletterSubscription.label'));
+
+    await expect(newsletterSwitch).toBeVisible();
+
+    // Verify switch is checked (customer is subscribed)
+    const switchElement = page.getByRole('switch', { name: t('NewsletterSubscription.label') });
+
+    await expect(switchElement).toBeChecked();
+
+    // Click the switch to unsubscribe
+    await switchElement.click();
+
+    // Click the submit button (should be the last button on the page)
+    await page
+      .getByRole('button', { name: t('cta') })
+      .last()
+      .click();
+
+    await page.waitForLoadState('networkidle');
+
+    // Verify success message appears
+    await expect(page.getByText(tNewsletter('marketingPreferencesUpdated'))).toBeVisible();
+
+    // Track subscription for cleanup
+    subscribe.trackSubscription(testCustomer.email);
+  },
+);

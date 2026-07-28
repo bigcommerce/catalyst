@@ -1,5 +1,6 @@
 import { z } from 'zod';
-import { getAPIHostname } from './getApiHostname';
+
+import { getAPIHostname } from './get-api-hostname';
 
 interface LoginWithB2BParams {
   customerId: number;
@@ -47,11 +48,14 @@ export async function loginWithB2B({ customerId, customerAccessToken }: LoginWit
     headers['X-Auth-Token'] = env.BIGCOMMERCE_ACCESS_TOKEN;
     headers['X-Store-Hash'] = env.BIGCOMMERCE_STORE_HASH;
   } else if ('B2B_API_TOKEN' in env) {
-    headers['authToken'] = env.B2B_API_TOKEN;
-    console.warn('This is deprecated in favour or BIGCOMMERCE_ACCESS_TOKEN, read https://support.bigcommerce.com/s/article/Store-API-Accounts?language=en_US')
+    headers.authToken = env.B2B_API_TOKEN;
+    // eslint-disable-next-line no-console
+    console.warn(
+      'This is deprecated in favour or BIGCOMMERCE_ACCESS_TOKEN, read https://support.bigcommerce.com/s/article/Store-API-Accounts?language=en_US',
+    );
   } else {
     throw new Error('No B2B API token or BigCommerce token found in environment variables.');
-  } 
+  }
 
   const apiHost = getAPIHostname();
   const response = await fetch(`${apiHost}/api/io/auth/customers/storefront`, {
@@ -68,7 +72,9 @@ export async function loginWithB2B({ customerId, customerAccessToken }: LoginWit
     const errorMessage = ErrorResponse.parse(await response.json()).detail;
 
     // eslint-disable-next-line no-console
-    console.error(`B2B login failed. Host: ${apiHost}, Status: ${response.status}, Message: ${errorMessage}`);
+    console.error(
+      `B2B login failed. Host: ${apiHost}, Status: ${response.status}, Message: ${errorMessage}`,
+    );
     throw new Error('Failed to authenticate with B2B API.');
   }
 

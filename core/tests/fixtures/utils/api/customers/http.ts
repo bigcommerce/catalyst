@@ -212,7 +212,10 @@ export const customersHttpClient: CustomersApi = {
       throw new Error(`No customer found with the provided ID: ${customerId}`);
     }
 
-    if (customer.originChannelId !== (testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1)) {
+    if (
+      customer.originChannelId !== (testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1) &&
+      customer.channelIds !== null // if channelIds is null, the customer belongs to all channels
+    ) {
       throw new Error(
         `Customer ${customerId} is not from the correct channel. Expected ${
           testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1

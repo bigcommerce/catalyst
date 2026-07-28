@@ -54,6 +54,8 @@
       "password": "Password",
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
+      "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
+      "invalidToken": "Your login link is invalid or has expired. Please try logging in again.",
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
@@ -197,7 +199,13 @@
       "currentPassword": "Current password",
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
-      "cta": "Update"
+      "cta": "Update",
+      "NewsletterSubscription": {
+        "title": "Marketing preferences",
+        "label": "Subscribe to our newsletter.",
+        "marketingPreferencesUpdated": "Marketing preferences have been updated successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "Wishlist": {
@@ -364,7 +372,7 @@
         "couponCode": "Coupon code",
         "removeCouponCode": "Remove coupon code",
         "invalidCouponCode": "Please enter a valid coupon code",
-        "cartNotFound": "No cartId cookie found."
+        "cartNotFound": "An error occurred when retrieving your cart"
       },
       "Shipping": {
         "shipping": "Shipping",
@@ -381,7 +389,7 @@
         "shippingOptions": "Shipping options",
         "updateShipping": "Update shipping",
         "addShipping": "Add shipping",
-        "cartNotFound": "No cartId cookie found.",
+        "cartNotFound": "An error occurred when retrieving your cart",
         "noShippingOptions": "There are no shipping options available for your address"
       }
     },
@@ -393,7 +401,7 @@
       "to": "To",
       "message": "Message",
       "invalidGiftCertificate": "Please enter a valid gift certificate code",
-      "cartNotFound": "No cartId cookie found."
+      "cartNotFound": "An error occurred when retrieving your cart"
     },
     "Empty": {
       "title": "Your cart is empty.",
@@ -401,7 +409,7 @@
       "cta": "Continue shopping"
     },
     "Errors": {
-      "cartNotFound": "No cartId cookie found.",
+      "cartNotFound": "An error occurred when retrieving your cart",
       "lineItemNotFound": "Line item not found.",
       "failedToUpdateQuantity": "Failed to update quantity.",
       "somethingWentWrong": "Something went wrong. Please try again later."
@@ -442,7 +450,8 @@
       "additionalInformation": "Additional information",
       "addToQuote": "Add to quote",
       "addToShoppingList": "Add to shopping list",
-      "currentStock": "Current stock: {quantity, number}",
+      "currentStock": "{quantity, number} in stock",
+      "backorderQuantity": "{quantity, number} will be on backorder",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
@@ -470,7 +479,19 @@
       "title": "Reviews",
       "empty": "No reviews have been added for this product.",
       "previous": "Previous reviews",
-      "next": "Next reviews"
+      "next": "Next reviews",
+      "Form": {
+        "button": "Write a review",
+        "title": "Write a review",
+        "submit": "Submit",
+        "ratingLabel": "Rating",
+        "titleLabel": "Title",
+        "reviewLabel": "Review",
+        "nameLabel": "Name",
+        "emailLabel": "Email",
+        "successMessage": "Your review has been submitted successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "WebPages": {
@@ -517,7 +538,8 @@
       "Icons": {
         "account": "Profile",
         "cart": "Cart",
-        "search": "Open search popup"
+        "search": "Open search popup",
+        "giftCertificates": "Gift certificates"
       },
       "SwitchCurrency": {
         "label": "Switch currency",
@@ -541,13 +563,18 @@
       "socialMediaLinks": "Social media links",
       "categories": "Categories",
       "brands": "Brands",
-      "navigate": "Navigate"
+      "navigate": "Navigate",
+      "giftCertificates": "Gift certificates"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
-      "subscribedToNewsletter": "Thank you for your interest! Newsletter feature is coming soon!"
+      "subscribedToNewsletter": "You have been subscribed to our newsletter!",
+      "Errors": {
+        "invalidEmail": "Please enter a valid email address.",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     },
     "ConsentManager": {
       "Common": {
@@ -558,7 +585,8 @@
       },
       "CookieBanner": {
         "title": "We value your privacy",
-        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content.",
+        "privacyPolicy": "Privacy Policy"
       },
       "Dialog": {
         "title": "Privacy Settings",

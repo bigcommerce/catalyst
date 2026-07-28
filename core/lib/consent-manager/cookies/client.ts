@@ -1,12 +1,7 @@
-import { z } from 'zod';
-
-import { decode } from '../decoder';
-import { encode } from '../encoder';
 import { ConsentCookieSchema } from '../schema';
 
-import { CONSENT_COOKIE_NAME, ONE_YEAR_SECONDS } from './constants';
-
-type ConsentCookie = z.infer<typeof ConsentCookieSchema>;
+import { CONSENT_COOKIE_NAME } from './constants';
+import { parseCompactFormat } from './parse-compact-format';
 
 const getCookieValueByName = (name: string) => {
   if (typeof document === 'undefined') return null;
@@ -16,16 +11,16 @@ const getCookieValueByName = (name: string) => {
   return pair ? pair.slice(name.length + 1) : null;
 };
 
-const serialize = (value: string) =>
-  `${CONSENT_COOKIE_NAME}=${value}; Path=/; Max-Age=${ONE_YEAR_SECONDS}; SameSite=Lax; Secure`;
-
 export const getConsentCookie = () => {
-  const raw = getCookieValueByName(CONSENT_COOKIE_NAME);
+  const cookie = getCookieValueByName(CONSENT_COOKIE_NAME);
 
-  return raw ? decode(raw) : null;
-};
+  if (!cookie) return null;
 
-export const setConsentCookie = (consent: ConsentCookie) => {
-  if (typeof document === 'undefined') return;
-  document.cookie = serialize(encode(consent));
+  try {
+    const consent = parseCompactFormat(cookie);
+
+    return ConsentCookieSchema.parse(consent);
+  } catch {
+    return null;
+  }
 };

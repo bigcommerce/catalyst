@@ -14,7 +14,14 @@ interface Props {
   bcGraphqlDomain?: string;
 }
 
-export function ScriptProduction({ cartId, storeHash, channelId, token, environment, bcGraphqlDomain }: Props) {
+export function ScriptProduction({
+  cartId,
+  storeHash,
+  channelId,
+  token,
+  environment,
+  bcGraphqlDomain,
+}: Props) {
   useB2BAuth(token);
   useB2BCart(cartId);
 
@@ -37,7 +44,7 @@ export function ScriptProduction({ cartId, storeHash, channelId, token, environm
         data-channelid={channelId}
         data-environment={environment}
         data-storehash={storeHash}
-        src={'https://microapps.bigcommerce.com/b2b-buyer-portal/headless.js'}
+        src="https://microapps.bigcommerce.com/b2b-buyer-portal/headless.js"
         type="module"
       />
     </>

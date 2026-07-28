@@ -43,6 +43,7 @@ export interface CartLineItem {
   subtitle: string;
   quantity: number;
   price: string;
+  salePrice?: string;
   href?: string;
 }
 
@@ -152,7 +153,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   summaryTitle?: string;
   emptyState?: CartEmptyState;
   lineItemAction: Action<CartState<LineItem>, FormData>;
-  checkoutAction: Action<SubmissionResult | null, FormData>;
+  checkoutAction: Action<SubmissionResult | null, FormData> | string;
   checkoutLabel?: string;
   deleteLineItemLabel?: string;
   decrementLineItemLabel?: string;
@@ -568,8 +569,13 @@ function CounterForm({
     <form {...getFormProps(form)} action={action}>
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
-
+        {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
+          <span className="font-medium @xl:ml-auto">
+            <span className="line-through">{lineItem.price}</span> {lineItem.salePrice}
+          </span>
+        ) : (
+          <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+        )}
         {/* Counter */}
         <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
           <button
@@ -614,7 +620,6 @@ function CounterForm({
             />
           </button>
         </div>
-
         <button
           aria-label={deleteLabel}
           className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
@@ -638,10 +643,23 @@ function CheckoutButton({
   isCartUpdatePending,
   ...props
 }: {
-  action: Action<SubmissionResult | null, FormData>;
+  action: Action<SubmissionResult | null, FormData> | string;
   isCartUpdatePending: boolean;
 } & ComponentPropsWithoutRef<typeof Button>) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [lastResult, formAction] = useActionState(
+    async (state: SubmissionResult | null, formData: FormData) => {
+      if (typeof action === 'string') {
+        await new Promise<void>(() => {
+          window.location.assign(action);
+        });
+
+        return null;
+      }
+
+      return action(state, formData);
+    },
+    null,
+  );
 
   const [form] = useForm({ lastResult });
 

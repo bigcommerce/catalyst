@@ -2,7 +2,7 @@ name: Basic
 
 on:
   push:
-    branches: [canary]
+    branches: [canary, integrations/makeswift, integrations/b2b-makeswift]
   pull_request:
     types: [opened, synchronize]
   merge_group:

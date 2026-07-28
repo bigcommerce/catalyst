@@ -2,7 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
@@ -20,6 +20,7 @@ interface Props {
   emailLabel?: string;
   passwordLabel?: string;
   submitLabel?: string;
+  error?: string;
 }
 
 export function SignInForm({
@@ -27,6 +28,7 @@ export function SignInForm({
   emailLabel = 'Email',
   passwordLabel = 'Password',
   submitLabel = 'Sign in',
+  error,
 }: Props) {
   const [lastResult, formAction] = useActionState(action, null);
   const [form, fields] = useForm({
@@ -39,6 +41,33 @@ export function SignInForm({
       return parseWithZod(formData, { schema });
     },
   });
+
+  useEffect(() => {
+    // If the form errors change when an "error" search param is in the URL,
+    // the search param should be removed to prevent showing stale errors.
+    if (form.errors) {
+      const url = new URL(window.location.href);
+
+      if (url.searchParams.has('error')) {
+        url.searchParams.delete('error');
+        window.history.replaceState({}, '', url.toString());
+      }
+    }
+  }, [form.errors]);
+
+  const formErrors = () => {
+    // Form errors should take precedence over the error prop that is passed in.
+    // This ensures that the most recent errors are displayed to avoid confusion.
+    if (form.errors) {
+      return form.errors;
+    }
+
+    if (error) {
+      return [error];
+    }
+
+    return [];
+  };
 
   return (
     <form {...getFormProps(form)} action={formAction} className="flex grow flex-col gap-5">
@@ -56,9 +85,9 @@ export function SignInForm({
         label={passwordLabel}
       />
       <SubmitButton>{submitLabel}</SubmitButton>
-      {form.errors?.map((error, index) => (
+      {formErrors().map((err, index) => (
         <FormStatus key={index} type="error">
-          {error}
+          {err}
         </FormStatus>
       ))}
     </form>
