@@ -2,7 +2,7 @@
 
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { updateAccountSchema } from '@/vibes/soul/sections/account-settings/schema';
@@ -75,7 +75,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
       };
     }
 
-    unstable_expireTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     return {
       account: submission.value,

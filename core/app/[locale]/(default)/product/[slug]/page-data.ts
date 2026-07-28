@@ -112,7 +112,6 @@ export const ProductOptionsFragment = graphql(
             entityId
             displayName
             isRequired
-            isVariantOption
             ...MultipleChoiceFieldFragment
             ...CheckboxFieldFragment
             ...NumberFieldFragment
@@ -139,6 +138,7 @@ const ProductPageMetadataQuery = graphql(`
     site {
       product(entityId: $entityId) {
         name
+        path
         defaultImage {
           altText
           url: urlTemplate(lossy: true)
@@ -148,6 +148,7 @@ const ProductPageMetadataQuery = graphql(`
           metaDescription
           metaKeywords
         }
+        path
         plainTextDescription(characterLimit: 1200)
       }
     }
@@ -211,7 +212,7 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site;
 });
 
-const StreamableProductVariantBySkuQuery = graphql(`
+const StreamableProductVariantInventoryBySkuQuery = graphql(`
   query ProductVariantBySkuQuery($productId: Int!, $sku: String!) {
     site {
       product(entityId: $productId) {
@@ -247,15 +248,15 @@ const StreamableProductVariantBySkuQuery = graphql(`
   }
 `);
 
-type VariantVariables = VariablesOf<typeof StreamableProductVariantBySkuQuery>;
+type VariantInventoryVariables = VariablesOf<typeof StreamableProductVariantInventoryBySkuQuery>;
 
-export const getStreamableProductVariant = cache(
-  async (variables: VariantVariables, customerAccessToken?: string) => {
+export const getStreamableProductVariantInventory = cache(
+  async (variables: VariantInventoryVariables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: StreamableProductVariantBySkuQuery,
+      document: StreamableProductVariantInventoryBySkuQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product?.variants;
@@ -275,7 +276,12 @@ const StreamableProductQuery = graphql(
           optionValueIds: $optionValueIds
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
-          images {
+          entityId
+          images(first: 12) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
             edges {
               node {
                 altText
@@ -306,6 +312,36 @@ const StreamableProductQuery = graphql(
           minPurchaseQuantity
           maxPurchaseQuantity
           warranty
+          ...ProductViewedFragment
+          ...ProductSchemaFragment
+        }
+      }
+    }
+  `,
+  [ProductViewedFragment, ProductSchemaFragment],
+);
+
+type Variables = VariablesOf<typeof StreamableProductQuery>;
+
+export const getStreamableProduct = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: StreamableProductQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
+);
+
+const StreamableProductInventoryQuery = graphql(
+  `
+    query StreamableProductInventoryQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          sku
           inventory {
             hasVariantInventory
             isInStock
@@ -320,25 +356,23 @@ const StreamableProductQuery = graphql(
           availabilityV2 {
             status
           }
-          ...ProductViewedFragment
           ...ProductVariantsInventoryFragment
-          ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment, ProductVariantsInventoryFragment],
+  [ProductVariantsInventoryFragment],
 );
 
-type Variables = VariablesOf<typeof StreamableProductQuery>;
+type ProductInventoryVariables = VariablesOf<typeof StreamableProductQuery>;
 
-export const getStreamableProduct = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+export const getStreamableProductInventory = cache(
+  async (variables: ProductInventoryVariables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: StreamableProductQuery,
+      document: StreamableProductInventoryQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 60 } },
     });
 
     return data.site.product;

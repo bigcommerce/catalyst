@@ -1,6 +1,6 @@
 'use server';
 
-import { unstable_expirePath } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -87,7 +87,7 @@ export const updateQuantity = async ({
     throw new Error(t('failedToUpdateQuantity'));
   }
 
-  unstable_expirePath('/cart');
+  revalidatePath('/cart');
 
   return cart;
 };

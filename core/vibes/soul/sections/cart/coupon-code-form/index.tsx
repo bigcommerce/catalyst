@@ -2,6 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useOptimistic } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -28,7 +29,6 @@ export interface CouponCodeFormProps {
   label?: string;
   placeholder?: string;
   removeLabel?: string;
-  requiredErrorMessage?: string;
 }
 
 export function CouponCodeForm({
@@ -39,8 +39,9 @@ export function CouponCodeForm({
   label = 'Promo code',
   placeholder,
   removeLabel,
-  requiredErrorMessage,
 }: CouponCodeFormProps) {
+  const t = useTranslations('Cart.CheckoutSummary.CouponCode');
+  const schema = couponCodeActionFormDataSchema({ required_error: t('invalidCouponCode') });
   const [state, formAction] = useActionState(action, {
     couponCodes: couponCodes ?? [],
     lastResult: null,
@@ -49,9 +50,7 @@ export function CouponCodeForm({
   const [optimisticCouponCodes, setOptimisticCouponCodes] = useOptimistic<string[], FormData>(
     state.couponCodes,
     (prevState, formData) => {
-      const submission = parseWithZod(formData, {
-        schema: couponCodeActionFormDataSchema({ required_error: requiredErrorMessage }),
-      });
+      const submission = parseWithZod(formData, { schema });
 
       if (submission.status !== 'success') return prevState;
 
@@ -73,9 +72,7 @@ export function CouponCodeForm({
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
     onValidate({ formData }) {
-      return parseWithZod(formData, {
-        schema: couponCodeActionFormDataSchema({ required_error: requiredErrorMessage }),
-      });
+      return parseWithZod(formData, { schema });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();

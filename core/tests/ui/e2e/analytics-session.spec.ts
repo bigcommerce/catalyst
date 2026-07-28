@@ -8,7 +8,7 @@ const CookieSchema = z.object({
   expires: z.number().optional(),
 });
 
-test.describe('Analytics cookies middleware', () => {
+test.describe('Analytics cookies proxy', () => {
   test('sets visitorId and visitId cookies on first visit', async ({ page, context }) => {
     await page.goto('/');
 

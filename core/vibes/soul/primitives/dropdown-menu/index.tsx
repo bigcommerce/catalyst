@@ -103,7 +103,7 @@ export const DropdownMenu = ({
               <DropdownMenuPrimitive.Item
                 asChild={asChild ?? labelIsComponent}
                 className={clsx(
-                  'data-disabled:bg-contrast-100/50 data-disabled:text-contrast-300/95 data-disabled:cursor-not-allowed cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-colors',
+                  'cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:bg-contrast-100/50 data-[disabled]:text-contrast-300/95',
                   {
                     default:
                       'text-[var(--dropdown-menu-item-text,hsl(var(--contrast-500)))] ring-[var(--dropdown-menu-item-focus,hsl(var(--primary)))] [&:not([data-disabled])]:hover:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:hover:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))] [&:not([data-disabled])]:data-[highlighted]:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:data-[highlighted]:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))]',

@@ -1,0 +1,142 @@
+name: Bundle Size
+# Reports the bundle size impact of a PR by comparing the current build against
+# a live build of the base branch (canary or integrations/makeswift).
+#
+# build-pr and build-baseline run in parallel, each uploading a JSON artifact.
+# compare downloads both artifacts, runs the comparison, and posts the PR comment.
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+  TURBO_REMOTE_CACHE_SIGNATURE_KEY: ${{ secrets.TURBO_REMOTE_CACHE_SIGNATURE_KEY }}
+  BIGCOMMERCE_STORE_HASH: ${{ vars.BIGCOMMERCE_STORE_HASH }}
+  BIGCOMMERCE_CHANNEL_ID: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
+  BIGCOMMERCE_CLIENT_ID: ${{ secrets.BIGCOMMERCE_CLIENT_ID }}
+  BIGCOMMERCE_CLIENT_SECRET: ${{ secrets.BIGCOMMERCE_CLIENT_SECRET }}
+  BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+  BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+  MAKESWIFT_SITE_API_KEY: ${{ secrets.MAKESWIFT_SITE_API_KEY }}
+
+jobs:
+  build-pr:
+    name: Build & Measure PR Bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pr/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pr/.nvmrc
+          cache: pnpm
+          cache-dependency-path: pr/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: pr
+
+      - run: pnpm build
+        working-directory: pr
+
+      - run: node .github/scripts/bundle-size.mts generate --output /tmp/bundle-current.json --sha ${{ github.sha }}
+        working-directory: pr
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-current
+          path: /tmp/bundle-current.json
+
+  build-baseline:
+    name: Build & Measure Baseline Bundle
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - name: Detect baseline branch
+        id: baseline
+        run: |
+          PKG_NAME=$(node -p "require('./pr/core/package.json').name")
+          if [ "$PKG_NAME" = "@bigcommerce/catalyst-makeswift" ]; then
+            echo "branch=integrations/makeswift" >> $GITHUB_OUTPUT
+          else
+            echo "branch=canary" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.baseline.outputs.branch }}
+          path: baseline
+
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: pr/package.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pr/.nvmrc
+          cache: pnpm
+          cache-dependency-path: baseline/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+        working-directory: baseline
+
+      - run: pnpm build
+        working-directory: baseline
+
+      - name: Generate baseline bundle size
+        run: |
+          SHA=$(git -C $GITHUB_WORKSPACE/baseline rev-parse --short HEAD)
+          node .github/scripts/bundle-size.mts generate --dir $GITHUB_WORKSPACE/baseline/core/.next --output /tmp/bundle-baseline.json --sha $SHA
+        working-directory: pr
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-baseline
+          path: /tmp/bundle-baseline.json
+
+  compare:
+    name: Compare Bundles & Post Report
+    needs: [build-pr, build-baseline]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: pr
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: pr/.nvmrc
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: bundle-*
+          path: /tmp
+          merge-multiple: true
+
+      - run: node .github/scripts/bundle-size.mts compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
+        working-directory: pr
+
+      - run: cat /tmp/bundle-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const postComment = require('./pr/.github/scripts/post-bundle-comment.js')
+            await postComment({ github, context })

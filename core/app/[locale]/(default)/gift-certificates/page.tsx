@@ -4,6 +4,8 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { GiftCertificatesSection } from '@/vibes/soul/sections/gift-certificates-section';
 import { redirect } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMakeswiftPageMetadata } from '~/lib/makeswift';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { getGiftCertificatesData } from './page-data';
 
@@ -15,9 +17,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   const t = await getTranslations({ locale, namespace: 'GiftCertificates' });
+  const makeswiftMetadata = await getMakeswiftPageMetadata({ path: '/gift-certificates', locale });
 
   return {
-    title: t('title') || 'Gift certificates',
+    title: makeswiftMetadata?.title || t('title') || 'Gift certificates',
+    ...(makeswiftMetadata?.description && { description: makeswiftMetadata.description }),
+    alternates: await getMetadataAlternates({ path: '/gift-certificates', locale }),
   };
 }
 

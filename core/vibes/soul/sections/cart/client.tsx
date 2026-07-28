@@ -4,6 +4,7 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import {
   ComponentPropsWithoutRef,
   startTransition,
@@ -35,6 +36,14 @@ import { CartEmptyState } from '.';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
+interface CartLineIteminventoryMessages {
+  outOfStockMessage?: string;
+  quantityReadyToShipMessage?: string;
+  quantityBackorderedMessage?: string;
+  quantityOutOfStockMessage?: string;
+  backorderMessage?: string;
+}
+
 export interface CartLineItem {
   typename: string;
   id: string;
@@ -45,6 +54,7 @@ export interface CartLineItem {
   price: string;
   salePrice?: string;
   href?: string;
+  inventoryMessages?: CartLineIteminventoryMessages;
 }
 
 export interface CartGiftCertificateLineItem extends CartLineItem {
@@ -461,7 +471,7 @@ export function CartClient<LineItem extends CartLineItem>({
               <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                   <span className="font-medium">{lineItem.title}</span>
-                  <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
+                  <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-400)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
                     {lineItem.subtitle}
                   </span>
                 </div>
@@ -522,6 +532,8 @@ function CounterForm({
   action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
 }) {
+  const t = useTranslations('Cart');
+
   const [form, fields] = useForm({
     defaultValue: { id: lineItem.id },
     shouldValidate: 'onBlur',
@@ -570,69 +582,110 @@ function CounterForm({
       <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
       <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
         {lineItem.salePrice && lineItem.salePrice !== lineItem.price ? (
-          <span className="font-medium @xl:ml-auto">
-            <span className="line-through">{lineItem.price}</span> {lineItem.salePrice}
+          <span className="mt-3 self-start font-medium @xl:ml-auto">
+            <span className="sr-only">{t('originalPrice', { price: lineItem.price })}</span>
+            <span aria-hidden="true" className="line-through">
+              {lineItem.price}
+            </span>{' '}
+            <span className="sr-only">{t('currentPrice', { price: lineItem.salePrice })}</span>
+            <span aria-hidden="true">{lineItem.salePrice}</span>
           </span>
         ) : (
-          <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+          <span className="mt-3 self-start font-medium @xl:ml-auto">{lineItem.price}</span>
         )}
-        {/* Counter */}
-        <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
-          <button
-            aria-label={decrementLabel}
-            className={clsx(
-              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-              lineItem.quantity === 1
-                ? 'opacity-50'
-                : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
-            )}
-            disabled={lineItem.quantity === 1}
-            name="intent"
-            type="submit"
-            value="decrement"
-          >
-            <Minus
+        <div className="flex size-min flex-col gap-y-0">
+          <div className="mb-1 mt-1 flex items-center gap-x-5">
+            {/* Counter */}
+            <div
               className={clsx(
-                'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
-                lineItem.quantity !== 1 &&
-                  'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
+                'flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]',
+                (lineItem.inventoryMessages?.outOfStockMessage != null ||
+                  lineItem.inventoryMessages?.quantityOutOfStockMessage != null) &&
+                  'border-red-500',
               )}
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
-            {lineItem.quantity}
-          </span>
-          <button
-            aria-label={incrementLabel}
-            className={clsx(
-              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-            )}
-            name="intent"
-            type="submit"
-            value="increment"
-          >
-            <Plus
-              className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
+            >
+              <button
+                aria-label={decrementLabel}
+                className={clsx(
+                  'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+                  lineItem.quantity === 1
+                    ? 'opacity-50'
+                    : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
+                )}
+                disabled={lineItem.quantity === 1}
+                name="intent"
+                type="submit"
+                value="decrement"
+              >
+                <Minus
+                  className={clsx(
+                    'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
+                    lineItem.quantity !== 1 &&
+                      'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
+                  )}
+                  size={18}
+                  strokeWidth={1.5}
+                />
+              </button>
+              <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
+                {lineItem.quantity}
+              </span>
+              <button
+                aria-label={incrementLabel}
+                className={clsx(
+                  'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+                )}
+                name="intent"
+                type="submit"
+                value="increment"
+              >
+                <Plus
+                  className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
+                  size={18}
+                  strokeWidth={1.5}
+                />
+              </button>
+            </div>
+            <button
+              aria-label={deleteLabel}
+              className="group -ml-1 mt-1.5 flex h-8 w-8 shrink-0 items-center justify-center self-start rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
+              name="intent"
+              type="submit"
+              value="delete"
+            >
+              <Trash2
+                className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
+                size={20}
+                strokeWidth={1}
+              />
+            </button>
+          </div>
+          {lineItem.inventoryMessages?.outOfStockMessage != null && (
+            <span className="text-xs/5 font-light text-red-500">
+              {lineItem.inventoryMessages.outOfStockMessage}
+            </span>
+          )}
+          {lineItem.inventoryMessages?.quantityOutOfStockMessage != null && (
+            <span className="mb-3 text-xs/5 font-light text-red-500">
+              {lineItem.inventoryMessages.quantityOutOfStockMessage}
+            </span>
+          )}
+          {lineItem.inventoryMessages?.quantityReadyToShipMessage != null && (
+            <span className="text-xs/5 font-light">
+              {lineItem.inventoryMessages.quantityReadyToShipMessage}
+            </span>
+          )}
+          {lineItem.inventoryMessages?.quantityBackorderedMessage != null && (
+            <span className="text-xs/5 font-light">
+              {lineItem.inventoryMessages.quantityBackorderedMessage}
+            </span>
+          )}
+          {lineItem.inventoryMessages?.backorderMessage != null && (
+            <span className="text-xs/5 font-light">
+              {lineItem.inventoryMessages.backorderMessage}
+            </span>
+          )}
         </div>
-        <button
-          aria-label={deleteLabel}
-          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-          name="intent"
-          type="submit"
-          value="delete"
-        >
-          <Trash2
-            className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
-            size={20}
-            strokeWidth={1}
-          />
-        </button>
       </div>
     </form>
   );

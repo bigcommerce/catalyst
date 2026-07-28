@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { Session } from 'next-auth';
 
-import { MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
-export const withB2B: MiddlewareFactory = (next) => {
+export const withB2B: ProxyFactory = (next) => {
   return (request, event) => {
     if (
       request.auth?.b2bToken &&

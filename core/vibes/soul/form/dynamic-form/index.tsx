@@ -11,6 +11,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import {
   FormEvent,
   MouseEvent,
@@ -36,17 +37,32 @@ import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
-import { Field, FieldGroup, schema } from './schema';
+import {
+  Field,
+  FieldGroup,
+  FormErrorTranslationMap,
+  PasswordComplexitySettings,
+  schema,
+} from './schema';
+import { removeOptionsFromFields } from './utils';
 
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
-
-interface State<F extends Field> {
+export interface DynamicFormActionArgs<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
+  passwordComplexity?: PasswordComplexitySettings | null;
+}
+
+type Action<F extends Field, S, P> = (
+  args: DynamicFormActionArgs<F>,
+  state: Awaited<S>,
+  payload: P,
+) => S | Promise<S>;
+
+interface State {
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
 }
 
-export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
+export type DynamicFormAction<F extends Field> = Action<F, State, FormData>;
 
 export interface DynamicFormProps<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
@@ -59,11 +75,13 @@ export interface DynamicFormProps<F extends Field> {
   onCancel?: (e: MouseEvent<HTMLButtonElement>) => void;
   onChange?: (e: FormEvent<HTMLFormElement>) => void;
   onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
+  passwordComplexity?: PasswordComplexitySettings | null;
+  errorTranslations?: FormErrorTranslationMap;
 }
 
 export function DynamicForm<F extends Field>({
   action,
-  fields: defaultFields,
+  fields,
   buttonSize = 'medium',
   cancelLabel = 'Cancel',
   submitLabel = 'Submit',
@@ -72,13 +90,21 @@ export function DynamicForm<F extends Field>({
   onCancel,
   onChange,
   onSuccess,
+  passwordComplexity,
+  errorTranslations,
 }: DynamicFormProps<F>) {
-  const [{ lastResult, fields, successMessage }, formAction] = useActionState(action, {
-    fields: defaultFields,
+  const t = useTranslations('Form');
+  // Remove options from fields before passing to action to reduce payload size
+  // Options are only needed for rendering, not for processing form submissions
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const fieldsWithoutOptions = removeOptionsFromFields(fields) as Array<F | FieldGroup<F>>;
+  const actionWithFields = action.bind(null, { fields: fieldsWithoutOptions, passwordComplexity });
+
+  const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
     lastResult: null,
   });
 
-  const dynamicSchema = schema(fields);
+  const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
     .reduce<z.infer<typeof dynamicSchema>>(
@@ -88,11 +114,33 @@ export function DynamicForm<F extends Field>({
       }),
       {},
     );
+
   const [form, formFields] = useForm({
     lastResult,
     constraint: getZodConstraint(dynamicSchema),
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: dynamicSchema });
+      return parseWithZod(formData, {
+        schema: dynamicSchema,
+        errorMap: (issue) => {
+          if (
+            !errorTranslations &&
+            issue.code === z.ZodIssueCode.invalid_string &&
+            issue.validation === 'regex'
+          ) {
+            return { message: t('Errors.invalidFormat') };
+          }
+
+          if (!errorTranslations) {
+            return { message: issue.message ?? t('Errors.invalidInput') };
+          }
+
+          const field = issue.path[0];
+          const fieldKey = typeof field === 'string' ? field : '';
+          const errorMessage = errorTranslations[fieldKey]?.[issue.code];
+
+          return { message: errorMessage ?? issue.message ?? t('Errors.invalidInput') };
+        },
+      });
     },
     defaultValue,
     shouldValidate: 'onSubmit',
@@ -269,7 +317,7 @@ function DynamicFormField({
           onBlur={controls.blur}
           onCheckedChange={(value) => controls.change(String(value))}
           onFocus={controls.focus}
-          required={formField.required}
+          required={field.required}
           value={controls.value}
         />
       );
@@ -283,6 +331,7 @@ function DynamicFormField({
           name={formField.name}
           onValueChange={controls.change}
           options={field.options}
+          required={field.required}
           value={Array.isArray(controls.value) ? controls.value : []}
         />
       );

@@ -42,6 +42,7 @@ export const RatingRadioGroup = React.forwardRef<
       onOptionMouseEnter,
       onOptionMouseLeave,
       colorScheme = 'light',
+      required,
       ...rest
     },
     ref,
@@ -74,7 +75,7 @@ export const RatingRadioGroup = React.forwardRef<
 
     return (
       <div className={clsx('rating-radio-group space-y-2', className)}>
-        <Label colorScheme={colorScheme} id={groupId}>
+        <Label colorScheme={colorScheme} id={groupId} required={required}>
           {label}
         </Label>
 
@@ -86,6 +87,7 @@ export const RatingRadioGroup = React.forwardRef<
           onMouseLeave={handleMouseLeave}
           onMouseUp={handleMouseUp}
           ref={ref}
+          required={required}
         >
           <div className="flex items-center gap-1">
             {Array.from({ length: max }, (_, i) => {
@@ -99,7 +101,7 @@ export const RatingRadioGroup = React.forwardRef<
                   <RadioGroupPrimitive.Item
                     className={clsx(
                       'peer sr-only',
-                      'data-disabled:pointer-events-none data-disabled:opacity-50 transition-colors focus-visible:outline-0 focus-visible:ring-2',
+                      'transition-colors focus-visible:outline-0 focus-visible:ring-2 data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                       {
                         light:
                           'focus-visible:ring-[var(--rating-radio-group-focus,hsl(var(--primary)))]',

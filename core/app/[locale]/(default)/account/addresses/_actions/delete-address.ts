@@ -1,6 +1,6 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag as expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -78,7 +78,7 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
       };
     }
 
-    expireTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     return {
       addresses: prevState.addresses.filter(
@@ -86,7 +86,6 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
       ),
       lastResult: submission.reply({ resetForm: true }),
       defaultAddress: prevState.defaultAddress,
-      fields: prevState.fields,
     };
   } catch (error) {
     // eslint-disable-next-line no-console

@@ -106,6 +106,5 @@ test('Checkout works as a guest shopper', async ({ page, catalog }) => {
   // Complete order
   await page.locator('button[type="submit"]').click();
   await page.waitForLoadState('networkidle');
-
-  expect(page.url()).toContain('/checkout/order-confirmation');
+  await page.waitForURL('**/checkout/order-confirmation', { timeout: 5000 });
 });

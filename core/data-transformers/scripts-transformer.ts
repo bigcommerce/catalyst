@@ -19,17 +19,54 @@ const BC_TO_C15T_CONSENT_CATEGORY_MAP = {
 
 type ScriptInfo = { textContent: string } | { src: string } | null;
 
+/**
+ * Extracts HTML attributes from a script tag's opening element.
+ * Handles both boolean attributes (async, defer) and key-value attributes (data-*, crossorigin).
+ * @param {string} scriptTag - The full script tag HTML string
+ * @returns {Record<string, string>} Record of attribute name-value pairs (boolean attrs get empty string value)
+ */
+function extractAttributes(scriptTag: string): Record<string, string> {
+  // Extract the opening tag content (everything between <script and >)
+  const openingTagMatch = /<script([^>]*)>/i.exec(scriptTag);
+  const openingTagContent = openingTagMatch?.[1];
+
+  if (!openingTagContent) {
+    return {};
+  }
+
+  // Match attributes in formats: name="value", name='value', or name (boolean)
+  const attributePattern = /([a-zA-Z][\w-]*)\s*(?:=\s*["']([^"']*)["'])?/g;
+  const matches = Array.from(openingTagContent.matchAll(attributePattern));
+
+  // Convert matches to record, filtering out 'src' which is handled separately
+  return matches.reduce<Record<string, string>>((acc, match) => {
+    const name = match[1];
+    const value = match[2];
+
+    // Skip if no name or if it's 'src' (handled separately)
+    if (name && name.toLowerCase() !== 'src') {
+      // Boolean attributes get empty string, others get their value
+      acc[name] = value ?? '';
+    }
+
+    return acc;
+  }, {});
+}
+
 // C15T's ClientSideOptionsProvider creates the <script> element at runtime. BigCommerce's API
 // returns inline scripts wrapped in <script> tags, which would result in nested <script> elements
 // and cause errors. This function extracts both inline content and src attributes to handle cases
 // where InlineScript types may contain external script references.
 function extractScriptInfo(scriptTag: string): ScriptInfo {
+  // Extract attributes first (works for both inline and src scripts)
   // Extract text content (for inline scripts)
   const scriptMatch = /<script[^>]*>([\s\S]*?)<\/script>/i.exec(scriptTag);
   const textContent = scriptMatch?.[1]?.trim();
 
   if (textContent) {
-    return { textContent };
+    return {
+      textContent,
+    };
   }
 
   // Extract src attribute (for external scripts that may be misclassified as inline)
@@ -37,7 +74,9 @@ function extractScriptInfo(scriptTag: string): ScriptInfo {
   const src = srcMatch?.[1];
 
   if (src) {
-    return { src };
+    return {
+      src,
+    };
   }
 
   return null;
@@ -76,14 +115,23 @@ export function scriptsTransformer(scripts: BigCommerceScripts): C15tScripts {
 
     if (script.__typename === 'InlineScript' && script.scriptTag) {
       const scriptInfo = extractScriptInfo(script.scriptTag);
+      const additionalAttributes = extractAttributes(script.scriptTag);
 
       // Prefer textContent if available (true inline script)
       if (scriptInfo !== null && 'textContent' in scriptInfo) {
-        return { ...baseConfig, textContent: scriptInfo.textContent, attributes };
+        return {
+          ...baseConfig,
+          textContent: scriptInfo.textContent,
+          attributes: { ...additionalAttributes, ...attributes },
+        };
       }
 
       if (scriptInfo !== null && 'src' in scriptInfo) {
-        return { ...baseConfig, src: scriptInfo.src, attributes };
+        return {
+          ...baseConfig,
+          src: scriptInfo.src,
+          attributes: { ...additionalAttributes, ...attributes },
+        };
       }
     }
 

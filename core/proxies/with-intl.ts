@@ -2,9 +2,9 @@ import createMiddleware from 'next-intl/middleware';
 
 import { routing } from '~/i18n/routing';
 
-import { type MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
-export const withIntl: MiddlewareFactory = (next) => {
+export const withIntl: ProxyFactory = (next) => {
   return async (request, event) => {
     const disableLocaleDetection = request.headers.get('x-bc-disable-locale-detection') === 'true';
 
@@ -25,7 +25,7 @@ export const withIntl: MiddlewareFactory = (next) => {
 
     request.headers.set('x-bc-locale', locale);
 
-    // Continue the middleware chain
+    // Continue the proxy chain
     const response = await next(request, event);
 
     // Copy headers from intlResponse to response, excluding 'x-middleware-rewrite'

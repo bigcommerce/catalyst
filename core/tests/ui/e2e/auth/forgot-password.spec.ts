@@ -26,6 +26,5 @@ test('Forgot password form displays error if email is not valid', async ({ page 
   await page.getByLabel('Email').fill('not-an-email');
   await page.getByRole('button', { name: 'Reset password' }).click();
 
-  // TODO: Forgot password form error message needs to be translated
-  await expect(page.getByText('Please enter a valid email.')).toBeVisible();
+  await expect(page.getByText(t('FieldErrors.emailInvalid'))).toBeVisible();
 });

@@ -1,7 +1,12 @@
 import { clsx } from 'clsx';
 
 import { DynamicForm, DynamicFormAction } from '@/vibes/soul/form/dynamic-form';
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import {
+  Field,
+  FieldGroup,
+  FormErrorTranslationMap,
+  PasswordComplexitySettings,
+} from '@/vibes/soul/form/dynamic-form/schema';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 interface Props<F extends Field> {
@@ -11,6 +16,8 @@ interface Props<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   submitLabel?: string;
   className?: string;
+  passwordComplexity?: PasswordComplexitySettings | null;
+  errorTranslations?: FormErrorTranslationMap;
 }
 
 export function DynamicFormSection<F extends Field>({
@@ -20,6 +27,8 @@ export function DynamicFormSection<F extends Field>({
   fields,
   submitLabel,
   action,
+  passwordComplexity,
+  errorTranslations,
 }: Props<F>) {
   return (
     <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)} containerSize="lg">
@@ -33,7 +42,13 @@ export function DynamicFormSection<F extends Field>({
           )}
         </header>
       )}
-      <DynamicForm action={action} fields={fields} submitLabel={submitLabel} />
+      <DynamicForm
+        action={action}
+        errorTranslations={errorTranslations}
+        fields={fields}
+        passwordComplexity={passwordComplexity}
+        submitLabel={submitLabel}
+      />
     </SectionLayout>
   );
 }

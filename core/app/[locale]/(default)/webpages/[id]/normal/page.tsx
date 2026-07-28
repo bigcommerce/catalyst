@@ -9,6 +9,8 @@ import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { getMakeswiftPageMetadata } from '~/lib/makeswift';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { WebPageContent, WebPage as WebPageData } from '../_components/web-page';
 
@@ -30,6 +32,7 @@ const getWebPage = cache(async (id: string): Promise<WebPageData> => {
 
   return {
     title: webpage.name,
+    path: webpage.path,
     breadcrumbs,
     content: webpage.htmlBody,
     seo: webpage.seo,
@@ -57,14 +60,21 @@ async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const webpage = await getWebPage(id);
+  const makeswiftMetadata = await getMakeswiftPageMetadata({ path: webpage.path, locale });
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
+  // Get the path from the last breadcrumb
+  const pagePath = webpage.breadcrumbs[webpage.breadcrumbs.length - 1]?.href;
+
   return {
-    title: pageTitle || webpage.title,
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    title: makeswiftMetadata?.title || pageTitle || webpage.title,
+    ...((makeswiftMetadata?.description || metaDescription) && {
+      description: makeswiftMetadata?.description || metaDescription,
+    }),
+    ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+    ...(pagePath && { alternates: await getMetadataAlternates({ path: pagePath, locale }) }),
   };
 }
 

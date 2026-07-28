@@ -14,7 +14,9 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { Slot } from '~/lib/makeswift/slot';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
@@ -70,7 +72,7 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+  const { slug, locale } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const categoryId = Number(slug);
@@ -81,12 +83,22 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     return notFound();
   }
 
+  const makeswiftMetadata = await getMakeswiftPageMetadata({ path: category.path, locale });
+
   const { pageTitle, metaDescription, metaKeywords } = category.seo;
 
+  const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs);
+  const categoryPath = breadcrumbs[breadcrumbs.length - 1]?.path;
+
   return {
-    title: pageTitle || category.name,
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
+    title: makeswiftMetadata?.title || pageTitle || category.name,
+    ...((makeswiftMetadata?.description || metaDescription) && {
+      description: makeswiftMetadata?.description || metaDescription,
+    }),
+    ...(metaKeywords && { keywords: metaKeywords.split(',') }),
+    ...(categoryPath && {
+      alternates: await getMetadataAlternates({ path: categoryPath, locale }),
+    }),
   };
 }
 

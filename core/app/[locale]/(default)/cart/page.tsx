@@ -6,6 +6,7 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { Slot } from '~/lib/makeswift/slot';
 import { exists } from '~/lib/utils';
 
@@ -27,9 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   const t = await getTranslations({ locale, namespace: 'Cart' });
+  const makeswiftMetadata = await getMakeswiftPageMetadata({ path: '/cart', locale });
 
   return {
-    title: t('title'),
+    title: makeswiftMetadata?.title || t('title'),
+    description: makeswiftMetadata?.description || undefined,
   };
 }
 
@@ -42,7 +45,9 @@ const getAnalyticsData = async (cartId: string) => {
     return [];
   }
 
-  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].filter(
+    (item) => !item.parentEntityId, // Only include top-level items
+  );
 
   return lineItems.map((item) => {
     return {
@@ -65,6 +70,7 @@ export default async function Cart({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Cart');
+  const tGiftCertificates = await getTranslations('GiftCertificates');
   const format = await getFormatter();
   const cartId = await getCartId();
 
@@ -99,7 +105,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.giftCertificates,
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
-  ];
+  ].filter((item) => !('parentEntityId' in item) || !item.parentEntityId);
 
   const formattedLineItems = lineItems.map((item) => {
     if (item.__typename === 'CartGiftCertificate') {
@@ -121,6 +127,47 @@ export default async function Cart({ params }: Props) {
         productEntityId: 0,
         variantEntityId: 0,
       };
+    }
+
+    let inventoryMessages;
+
+    if (item.__typename === 'CartPhysicalItem') {
+      if (item.stockPosition?.quantityOutOfStock === item.quantity) {
+        inventoryMessages = {
+          outOfStockMessage: data.site.settings?.inventory?.showOutOfStockMessage
+            ? data.site.settings.inventory.defaultOutOfStockMessage
+            : undefined,
+        };
+      } else {
+        inventoryMessages = {
+          quantityReadyToShipMessage:
+            data.site.settings?.inventory?.showQuantityOnHand &&
+            !!item.stockPosition?.quantityOnHand
+              ? t('quantityReadyToShip', {
+                  quantity: Number(item.stockPosition.quantityOnHand),
+                })
+              : undefined,
+          quantityBackorderedMessage:
+            data.site.settings?.inventory?.showQuantityOnBackorder &&
+            !!item.stockPosition?.quantityBackordered
+              ? t('quantityOnBackorder', {
+                  quantity: Number(item.stockPosition.quantityBackordered),
+                })
+              : undefined,
+          quantityOutOfStockMessage:
+            data.site.settings?.inventory?.showOutOfStockMessage &&
+            !!item.stockPosition?.quantityOutOfStock
+              ? t('partiallyAvailable', {
+                  quantity: item.quantity - Number(item.stockPosition.quantityOutOfStock),
+                })
+              : undefined,
+          backorderMessage:
+            data.site.settings?.inventory?.showBackorderMessage &&
+            !!item.stockPosition?.quantityBackordered
+              ? (item.stockPosition.backorderMessage ?? undefined)
+              : undefined,
+        };
+      }
     }
 
     return {
@@ -163,6 +210,7 @@ export default async function Cart({ params }: Props) {
       selectedOptions: item.selectedOptions,
       productEntityId: item.productEntityId,
       variantEntityId: item.variantEntityId,
+      inventoryMessages,
     };
   });
 
@@ -190,12 +238,23 @@ export default async function Cart({ params }: Props) {
     label: country.name,
   }));
 
+  // These US states share the same abbreviation (AE), which causes issues:
+  // 1. The shipping API uses abbreviations, so it can't distinguish between them
+  // 2. React select dropdowns require unique keys, causing duplicate key warnings
+  const blacklistedUSStates = new Set([
+    'Armed Forces Africa',
+    'Armed Forces Canada',
+    'Armed Forces Middle East',
+  ]);
+
   const statesOrProvinces = shippingCountries.map((country) => ({
     country: country.code,
-    states: country.statesOrProvinces.map((state) => ({
-      value: state.entityId.toString(),
-      label: state.name,
-    })),
+    states: country.statesOrProvinces
+      .filter((state) => country.code !== 'US' || !blacklistedUSStates.has(state.name))
+      .map((state) => ({
+        value: state.abbreviation,
+        label: state.name,
+      })),
   }));
 
   const showShippingForm =
@@ -282,6 +341,7 @@ export default async function Cart({ params }: Props) {
                   giftCertificateCodes: checkout?.giftCertificates.map((gc) => gc.code) ?? [],
                   ctaLabel: t('GiftCertificate.apply'),
                   label: t('GiftCertificate.giftCertificateCode'),
+                  placeholder: tGiftCertificates('CheckBalance.inputPlaceholder'),
                   removeLabel: t('GiftCertificate.removeGiftCertificate'),
                 }
               : undefined

@@ -21,6 +21,7 @@ interface Props {
   value: string[];
   onValueChange: (value: string[]) => void;
   colorScheme?: 'light' | 'dark';
+  required?: boolean;
 }
 
 export function CheckboxGroup({
@@ -32,13 +33,14 @@ export function CheckboxGroup({
   value,
   onValueChange,
   colorScheme,
+  required,
 }: Props) {
   const id = React.useId();
 
   return (
     <div className={clsx('space-y-2', className)}>
       {label !== undefined && label !== '' && (
-        <Label colorScheme={colorScheme} id={id}>
+        <Label colorScheme={colorScheme} id={id} required={required}>
           {label}
         </Label>
       )}

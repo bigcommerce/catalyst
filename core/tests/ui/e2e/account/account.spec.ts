@@ -2,6 +2,7 @@ import { defaultLocale } from '~/i18n/locales';
 import { testEnv } from '~/tests/environment';
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
+import { TAGS } from '~/tests/tags';
 
 const accountUrls = [
   '/account/orders',
@@ -18,14 +19,16 @@ accountUrls.forEach((url) => {
 });
 
 accountUrls.forEach((url) => {
-  test(`${url} is restricted for guest users when explicitly browsing to the locale URL`, async ({
-    page,
-  }) => {
-    test.skip(testEnv.TESTS_LOCALE === defaultLocale);
+  test(
+    `${url} is restricted for guest users when explicitly browsing to the locale URL`,
+    { tag: TAGS.alternateLocale },
+    async ({ page }) => {
+      test.skip(testEnv.TESTS_LOCALE === defaultLocale);
 
-    await page.goto(`/${testEnv.TESTS_LOCALE}/${url}`);
-    await expect(page).toHaveURL('/login/', { timeout: 1000 });
-  });
+      await page.goto(`/${testEnv.TESTS_LOCALE}/${url}`);
+      await expect(page).toHaveURL('/login/', { timeout: 1000 });
+    },
+  );
 });
 
 test('Account page displays the menu items for each section', async ({ page, customer }) => {

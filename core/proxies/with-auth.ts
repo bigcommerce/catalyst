@@ -2,7 +2,7 @@ import { NextResponse, URLPattern } from 'next/server';
 
 import { anonymousSignIn, auth, clearAnonymousSession, getAnonymousSession } from '~/auth';
 
-import { type MiddlewareFactory } from './compose-middlewares';
+import { type ProxyFactory } from './compose-proxies';
 
 // Path matcher for any routes that require authentication
 const protectedPathPattern = new URLPattern({ pathname: `{/:locale}?/(account)/*` });
@@ -11,7 +11,7 @@ function redirectToLogin(url: string) {
   return NextResponse.redirect(new URL('/login', url), { status: 302 });
 }
 
-export const withAuth: MiddlewareFactory = (next) => {
+export const withAuth: ProxyFactory = (next) => {
   return async (request, event) => {
     return auth(async (req) => {
       const anonymousSession = await getAnonymousSession();
@@ -42,7 +42,7 @@ export const withAuth: MiddlewareFactory = (next) => {
         return redirectToLogin(req.url);
       }
 
-      // Continue the middleware chain
+      // Continue the proxy chain
       return next(req, event);
     })(request, event);
   };

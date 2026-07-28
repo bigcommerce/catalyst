@@ -11,21 +11,24 @@ export interface State {
   addresses: Address[];
   lastResult: SubmissionResult | null;
   defaultAddress?: DefaultAddressConfiguration;
-  fields: Array<Field | FieldGroup<Field>>;
 }
 
-export async function addressAction(prevState: Awaited<State>, formData: FormData): Promise<State> {
+export async function addressAction(
+  fields: Array<Field | FieldGroup<Field>>,
+  prevState: Awaited<State>,
+  formData: FormData,
+): Promise<State> {
   'use server';
 
   const intent = formData.get('intent');
 
   switch (intent) {
     case 'create': {
-      return await createAddress(prevState, formData);
+      return await createAddress(fields, prevState, formData);
     }
 
     case 'update': {
-      return await updateAddress(prevState, formData);
+      return await updateAddress(fields, prevState, formData);
     }
 
     case 'delete': {

@@ -25,7 +25,13 @@ describe('CLI program', () => {
     expect(commands).toContain('start');
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
-    expect(commands).toContain('link');
+    expect(commands).toContain('project');
+
+    const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
+
+    expect(projectCmd?.commands.map((c) => c.name())).toEqual(
+      expect.arrayContaining(['create', 'list', 'link']),
+    );
   });
 
   test('telemetry hooks are called when executing version command', async () => {

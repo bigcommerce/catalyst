@@ -32,3 +32,22 @@ export const getComponentSnapshot = async (snapshotId: string) => {
 function normalizeLocale(locale: string): string | undefined {
   return locale === defaultLocale ? undefined : locale;
 }
+
+export async function getMakeswiftPageMetadata({ path, locale }: { path: string; locale: string }) {
+  const { data: pages } = await client.getPages({
+    pathPrefix: path,
+    locale: normalizeLocale(locale),
+    siteVersion: await getSiteVersion(),
+  });
+
+  if (pages.length === 0 || !pages[0]) {
+    return null;
+  }
+
+  const { title, description } = pages[0];
+
+  return {
+    ...(title && { title }),
+    ...(description && { description }),
+  };
+}

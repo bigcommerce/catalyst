@@ -35,6 +35,7 @@ const ReviewsQuery = graphql(
         product(entityId: $entityId) {
           reviewSummary {
             averageRating
+            numberOfReviews
           }
           reviews(first: $first, after: $after, before: $before, last: $last) {
             pageInfo {
@@ -76,7 +77,10 @@ const getReviews = cache(async (productId: number, paginationArgs: object) => {
 interface Props {
   productId: number;
   searchParams: Promise<SearchParams>;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   streamableProduct: Streamable<Awaited<ReturnType<typeof getStreamableProduct>>>;
 }
 
@@ -161,6 +165,12 @@ export const Reviews = async ({
     return { email: session?.user?.email ?? '', name: obfuscatedName };
   });
 
+  const streamableTotalCount = Streamable.from(async () => {
+    const product = await streamableReviewsData;
+
+    return product?.reviewSummary.numberOfReviews ?? 0;
+  });
+
   return (
     <>
       <ReviewsSection
@@ -184,6 +194,7 @@ export const Reviews = async ({
         streamableImages={streamableImages}
         streamableProduct={streamableProductName}
         streamableUser={streamableUser}
+        totalCount={streamableTotalCount}
       />
       <Stream fallback={null} value={streamableReviewsData}>
         {(product) =>

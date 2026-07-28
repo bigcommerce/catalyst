@@ -1,6 +1,6 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag as expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -209,7 +209,11 @@ function parseUpdateAddressInput(
   return inputSchema.parse(mappedInput);
 }
 
-export async function updateAddress(prevState: Awaited<State>, formData: FormData): Promise<State> {
+export async function updateAddress(
+  fields: Array<Field | FieldGroup<Field>>,
+  prevState: Awaited<State>,
+  formData: FormData,
+): Promise<State> {
   const t = await getTranslations('Account.Addresses');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -223,7 +227,7 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
   }
 
   try {
-    const input = parseUpdateAddressInput(submission.value, prevState.fields);
+    const input = parseUpdateAddressInput(submission.value, fields);
 
     const response = await client.fetch({
       document: UpdateCustomerAddressMutation,
@@ -243,7 +247,7 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
       };
     }
 
-    expireTag(TAGS.customer);
+    revalidateTag(TAGS.customer, { expire: 0 });
 
     return {
       addresses: prevState.addresses.map((address) =>
@@ -251,7 +255,6 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
       ),
       lastResult: submission.reply({ resetForm: true }),
       defaultAddress: prevState.defaultAddress,
-      fields: prevState.fields,
     };
   } catch (error) {
     // eslint-disable-next-line no-console

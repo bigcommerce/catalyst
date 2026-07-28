@@ -23,7 +23,7 @@ export const updateShippingInfo = async (
   const t = await getTranslations('Cart.CheckoutSummary.Shipping');
 
   const submission = parseWithZod(formData, {
-    schema: shippingActionFormDataSchema,
+    schema: shippingActionFormDataSchema({ required_error: t('countryRequired') }),
   });
 
   const cartId = await getCartId();

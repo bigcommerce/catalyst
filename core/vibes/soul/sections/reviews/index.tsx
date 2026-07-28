@@ -17,7 +17,7 @@ interface Review {
 interface Props {
   reviews: Streamable<Review[]>;
   averageRating: Streamable<number>;
-  totalCount?: Streamable<string>;
+  totalCount?: Streamable<number>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   nextLabel?: Streamable<string>;
   previousLabel?: Streamable<string>;
@@ -28,12 +28,16 @@ interface Props {
   formButtonLabel?: string;
   formModalTitle?: string;
   formSubmitLabel?: string;
+  formCancelLabel?: string;
   formRatingLabel?: string;
   formTitleLabel?: string;
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
 }
@@ -52,6 +56,7 @@ export function Reviews({
   formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
+  formCancelLabel,
   formRatingLabel,
   formTitleLabel,
   formReviewLabel,
@@ -69,6 +74,7 @@ export function Reviews({
             <ReviewsEmptyState
               action={action}
               formButtonLabel={formButtonLabel}
+              formCancelLabel={formCancelLabel}
               formEmailLabel={formEmailLabel}
               formModalTitle={formModalTitle}
               formNameLabel={formNameLabel}
@@ -117,7 +123,7 @@ export function Reviews({
                   {(averageRating) => (
                     <>
                       <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
-                        {averageRating}
+                        {parseFloat(averageRating.toFixed(1))}
                       </div>
                       <Rating rating={averageRating} showRating={false} />
                     </>
@@ -186,6 +192,7 @@ export function ReviewsEmptyState({
   formButtonLabel = 'Write a review',
   formModalTitle,
   formSubmitLabel,
+  formCancelLabel,
   formRatingLabel,
   formTitleLabel,
   formReviewLabel,
@@ -202,12 +209,16 @@ export function ReviewsEmptyState({
   formButtonLabel?: string;
   formModalTitle?: string;
   formSubmitLabel?: string;
+  formCancelLabel?: string;
   formRatingLabel?: string;
   formTitleLabel?: string;
   formReviewLabel?: string;
   formNameLabel?: string;
   formEmailLabel?: string;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
+  streamableImages: Streamable<{
+    images: Array<{ src: string; alt: string }>;
+    pageInfo?: { hasNextPage: boolean; endCursor: string | null };
+  }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
 }) {
@@ -221,7 +232,7 @@ export function ReviewsEmptyState({
           <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
             0
           </div>
-          <Rating rating={0} />
+          <Rating rating={0} showRating={false} />
         </>
       }
       sidebarSize="medium"
@@ -230,6 +241,7 @@ export function ReviewsEmptyState({
         <p className="text-center">{message}</p>
         <ReviewForm
           action={action}
+          formCancelLabel={formCancelLabel}
           formEmailLabel={formEmailLabel}
           formModalTitle={formModalTitle}
           formNameLabel={formNameLabel}

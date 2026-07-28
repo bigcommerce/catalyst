@@ -12,6 +12,7 @@ const NormalPageQuery = graphql(
         ... on NormalPage {
           __typename
           name
+          path
           ...BreadcrumbsFragment
           htmlBody
           entityId

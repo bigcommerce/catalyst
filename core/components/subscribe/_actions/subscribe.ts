@@ -35,8 +35,11 @@ export const subscribe = async (
   formData: FormData,
 ) => {
   const t = await getTranslations('Components.Subscribe');
-
-  const submission = parseWithZod(formData, { schema });
+  const subscribeSchema = schema({
+    requiredMessage: t('Errors.emailRequired'),
+    invalidMessage: t('Errors.invalidEmail'),
+  });
+  const submission = parseWithZod(formData, { schema: subscribeSchema });
 
   if (submission.status !== 'success') {
     return { lastResult: submission.reply() };

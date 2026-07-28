@@ -14,5 +14,5 @@ export async function Page({ path, locale }: { path: string; locale: string }) {
     return notFound();
   }
 
-  return <MakeswiftPageShim snapshot={snapshot} />;
+  return <MakeswiftPageShim metadata={false} snapshot={snapshot} />;
 }

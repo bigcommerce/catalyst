@@ -37,7 +37,6 @@ test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page
   await page.getByRole('combobox', { name: 'Country' }).click();
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
-  await page.getByRole('radio', { name: 'Home' }).click();
   await page.getByRole('button', { name: t('Auth.Register.cta') }).click();
 
   await expect(page).toHaveURL('/account/orders/');
@@ -84,7 +83,6 @@ test('Registration fails if email is already in use', async ({ page, customer })
   await page.getByRole('combobox', { name: 'Country' }).click();
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
-  await page.getByRole('radio', { name: 'Home' }).click();
   await page.getByRole('button', { name: t('cta') }).click();
 
   await expect(page).not.toHaveURL('/account/orders/');

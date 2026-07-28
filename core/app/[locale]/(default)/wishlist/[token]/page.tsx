@@ -19,6 +19,7 @@ import {
 } from '~/components/wishlist/share-button';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { publicWishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
+import { getMetadataAlternates } from '~/lib/seo/canonical';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { getPublicWishlist } from './page-data';
@@ -73,6 +74,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 
   return {
     title: wishlist?.name ?? t('title'),
+    alternates: await getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
   };
 }
 

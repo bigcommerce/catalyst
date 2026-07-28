@@ -58,13 +58,13 @@ function Carousel({
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
 
-    setCanScrollPrev(api.canScrollPrev());
-    setCanScrollNext(api.canScrollNext());
+    setCanScrollPrev(api.canGoToPrev());
+    setCanScrollNext(api.canGoToNext());
   }, []);
 
-  const scrollPrev = useCallback(() => api?.scrollPrev(), [api]);
+  const scrollPrev = useCallback(() => api?.goToPrev(), [api]);
 
-  const scrollNext = useCallback(() => api?.scrollNext(), [api]);
+  const scrollNext = useCallback(() => api?.goToNext(), [api]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -89,7 +89,7 @@ function Carousel({
     if (!api) return;
 
     onSelect(api);
-    api.on('reInit', onSelect);
+    api.on('reinit', onSelect);
     api.on('select', onSelect);
 
     return () => {
@@ -225,7 +225,7 @@ function CarouselScrollbar({
       if (!api) return 0;
 
       const point = nextProgress / 100;
-      const snapList = api.scrollSnapList();
+      const snapList = api.snapList();
 
       if (snapList.length === 0) return -1;
 
@@ -241,14 +241,14 @@ function CarouselScrollbar({
   useEffect(() => {
     if (!api) return;
 
-    const snapList = api.scrollSnapList();
+    const snapList = api.snapList();
     const closestSnapIndex = findClosestSnap(progress);
     const scrollbarWidth = 100 / snapList.length;
     const scrollbarLeft = (closestSnapIndex / snapList.length) * 100;
 
     setScrollbarPosition({ width: scrollbarWidth, left: scrollbarLeft });
 
-    api.scrollTo(closestSnapIndex);
+    api.goTo(closestSnapIndex);
   }, [progress, api, findClosestSnap]);
 
   useEffect(() => {
@@ -258,17 +258,17 @@ function CarouselScrollbar({
       if (!api) return;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setProgress(api.scrollSnapList()[api.selectedScrollSnap()]! * 100);
+      setProgress(api.snapList()[api.selectedSnap()]! * 100);
     }
 
     api.on('select', onScroll);
     api.on('scroll', onScroll);
-    api.on('reInit', onScroll);
+    api.on('reinit', onScroll);
 
     return () => {
       api.off('select', onScroll);
       api.off('scroll', onScroll);
-      api.off('reInit', onScroll);
+      api.off('reinit', onScroll);
     };
   }, [api]);
 
