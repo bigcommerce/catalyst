@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.4.0` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/f9844766e36d4734fb3b11175766e84bca6ffc99/core/CHANGELOG.md#140).
+
 ## 1.3.0
 
 ### Minor Changes
