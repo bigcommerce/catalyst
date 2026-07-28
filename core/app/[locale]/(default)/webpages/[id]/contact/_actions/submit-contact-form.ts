@@ -25,8 +25,8 @@ const inputSchema = z.object({
 });
 
 const SubmitContactUsMutation = graphql(`
-  mutation SubmitContactUsMutation($input: SubmitContactUsInput!, $reCaptchaV2: ReCaptchaV2Input) {
-    submitContactUs(input: $input, reCaptchaV2: $reCaptchaV2) {
+  mutation SubmitContactUsMutation($input: SubmitContactUsInput!) {
+    submitContactUs(input: $input) {
       __typename
       errors {
         __typename
@@ -79,7 +79,6 @@ export async function submitContactForm<F extends Field>(
       document: SubmitContactUsMutation,
       variables: {
         input,
-        // ...(recaptchaToken && { reCaptchaV2: { token: recaptchaToken } }),
       },
       fetchOptions: { cache: 'no-store' },
     });

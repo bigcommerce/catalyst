@@ -3,7 +3,7 @@
 import { headers } from 'next/headers';
 import { userAgent } from 'next/server';
 
-export async function getUserAgent() {
+async function getUserAgent() {
   return userAgent({ headers: await headers() });
 }
 

@@ -29,7 +29,7 @@ export type CartSelectedOptionsInput = ReturnType<
 type Variables = VariablesOf<typeof UpdateCartLineItemMutation>;
 type UpdateCartLineItemInput = Variables['input'];
 
-export interface UpdateProductQuantityParams extends CartLineItemInput {
+interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];
 }
 

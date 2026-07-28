@@ -27,10 +27,6 @@ interface ContactPage extends WebPage {
   entityId: number;
   path: string;
   contactFields: string[];
-  reCaptchaSettings: {
-    isEnabledOnStorefront: boolean;
-    siteKey: string;
-  } | null;
 }
 
 const fieldMapping = {
@@ -45,7 +41,6 @@ type ContactField = keyof typeof fieldMapping;
 
 const getWebPage = cache(async (id: string): Promise<ContactPage> => {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
-  const reCaptchaSettings = data.site.settings?.reCaptcha ?? null;
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 
   if (!webpage) {
@@ -62,7 +57,6 @@ const getWebPage = cache(async (id: string): Promise<ContactPage> => {
     content: webpage.htmlBody,
     contactFields: webpage.contactFields,
     seo: webpage.seo,
-    reCaptchaSettings,
   };
 });
 
@@ -177,9 +171,6 @@ export default async function ContactPage({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('WebPages.ContactUs.Form');
-
-  // TODO: Use reCaptcha
-  // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   if (success === 'true') {
     return (

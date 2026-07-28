@@ -9,12 +9,33 @@ import { graphql } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { getCartId } from '~/lib/cart';
+import { getConsentCookie } from '~/lib/consent-manager/cookies/server';
 
 const CheckoutRedirectMutation = graphql(`
-  mutation CheckoutRedirectMutation($cartId: String!, $visitId: UUID, $visitorId: UUID) {
+  mutation CheckoutRedirectMutation(
+    $cartId: String!
+    $visitId: String!
+    $visitorId: String!
+    $referer: URL!
+    $userAgent: String!
+    $analyticsConsent: Boolean!
+    $functionalConsent: Boolean!
+    $targetingConsent: Boolean!
+  ) {
     cart {
       createCartRedirectUrls(
-        input: { cartEntityId: $cartId, visitId: $visitId, visitorId: $visitorId }
+        input: {
+          cartEntityId: $cartId
+          analytics: {
+            initiator: { visitId: $visitId, visitorId: $visitorId }
+            request: { url: $referer, userAgent: $userAgent }
+            consent: {
+              analytics: $analyticsConsent
+              functional: $functionalConsent
+              targeting: $targetingConsent
+            }
+          }
+        }
       ) {
         errors {
           ... on NotFoundError {
@@ -41,11 +62,21 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
 
   const visitId = await getVisitIdCookie();
   const visitorId = await getVisitorIdCookie();
+  const consent = await getConsentCookie();
 
   try {
     const { data } = await client.fetch({
       document: CheckoutRedirectMutation,
-      variables: { cartId, visitId, visitorId },
+      variables: {
+        cartId,
+        visitId: visitId ?? '',
+        visitorId: visitorId ?? '',
+        analyticsConsent: consent?.preferences.measurement ?? false,
+        functionalConsent: consent?.preferences.functionality ?? false,
+        targetingConsent: consent?.preferences.marketing ?? false,
+        referer: req.headers.get('referer') ?? '',
+        userAgent: req.headers.get('user-agent') ?? '',
+      },
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
       channelId,

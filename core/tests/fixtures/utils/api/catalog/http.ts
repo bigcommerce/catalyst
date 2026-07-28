@@ -95,6 +95,7 @@ const ProductSchema = z
       price: data.price,
       retailPrice: data.retail_price,
       salePrice: data.sale_price,
+      customUrl: data.custom_url,
       path: data.custom_url.url,
       variants: data.variants,
       categories: data.categories,
@@ -104,12 +105,19 @@ const ProductSchema = z
     }),
   );
 
+const ProductCreateCustomUrlSchema = z.object({
+  url: z.string(),
+  is_customized: z.boolean().optional(),
+  create_redirect: z.boolean().optional(),
+});
+
 const ProductCreateSchema = z.object({
   name: z.string(),
   weight: z.number(),
   price: z.number(),
   sale_price: z.number().optional(),
   retail_price: z.number().optional(),
+  custom_url: ProductCreateCustomUrlSchema.optional(),
   sku: z.string().optional(),
   type: z.enum(['physical', 'digital']).optional(),
   description: z.string().optional(),
@@ -171,6 +179,18 @@ const transformCreateVariantData = (data: CreateVariantData) =>
     inventory_warning_level: data.inventoryWarningLevel,
   });
 
+const transformCreateProductCustomUrl = (data: CreateProductData['customUrl']) => {
+  if (!data) {
+    return undefined;
+  }
+
+  return ProductCreateCustomUrlSchema.parse({
+    url: data.url,
+    is_customized: data.isCustomized,
+    create_redirect: data.createRedirect,
+  });
+};
+
 const transformCreateProductData = (data: CreateProductData) =>
   ProductCreateSchema.parse({
     name: data.name,
@@ -179,6 +199,7 @@ const transformCreateProductData = (data: CreateProductData) =>
     sku: data.sku,
     type: data.type,
     description: data.description,
+    custom_url: transformCreateProductCustomUrl(data.customUrl),
     is_visible: data.isVisible ?? true,
     variants: data.variants?.map(transformCreateVariantData),
     categories: data.categories,

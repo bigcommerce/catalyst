@@ -31,7 +31,7 @@ export function CompareAnalyticsProvider(
   );
 }
 
-export function CompareAnalyticsProviderResolved({
+function CompareAnalyticsProviderResolved({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>) {

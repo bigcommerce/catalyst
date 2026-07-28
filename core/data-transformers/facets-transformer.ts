@@ -40,7 +40,9 @@ export const facetsTransformer = async ({
           const isSelected = filters.categoryEntityIds?.includes(category.entityId) === true;
 
           return {
-            label: category.name,
+            label: facet.displayProductCount
+              ? `${category.name} (${category.productCount})`
+              : category.name,
             value: category.entityId.toString(),
             disabled: refinedCategory == null && !isSelected,
           };
@@ -64,7 +66,7 @@ export const facetsTransformer = async ({
           const isSelected = filters.brandEntityIds?.includes(brand.entityId) === true;
 
           return {
-            label: brand.name,
+            label: facet.displayProductCount ? `${brand.name} (${brand.productCount})` : brand.name,
             value: brand.entityId.toString(),
             disabled: refinedBrand == null && !isSelected,
           };
@@ -80,6 +82,7 @@ export const facetsTransformer = async ({
         type: 'toggle-group' as const,
         paramName: `attr_${facet.filterName}`,
         label: facet.filterName,
+        defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.attributes.map((attribute) => {
           const refinedAttribute = refinedProductAttributeSearchFilter?.attributes.find(
             (a) => a.value === attribute.value,
@@ -90,7 +93,9 @@ export const facetsTransformer = async ({
             true;
 
           return {
-            label: attribute.value,
+            label: facet.displayProductCount
+              ? `${attribute.value} (${attribute.productCount})`
+              : attribute.value,
             value: attribute.value,
             disabled: refinedAttribute == null && !isSelected,
           };
@@ -108,6 +113,7 @@ export const facetsTransformer = async ({
         paramName: 'minRating',
         label: facet.name,
         disabled: refinedRatingSearchFilter == null && !isSelected,
+        defaultCollapsed: facet.isCollapsedByDefault,
       };
     }
 
@@ -124,6 +130,7 @@ export const facetsTransformer = async ({
         min: facet.selected?.minPrice ?? undefined,
         max: facet.selected?.maxPrice ?? undefined,
         disabled: refinedPriceSearchFilter == null && !isSelected,
+        defaultCollapsed: facet.isCollapsedByDefault,
       };
     }
 
@@ -138,6 +145,7 @@ export const facetsTransformer = async ({
         type: 'toggle-group' as const,
         paramName: `shipping`,
         label: t('freeShippingLabel'),
+        defaultCollapsed: facet.isCollapsedByDefault,
         options: [
           {
             label: t('freeShippingLabel'),
@@ -159,6 +167,7 @@ export const facetsTransformer = async ({
         type: 'toggle-group' as const,
         paramName: `isFeatured`,
         label: t('isFeaturedLabel'),
+        defaultCollapsed: facet.isCollapsedByDefault,
         options: [
           {
             label: t('isFeaturedLabel'),
@@ -180,6 +189,7 @@ export const facetsTransformer = async ({
         type: 'toggle-group' as const,
         paramName: `stock`,
         label: t('inStockLabel'),
+        defaultCollapsed: facet.isCollapsedByDefault,
         options: [
           {
             label: t('inStockLabel'),

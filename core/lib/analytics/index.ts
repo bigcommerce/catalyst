@@ -7,6 +7,7 @@ export class Analytics implements IAnalytics {
 
   readonly cart = this.bindCartEvents();
   readonly navigation = this.bindNavigationEvents();
+  readonly consent = this.bindConsentEvents();
 
   constructor(private readonly config: AnalyticsConfig) {
     if (!Analytics.#instance) {
@@ -70,5 +71,18 @@ export class Analytics implements IAnalytics {
         });
       },
     } satisfies Analytics.Navigation.Events;
+  }
+
+  private bindConsentEvents() {
+    return {
+      consentUpdated: (payload) => {
+        this.config.providers.forEach((provider) => {
+          provider.consent.consentUpdated(payload, {
+            channelId: this.config.channelId,
+            eventUuid: uuidV4(),
+          });
+        });
+      },
+    } satisfies Analytics.Consent.Events;
   }
 }

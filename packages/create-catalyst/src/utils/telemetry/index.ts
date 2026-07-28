@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import { colorize } from 'consola/utils';
 
 import { Telemetry } from './telemetry';
 
@@ -31,7 +31,7 @@ const catalystTelemetry = (options: CatalystTelemetryOptions, arg: string | unde
   }
 
   console.log(
-    `\nStatus: ${chalk.bold(isEnabled ? chalk.green('Enabled') : chalk.red('Disabled'))}`,
+    `\nStatus: ${colorize('bold', isEnabled ? colorize('green', 'Enabled') : colorize('red', 'Disabled'))}`,
   );
 
   if (!isEnabled) {

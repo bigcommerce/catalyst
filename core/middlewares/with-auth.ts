@@ -13,8 +13,7 @@ function redirectToLogin(url: string) {
 
 export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
-    const authWithCallback = auth(async (req) => {
+    return auth(async (req) => {
       const anonymousSession = await getAnonymousSession();
       const isProtectedRoute = protectedPathPattern.test(req.nextUrl.toString().toLowerCase());
       const isGetRequest = req.method === 'GET';
@@ -45,9 +44,6 @@ export const withAuth: MiddlewareFactory = (next) => {
 
       // Continue the middleware chain
       return next(req, event);
-    });
-
-    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
-    return authWithCallback(request, event);
+    })(request, event);
   };
 };

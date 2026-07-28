@@ -54,13 +54,20 @@ export const getAnonymousSession = async () => {
     throw new Error('AUTH_SECRET is not set');
   }
 
-  const session = await decode({
-    secret,
-    salt: `${cookiePrefix}${anonymousCookieName}`,
-    token: jwt.value,
-  });
+  try {
+    const session = await decode({
+      secret,
+      salt: `${cookiePrefix}${anonymousCookieName}`,
+      token: jwt.value,
+    });
 
-  return session;
+    return session;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to decode anonymous session cookie', err);
+
+    return null;
+  }
 };
 
 export const clearAnonymousSession = async () => {

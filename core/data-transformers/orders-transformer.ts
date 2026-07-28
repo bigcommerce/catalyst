@@ -9,6 +9,53 @@ export const ordersTransformer = (
   format: ExistingResultType<typeof getFormatter>,
 ): Order[] => {
   return orders.map((order) => {
+    const lineItems =
+      order.consignments.shipping?.flatMap((consignment) => {
+        return consignment.lineItems.map((lineItem) => {
+          const price = lineItem.catalogProductWithOptionSelections?.prices?.price
+            ? format.number(lineItem.catalogProductWithOptionSelections.prices.price.value, {
+                style: 'currency',
+                currency: lineItem.catalogProductWithOptionSelections.prices.price.currencyCode,
+              })
+            : format.number(lineItem.subTotalListPrice.value / lineItem.quantity, {
+                style: 'currency',
+                currency: lineItem.subTotalListPrice.currencyCode,
+              });
+
+          return {
+            id: lineItem.entityId.toString(),
+            href: lineItem.baseCatalogProduct?.path ?? '#',
+            title: lineItem.name,
+            subtitle: lineItem.brand ?? undefined,
+            price,
+            totalPrice: format.number(lineItem.subTotalListPrice.value, {
+              style: 'currency',
+              currency: lineItem.subTotalListPrice.currencyCode,
+            }),
+            image: lineItem.image
+              ? {
+                  src: lineItem.image.url,
+                  alt: lineItem.image.altText,
+                }
+              : undefined,
+          };
+        });
+      }) ?? [];
+
+    const giftCertificates =
+      order.consignments.email?.flatMap((consignment) => {
+        return consignment.lineItems.map((lineItem) => {
+          return {
+            id: lineItem.entityId.toString(),
+            href: '#',
+            title: lineItem.name,
+            price: '',
+            totalPrice: '',
+            image: undefined,
+          };
+        });
+      }) ?? [];
+
     return {
       id: order.entityId.toString(),
       href: `/account/orders/${order.entityId}`,
@@ -17,38 +64,7 @@ export const ordersTransformer = (
         style: 'currency',
         currency: order.totalIncTax.currencyCode,
       }),
-      lineItems:
-        order.consignments.shipping?.flatMap((consignment) => {
-          return consignment.lineItems.map((lineItem) => {
-            const price = lineItem.catalogProductWithOptionSelections?.prices?.price
-              ? format.number(lineItem.catalogProductWithOptionSelections.prices.price.value, {
-                  style: 'currency',
-                  currency: lineItem.catalogProductWithOptionSelections.prices.price.currencyCode,
-                })
-              : format.number(lineItem.subTotalListPrice.value / lineItem.quantity, {
-                  style: 'currency',
-                  currency: lineItem.subTotalListPrice.currencyCode,
-                });
-
-            return {
-              id: lineItem.entityId.toString(),
-              href: lineItem.baseCatalogProduct?.path ?? '#',
-              title: lineItem.name,
-              subtitle: lineItem.brand ?? undefined,
-              price,
-              totalPrice: format.number(lineItem.subTotalListPrice.value, {
-                style: 'currency',
-                currency: lineItem.subTotalListPrice.currencyCode,
-              }),
-              image: lineItem.image
-                ? {
-                    src: lineItem.image.url,
-                    alt: lineItem.image.altText,
-                  }
-                : undefined,
-            };
-          });
-        }) ?? [],
+      lineItems: [...lineItems, ...giftCertificates].flat(),
     } satisfies Order;
   });
 };
