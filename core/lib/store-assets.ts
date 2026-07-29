@@ -23,6 +23,19 @@ const cdnImageUrlBuilder = (
 };
 
 /**
+ * Given a store-root-relative WebDAV path (e.g. `/content/foo.png` or
+ * `/product_images/uploaded_images/bar.jpg`), return the absolute CDN URL that
+ * serves it. WebDAV folders are mirrored to the CDN at `/s-{storeHash}{path}`.
+ *
+ * @param {string} rootRelativePath - The store-root-relative path, including its leading slash.
+ * @param {number} cdnIndex - The index of the CDN URL to use. Defaults to 0.
+ * @returns {string} The absolute CDN URL to the asset.
+ */
+export const cdnAssetUrl = (rootRelativePath: string, cdnIndex = 0): string => {
+  return `https://${buildConfig.get('urls').cdnUrls.at(cdnIndex)}/s-${storeHash}${rootRelativePath}`;
+};
+
+/**
  * Given a path, return the full URL to the content asset.
  * These assets are accessible via the /content folder in WebDAV on the store.
  * A query parameter containing the commit SHA is appended to the URL to ensure
@@ -33,7 +46,7 @@ const cdnImageUrlBuilder = (
  * @returns {string} The full URL to the content asset.
  */
 export const contentAssetUrl = (path: string, cdnIndex = 0): string => {
-  return `https://${buildConfig.get('urls').cdnUrls.at(cdnIndex)}/s-${storeHash}/content/${path}`;
+  return cdnAssetUrl(`/content/${path}`, cdnIndex);
 };
 
 /**

@@ -54,8 +54,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.1.7)
       '@makeswift/runtime':
-        specifier: 0.26.4
-        version: 0.26.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
+        specifier: 0.28.5
+        version: 0.28.5(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -2555,19 +2555,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.1.16':
-    resolution: {integrity: sha512-9e4jssZ/gglmOwxraqaCnwpLHQf8/7fPsq+zhTkWd4IPHtWE0hbkEhFyIZed7w5tRhdHRkqql6YHuNUUrkr7hg==}
+  '@makeswift/controls@0.1.18':
+    resolution: {integrity: sha512-U50K3ZvqbkFfsMMeqQcjrEYfK9/K2jZ2oo+RJCxQbydqS3+m6xXYfZQvgBKhAqE8gTzv4YN6GYFubE5AsF4BAA==}
 
   '@makeswift/next-plugin@0.6.1':
     resolution: {integrity: sha512-B8T7/69ENWf5ikaEcCP5xSAxoqEnK9kg1mEi51HczVsv7eQGQCHCqKy3Kyfv49IgxICXTPNt9ABmPr5zhE5NVw==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0 || ^15.0.0
 
-  '@makeswift/prop-controllers@0.4.10':
-    resolution: {integrity: sha512-rqiUsEKe+3I0eyJNosTuef3Z0FG3UnPz6rOXY2G7SbKk1h+jyKGVulNPVmsafM9SzuMTfzZNtNL0ouDRsQym+Q==}
+  '@makeswift/prop-controllers@0.4.12':
+    resolution: {integrity: sha512-EJa4w+e2Q5WUR8NsLcyuCi38bJ6XJ1KBXBRaOFQnsJ9qMHrMY/01Lh5LtFrrlITwLzsxMzMMpGgv3M3tNkIPYQ==}
 
-  '@makeswift/runtime@0.26.4':
-    resolution: {integrity: sha512-hCmXv5h94j+MMOgPh7F0yteFvGOmSztlr6tTjrPEfxr9OCwr+gmE3crlXgO/SQW34NtQXVZLtg5ZcCoD6kFzlw==}
+  '@makeswift/runtime@0.28.5':
+    resolution: {integrity: sha512-l/MIyb6VXFYKm2F4f/qwCVOmL8qCMHFWboCDIuZJQt3pyO4H4hYVs6OxHaf3cdNMtPWV8D2Vr97Wkg3CWbmFoA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
@@ -9924,8 +9924,8 @@ packages:
   third-party-web@0.26.6:
     resolution: {integrity: sha512-GsjP92xycMK8qLTcQCacgzvffYzEqe29wyz3zdKVXlfRD5Kz1NatCTOZEeDaSd6uCZXvGd2CNVtQ89RNIhJWvA==}
 
-  third-party-web@0.29.0:
-    resolution: {integrity: sha512-nBDSJw5B7Sl1YfsATG2XkW5qgUPODbJhXw++BKygi9w6O/NKS98/uY/nR/DxDq2axEjL6halHW1v+jhm/j1DBQ==}
+  third-party-web@0.29.2:
+    resolution: {integrity: sha512-fegtha91tq2DHphyoiBXVHjVi2YG9zFaRnboT9C28tO1en9Y3wJsfspuy40F+u5wl3hHVbw7cnd1b67kEGHb8g==}
 
   through2@0.4.2:
     resolution: {integrity: sha512-45Llu+EwHKtAZYTPPVn3XZHBgakWMN3rokhEv5hu596XP+cNgplMg+Gj+1nmAvj+L0K7+N49zBKx5rah5u0QIQ==}
@@ -13726,7 +13726,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.1.16':
+  '@makeswift/controls@0.1.18':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -13743,13 +13743,13 @@ snapshots:
       next: 16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       semver: 7.7.4
 
-  '@makeswift/prop-controllers@0.4.10':
+  '@makeswift/prop-controllers@0.4.12':
     dependencies:
-      '@makeswift/controls': 0.1.16
+      '@makeswift/controls': 0.1.18
       ts-pattern: 5.9.0
       zod: 3.25.51
 
-  '@makeswift/runtime@0.26.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)':
+  '@makeswift/runtime@0.28.5(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(next@16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -13757,9 +13757,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.1.16
+      '@makeswift/controls': 0.1.18
       '@makeswift/next-plugin': 0.6.1(next@16.2.6(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))
-      '@makeswift/prop-controllers': 0.4.10
+      '@makeswift/prop-controllers': 0.4.12
       '@reduxjs/toolkit': 2.11.2(react@19.1.7)
       '@use-gesture/react': 10.3.1(react@19.1.7)
       color: 3.2.1
@@ -14446,7 +14446,7 @@ snapshots:
   '@paulirish/trace_engine@0.0.53':
     dependencies:
       legacy-javascript: 0.0.1
-      third-party-web: 0.29.0
+      third-party-web: 0.29.2
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -22551,7 +22551,7 @@ snapshots:
 
   third-party-web@0.26.6: {}
 
-  third-party-web@0.29.0: {}
+  third-party-web@0.29.2: {}
 
   through2@0.4.2:
     dependencies:

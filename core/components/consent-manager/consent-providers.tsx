@@ -23,7 +23,6 @@ export function ConsentManagerProvider({
         mode: 'offline',
         storageConfig: {
           storageKey: CONSENT_COOKIE_NAME,
-          crossSubdomain: true,
         },
         consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
         enabled: isCookieConsentEnabled,

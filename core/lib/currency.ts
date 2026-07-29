@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 
 import type { CurrencyCode } from '~/components/header/fragment';
 import { CurrencyCodeSchema } from '~/components/header/schema';
+import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
 
 export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefined> {
   const cookieStore = await cookies();
@@ -19,6 +20,12 @@ export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefin
 }
 
 export async function setPreferredCurrencyCode(currencyCode: CurrencyCode): Promise<void> {
+  // The currency preference is a functionality cookie; without consent the
+  // selected currency still applies to the cart but the preference isn't stored.
+  if (!(await hasConsentFor('functionality'))) {
+    return;
+  }
+
   const cookieStore = await cookies();
 
   cookieStore.set('currencyCode', currencyCode, {

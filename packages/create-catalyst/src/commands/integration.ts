@@ -1,5 +1,6 @@
 import { Command } from '@commander-js/extra-typings';
 import { exec as execCb } from 'child_process';
+import { colorize } from 'consola/utils';
 import { parse } from 'dotenv';
 import { outputFileSync, writeJsonSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
@@ -22,6 +23,14 @@ export const integration = new Command('integration')
   .argument('<integration-name>', 'Formatted name of the integration')
   .option('--commit-hash <hash>', 'Override integration source branch with a specific commit hash')
   .action(async (integrationNameRaw, options) => {
+    console.warn(
+      colorize(
+        'yellow',
+        '⚠ `create-catalyst integration` is deprecated and will be replaced by the ' +
+          '`catalyst upgrade` command.',
+      ),
+    );
+
     // @todo check for integration name conflicts
     const integrationName = z.string().transform(kebabCase).parse(integrationNameRaw);
 

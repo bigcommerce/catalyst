@@ -19,7 +19,9 @@ program
   .description('A command line tool to create a new Catalyst project.')
   .addCommand(create, { isDefault: true })
   .addCommand(init)
-  .addCommand(integration)
+  // Deprecated: hidden from help so new users don't discover it; still runnable
+  // (with a deprecation warning) until it's removed. See LTRAC-467.
+  .addCommand(integration, { hidden: true })
   .addCommand(telemetry)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);

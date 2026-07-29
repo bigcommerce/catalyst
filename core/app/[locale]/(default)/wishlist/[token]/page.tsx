@@ -20,6 +20,7 @@ import {
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { publicWishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
+import { pickPricesForTaxDisplay } from '~/lib/tax-pricing';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { getPublicWishlist } from './page-data';
@@ -45,13 +46,13 @@ async function getWishlist(
 ): Promise<Wishlist> {
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
   const formatter = await getFormatter();
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const result = await getPublicWishlist(token, searchParamsParsed);
 
-  if (!wishlist) {
+  if (!result) {
     return notFound();
   }
 
-  return publicWishlistDetailsTransformer(wishlist, t, pt, formatter);
+  return publicWishlistDetailsTransformer(result.wishlist, t, pt, formatter, result.taxDisplay);
 }
 
 async function getPaginationInfo(
@@ -59,9 +60,9 @@ async function getPaginationInfo(
   searchParams: Promise<SearchParams>,
 ): Promise<CursorPaginationInfo> {
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const result = await getPublicWishlist(token, searchParamsParsed);
 
-  return pageInfoTransformer(wishlist?.items.pageInfo ?? defaultPageInfo);
+  return pageInfoTransformer(result?.wishlist.items.pageInfo ?? defaultPageInfo);
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
@@ -70,33 +71,37 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   // to make sure we aren't bypassing an existing cache just for the metadata generation.
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
   const t = await getTranslations({ locale, namespace: 'PublicWishlist' });
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const result = await getPublicWishlist(token, searchParamsParsed);
 
   return {
-    title: wishlist?.name ?? t('title'),
+    title: result?.wishlist.name ?? t('title'),
     alternates: await getMetadataAlternates({ path: `/wishlist/${token}`, locale }),
   };
 }
 
 const getAnalyticsData = async (token: string, searchParamsPromise: Promise<SearchParams>) => {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const result = await getPublicWishlist(token, searchParamsParsed);
 
-  if (!wishlist) {
+  if (!result) {
     return [];
   }
+
+  const { wishlist, taxDisplay } = result;
 
   return removeEdgesAndNodes(wishlist.items)
     .map(({ product }) => product)
     .filter((product) => product !== null)
     .map((product) => {
+      const prices = pickPricesForTaxDisplay(product, taxDisplay);
+
       return {
         id: product.entityId,
         name: product.name,
         sku: product.sku,
         brand: product.brand?.name ?? '',
-        price: product.prices?.price.value ?? 0,
-        currency: product.prices?.price.currencyCode ?? '',
+        price: prices?.price.value ?? 0,
+        currency: prices?.price.currencyCode ?? '',
       };
     });
 };
@@ -107,11 +112,11 @@ async function getBreadcrumbs(
 ): Promise<Breadcrumb[]> {
   const t = await getTranslations('PublicWishlist');
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const wishlist = await getPublicWishlist(token, searchParamsParsed);
+  const result = await getPublicWishlist(token, searchParamsParsed);
 
   return [
     { href: '/', label: 'Home' },
-    { href: '#', label: wishlist?.name ?? t('defaultName') },
+    { href: '#', label: result?.wishlist.name ?? t('defaultName') },
   ];
 }
 

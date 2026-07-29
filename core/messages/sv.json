@@ -435,6 +435,7 @@
             "subTotal": "Delsumma",
             "discounts": "Rabatter",
             "tax": "Beskatta",
+            "totalIncludesTax": "Inklusive {tax} moms",
             "total": "Total",
             "CouponCode": {
                 "apply": "Tillämpa",
@@ -445,6 +446,7 @@
             },
             "Shipping": {
                 "shipping": "Frakt",
+                "shippingExcludingTax": "Frakt (exkl. moms)",
                 "add": "Lägg till",
                 "change": "Ändra",
                 "cancel": "Annullera",
@@ -704,7 +706,11 @@
         "Price": {
             "originalPrice": "Ursprungligt pris var {price}.",
             "currentPrice": "Nuvarande pris är {price}.",
-            "range": "Pris från {minValue} till {maxValue}."
+            "range": "Pris från {minValue} till {maxValue}.",
+            "includingTax": "(Inkl. moms)",
+            "excludingTax": "(Exkl. moms)",
+            "includingTaxFull": "Inklusive skatt",
+            "excludingTaxFull": "Exklusive skatt"
         }
     },
     "GiftCertificates": {
