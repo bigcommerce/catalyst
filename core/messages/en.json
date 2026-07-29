@@ -144,7 +144,8 @@
       "Empty": {
         "title": "Sorry, no results for \"{term}\".",
         "subtitle": "Please try another search."
-      }
+      },
+      "semanticSearchPlaceholder": "Describe what you're looking for"
     },
     "FacetedSearch": {
       "filters": "Filters",
