@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
+import { getSessionCustomerAccessToken } from '~/auth';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
@@ -20,8 +21,8 @@ interface Props {
   params: Promise<{ locale: string; id: string }>;
 }
 
-const getWebPage = cache(async (id: string): Promise<WebPageData> => {
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+const getWebPage = cache(async (id: string, customerAccessToken?: string): Promise<WebPageData> => {
+  const data = await getWebpageData({ id: decodeURIComponent(id) }, customerAccessToken);
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 
   if (!webpage) {
@@ -39,11 +40,14 @@ const getWebPage = cache(async (id: string): Promise<WebPageData> => {
   };
 });
 
-async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+async function getWebPageBreadcrumbs(
+  id: string,
+  customerAccessToken?: string,
+): Promise<Breadcrumb[]> {
   const t = await getTranslations('WebPages.Normal');
 
-  const webpage = await getWebPage(id);
-  const [, ...rest] = webpage.breadcrumbs.reverse();
+  const webpage = await getWebPage(id, customerAccessToken);
+  const [, ...rest] = [...webpage.breadcrumbs].reverse();
   const breadcrumbs = [
     {
       label: t('home'),
@@ -61,7 +65,8 @@ async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id, locale } = await params;
-  const webpage = await getWebPage(id);
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const webpage = await getWebPage(id, customerAccessToken);
   const makeswiftMetadata = await getMakeswiftPageMetadata({ path: webpage.path, locale });
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
@@ -80,13 +85,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function WebPage({ params }: Props) {
   const { locale, id } = await params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   setRequestLocale(locale);
 
   return (
     <WebPageContent
-      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
-      webPage={Streamable.from(() => getWebPage(id))}
+      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id, customerAccessToken))}
+      webPage={Streamable.from(() => getWebPage(id, customerAccessToken))}
     />
   );
 }

@@ -3,6 +3,7 @@ import { withAnalyticsCookies } from './proxies/with-analytics-cookies';
 import { withAuth } from './proxies/with-auth';
 import { withB2B } from './proxies/with-b2b';
 import { withChannelId } from './proxies/with-channel-id';
+import { withGraphqlProxy } from './proxies/with-graphql-proxy';
 import { withIntl } from './proxies/with-intl';
 import { withMakeswift } from './proxies/with-makeswift';
 import { withRoutes } from './proxies/with-routes';
@@ -14,6 +15,7 @@ export const proxy = composeProxies(
   withAnalyticsCookies,
   withChannelId,
   withB2B,
+  withGraphqlProxy,
   withRoutes,
 );
 

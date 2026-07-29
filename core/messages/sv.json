@@ -98,7 +98,7 @@
             "heading": "Nytt konto",
             "cta": "Skapa konto",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
             "FieldErrors": {
                 "firstNameRequired": "Förnamn krävs",
                 "lastNameRequired": "Efternamn krävs",
@@ -205,7 +205,7 @@
                 "shipping": "Frakt",
                 "tax": "Beskatta",
                 "orderSummary": "Beställningssammanfattning",
-                "paymentMethodsLabel": "{antal, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
+                "paymentMethodsLabel": "{count, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
                 "paymentEndingInLabel": "Slutar på",
                 "PaymentMethods": {
                     "creditCard": "Kreditkort",
@@ -500,6 +500,8 @@
         "otherDetails": "Övrig information",
         "noOtherDetails": "Det finns inga övriga detaljer.",
         "viewOptions": "Visa alternativ",
+        "showMore": "Visa mer",
+        "showLess": "Visa mindre",
         "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
         "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
         "unknownError": "Okänt fel. Försök igen senare."
@@ -562,7 +564,7 @@
                 "emailLabel": "E-post",
                 "successMessage": "Din recension har skickats in!",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
                 "FieldErrors": {
                     "titleRequired": "Rubrik krävs",
                     "authorRequired": "Namn krävs",
@@ -594,7 +596,7 @@
                 "comments": "Kommentarer/frågor",
                 "cta": "Skicka formulär",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Slutför reCAPTCHA-verifieringen."
             }
         }
     },
@@ -764,7 +766,7 @@
     },
     "Form": {
         "optional": "frivillig",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Slutför reCAPTCHA-verifieringen.",
         "Errors": {
             "invalidInput": "Kontrollera det som angetts och försök igen",
             "invalidFormat": "Det inmatade värdet stämmer inte överens med det format som krävs"

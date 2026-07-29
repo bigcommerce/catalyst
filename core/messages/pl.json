@@ -75,7 +75,7 @@
             "CreateAccount": {
                 "title": "Nowy klient?",
                 "accountBenefits": "Załóż u nas konto, a będziesz mógł:",
-                "fastCheckout": "Sprawdź szybciej",
+                "fastCheckout": "Do kasy szybciej",
                 "multipleAddresses": "Zapisz wiele adresów wysyłki",
                 "ordersHistory": "Dostęp do historii zamówień",
                 "ordersTracking": "Śledzenie nowych zamówień",
@@ -500,6 +500,8 @@
         "otherDetails": "Inne szczegóły",
         "noOtherDetails": "Brak innych szczegółów.",
         "viewOptions": "Wyświetl opcje",
+        "showMore": "Pokaż więcej",
+        "showLess": "Pokaż mniej",
         "successMessage": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
         "missingCart": "Nie znaleziono koszyka. Spróbuj ponownie później.",
         "unknownError": "Nieznany błąd. Spróbuj ponownie później."

@@ -129,6 +129,8 @@ export default async function Compare(props: Props) {
         previousLabel={t('previous')}
         products={streamableProducts}
         ratingLabel={t('rating')}
+        showLessLabel={t('showLess')}
+        showMoreLabel={t('showMore')}
         title={t('title')}
         viewOptionsLabel={t('viewOptions')}
       />

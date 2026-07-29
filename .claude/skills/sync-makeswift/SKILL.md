@@ -15,7 +15,7 @@ Execute the following phases in order. Pause for user input where indicated.
 ```bash
 git fetch origin
 git checkout -B sync-integrations-makeswift origin/integrations/makeswift
-git merge canary
+git merge origin/canary
 ```
 
 If the merge completes cleanly, skip to changeset cleanup. Otherwise, resolve conflicts.
@@ -78,5 +78,6 @@ Switch back to `canary` and delete the local branches that are no longer needed:
 
 ```bash
 git checkout canary
+git pull
 git branch -D sync-integrations-makeswift integrations/makeswift
 ```

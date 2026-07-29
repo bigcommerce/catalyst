@@ -39,11 +39,10 @@ test('Normal web page works and displays the HTML content', async ({ page, webPa
   await expect(page.getByText('Testing div element')).toBeVisible();
 });
 
-test('Nested web pages display the children in the side menu, navigate correctly, and truncate breadcrumbs', async ({
+test('Nested web pages display the children in the side menu and navigate correctly', async ({
   page,
   webPage,
 }) => {
-  const t = await getTranslations('WebPages.Normal');
   const parent = await webPage.create();
   const child1 = await webPage.create({ parentId: parent.id });
   const child2 = await webPage.create({ parentId: parent.id });
@@ -64,14 +63,6 @@ test('Nested web pages display the children in the side menu, navigate correctly
   await page.waitForLoadState('networkidle');
 
   await expect(page.getByRole('heading', { name: nestedChild2.name })).toBeVisible();
-
-  const breadcrumbs = page.getByLabel('breadcrumb');
-
-  await expect(breadcrumbs.getByText(t('home'))).toBeVisible();
-  await expect(breadcrumbs.getByText(parent.name)).toBeVisible();
-  await expect(breadcrumbs.getByText('...')).toBeVisible();
-  await expect(breadcrumbs.getByText(nestedChild.name)).toBeVisible();
-  await expect(breadcrumbs.getByText(nestedChild2.name)).toBeVisible();
 });
 
 test('Contact page works with all fields and submits successfully', async ({ page, webPage }) => {

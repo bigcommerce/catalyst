@@ -52,6 +52,10 @@ jobs:
             locale-var: TESTS_ALTERNATE_LOCALE
             artifact-name: playwright-report-alternate-locale
 
+    env:
+      TESTS_LOCALE: ${{ vars[matrix.locale-var] }}
+      TRAILING_SLASH: ${{ matrix.trailing-slash }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -87,8 +91,6 @@ jobs:
           AUTH_SECRET: ${{ secrets.TESTS_AUTH_SECRET }}
           AUTH_TRUST_HOST: ${{ vars.TESTS_AUTH_TRUST_HOST }}
           BIGCOMMERCE_TRUSTED_PROXY_SECRET: ${{ secrets.BIGCOMMERCE_TRUSTED_PROXY_SECRET }}
-          TESTS_LOCALE: ${{ vars[matrix.locale-var] }}
-          TRAILING_SLASH: ${{ matrix.trailing-slash }}
           DEFAULT_REVALIDATE_TARGET: ${{ matrix.name == 'default' && '1' || '' }}
 
       - name: Run E2E tests

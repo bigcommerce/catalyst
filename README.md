@@ -11,7 +11,7 @@ This branch is intended to be used as a template/starting point for new Catalyst
 
 - A [BigCommerce account](https://www.bigcommerce.com/start-your-trial)
 - A BigCommerce store with B2B Edition enabled, and a Catalyst channel created via [One-Click Catalyst](https://developer.bigcommerce.com/docs/storefront/catalyst/getting-started)
-- Node.js version 22
+- Node.js version 24
 - Corepack-enabled `pnpm`
 
   ```bash

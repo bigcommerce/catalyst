@@ -17,6 +17,7 @@ interface Props {
 
 async function getOrders(after?: string, before?: string): Promise<Order[]> {
   const format = await getFormatter();
+  const tGiftCertificate = await getTranslations('Cart.GiftCertificate');
   const customerOrdersDetails = await getCustomerOrders({
     ...(after && { after }),
     ...(before && { before }),
@@ -28,7 +29,7 @@ async function getOrders(after?: string, before?: string): Promise<Order[]> {
 
   const { orders } = customerOrdersDetails;
 
-  return ordersTransformer(orders, format);
+  return ordersTransformer(orders, format, tGiftCertificate);
 }
 
 async function getPaginationInfo(after?: string, before?: string) {

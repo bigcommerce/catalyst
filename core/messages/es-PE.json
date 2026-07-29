@@ -98,7 +98,7 @@
             "heading": "Cuenta nueva",
             "cta": "Crear cuenta",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Por favor, completa la verificación de reCAPTCHA.",
             "FieldErrors": {
                 "firstNameRequired": "El campo Nombre es obligatorio.",
                 "lastNameRequired": "El campo Apellido es obligatorio.",
@@ -138,7 +138,7 @@
             "searchResults": "Resultados de búsqueda para",
             "subCategories": "Categorías",
             "Breadcrumbs": {
-                "home": "Página de inicio",
+                "home": "Inicio",
                 "search": "Buscar"
             },
             "Empty": {
@@ -404,7 +404,7 @@
     },
     "Blog": {
         "title": "Blog",
-        "home": "Página de inicio",
+        "home": "Inicio",
         "Empty": {
             "title": "No se encontraron publicaciones de blog",
             "subtitle": "Vuelve a consultar más tarde para obtener más contenido"
@@ -500,6 +500,8 @@
         "otherDetails": "Otros detalles",
         "noOtherDetails": "No hay otros detalles.",
         "viewOptions": "Opciones de visualización",
+        "showMore": "Mostrar más",
+        "showLess": "Mostrar menos",
         "successMessage": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>",
         "missingCart": "Carrito no encontrado. Vuelva a intentarlo más tarde.",
         "unknownError": "Error desconocido. Vuelva a intentarlo más tarde."
@@ -562,7 +564,7 @@
                 "emailLabel": "Correo electrónico",
                 "successMessage": "¡Tu reseña fue enviada con éxito!",
                 "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Por favor, completa la verificación de reCAPTCHA.",
                 "FieldErrors": {
                     "titleRequired": "Se requiere título",
                     "authorRequired": "El campo Nombre es obligatorio",
@@ -578,10 +580,10 @@
     },
     "WebPages": {
         "Normal": {
-            "home": "Página de inicio"
+            "home": "Inicio"
         },
         "ContactUs": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "Form": {
                 "success": "Gracias por ponerte en contacto. Nos comunicaremos contigo pronto.",
                 "successCta": "Seguir comprando",
@@ -594,7 +596,7 @@
                 "comments": "Comentarios/Preguntas",
                 "cta": "Enviar formulario",
                 "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Por favor, completa la verificación de reCAPTCHA."
             }
         }
     },
@@ -616,7 +618,7 @@
     },
     "Components": {
         "Header": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "toggleNavigation": "Alternar navegación",
             "Icons": {
                 "account": "Perfil",
@@ -641,7 +643,7 @@
             }
         },
         "Footer": {
-            "home": "Página de inicio",
+            "home": "Inicio",
             "contactUs": "Contacto",
             "socialMediaLinks": "Enlaces a redes sociales",
             "categories": "Categorías",
@@ -764,7 +766,7 @@
     },
     "Form": {
         "optional": "Opcional",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Por favor, completa la verificación de reCAPTCHA.",
         "Errors": {
             "invalidInput": "Por favor, revisa tu opinión y vuelve a intentarlo",
             "invalidFormat": "El valor introducido no coincide con el formato requerido"

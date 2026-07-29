@@ -31,11 +31,12 @@ const ContactPageQuery = graphql(
 
 type Variables = VariablesOf<typeof ContactPageQuery>;
 
-export const getWebpageData = cache(async (variables: Variables) => {
+export const getWebpageData = cache(async (variables: Variables, customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: ContactPageQuery,
     variables,
-    fetchOptions: { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return data;

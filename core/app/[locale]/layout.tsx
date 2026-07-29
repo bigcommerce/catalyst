@@ -147,7 +147,7 @@ export default async function RootLayout({ params, children }: Props) {
   const privacyPolicyUrl = rootData.data.site.settings?.privacy?.privacyPolicyUrl;
 
   return (
-    <MakeswiftProvider siteVersion={siteVersion}>
+    <MakeswiftProvider locale={locale} siteVersion={siteVersion}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
         <head>
           <SiteTheme />

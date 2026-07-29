@@ -98,7 +98,7 @@
             "heading": "Ny konto",
             "cta": "Opprett konto",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "Fullfør reCAPTCHA-verifiseringen.",
             "FieldErrors": {
                 "firstNameRequired": "Fornavn er påkrevd",
                 "lastNameRequired": "Etternavn er påkrevd",
@@ -500,6 +500,8 @@
         "otherDetails": "Andre detaljer",
         "noOtherDetails": "Det er ingen andre detaljer.",
         "viewOptions": "Vis alternativer",
+        "showMore": "Vis mer",
+        "showLess": "Vis mindre",
         "successMessage": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
         "missingCart": "Handlekurv ikke funnet. Prøv på nytt senere.",
         "unknownError": "Ukjent feil. Prøv på nytt senere."
@@ -521,7 +523,7 @@
             "currentStock": "{antall, nummer} på lager",
             "backorderQuantity": "{antall, nummer} vil være restordre",
             "loadingMoreImages": "Laster inn flere bilder",
-            "imagesLoaded": "{antall, flertall, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
+            "imagesLoaded": "{count, plural, =1 {1 bilde til ble lastet inn} other {# flere bilder ble lastet inn}}",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",
@@ -562,7 +564,7 @@
                 "emailLabel": "E-post",
                 "successMessage": "Din anmeldelse er sendt inn!",
                 "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "Fullfør reCAPTCHA-verifiseringen.",
                 "FieldErrors": {
                     "titleRequired": "Tittel er påkrevd",
                     "authorRequired": "Navn er påkrevd",
@@ -594,7 +596,7 @@
                 "comments": "Kommentarer/spørsmål",
                 "cta": "Send inn skjema",
                 "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "Fullfør reCAPTCHA-verifiseringen."
             }
         }
     },
@@ -764,7 +766,7 @@
     },
     "Form": {
         "optional": "valgfri",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "Fullfør reCAPTCHA-verifiseringen.",
         "Errors": {
             "invalidInput": "Sjekk inndataene dine og prøv igjen",
             "invalidFormat": "Den angitte verdien samsvarer ikke med det nødvendige formatet"

@@ -98,7 +98,7 @@
             "heading": "新しいアカウント",
             "cta": "アカウント作成",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-            "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+            "recaptchaRequired": "reCAPTCHA認証を完了してください。",
             "FieldErrors": {
                 "firstNameRequired": "名は必須です",
                 "lastNameRequired": "姓は必須です",
@@ -500,6 +500,8 @@
         "otherDetails": "その他の詳細",
         "noOtherDetails": "他に詳細はありません。",
         "viewOptions": "表示オプション",
+        "showMore": "さらに表示する",
+        "showLess": "表示を少なくする",
         "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
         "missingCart": "カートが見つかりません。しばらくしてから再度お試しください。",
         "unknownError": "不明なエラーです。しばらくしてから再度お試しください。"
@@ -562,7 +564,7 @@
                 "emailLabel": "Eメール",
                 "successMessage": "レビューは正常に送信されました。",
                 "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+                "recaptchaRequired": "reCAPTCHA認証を完了してください。",
                 "FieldErrors": {
                     "titleRequired": "タイトルは必須です",
                     "authorRequired": "商品名は必須です",
@@ -594,7 +596,7 @@
                 "comments": "コメント/質問",
                 "cta": "フォームを送信",
                 "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-                "recaptchaRequired": "Please complete the reCAPTCHA verification."
+                "recaptchaRequired": "reCAPTCHA認証を完了してください。"
             }
         }
     },
@@ -764,7 +766,7 @@
     },
     "Form": {
         "optional": "オプション",
-        "recaptchaRequired": "Please complete the reCAPTCHA verification.",
+        "recaptchaRequired": "reCAPTCHA認証を完了してください。",
         "Errors": {
             "invalidInput": "入力内容を確認してもう一度お試しください",
             "invalidFormat": "入力された値は必要な形式と一致しません"
