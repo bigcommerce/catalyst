@@ -75,6 +75,7 @@ export interface ProductDetailProps<F extends Field> {
   reviewFormAction: SubmitReviewAction;
   user: Streamable<{ email: string; name: string }>;
   loadMoreImagesAction?: ProductGalleryLoadMoreAction;
+  recaptchaSiteKey?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -117,6 +118,7 @@ export function ProductDetail<F extends Field>({
   reviewFormAction,
   user,
   loadMoreImagesAction,
+  recaptchaSiteKey,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -164,6 +166,7 @@ export function ProductDetail<F extends Field>({
                         formSubmitLabel={reviewFormSubmitLabel}
                         formTitleLabel={reviewFormTitleLabel}
                         productId={Number(product.id)}
+                        recaptchaSiteKey={recaptchaSiteKey}
                         streamableImages={product.images}
                         streamableProduct={{ name: product.title }}
                         streamableUser={user}

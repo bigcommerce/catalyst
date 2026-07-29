@@ -5,6 +5,7 @@ import { getZodConstraint } from '@conform-to/zod';
 import { useTranslations } from 'next-intl';
 import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import RecaptchaWidget from 'react-google-recaptcha';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
@@ -44,6 +45,7 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }
 
 export const ReviewForm = ({
@@ -61,6 +63,7 @@ export const ReviewForm = ({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: Props) => {
   const t = useTranslations('Product.Reviews.Form');
   const errorTranslations = reviewFormErrorTranslations(t);
@@ -220,6 +223,11 @@ export const ReviewForm = ({
                 {error}
               </FormStatus>
             ))}
+            {recaptchaSiteKey ? (
+              <div>
+                <RecaptchaWidget sitekey={recaptchaSiteKey} />
+              </div>
+            ) : null}
             <div className="mt-auto flex justify-end gap-3">
               <Button onClick={() => setIsOpen(false)} size="small" type="button" variant="ghost">
                 {formCancelLabel}

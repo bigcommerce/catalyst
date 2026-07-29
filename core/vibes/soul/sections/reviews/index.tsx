@@ -40,6 +40,7 @@ interface Props {
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }
 
 export function Reviews({
@@ -65,6 +66,7 @@ export function Reviews({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: Readonly<Props>) {
   return (
     <Stream fallback={<ReviewsSkeleton reviewsLabel={reviewsLabel} />} value={streamableReviews}>
@@ -84,6 +86,7 @@ export function Reviews({
               formTitleLabel={formTitleLabel}
               message={emptyStateMessage}
               productId={productId}
+              recaptchaSiteKey={recaptchaSiteKey}
               reviewsLabel={reviewsLabel}
               streamableImages={streamableImages}
               streamableProduct={streamableProduct}
@@ -139,6 +142,7 @@ export function Reviews({
                   formSubmitLabel={formSubmitLabel}
                   formTitleLabel={formTitleLabel}
                   productId={productId}
+                  recaptchaSiteKey={recaptchaSiteKey}
                   streamableImages={streamableImages}
                   streamableProduct={streamableProduct}
                   streamableUser={streamableUser}
@@ -201,6 +205,7 @@ export function ReviewsEmptyState({
   streamableProduct,
   streamableImages,
   streamableUser,
+  recaptchaSiteKey,
 }: {
   message?: string;
   reviewsLabel?: string;
@@ -221,6 +226,7 @@ export function ReviewsEmptyState({
   }>;
   streamableProduct: Streamable<{ name: string }>;
   streamableUser: Streamable<{ email: string; name: string }>;
+  recaptchaSiteKey?: string;
 }) {
   return (
     <StickySidebarLayout
@@ -250,6 +256,7 @@ export function ReviewsEmptyState({
           formSubmitLabel={formSubmitLabel}
           formTitleLabel={formTitleLabel}
           productId={productId}
+          recaptchaSiteKey={recaptchaSiteKey}
           streamableImages={streamableImages}
           streamableProduct={streamableProduct}
           streamableUser={streamableUser}

@@ -9,11 +9,15 @@ import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
 const AddProductReviewMutation = graphql(`
-  mutation AddProductReviewMutation($input: AddProductReviewInput!) {
+  mutation AddProductReviewMutation(
+    $input: AddProductReviewInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
     catalog {
-      addProductReview(input: $input) {
+      addProductReview(input: $input, reCaptchaV2: $reCaptchaV2) {
         __typename
         errors {
           __typename
@@ -38,6 +42,16 @@ export async function submitReview(
     return { ...prevState, lastResult: submission.reply() };
   }
 
+  const { siteKey, token } = await getRecaptchaFromForm(payload);
+  const recaptchaValidation = assertRecaptchaTokenPresent(siteKey, token, t('recaptchaRequired'));
+
+  if (!recaptchaValidation.success) {
+    return {
+      ...prevState,
+      lastResult: submission.reply({ formErrors: recaptchaValidation.formErrors }),
+    };
+  }
+
   const { productEntityId, ...input } = submission.value;
 
   try {
@@ -52,6 +66,8 @@ export async function submitReview(
           },
           productEntityId,
         },
+        reCaptchaV2:
+          recaptchaValidation.token != null ? { token: recaptchaValidation.token } : undefined,
       },
     });
 
