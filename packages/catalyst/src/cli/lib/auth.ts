@@ -5,11 +5,16 @@ import { httpError } from './http-errors';
 export const DEVICE_OAUTH_CLIENT_ID = 'b8063bu6hhml4e0lqh22yut63atsbyv';
 export const DEVICE_OAUTH_SCOPES = [
   'store_v2_information',
+  'store_v2_products',
+  'store_v2_content',
+  'store_sites',
+  'store_storefront_api',
   'store_infrastructure_deployments_manage',
   'store_infrastructure_logs_read_only',
   'store_infrastructure_projects_manage',
   'store_channel_settings',
 ].join(' ');
+
 export const DEFAULT_LOGIN_URL = 'https://login.bigcommerce.com';
 
 export const DeviceCodeResponseSchema = z.object({
