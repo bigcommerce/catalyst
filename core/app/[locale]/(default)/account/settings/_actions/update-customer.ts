@@ -5,11 +5,12 @@ import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
+import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { updateAccountSchema } from '@/vibes/soul/sections/account-settings/schema';
-import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings/update-account-form';
+import { State } from '@/vibes/soul/sections/account-settings/update-account-form';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
 const UpdateCustomerMutation = graphql(`
@@ -19,6 +20,8 @@ const UpdateCustomerMutation = graphql(`
         customer {
           firstName
           lastName
+          email
+          company
         }
         errors {
           __typename
@@ -43,11 +46,81 @@ const UpdateCustomerMutation = graphql(`
   }
 `);
 
-export const updateCustomer: UpdateAccountAction = async (prevState, formData) => {
+type FormFieldsInput = NonNullable<
+  VariablesOf<typeof UpdateCustomerMutation>['input']['formFields']
+>;
+
+/*
+ * BigCommerce re-validates every required custom customer field on every updateCustomer call,
+ * even ones already satisfied by a prior save (see issue #3074) - so any required custom field
+ * rendered in the form must always be resent here, not just the ones the user actually changed.
+ */
+function buildFormFieldsInput(
+  fields: Array<Field | FieldGroup<Field>>,
+  value: Record<string, unknown>,
+): FormFieldsInput {
+  const flatFields = fields.flatMap((field) => (Array.isArray(field) ? field : [field]));
+
+  return {
+    checkboxes: flatFields
+      .filter((field) => field.type === 'checkbox-group')
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => {
+        const rawValue = value[field.name];
+        const rawValues = Array.isArray(rawValue) ? rawValue : [rawValue];
+
+        return {
+          fieldEntityId: Number(field.id),
+          fieldValueEntityIds: rawValues.map(Number),
+        };
+      }),
+    multipleChoices: flatFields
+      .filter((field) => ['radio-group', 'button-radio-group', 'select'].includes(field.type))
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => ({
+        fieldEntityId: Number(field.id),
+        fieldValueEntityId: Number(value[field.name]),
+      })),
+    numbers: flatFields
+      .filter((field) => field.type === 'number')
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => ({
+        fieldEntityId: Number(field.id),
+        number: Number(value[field.name]),
+      })),
+    dates: flatFields
+      .filter((field) => field.type === 'date')
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => ({
+        fieldEntityId: Number(field.id),
+        date: new Date(String(value[field.name])).toISOString(),
+      })),
+    multilineTexts: flatFields
+      .filter((field) => field.type === 'textarea')
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => ({
+        fieldEntityId: Number(field.id),
+        multilineText: String(value[field.name]),
+      })),
+    texts: flatFields
+      .filter((field) => field.type === 'text' || field.type === 'email')
+      .filter((field) => Boolean(value[field.name]))
+      .map((field) => ({
+        fieldEntityId: Number(field.id),
+        text: String(value[field.name]),
+      })),
+  };
+}
+
+export async function updateCustomer(
+  { fields }: { fields: Array<Field | FieldGroup<Field>> },
+  prevState: Awaited<State>,
+  formData: FormData,
+): Promise<State> {
   const t = await getTranslations('Account.Settings');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const submission = parseWithZod(formData, { schema: updateAccountSchema });
+  const submission = parseWithZod(formData, { schema: updateAccountSchema(fields) });
 
   if (submission.status !== 'success') {
     return {
@@ -56,12 +129,20 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
     };
   }
 
+  const { firstName, lastName, email, company, ...customFieldValues } = submission.value;
+
   try {
     const response = await client.fetch({
       document: UpdateCustomerMutation,
       customerAccessToken,
       variables: {
-        input: submission.value,
+        input: {
+          firstName,
+          lastName,
+          email,
+          company,
+          formFields: buildFormFieldsInput(fields, customFieldValues),
+        },
       },
       fetchOptions: { cache: 'no-store' },
     });
@@ -107,4 +188,4 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
       lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
-};
+}

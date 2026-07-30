@@ -526,6 +526,11 @@
             "backorderQuantity": "{quantity, number} はバックオーダーになります",
             "loadingMoreImages": "さらに画像を読み込んでいます",
             "imagesLoaded": "{count, plural, =1 {1 枚の画像が読み込まれました} other {#枚の画像が読み込まれました}}",
+            "playVideo": "動画を再生",
+            "viewVideo": "動画を視聴",
+            "videosTitle": "ビデオ",
+            "hideVideos": "動画を非表示",
+            "showVideos": "動画を表示",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",

@@ -124,10 +124,12 @@ export const Footer = async () => {
                 },
               ]
             : []),
-          ...removeEdgesAndNodes(sectionsData.content.pages).map((page) => ({
-            label: page.name,
-            href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
-          })),
+          ...removeEdgesAndNodes(sectionsData.content.pages)
+            .filter((page) => page.isVisibleInNavigation)
+            .map((page) => ({
+              label: page.name,
+              href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
+            })),
         ],
       },
     ];

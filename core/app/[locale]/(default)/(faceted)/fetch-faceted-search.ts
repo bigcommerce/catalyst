@@ -189,7 +189,11 @@ const getProductSearchResults = cache(
 
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
-      variables: { ...filterArgs, ...paginationArgs, currencyCode },
+      variables: {
+        ...filterArgs,
+        ...paginationArgs,
+        currencyCode,
+      },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });

@@ -2,12 +2,29 @@ import { Argument, Command, Option } from 'commander';
 import { colorize } from 'consola/utils';
 
 import { consola } from '../lib/logger';
-import { Telemetry } from '../lib/telemetry';
+import { getTelemetry } from '../lib/telemetry';
 
-const telemetryService = new Telemetry();
+const telemetryService = getTelemetry();
 let isEnabled = telemetryService.isEnabled();
 
 export const telemetry = new Command('telemetry')
+  .configureHelp({ showGlobalOptions: true })
+  .description(
+    'View or change CLI telemetry collection status. Enabling telemetry helps BigCommerce support diagnose and troubleshoot errors you encounter when using the CLI.',
+  )
+  .addHelpText(
+    'after',
+    `
+Examples:
+  # Show telemetry status
+  $ catalyst telemetry
+
+  # Enable telemetry collection
+  $ catalyst telemetry enable
+
+  # Disable telemetry collection
+  $ catalyst telemetry --disable`,
+  )
   .addArgument(new Argument('[arg]').choices(['disable', 'enable', 'status']))
   .addOption(new Option('--enable', `Enables CLI telemetry collection.`).conflicts('disable'))
   .option('--disable', `Disables CLI telemetry collection.`)
@@ -21,7 +38,7 @@ export const telemetry = new Command('telemetry')
       telemetryService.setEnabled(false);
 
       if (isEnabled) {
-        consola.success('Your preference has been saved to .bigcommerce/project.json');
+        consola.success('Your preference has been saved.');
       } else {
         consola.info(`Catalyst CLI telemetry collection is already disabled.`);
       }

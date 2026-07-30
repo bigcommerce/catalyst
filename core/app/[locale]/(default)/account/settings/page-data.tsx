@@ -4,7 +4,10 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
+import {
+  FormFieldsFragment,
+  FormFieldValuesFragment,
+} from '~/data-transformers/form-field-transformer/fragment';
 
 const AccountSettingsQuery = graphql(
   `
@@ -21,6 +24,9 @@ const AccountSettingsQuery = graphql(
         lastName
         company
         isSubscribedToNewsletter
+        formFields {
+          ...FormFieldValuesFragment
+        }
       }
       site {
         settings {
@@ -50,7 +56,7 @@ const AccountSettingsQuery = graphql(
       }
     }
   `,
-  [FormFieldsFragment],
+  [FormFieldsFragment, FormFieldValuesFragment],
 );
 
 type Variables = VariablesOf<typeof AccountSettingsQuery>;
@@ -96,6 +102,7 @@ export const getAccountSettingsQuery = cache(async ({ address, customer }: Props
   return {
     addressFields,
     customerFields,
+    customerFormFieldValues: customerInfo.formFields,
     customerInfo,
     newsletterSettings,
     passwordComplexitySettings,

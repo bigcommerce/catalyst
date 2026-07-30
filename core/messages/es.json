@@ -526,6 +526,11 @@
             "backorderQuantity": "{cantidad, número} en pedidos pendientes",
             "loadingMoreImages": "Cargando más imágenes",
             "imagesLoaded": "{count, plural, =1 {1 imagen más cargada} other {# imágenes más cargadas}}",
+            "playVideo": "Ver vídeo",
+            "viewVideo": "Ver vídeo",
+            "videosTitle": "Vídeos",
+            "hideVideos": "Ocultar vídeos",
+            "showVideos": "Mostrar vídeos",
             "Submit": {
                 "addToCart": "Añadir al carrito",
                 "outOfStock": "Sin existencias",

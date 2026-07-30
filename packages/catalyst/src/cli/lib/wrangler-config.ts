@@ -1,9 +1,27 @@
-export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
+// The compatibility date, compatibility flags, Durable Object classes, and
+// migration tag below are mirrored in Ignition, which builds its own Worker
+// metadata at deploy time (pkg/cloudflare/upload/metadata.go and
+// pkg/cloudflare/upload/migrations/migrations.go). Keep both sides in sync
+// when changing any of them.
+export function getCompatibilityDate(now = new Date()): string {
+  const date = new Date(now);
+
+  // One month behind the current date: recent enough to track Cloudflare
+  // runtime behavior (per Cloudflare guidance), buffered enough to avoid
+  // brand-new compatibility-date-gated changes. Ignition applies the same
+  // offset at deploy time, so the bundle is never built against newer
+  // semantics than it runs under.
+  date.setUTCMonth(date.getUTCMonth() - 1);
+
+  return date.toISOString().slice(0, 10);
+}
+
+export function getWranglerConfig(projectUuid: string) {
   return {
     $schema: 'node_modules/wrangler/config-schema.json',
     main: '../.open-next/worker.js',
     name: `project-${projectUuid}`,
-    compatibility_date: '2025-07-15',
+    compatibility_date: getCompatibilityDate(),
     compatibility_flags: ['nodejs_compat', 'global_fetch_strictly_public'],
     observability: {
       enabled: true,
@@ -24,10 +42,10 @@ export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
         service: `project-${projectUuid}`,
       },
     ],
-    kv_namespaces: [
+    r2_buckets: [
       {
-        binding: 'NEXT_INC_CACHE_KV',
-        id: kvNamespaceId,
+        binding: 'NEXT_INC_CACHE_R2_BUCKET',
+        bucket_name: `project-${projectUuid}`,
       },
     ],
     durable_objects: {

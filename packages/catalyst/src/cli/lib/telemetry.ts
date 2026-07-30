@@ -1,19 +1,21 @@
 import { Analytics } from '@segment/analytics-node';
 import Conf from 'conf';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, randomUUID } from 'node:crypto';
 
 import PACKAGE_INFO from '../../../package.json';
 
-import { getProjectConfig, ProjectConfigSchema } from './project-config';
+import { getUserConfig, UserConfigSchema } from './user-config';
 
 const TELEMETRY_KEY_ENABLED = 'telemetry.enabled';
 const TELEMETRY_KEY_ID = `telemetry.anonymousId`;
 
 export class Telemetry {
-  readonly sessionId: string;
+  readonly correlationId: string;
   readonly analytics: Analytics;
+  readonly startTime: number;
+  commandName = 'unknown';
 
-  private projectConfig: Conf<ProjectConfigSchema>;
+  private userConfig: Conf<UserConfigSchema>;
   private CATALYST_TELEMETRY_DISABLED: string | undefined;
 
   private readonly projectName = 'catalyst-cli';
@@ -22,12 +24,17 @@ export class Telemetry {
   constructor() {
     this.CATALYST_TELEMETRY_DISABLED = process.env.CATALYST_TELEMETRY_DISABLED;
 
-    this.projectConfig = getProjectConfig();
+    this.userConfig = getUserConfig();
 
-    this.sessionId = randomBytes(32).toString('hex');
+    this.correlationId = randomUUID();
+    this.startTime = Date.now();
     this.analytics = new Analytics({
       writeKey: process.env.CLI_SEGMENT_WRITE_KEY ?? 'not-a-valid-segment-write-key',
     });
+  }
+
+  durationMs(): number {
+    return Date.now() - this.startTime;
   }
 
   async track(eventName: string, payload: Record<string, unknown>) {
@@ -40,7 +47,11 @@ export class Telemetry {
       anonymousId: this.getAnonymousId(),
       properties: {
         ...payload,
-        sessionId: this.sessionId,
+        correlationId: this.correlationId,
+        nodeVersion: process.version,
+        platform: process.platform,
+        arch: process.arch,
+        cliVersion: PACKAGE_INFO.version,
       },
       context: {
         app: {
@@ -75,18 +86,18 @@ export class Telemetry {
   setEnabled = (_enabled: boolean) => {
     const enabled = Boolean(_enabled);
 
-    this.projectConfig.set('telemetry.enabled', enabled);
+    this.userConfig.set('telemetry.enabled', enabled);
   };
 
   isEnabled() {
     return (
       !this.CATALYST_TELEMETRY_DISABLED &&
-      this.projectConfig.get<typeof TELEMETRY_KEY_ENABLED, boolean>(TELEMETRY_KEY_ENABLED, true)
+      this.userConfig.get<typeof TELEMETRY_KEY_ENABLED, boolean>(TELEMETRY_KEY_ENABLED, true)
     );
   }
 
   private getAnonymousId(): string {
-    const val = this.projectConfig.get<typeof TELEMETRY_KEY_ID, string>(TELEMETRY_KEY_ID);
+    const val = this.userConfig.get<typeof TELEMETRY_KEY_ID, string>(TELEMETRY_KEY_ID);
 
     if (val) {
       return val;
@@ -94,8 +105,22 @@ export class Telemetry {
 
     const generated = randomBytes(32).toString('hex');
 
-    this.projectConfig.set(TELEMETRY_KEY_ID, generated);
+    this.userConfig.set(TELEMETRY_KEY_ID, generated);
 
     return generated;
   }
+}
+
+let telemetryInstance: Telemetry | undefined;
+
+// Singleton so the pre-hook, post-hook, error handler, and command bodies all
+// share one correlationId. resetTelemetry() is for test isolation.
+export function getTelemetry(): Telemetry {
+  telemetryInstance ??= new Telemetry();
+
+  return telemetryInstance;
+}
+
+export function resetTelemetry(): void {
+  telemetryInstance = undefined;
 }

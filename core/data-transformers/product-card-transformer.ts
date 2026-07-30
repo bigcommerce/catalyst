@@ -68,6 +68,13 @@ export const singleProductCardTransformer = (
       'variants' in product
         ? getInventoryMessage(product, outOfStockMessage, showBackorderMessage)
         : undefined,
+    promotions:
+      'featuredPromotions' in product
+        ? removeEdgesAndNodes(product.featuredPromotions).map((p) => ({
+            id: p.entityId.toString(),
+            text: p.text,
+          }))
+        : undefined,
   };
 };
 

@@ -526,6 +526,11 @@
             "backorderQuantity": "{hoeveelheid, aantal} staat in backorder",
             "loadingMoreImages": "Meer afbeeldingen laden",
             "imagesLoaded": "{count, plural, =1 {1 afbeelding geladen} other {# afbeeldingen geladen}}",
+            "playVideo": "Video afspelen",
+            "viewVideo": "Bekijk video",
+            "videosTitle": "Video's",
+            "hideVideos": "Video's verbergen",
+            "showVideos": "Video's weergeven",
             "Submit": {
                 "addToCart": "Toevoegen aan winkelmandje",
                 "outOfStock": "Niet op voorraad",

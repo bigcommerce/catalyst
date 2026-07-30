@@ -88,6 +88,8 @@ export default async function Search(props: Props) {
 
   const taxDisplay = settings?.tax?.plp;
 
+  const defaultProductSort = settings?.search.defaultSearchProductSort;
+
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -98,11 +100,13 @@ export default async function Search(props: Props) {
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const sort = typeof searchParams.sort === 'string' ? searchParams.sort : defaultProductSort;
 
     const search = await fetchFacetedSearch(
       {
         ...searchParams,
         ...parsedSearchParams,
+        sort,
       },
       currencyCode,
       customerAccessToken,
@@ -261,7 +265,7 @@ export default async function Search(props: Props) {
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
       showCompare={productComparisonsEnabled}
       showRating={showRating}
-      sortDefaultValue="featured"
+      sortDefaultValue={defaultProductSort?.toLowerCase() ?? 'featured'}
       sortLabel={t('SortBy.sortBy')}
       sortOptions={[
         { value: 'featured', label: t('SortBy.featuredItems') },

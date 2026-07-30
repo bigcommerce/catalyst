@@ -27,6 +27,9 @@ const SearchPageQuery = graphql(`
         tax {
           plp
         }
+        search {
+          defaultSearchProductSort
+        }
       }
     }
   }
