@@ -4,6 +4,7 @@ import { colorize } from 'consola/utils';
 
 import {
   claimDomain,
+  CreatedDomain,
   createDomain,
   deleteDomain,
   Domain,
@@ -15,6 +16,7 @@ import {
   getDomain,
   listDomains,
   OwnershipVerification,
+  PointingRecords,
   transferDomain,
 } from '../lib/domains';
 import { UserActionableError } from '../lib/errors';
@@ -35,6 +37,7 @@ import { getTelemetry } from '../lib/telemetry';
 const WAIT_INTERVAL_MS = 5000;
 const WAIT_TIMEOUT_MS = 5 * 60 * 1000;
 const DOMAIN_STATUS_FILTERS: DomainStatusFilter[] = ['pending', 'verified', 'failed'];
+const RECORD_TYPE_WIDTH = 'CNAME'.length;
 
 const STATUS_COLORS: Record<DomainStatus, Parameters<typeof colorize>[0]> = {
   pending: 'yellow',
@@ -135,6 +138,31 @@ export function formatDomain(domain: Domain): string {
   return `${domain.domain} ${formatDomainStatus(domain.verification_status)}`;
 }
 
+// Renders the records to publish as an indented block:
+//
+//   A      198.51.100.10
+//   CNAME  shop.hosting.bigcommerce.com
+//
+// Returns null when there's nothing publishable: the API withholds the records
+// until the domain is bound, and nulls individual values it doesn't have.
+export function formatPointingRecords(records?: PointingRecords | null): string | null {
+  const rows: string[] = [];
+
+  if (records?.a_record_value) {
+    rows.push(`${'A'.padEnd(RECORD_TYPE_WIDTH)}  ${records.a_record_value}`);
+  }
+
+  if (records?.cname_record_value) {
+    rows.push(`${'CNAME'.padEnd(RECORD_TYPE_WIDTH)}  ${records.cname_record_value}`);
+  }
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  return rows.map((row) => `  ${row}`).join('\n');
+}
+
 export function formatOwnershipVerification(record: OwnershipVerification): string {
   const lines = [
     'Add this DNS record to verify ownership:',
@@ -178,6 +206,10 @@ const add = new Command('add')
   .addHelpText(
     'after',
     `
+The DNS records that point the domain at this project are printed once the domain
+is added. They are returned only by this command, so save them: publish the CNAME
+for a subdomain, or the A record for an apex domain.
+
 Examples:
   $ catalyst domains add www.example.com
 
@@ -196,10 +228,10 @@ Examples:
 
     consola.start(`Adding domain ${domain}...`);
 
-    let result: Domain;
+    let created: CreatedDomain;
 
     try {
-      result = await createDomain(
+      created = await createDomain(
         domain,
         context.projectUuid,
         context.storeHash,
@@ -231,7 +263,13 @@ Examples:
       throw error;
     }
 
-    consola.success(`Domain ${result.domain} added.`);
+    consola.success(`Domain ${created.domain} added.`);
+
+    // Only the create response carries the records, so they're read from
+    // `created` rather than from `result` — polling re-fetches the domain
+    // resource, which doesn't include them.
+    const records = formatPointingRecords(created.pointing_records);
+    let result: Domain = created;
 
     if (options.wait && result.verification_status === 'pending') {
       consola.start(`Waiting for ${result.domain} to verify...`);
@@ -239,6 +277,21 @@ Examples:
     }
 
     consola.log(formatDomain(result));
+
+    if (records) {
+      consola.info(`Point ${created.domain} at this project with one of these DNS records:`);
+      consola.log(records);
+      consola.info(
+        'Use the CNAME for a subdomain, or the A record for an apex domain. Save them now — only `domains add` returns them.',
+      );
+    }
+
+    if (result.verification_status === 'pending') {
+      consola.info(
+        `Run \`catalyst domains status ${result.domain}\` to check verification progress.`,
+      );
+    }
+
     process.exit(0);
   });
 
