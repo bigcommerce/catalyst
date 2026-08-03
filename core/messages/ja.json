@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
                 "subtitle": "別の検索をお試しください。"
-            }
+            },
+            "semanticSearchPlaceholder": "お探しの内容をご記入ください"
         },
         "FacetedSearch": {
             "filters": "フィルター",
@@ -568,6 +569,9 @@
         "search": "検索"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# } other {#件の追加オファー、 }}件の追加オファー}"
+        },
         "Header": {
             "home": "ホーム",
             "toggleNavigation": "トグルナビゲーション",
