@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Beklager, der var ingen resultater for “{term}”.",
                 "subtitle": "Prøv en anden søgning."
-            }
+            },
+            "semanticSearchPlaceholder": "Beskriv, hvad du leder efter"
         },
         "FacetedSearch": {
             "filters": "Filtre",
@@ -568,6 +569,9 @@
         "search": "Søg"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# flere tilbud} other {# flere tilbud}}"
+        },
         "Header": {
             "home": "Hjem",
             "toggleNavigation": "Skift navigation",

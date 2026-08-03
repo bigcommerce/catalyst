@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Lo sentimos, no hay resultados para “{term}”.",
                 "subtitle": "Prueba con otra búsqueda."
-            }
+            },
+            "semanticSearchPlaceholder": "Describe lo que estás buscando"
         },
         "FacetedSearch": {
             "filters": "Filtros",
@@ -568,6 +569,9 @@
         "search": "Buscar"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "{count, plural+, =1 {# más} other {# posibilidad | más posibilidades}}"
+        },
         "Header": {
             "home": "Inicio",
             "toggleNavigation": "Alternar navegación",
