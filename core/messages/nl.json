@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Sorry, geen resultaten voor '{term}'.",
                 "subtitle": "Probeer een andere zoekopdracht"
-            }
+            },
+            "semanticSearchPlaceholder": "Beschrijf wat je zoekt"
         },
         "FacetedSearch": {
             "filters": "Filters",
@@ -568,6 +569,9 @@
         "search": "Zoeken"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+ nog {count, plural, =1 {# aanbieding} other {# aanbiedingen}}"
+        },
         "Header": {
             "home": "Home",
             "toggleNavigation": "Navigatie in- of uitschakelen",

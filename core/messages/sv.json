@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Tyvärr finns inga resultat för ”{term}”.",
                 "subtitle": "Försök med en ny sökning."
-            }
+            },
+            "semanticSearchPlaceholder": "Beskriv vad du letar efter"
         },
         "FacetedSearch": {
             "filters": "Filter",
@@ -568,6 +569,9 @@
         "search": "Sök"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+ {count, plural, =1 {# erbjudande till} other {# erbjudanden till}}"
+        },
         "Header": {
             "home": "Hem",
             "toggleNavigation": "Växla navigering",
