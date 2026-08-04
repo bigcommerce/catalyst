@@ -38,6 +38,11 @@ export const handlers = [
             domain: body.domain,
             project_uuid: '6b202364-10f3-11f1-8bc7-fe9b9d8b14ab',
             verification_status: 'pending',
+            // Only the create endpoint returns the records to publish.
+            pointing_records: {
+              a_record_value: '198.51.100.10',
+              cname_record_value: 'shared.hosting.bigcommerce.com',
+            },
           },
         },
         { status: 201 },
