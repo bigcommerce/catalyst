@@ -9,7 +9,7 @@ export class InvalidStorefrontTokenError extends BigCommerceAPIError {
 
     this.name = 'InvalidStorefrontTokenError';
     this.message = [
-      `BigCommerce API returned ${status}: the configured storefront token does not appear to be a storefront JWT.`,
+      `BigCommerce API returned ${status}: the configured storefront token doesn't look like a JWT.`,
       '',
       'BIGCOMMERCE_STOREFRONT_TOKEN must be a storefront API JWT, not an OAuth access token or any other token type.',
       'Generate one via the Storefront API Token endpoint (POST /stores/{store_hash}/v3/storefront/api-token):',
