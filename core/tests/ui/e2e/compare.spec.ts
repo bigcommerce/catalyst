@@ -1,4 +1,5 @@
 import { expect, test } from '~/tests/fixtures';
+import { consentCookie } from '~/tests/lib/consent';
 import { getFormatter } from '~/tests/lib/formatter';
 import { getTranslations } from '~/tests/lib/i18n';
 
@@ -36,8 +37,17 @@ test('Validate compare page', async ({ page, catalog, currency }) => {
   await expect(page.getByText(productWithVariantsPrice, { exact: true }).first()).toBeVisible();
 });
 
-test('Validate compare page with alternate currency', async ({ page, catalog, currency }) => {
+test('Validate compare page with alternate currency', async ({
+  page,
+  context,
+  catalog,
+  currency,
+}) => {
   const format = getFormatter();
+
+  // The currency preference only persists with functionality consent.
+  await context.addCookies([consentCookie(['functionality'])]);
+
   const defaultCurrency = await currency.getDefaultCurrency();
   const alternateCurrency = (await currency.getEnabledCurrencies()).find(
     (c) => c !== defaultCurrency,
