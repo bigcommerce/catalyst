@@ -4,8 +4,8 @@ import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { createChannel } from './channels';
 import { getChannelNameError, runCreateChannelFlow } from './create-channel-flow';
 import { UserActionableError } from './errors';
-import { consola } from './logger';
 import { getAvailableLocales } from './localization';
+import { consola } from './logger';
 
 vi.mock('@inquirer/prompts', () => ({
   input: vi.fn(),
