@@ -4,6 +4,7 @@ import { colorize } from 'consola/utils';
 import { createChannel, type CreatedChannel } from './channels';
 import { UserActionableError } from './errors';
 import { getAvailableLocales } from './localization';
+import { consola } from './logger';
 
 // Human-readable summary of the allowed characters, reused in the prompt
 // validation and the flag-path error so both surface the same guidance.
@@ -126,7 +127,12 @@ export async function runCreateChannelFlow(
       ],
     }));
 
-  return createChannel(
+  // The API call blocks for several seconds (it provisions the channel and,
+  // when requested, populates sample data), so surface a spinner here — without
+  // it the CLI looks frozen after the last prompt.
+  consola.start('Creating channel...');
+
+  const channel = await createChannel(
     name,
     storefrontLocale,
     additionalLocales,
@@ -135,4 +141,8 @@ export async function runCreateChannelFlow(
     accessToken,
     cliApiOrigin,
   );
+
+  consola.success('Channel created.');
+
+  return channel;
 }

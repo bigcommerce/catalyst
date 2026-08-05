@@ -1,9 +1,10 @@
 import { checkbox, input, select } from '@inquirer/prompts';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import { createChannel } from './channels';
 import { getChannelNameError, runCreateChannelFlow } from './create-channel-flow';
 import { UserActionableError } from './errors';
+import { consola } from './logger';
 import { getAvailableLocales } from './localization';
 
 vi.mock('@inquirer/prompts', () => ({
@@ -32,6 +33,10 @@ const baseOptions = {
   apiHost: 'api.bigcommerce.com',
   cliApiOrigin: 'https://cxm-prd.bigcommerceapp.com',
 };
+
+beforeAll(() => {
+  consola.mockTypes(() => vi.fn());
+});
 
 afterEach(() => {
   vi.clearAllMocks();
@@ -133,5 +138,24 @@ describe('runCreateChannelFlow', () => {
       baseOptions.accessToken,
       baseOptions.cliApiOrigin,
     );
+  });
+
+  test('shows progress feedback while the channel is being created', async () => {
+    mockCreateChannel.mockResolvedValue({
+      channelId: 42,
+      storefrontToken: 'token',
+      envVars: {},
+    });
+
+    await runCreateChannelFlow({
+      ...baseOptions,
+      name: 'My Store',
+      locale: 'en',
+      additionalLocales: [],
+      sampleData: false,
+    });
+
+    expect(consola.start).toHaveBeenCalledWith('Creating channel...');
+    expect(consola.success).toHaveBeenCalledWith('Channel created.');
   });
 });
