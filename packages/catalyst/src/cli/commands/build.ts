@@ -172,7 +172,7 @@ Examples:
 
     if (!projectUuid) {
       throw new Error(
-        'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+        'Project UUID is required. Please run `catalyst projects create` or `catalyst projects link` or this command again with --project-uuid <uuid>.',
       );
     }
 

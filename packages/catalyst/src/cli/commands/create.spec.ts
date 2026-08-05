@@ -289,7 +289,7 @@ describe('happy paths', () => {
 // land in the scaffolded project's `.bigcommerce/project.json`, because that's
 // the only source `resolveCredentials` consults. Previously this was written
 // only on the `--hosting commerce` path, so a default scaffold left `catalyst
-// deploy` failing with "Missing credentials" and `catalyst project create`
+// deploy` failing with "Missing credentials" and `catalyst projects create`
 // re-prompting for login.
 describe('credential persistence', () => {
   const readProjectJson = (projectName: string): unknown =>

@@ -116,7 +116,7 @@ async function resolveDestinationProject(
 
   if (destinations.length === 0) {
     throw new UserActionableError(
-      'No other projects to transfer to. Create another project with `catalyst project create` first.',
+      'No other projects to transfer to. Create another project with `catalyst projects create` first.',
     );
   }
 
@@ -649,6 +649,7 @@ Examples:
   });
 
 export const domains = new Command('domains')
+  .alias('domain')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage custom domains for the current Native Hosting project.')
   .addCommand(add)

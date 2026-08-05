@@ -27,11 +27,13 @@ describe('CLI program', () => {
     expect(commands).toContain('start');
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
-    expect(commands).toContain('project');
+    expect(commands).toContain('projects');
+    expect(commands).toContain('channels');
+    expect(commands).toContain('domains');
     expect(commands).toContain('auth');
     expect(commands).toContain('logs');
 
-    const projectCmd = program.commands.find((cmd) => cmd.name() === 'project');
+    const projectCmd = program.commands.find((cmd) => cmd.name() === 'projects');
 
     expect(projectCmd?.commands.map((c) => c.name())).toEqual(
       expect.arrayContaining(['create', 'list', 'link']),
@@ -48,6 +50,19 @@ describe('CLI program', () => {
     expect(logsCmd?.commands.map((c) => c.name())).toEqual(
       expect.arrayContaining(['tail', 'query']),
     );
+  });
+
+  // Resource commands are plural, but the singular form has to keep resolving so
+  // existing scripts (and anyone's muscle memory) don't break.
+  test.each([
+    ['projects', 'project'],
+    ['channels', 'channel'],
+    ['domains', 'domain'],
+    ['logs', 'log'],
+  ])('%s accepts the %s alias', (name, alias) => {
+    const cmd = program.commands.find((c) => c.name() === name);
+
+    expect(cmd?.aliases()).toContain(alias);
   });
 
   test('telemetry hooks are called when executing version command', async () => {

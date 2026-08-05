@@ -391,7 +391,7 @@ Examples:
       // Persist the credentials we just authenticated with into the new
       // project's `.bigcommerce/project.json` (gitignored). Every command
       // resolves credentials from this file, so without it `catalyst deploy`
-      // and `catalyst project create` would fail or re-prompt for login
+      // and `catalyst projects create` would fail or re-prompt for login
       // immediately after `create` already logged the user in.
       //
       // Runs after `setupCommerceHosting` — which writes the same file to

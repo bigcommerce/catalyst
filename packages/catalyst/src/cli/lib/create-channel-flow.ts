@@ -43,7 +43,7 @@ export interface CreateChannelFlowOptions {
 }
 
 // Shared channel-creation flow used by both `catalyst create` (while scaffolding)
-// and `catalyst channel create` (on an existing project). Prompts for anything
+// and `catalyst channels create` (on an existing project). Prompts for anything
 // not provided as a flag, then POSTs to create the Catalyst channel.
 export async function runCreateChannelFlow(
   options: CreateChannelFlowOptions,

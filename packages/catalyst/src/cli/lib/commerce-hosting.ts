@@ -163,7 +163,7 @@ async function promptForNewProjectName(api: CommerceHostingApiContext): Promise<
 }
 
 // Generic "select an existing project, or create a new one" prompt — used by
-// `catalyst project link` and by `catalyst deploy` when its linked project is
+// `catalyst projects link` and by `catalyst deploy` when its linked project is
 // missing. Distinct from `promptForCommerceHostingProject` which has
 // default-name + auto-create semantics tailored to `catalyst create`.
 //
