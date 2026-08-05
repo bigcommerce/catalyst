@@ -27,7 +27,7 @@ pnpm exec <repo-root>/packages/catalyst/dist/cli.js <command>
 For example:
 
 ```bash
-pnpm exec <repo-root>/packages/catalyst/dist/cli.js project list
+pnpm exec <repo-root>/packages/catalyst/dist/cli.js projects list
 pnpm exec <repo-root>/packages/catalyst/dist/cli.js logs tail
 pnpm exec <repo-root>/packages/catalyst/dist/cli.js logs query --start 2026-06-01T00:00:00Z --end 2026-06-02T00:00:00Z
 pnpm exec <repo-root>/packages/catalyst/dist/cli.js deploy

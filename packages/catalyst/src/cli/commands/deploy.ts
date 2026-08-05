@@ -435,7 +435,7 @@ Example:
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
           consola.info(
-            "When you're ready to create a project, run `catalyst project create` or re-run `catalyst deploy`.",
+            "When you're ready to create a project, run `catalyst projects create` or re-run `catalyst deploy`.",
           );
           process.exit(0);
         }

@@ -138,7 +138,7 @@ describe('getProjectState', () => {
     expect(state.isFullySetUp).toBe(true);
   });
 
-  test('linked but untransformed (e.g. after `catalyst project create` only)', async () => {
+  test('linked but untransformed (e.g. after `catalyst projects create` only)', async () => {
     await writeProjectJson(tmpDir, { projectUuid: 'abc-123' });
     await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
 

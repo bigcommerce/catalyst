@@ -593,6 +593,7 @@ Examples:
   });
 
 export const logs = new Command('logs')
+  .alias('log')
   .configureHelp({ showGlobalOptions: true })
   .description('View logs from your deployed application.')
   .addCommand(tail, { isDefault: true })

@@ -444,7 +444,7 @@ describe('linked project verification', () => {
     );
 
     expect(consola.info).toHaveBeenCalledWith(
-      "When you're ready to create a project, run `catalyst project create` or re-run `catalyst deploy`.",
+      "When you're ready to create a project, run `catalyst projects create` or re-run `catalyst deploy`.",
     );
     expect(exitMock).toHaveBeenCalledWith(0);
   });
