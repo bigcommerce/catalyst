@@ -159,6 +159,9 @@ describe('formatLogEntry', () => {
 
     expect(line).toContain('GET /cart (500)');
     expect(line).toContain('boom');
+    // Order is [timestamp] request [LEVEL] message.
+    expect(line.indexOf('GET /cart')).toBeLessThan(line.indexOf('ERROR'));
+    expect(line.indexOf('ERROR')).toBeLessThan(line.indexOf('boom'));
   });
 
   test('prints only the message in the short format', () => {

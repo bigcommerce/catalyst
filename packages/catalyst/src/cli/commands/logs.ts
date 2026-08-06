@@ -71,11 +71,34 @@ class StreamError extends Error {
 const formatMessages = (messages: unknown[]) =>
   messages.map((m) => (typeof m === 'string' ? m : JSON.stringify(m))).join(' ');
 
-const formatLogEvent = (
-  event: z.infer<typeof LogEventSchema>,
-  format: 'default' | 'short' | 'request',
-) => {
-  const { request, logs: logEntries, exceptions } = event;
+type LogEvent = z.infer<typeof LogEventSchema>;
+
+// Builds a `request` format line. The log entry is optional: a request that
+// logged nothing still has a timestamp, method, URL and status worth printing.
+const formatRequestLine = (event: LogEvent, entry?: LogEvent['logs'][number]) => {
+  const { request } = event;
+  const msg = entry ? formatMessages(entry.messages) : '';
+  const msgPart = msg ? ` ${msg}` : '';
+  // The level labels the message, so an entry with nothing to say prints as a
+  // bare request line — same as an event that carried no entries at all.
+  const level = msg ? entry?.level.toUpperCase() : undefined;
+  const levelPart = level ? ` [${colorize(LEVEL_COLORS[level] ?? 'white', level)}]` : '';
+
+  return (
+    `[${entry?.timestamp ?? event.timestamp}] ` +
+    `${request.method} ${request.url} (${request.status_code})${levelPart}${msgPart}`
+  );
+};
+
+const formatLogEvent = (event: LogEvent, format: 'default' | 'short' | 'request') => {
+  const { logs: logEntries, exceptions } = event;
+
+  // `request` output is about the request, not the messages it emitted, so an
+  // event with no log entries still prints one line. Otherwise requests that
+  // logged nothing silently disappear from the stream.
+  if (format === 'request' && logEntries.length === 0) {
+    consola.log(formatRequestLine(event));
+  }
 
   logEntries.forEach((entry) => {
     const msg = formatMessages(entry.messages);
@@ -88,10 +111,7 @@ const formatLogEvent = (
         break;
 
       case 'request':
-        consola.log(
-          `[${entry.timestamp}] [${coloredLevel}] ${request.method} ${request.url}` +
-            ` (${request.status_code}) ${msg}`,
-        );
+        consola.log(formatRequestLine(event, entry));
         break;
 
       default:
@@ -319,6 +339,19 @@ const tail = new Command('tail')
   .addHelpText(
     'after',
     `
+Formats:
+  default  One line per log message: timestamp, level, and message.
+  short    Message text only.
+  request  One line per log message: timestamp, request method, URL, status
+           code, level, and message. Requests that logged no messages are
+           printed too, without the level and message.
+  pretty   Indented JSON of the whole event.
+  json     Raw JSON, one event per line (useful for piping to other tools).
+
+The \`default\` and \`short\` formats only print requests that produced a log
+message. Use \`--format request\` (or \`json\`/\`pretty\`) to see every request,
+including ones with no message body.
+
 Examples:
   $ catalyst logs tail
 

@@ -232,7 +232,7 @@ describe('format: short', () => {
 });
 
 describe('format: request', () => {
-  test('logs timestamp, level, request info, and message', async () => {
+  test('logs timestamp, request info, level, and message', async () => {
     await callTailLogs('request');
 
     expect(consola.log).toHaveBeenCalledWith(
@@ -241,6 +241,52 @@ describe('format: request', () => {
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('(200)'));
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('hello world'));
   });
+
+  test('orders the line as timestamp, request, level, message', async () => {
+    await callTailLogs('request');
+
+    const line =
+      vi
+        .mocked(consola.log)
+        .mock.calls.map(([arg]) => String(arg))
+        .find((text) => text.includes('hello world')) ?? '';
+
+    expect(line).toContain('hello world');
+    expect(line.indexOf('(200)')).toBeLessThan(line.indexOf('INFO'));
+    expect(line.indexOf('INFO')).toBeLessThan(line.indexOf('hello world'));
+  });
+
+  // Both cases render identically: with no message there is no level to show,
+  // so the line is just the request. Asserted by equality — the level is the
+  // only colorized segment, so these lines carry no ANSI codes to match around.
+  const bareRequestLine = '[2026-03-11T22:05:28.870Z] GET https://example.com/test (200)';
+
+  test('logs the request when the event has no log entries', async () => {
+    const event = { ...validLogEvent, logs: [] };
+
+    await callTailLogs('request', [`data: ${JSON.stringify(event)}\n\n`]);
+
+    expect(consola.log).toHaveBeenCalledWith(bareRequestLine);
+  });
+
+  test('omits the level and trailing separator when an entry has no messages', async () => {
+    const event = { ...validLogEvent, logs: [{ ...validLogEvent.logs[0], messages: [] }] };
+
+    await callTailLogs('request', [`data: ${JSON.stringify(event)}\n\n`]);
+
+    expect(consola.log).toHaveBeenCalledWith(bareRequestLine);
+  });
+
+  test.each(['default', 'short'] as const)(
+    'omits events with no log messages from the %s format',
+    async (format) => {
+      const event = { ...validLogEvent, logs: [] };
+
+      await callTailLogs(format, [`data: ${JSON.stringify(event)}\n\n`]);
+
+      expect(consola.log).not.toHaveBeenCalled();
+    },
+  );
 });
 
 describe('log event processing', () => {
