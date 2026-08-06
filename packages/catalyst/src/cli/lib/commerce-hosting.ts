@@ -13,7 +13,10 @@ import {
 } from './project';
 import { sortPackageJsonFields } from './sort-package-json';
 
-const OPENNEXT_CLOUDFLARE_VERSION = '1.17.3';
+// Exported so the Cloudflare context contract test can assert which version
+// its symbol-key assumption was verified against. See
+// `cloudflare-context-symbol.spec.ts`.
+export const OPENNEXT_CLOUDFLARE_VERSION = '1.17.3';
 
 const corePackageJsonSchema = z.looseObject({
   dependencies: z.record(z.string(), z.string()).optional(),
