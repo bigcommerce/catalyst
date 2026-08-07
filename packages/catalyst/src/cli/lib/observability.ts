@@ -236,7 +236,10 @@ export function formatLogEntry(entry: LogEntry, format: LogLineFormat = 'default
     if (parts.length > 0) requestStr = ` ${parts.join(' ')}${status}`;
   }
 
-  return `[${entry.timestamp ?? UNKNOWN_TIME}] [${coloredLevel}]${requestStr}${exceptionStr} ${message}`;
+  // `requestStr` is empty outside the `request` format, so the level stays
+  // adjacent to the timestamp there and only slides after the request details
+  // when they are present.
+  return `[${entry.timestamp ?? UNKNOWN_TIME}]${requestStr} [${coloredLevel}]${exceptionStr} ${message}`;
 }
 
 export async function queryLogs(
