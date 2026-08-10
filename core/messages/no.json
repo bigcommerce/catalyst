@@ -145,7 +145,7 @@
                 "title": "Beklager, ingen resultater for «{term}».",
                 "subtitle": "Prøv et nytt søk."
             },
-            "semanticSearchPlaceholder": "Describe what you're looking for"
+            "semanticSearchPlaceholder": "Beskriv hva du leter etter"
         },
         "FacetedSearch": {
             "filters": "Filtre",

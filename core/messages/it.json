@@ -145,7 +145,7 @@
                 "title": "Spiacenti, nessun risultato per \"{term}\".",
                 "subtitle": "Prova un'altra ricerca."
             },
-            "semanticSearchPlaceholder": "Describe what you're looking for"
+            "semanticSearchPlaceholder": "Descrivi quello che stai cercando"
         },
         "FacetedSearch": {
             "filters": "Filtri",
