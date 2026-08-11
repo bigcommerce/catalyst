@@ -823,6 +823,80 @@ describe('query subcommand', () => {
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('GET /cart (500)'));
   });
 
+  const captureQueryParams = () => {
+    const captured: { params?: URLSearchParams } = {};
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid',
+        ({ request }) => {
+          captured.params = new URL(request.url).searchParams;
+
+          return HttpResponse.json({ data: [] });
+        },
+      ),
+    );
+
+    return captured;
+  };
+
+  test.each(['default', 'short'] as const)(
+    'requests only log entries from the API with the %s format',
+    async (format) => {
+      const captured = captureQueryParams();
+
+      await program.parseAsync(queryArgs(['--format', format]));
+
+      expect(captured.params?.get('entry_type')).toBe('log');
+    },
+  );
+
+  test.each(['request', 'json', 'pretty'] as const)(
+    'does not filter by entry_type with the %s format',
+    async (format) => {
+      const captured = captureQueryParams();
+
+      await program.parseAsync(queryArgs(['--format', format]));
+
+      expect(captured.params?.get('entry_type')).toBeNull();
+    },
+  );
+
+  // Rows an older API would return: no entry_type field, and the request
+  // row's message is exactly "<method> <url>".
+  const oldApiRequestRow = {
+    id: 'r1',
+    timestamp: '2026-06-01T12:00:00Z',
+    level: 'info',
+    messages: ['GET https://store.example/foo'],
+    request: { method: 'GET', url: 'https://store.example/foo', status_code: 200 },
+  };
+  const oldApiAppRow = {
+    id: 'a1',
+    timestamp: '2026-06-01T12:00:01Z',
+    level: 'info',
+    messages: ['checkout started'],
+    request: { method: 'GET', url: 'https://store.example/foo', status_code: 200 },
+  };
+
+  test('hides heuristic-matched request rows client-side against an older API', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
+        HttpResponse.json({ data: [oldApiAppRow, oldApiRequestRow] }),
+      ),
+    );
+
+    await program.parseAsync(queryArgs());
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('checkout started'));
+    expect(consola.log).not.toHaveBeenCalledWith(
+      expect.stringContaining('GET https://store.example/foo'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      '1 entry shown, 1 request row hidden (oldest first, times in UTC). Use --format request to see request rows.',
+    );
+  });
+
   test('reports when no entries are found', async () => {
     server.use(
       http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid', () =>
