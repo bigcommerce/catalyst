@@ -9,6 +9,9 @@ const EnvironmentSchema = z.object({
   BIGCOMMERCE_STORE_HASH: z.string({ message: 'BIGCOMMERCE_STORE_HASH is required' }),
   BIGCOMMERCE_CHANNEL_ID: z.string({ message: 'BIGCOMMERCE_CHANNEL_ID is required' }),
   LOCAL_BUYER_PORTAL_HOST: z.string().url().optional(),
+  // Which B2B backend the buyer portal boots against. Takes precedence over
+  // STAGING_B2B_CDN_ORIGIN, which is kept for backwards compatibility.
+  B2B_ENVIRONMENT: z.enum(['production', 'staging', 'integration']).optional(),
   STAGING_B2B_CDN_ORIGIN: z.string().optional(),
   BIGCOMMERCE_GRAPHQL_API_DOMAIN: z.string().optional().default('mybigcommerce.com'),
 });
@@ -18,6 +21,7 @@ export async function B2BLoader() {
     BIGCOMMERCE_STORE_HASH,
     BIGCOMMERCE_CHANNEL_ID,
     LOCAL_BUYER_PORTAL_HOST,
+    B2B_ENVIRONMENT,
     STAGING_B2B_CDN_ORIGIN,
     BIGCOMMERCE_GRAPHQL_API_DOMAIN,
   } = EnvironmentSchema.parse(process.env);
@@ -37,7 +41,8 @@ export async function B2BLoader() {
     );
   }
 
-  const environment = STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production';
+  const environment =
+    B2B_ENVIRONMENT ?? (STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production');
 
   return (
     <ScriptProduction

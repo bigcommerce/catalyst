@@ -9,7 +9,7 @@ interface Props {
   storeHash: string;
   channelId: string;
   token?: string;
-  environment: 'staging' | 'production';
+  environment: 'production' | 'staging' | 'integration';
   cartId?: string | null;
   bcGraphqlDomain?: string;
 }
