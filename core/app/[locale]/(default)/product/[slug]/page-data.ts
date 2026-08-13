@@ -141,7 +141,7 @@ const ProductPageMetadataQuery = graphql(`
         path
         defaultImage {
           altText
-          url: urlTemplate(lossy: true)
+          url(width: 1200, lossy: true)
         }
         seo {
           pageTitle
