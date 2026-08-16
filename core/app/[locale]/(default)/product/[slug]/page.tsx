@@ -317,12 +317,15 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       : `${product.plainTextDescription.slice(0, 150)}...`;
   const siteName = process.env.NEXT_PUBLIC_STORE_NAME || 'Catalyst Store';
   const pageUrl = process.env.NEXT_PUBLIC_SITE_URL
-    ? `${process.env.NEXT_PUBLIC_SITE_URL}/product/${slug}`
-    : `https://gitool.com/product/${slug}`;
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}${product.path}`
+    : `https://gitool.com${product.path}`;
   return {
     title,
     description,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: {
+      canonical: pageUrl,
+    },
     openGraph: {
       title,
       description,
