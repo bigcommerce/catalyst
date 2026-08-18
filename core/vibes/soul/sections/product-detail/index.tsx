@@ -67,6 +67,8 @@ interface Props<F extends Field> {
   promotions?: Streamable<any>;
   giftProducts?: Streamable<any>;
   documents?: Streamable<Array<{ label: string; url: string }>>;
+  /** Line-item shaped product data used to fire the `add_to_cart` analytics event. */
+  analyticsProduct?: Streamable<any>;
   /** When provided, renders in the right column alongside the retail form (which is hidden for B2B users via B2COnly). */
   formSlot?: React.ReactNode;
 }
@@ -90,6 +92,7 @@ export function ProductDetail<F extends Field>({
   promotions,
   giftProducts,
   documents,
+  analyticsProduct,
   formSlot,
 }: Props<F>) {
   return (
@@ -215,11 +218,13 @@ export function ProductDetail<F extends Field>({
                             streamableCtaDisabled,
                             promotions ?? Streamable.from(() => Promise.resolve(null)),
                             giftProducts ?? Streamable.from(() => Promise.resolve(null)),
+                            analyticsProduct ?? Streamable.from(() => Promise.resolve(null)),
                           ])}
                         >
-                          {([fields, ctaLabel, ctaDisabled, promos, gifts]) => (
+                          {([fields, ctaLabel, ctaDisabled, promos, gifts, analytics]) => (
                             <ProductDetailForm
                               action={action}
+                              analyticsProduct={analytics}
                               ctaDisabled={ctaDisabled ?? undefined}
                               ctaLabel={ctaLabel ?? undefined}
                               decrementLabel={decrementLabel}
@@ -246,11 +251,13 @@ export function ProductDetail<F extends Field>({
                         streamableCtaDisabled,
                         promotions ?? Streamable.from(() => Promise.resolve(null)),
                         giftProducts ?? Streamable.from(() => Promise.resolve(null)),
+                        analyticsProduct ?? Streamable.from(() => Promise.resolve(null)),
                       ])}
                     >
-                      {([fields, ctaLabel, ctaDisabled, promos, gifts]) => (
+                      {([fields, ctaLabel, ctaDisabled, promos, gifts, analytics]) => (
                         <ProductDetailForm
                           action={action}
+                          analyticsProduct={analytics}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}

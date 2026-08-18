@@ -18,6 +18,7 @@ import { ShippingForm, ShippingFormState } from './shipping-form';
 
 import { CartEmptyState } from '.';
 import { getCartId } from '~/lib/cart';
+import { bodl } from '~/lib/bodl';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -278,6 +279,36 @@ export function CartClient<LineItem extends CartLineItem>({
                   incrementLabel={incrementLineItemLabel}
                   lineItem={lineItem}
                   onSubmit={(formData) => {
+                    const intent = formData.get('intent');
+                    const analyticsItem = {
+                      product_id: (lineItem as any).productEntityId?.toString(),
+                      product_name: lineItem.title,
+                      sku: (lineItem as any).sku,
+                      brand_name: (lineItem as any).brandName,
+                      currency: (lineItem as any).currency,
+                      purchase_price: (lineItem as any).rawPrice,
+                    };
+
+                    if (intent === 'increment') {
+                      bodl.cart.productAdded({
+                        currency: analyticsItem.currency,
+                        product_value: analyticsItem.purchase_price,
+                        line_items: [{ ...analyticsItem, quantity: 1 }],
+                      });
+                    } else if (intent === 'decrement') {
+                      bodl.cart.productRemoved({
+                        currency: analyticsItem.currency,
+                        product_value: analyticsItem.purchase_price,
+                        line_items: [{ ...analyticsItem, quantity: 1 }],
+                      });
+                    } else if (intent === 'delete') {
+                      bodl.cart.productRemoved({
+                        currency: analyticsItem.currency,
+                        product_value: analyticsItem.purchase_price * lineItem.quantity,
+                        line_items: [{ ...analyticsItem, quantity: lineItem.quantity }],
+                      });
+                    }
+
                     startTransition(() => {
                       formAction(formData);
                       setOptimisticLineItems(formData);
