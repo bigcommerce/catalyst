@@ -133,6 +133,9 @@ export function ProductDetailForm<F extends Field>({
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
 
+      // eslint-disable-next-line no-console
+      console.log('🔬 [bodl-debug] analyticsProduct:', analyticsProduct);
+
       if (analyticsProduct) {
         const quantity = Number(quantityControl.value) || 1;
 
