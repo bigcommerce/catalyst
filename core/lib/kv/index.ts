@@ -1,11 +1,14 @@
-import { MemoryKvAdapter } from './adapters/memory';
+import { MemoryKvAdapter, SHARED_STORE_RECHECK_MS } from './adapters/memory';
 import { KvAdapter, SetCommandOptions } from './types';
 
 interface Config {
   logger?: boolean;
 }
 
-const memoryKv = new MemoryKvAdapter();
+// L1 in front of whichever adapter `createKVAdapter` selects. Expires so a
+// process periodically re-reads the shared store and picks up values other
+// processes wrote.
+const memoryKv = new MemoryKvAdapter({ ttlMs: SHARED_STORE_RECHECK_MS });
 
 class KV<Adapter extends KvAdapter> implements KvAdapter {
   private kv?: Adapter;
@@ -95,6 +98,11 @@ async function createKVAdapter() {
     return new UpstashKvAdapter();
   }
 
+  // Deliberately unbounded, unlike the L1 above. This is the fallback when no
+  // shared store is configured, so there is nothing to re-read: expiring here
+  // would empty both layers together and leave `with-routes` with no cached
+  // value, sending every request past the window into its blocking origin
+  // fetch rather than its background refresh.
   return new MemoryKvAdapter();
 }
 
