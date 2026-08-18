@@ -11,7 +11,7 @@ interface Props {
   product: FragmentOf<typeof ProductViewedFragment>;
 }
 
-export const productItemTransform = (p: FragmentOf<typeof ProductViewedFragment>) => {
+const productItemTransform = (p: FragmentOf<typeof ProductViewedFragment>) => {
   return {
     product_id: p.entityId.toString(),
     product_name: p.name,
