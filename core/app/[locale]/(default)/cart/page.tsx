@@ -89,6 +89,10 @@ export default async function Cart() {
     selectedOptions: item.selectedOptions,
     productEntityId: item.productEntityId,
     variantEntityId: item.variantEntityId,
+    sku: item.sku,
+    brandName: item.brand,
+    currency: item.listPrice.currencyCode,
+    rawPrice: item.listPrice.value,
   }));
 
   const totalCouponDiscount =
