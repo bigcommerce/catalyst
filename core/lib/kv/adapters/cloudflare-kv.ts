@@ -120,18 +120,18 @@ export class CloudflareKvAdapter implements KvAdapter {
           const value = await this.namespace.get(key, 'json');
 
           if (value === null || value === undefined) {
-            this.logger(`CLOUDFLARE_KV GET - Key: ${key} - Found: false`);
+            this.logger(`GET - Key: ${key} - Found: false`);
 
             return null;
           }
 
-          this.logger(`CLOUDFLARE_KV GET - Key: ${key} - Found: true`);
+          this.logger(`GET - Key: ${key} - Found: true`);
 
           // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
           return value as Data;
         } catch (error) {
           this.logger(
-            `CLOUDFLARE_KV GET ERROR - Key: ${key} - Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+            `GET ERROR - Key: ${key} - Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
           );
 
           return null;
@@ -148,10 +148,10 @@ export class CloudflareKvAdapter implements KvAdapter {
       await this.namespace.put(key, JSON.stringify(value), {
         expirationTtl: ROUTES_CACHE_TTL_SECONDS,
       });
-      this.logger(`CLOUDFLARE_KV SET - Key: ${key} - Success`);
+      this.logger(`SET - Key: ${key} - Success`);
     } catch (error) {
       this.logger(
-        `CLOUDFLARE_KV SET ERROR - Key: ${key} - Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `SET ERROR - Key: ${key} - Error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
 
