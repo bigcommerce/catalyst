@@ -394,9 +394,10 @@ Examples:
       // and `catalyst projects create` would fail or re-prompt for login
       // immediately after `create` already logged the user in.
       //
-      // Runs after `setupCommerceHosting` — which writes the same file to
-      // record `projectUuid` — because `Conf` merges into existing contents
-      // whereas that helper overwrites wholesale.
+      // Ordered after `setupCommerceHosting`, which writes the same file to
+      // record `projectUuid`. Both merge into existing contents now, so the
+      // order no longer matters for correctness — kept so the credentials
+      // written here are the ones that land last.
       if (storeHash && accessToken) {
         const projectConfig = getProjectConfig(projectDir);
 

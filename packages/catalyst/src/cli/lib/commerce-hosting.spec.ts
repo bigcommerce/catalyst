@@ -1,5 +1,5 @@
 import { confirm, input, select } from '@inquirer/prompts';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
@@ -562,7 +562,9 @@ describe('promptForCommerceHostingProject', () => {
 
 describe('setupCommerceHosting', () => {
   const packageJsonSchema = z.record(z.string(), z.unknown());
-  const projectJsonSchema = z.object({
+  // Loose: `z.object` strips unknown keys, which would quietly discard the very
+  // fields (`env`, `apiHost`) the preservation tests below assert on.
+  const projectJsonSchema = z.looseObject({
     projectUuid: z.string(),
     framework: z.string(),
     storeHash: z.string().optional(),
@@ -598,6 +600,14 @@ describe('setupCommerceHosting', () => {
   function readCorePackageJson() {
     return packageJsonSchema.parse(
       JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf-8')),
+    );
+  }
+
+  function writeProjectJson(contents: unknown) {
+    mkdirSync(join(projectDir, '.bigcommerce'), { recursive: true });
+    writeFileSync(
+      join(projectDir, '.bigcommerce', 'project.json'),
+      JSON.stringify(contents, null, 2),
     );
   }
 
@@ -749,6 +759,114 @@ describe('setupCommerceHosting', () => {
 
     expect(projectJson.storeHash).toBe('abc123');
     expect(projectJson.accessToken).toBeUndefined();
+  });
+
+  describe('preserving existing project.json contents', () => {
+    // `catalyst deploy` re-runs setup whenever the project isn't transformed,
+    // so this fires on projects that already hold real values. Stored env vars
+    // are sent as secrets on every deploy, so losing them means the next deploy
+    // ships a worker without its storefront credentials.
+    it('keeps stored deployment env vars', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        env: { BIGCOMMERCE_STOREFRONT_TOKEN: 'token', BIGCOMMERCE_CHANNEL_ID: '1' },
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        env: { BIGCOMMERCE_STOREFRONT_TOKEN: 'token', BIGCOMMERCE_CHANNEL_ID: '1' },
+      });
+    });
+
+    // `apiHost` is equally a casualty, and unknown keys are carried through so
+    // a future addition to the config doesn't have to remember to update this.
+    it('keeps apiHost and keys it does not know about', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        apiHost: 'api.integration.zone',
+        somethingAddedLater: 'value',
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      const projectJson = readProjectJson();
+
+      expect(projectJson.apiHost).toBe('api.integration.zone');
+      expect(projectJson.somethingAddedLater).toBe('value');
+    });
+
+    // Re-linking without credentials must not clear credentials the project
+    // already had: `projects link` calls this with whatever it happens to hold.
+    it('keeps stored credentials when none are supplied', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+    });
+
+    it('overwrites stored credentials when new ones are supplied', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+
+      await setupCommerceHosting({
+        projectDir,
+        projectUuid: 'uuid-xyz',
+        storeHash: 'new-hash',
+        accessToken: 'new-token',
+      });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        storeHash: 'new-hash',
+        accessToken: 'new-token',
+      });
+    });
+
+    // Setup writes everything needed for a working project, so a corrupt file
+    // should be replaced rather than block the user from setting up at all.
+    it('starts fresh when the existing file is not valid JSON', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      mkdirSync(join(projectDir, '.bigcommerce'), { recursive: true });
+      writeFileSync(join(projectDir, '.bigcommerce', 'project.json'), '{ not json');
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({ projectUuid: 'uuid-xyz', framework: 'catalyst' });
+    });
+
+    it('starts fresh when the existing file holds a non-object', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson(['not', 'an', 'object']);
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({ projectUuid: 'uuid-xyz', framework: 'catalyst' });
+    });
   });
 
   it('throws when package.json is missing', async () => {
