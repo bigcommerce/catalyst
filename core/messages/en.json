@@ -469,6 +469,7 @@
       "additionalInformation": "Additional information",
       "currentStock": "{quantity, number} in stock",
       "backorderQuantity": "{quantity, number} will be on backorder",
+      "maxPurchasableQuantity": "The maximum purchasable quantity is {quantity, number}. Please adjust and try again.",
       "loadingMoreImages": "Loading more images",
       "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
       "playVideo": "Play video",
