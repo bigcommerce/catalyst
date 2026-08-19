@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 
 import { signOut } from '~/auth';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { setForceRefreshCookie } from '~/lib/force-refresh';
 
 export const GET = async (
@@ -15,5 +15,5 @@ export const GET = async (
   await signOut({ redirect: false });
   await setForceRefreshCookie();
 
-  redirect({ href: redirectToPathname, locale });
+  await redirect({ href: redirectToPathname, locale });
 };
