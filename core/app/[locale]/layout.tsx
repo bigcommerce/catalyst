@@ -176,12 +176,8 @@ export default async function RootLayout({ params, children }: Props) {
   );
 }
 
-// Intentionally no `generateStaticParams` for locales.
-//
-// It served no purpose here: every route under `[locale]` already renders on demand, because the
-// tree reads cookies (cart id, customer session, currency preference). Keeping it would only
-// reintroduce a build-time dependency on the locale list, and any page it did manage to prerender
-// would have the build-time subfolder prefixes baked into its links — the staleness this route
-// exists to avoid. `dynamicParams` defaults to `true`, so every configured locale still resolves.
+// Intentionally no `generateStaticParams`: every route under `[locale]` already renders on demand
+// (the tree reads cookies), so it would only add a build-time dependency on the locale list, and
+// anything it did prerender would bake in stale subfolder prefixes.
 
 export const fetchCache = 'default-cache';

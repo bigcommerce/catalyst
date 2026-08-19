@@ -2,19 +2,17 @@ import { getLocalePrefix, LocaleRouting } from '~/i18n/locale-routing';
 import { expect, test } from '~/tests/fixtures';
 import { getTestLocaleRouting } from '~/tests/lib/locale';
 
-// The switcher renders locale codes, uppercased via CSS in the trigger and via `toLocaleUpperCase`
-// in the menu items, so match the code case-insensitively but anchored.
+// The switcher uppercases codes (CSS in the trigger, `toLocaleUpperCase` in the items).
 const localeName = (locale: string) => new RegExp(`^${locale}$`, 'i');
 
-// The URL a locale is served at, whether it sits at the bare root or under a subfolder.
+// The URL a locale is served at, root or subfolder.
 const pathFor = (localeRouting: LocaleRouting, locale: string) => {
   const prefix = getLocalePrefix(localeRouting, locale);
 
   return prefix === '' ? '/' : `${prefix}/`;
 };
 
-// Deliberately shape-agnostic: works whether one locale sits at "/" (`as-needed`) or every locale
-// carries a prefix (`always`), since that depends on merchant configuration.
+// Shape-agnostic: works whether a locale sits at "/" (`as-needed`) or all are prefixed (`always`).
 const resolveLocalePair = async () => {
   const localeRouting = await getTestLocaleRouting();
   const [first, second] = localeRouting.locales;
@@ -34,8 +32,7 @@ test('switching locale navigates to that locale and records the choice', async (
 
   test.skip(!first || !second, SKIP_REASON);
 
-  // The context locale is pinned because `firstPath` may be "/", where Accept-Language detection
-  // would otherwise redirect away from the locale under test.
+  // Locale pinned because `firstPath` may be "/", where detection would redirect away.
   const context = await browser.newContext({ locale: first });
   const page = await context.newPage();
 
@@ -63,8 +60,7 @@ test('an explicit locale choice survives Accept-Language detection', async ({ br
 
   test.skip(!first || !second, SKIP_REASON);
 
-  // Chromium derives `Accept-Language` from the context locale, and that wins over per-request
-  // headers, so locale detection has to be exercised by setting the browser locale itself.
+  // Chromium derives `Accept-Language` from the context locale, and that beats per-request headers.
   const context = await browser.newContext({ locale: second });
   const page = await context.newPage();
 
@@ -86,8 +82,7 @@ test('an explicit locale choice survives Accept-Language detection', async ({ br
 
     expect(cookies.find((cookie) => cookie.name === 'NEXT_LOCALE')?.value).toBe(first);
 
-    // The explicit choice must now win over Accept-Language, rather than bouncing the shopper back
-    // to their browser language on every visit.
+    // The explicit choice must now beat Accept-Language on every later visit.
     await page.goto('/');
     await expect(page).toHaveURL(firstPath ?? '/');
   } finally {

@@ -1,24 +1,15 @@
 import { defineRouting } from 'next-intl/routing';
 
-/**
- * A single locale as configured by the merchant in the BigCommerce control panel.
- *
- * `path` is the locale subfolder segment (e.g. `fr-fr`). The GraphQL schema types it as
- * non-nullable, so "no subfolder" arrives as an empty string, but `build-config.json`
- * allows `null` — both are treated as "no subfolder" below.
- */
+// A locale as configured in the BigCommerce control panel. `path` is the subfolder segment (e.g.
+// `fr-fr`); both `''` and `null` mean "no subfolder".
 export interface LocaleNode {
   code: string;
   isDefault: boolean;
   path: string | null;
 }
 
-/**
- * Everything needed to map between locales and URLs, in both directions.
- *
- * This is derived from merchant configuration, so it can change without a redeploy. Treat it as
- * request-scoped data rather than a module constant — see `~/i18n/locale-config`.
- */
+// Maps between locales and URLs in both directions. Merchant configuration, so treat it as
+// request-scoped rather than a module constant — see `~/i18n/locale-config`.
 export interface LocaleRouting {
   locales: string[];
   /** The locale BigCommerce marks as default. Not necessarily the one served at "/". */
@@ -30,22 +21,17 @@ export interface LocaleRouting {
 }
 
 /**
- * Trims whitespace and surrounding slashes from a control-panel subfolder value, so `fr-fr`,
- * `fr-fr/` and `/fr-fr` all describe the same prefix.
+ * Normalizes a control-panel subfolder so `fr-fr`, `fr-fr/` and `/fr-fr` are equivalent.
  *
- * @param {string | null} path - The raw `path` value from BigCommerce.
- * @returns {string} The bare subfolder, or an empty string when the locale has none.
+ * @param {string | null} path - The raw `path` from BigCommerce.
+ * @returns {string} The bare subfolder, empty when the locale has none.
  */
 export function normalizeLocalePath(path: string | null): string {
   return (path ?? '').trim().replace(/^\/+/, '').replace(/\/+$/, '');
 }
 
-// The locale that should occupy the bare root URL ("/").
-//
-// Rule:
-//   1. If the default locale has no CP path, default lives at "/".
-//   2. Else, if exactly one non-default locale has no CP path, that one lives at "/".
-//   3. Otherwise, no locale lives at "/" and every locale gets a prefix.
+// Which locale occupies the bare "/": the default locale if it has no subfolder, else the sole
+// non-default locale without one, else none (every locale gets a prefix).
 function computeRootLocale(
   localeNodes: readonly LocaleNode[],
   defaultLocaleNode: LocaleNode | undefined,
@@ -67,10 +53,8 @@ function computeRootLocale(
 /**
  * Pure projection of merchant locale configuration onto routing data.
  *
- * Shared by the build-time seed, the proxy and React Server Components so the three can't drift.
- *
- * @param {LocaleNode[]} localeNodes - Locales as configured in the BigCommerce control panel.
- * @returns {LocaleRouting} Locale codes, prefixes and the locale (if any) served at "/".
+ * @param {LocaleNode[]} localeNodes - Locales as configured in the control panel.
+ * @returns {LocaleRouting} Codes, prefixes and the locale (if any) served at "/".
  */
 export function deriveLocaleRouting(localeNodes: readonly LocaleNode[]): LocaleRouting {
   const defaultLocaleNode = localeNodes.find((locale) => locale.isDefault);
@@ -101,15 +85,11 @@ enum LocalePrefixes {
 }
 
 /**
- * Builds a next-intl routing config from merchant locale configuration.
+ * Builds a next-intl routing config. `rootLocale` becomes next-intl's `defaultLocale` so "/"
+ * resolves; when no locale sits at "/", every locale needs a prefix, hence `always` mode.
  *
- * `rootLocale` is the locale (if any) that occupies the bare "/" URL. We hand it to next-intl as
- * the routing default so URLs like "/" resolve correctly. When no locale lives at "/", every
- * locale needs a prefix, so we use `always` mode and fall back to the BC default for next-intl's
- * defaultLocale.
- *
- * @param {LocaleRouting} localeRouting - Locale routing derived from merchant configuration.
- * @returns {object} A next-intl routing config for `createMiddleware` or `createNavigation`.
+ * @param {LocaleRouting} localeRouting - Locale routing from merchant configuration.
+ * @returns {object} Config for `createMiddleware` or `createNavigation`.
  */
 export function createRouting(localeRouting: LocaleRouting) {
   const { locales, defaultLocale, prefixes, rootLocale } = localeRouting;
@@ -127,16 +107,13 @@ export function createRouting(localeRouting: LocaleRouting) {
 }
 
 /**
- * The URL prefix next-intl will use for `locale`, mirroring its internal `getLocalePrefix` plus
- * `as-needed` handling: an unprefixed root locale resolves to `''`, a locale with no configured
- * subfolder falls back to its bare code.
+ * The prefix next-intl uses for `locale`, mirroring its internal `getLocalePrefix`. Keep in sync
+ * with `createRouting`: the proxy passes this to `withRoutes`, which strips exactly what
+ * next-intl matched.
  *
- * Keep this in sync with `createRouting` — the proxy hands the result to `withRoutes` so route
- * resolution strips exactly what next-intl matched.
- *
- * @param {LocaleRouting} localeRouting - Locale routing derived from merchant configuration.
- * @param {string} locale - The locale code to resolve a prefix for.
- * @returns {string} The URL prefix, or an empty string when the locale is served at "/".
+ * @param {LocaleRouting} localeRouting - Locale routing from merchant configuration.
+ * @param {string} locale - The locale code to resolve.
+ * @returns {string} The prefix, empty when the locale is served at "/".
  */
 export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): string {
   if (locale === localeRouting.rootLocale) return '';

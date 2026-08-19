@@ -7,8 +7,7 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 
 export const GET = async () => {
-  // Excluded from the proxy, so there is no request locale here. This only ever needs the store's
-  // default channel, which is what a bare call resolves to.
+  // Outside the proxy, so there is no request locale: a bare call resolves the default channel.
   const sitemapIndex = await client.fetchSitemapIndex(getChannelIdFromLocale());
 
   return new Response(sitemapIndex, {

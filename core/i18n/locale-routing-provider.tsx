@@ -10,10 +10,8 @@ const createLocaleNavigation = (localeRouting: LocaleRouting) =>
 
 export type LocaleNavigation = ReturnType<typeof createLocaleNavigation>;
 
-// `createNavigation` hands back fresh component and hook identities on every call, so results are
-// memoized on the *content* of the configuration rather than its object identity. A new identity
-// carrying the same config (a fresh server payload, say) therefore reuses the same `Link` component
-// type, instead of remounting every link's subtree.
+// Memoized on config *content*, not object identity: `createNavigation` returns fresh component
+// identities each call, so a new payload with the same config would otherwise remount every link.
 const navigationCache = new Map<string, LocaleNavigation>();
 
 const getLocaleNavigation = (localeRouting: LocaleRouting): LocaleNavigation => {
@@ -37,19 +35,15 @@ const getLocaleNavigation = (localeRouting: LocaleRouting): LocaleNavigation => 
   return navigation;
 };
 
-// There is no build-time locale configuration to default to, so consumers must be inside the
-// provider. Every client component that navigates renders under `app/[locale]/layout.tsx`.
+// No build-time config to default to, so consumers must be inside the provider.
 const LocaleNavigationContext = createContext<LocaleNavigation | null>(null);
 
 interface Props {
   localeRouting: LocaleRouting;
 }
 
-// Makes the merchant's runtime locale routing available to client components.
-//
-// Rendered by `app/[locale]/layout.tsx` so that `Link`, `useRouter` and `usePathname` build URLs
-// from the same configuration the proxy used to resolve the request. The navigation is resolved
-// here, once per render pass, rather than in each of the (potentially hundreds of) consumers.
+// Rendered by `app/[locale]/layout.tsx` so client navigation builds URLs from the same config the
+// proxy resolved. Resolved here once per render pass, not in each of many consumers.
 export const LocaleRoutingProvider = ({ localeRouting, children }: PropsWithChildren<Props>) => {
   const navigation = useMemo(() => getLocaleNavigation(localeRouting), [localeRouting]);
 

@@ -10,8 +10,7 @@ import { permanentRedirect } from 'next/navigation';
  */
 
 export const GET = () => {
-  // Deliberately not the locale-aware redirect: /sitemap.xml is excluded from the proxy matcher, so
-  // it is not a localized route. Prefixing it would point at /<locale>/sitemap.xml, which 404s
-  // whenever every locale carries a prefix.
+  // Not the locale-aware redirect: /sitemap.xml is outside the proxy matcher, so prefixing it would
+  // point at /<locale>/sitemap.xml, which 404s once every locale carries a prefix.
   permanentRedirect('/sitemap.xml');
 };

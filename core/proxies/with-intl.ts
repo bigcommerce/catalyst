@@ -8,14 +8,12 @@ import { type ProxyFactory } from './compose-proxies';
 
 export const withIntl: ProxyFactory = (next) => {
   return async (request, event) => {
-    // Locale subfolders come from merchant configuration, so they are resolved per request rather
-    // than baked in at build time. `createMiddleware` is a thin closure over the routing config —
-    // all of its prefix matching already happens per invocation — so building it here is cheap.
+    // Resolved per request, not baked in at build time. `createMiddleware` is a thin closure over
+    // the config — its prefix matching already runs per invocation — so building it here is cheap.
     const localeRouting = await getLocaleRoutingForProxy(event);
 
-    // Only reachable with a cold cache and BigCommerce unreachable. Without the locale
-    // configuration the store's URL space is unknown, so there is no correct URL to serve. 503 says
-    // "try again" — a 404 would tell crawlers these pages no longer exist.
+    // Cold cache and BigCommerce unreachable: the URL space is unknown, so there is no correct URL
+    // to serve. 503 says "try again"; a 404 would tell crawlers these pages are gone.
     if (!localeRouting) {
       return new NextResponse('Service Unavailable', {
         status: 503,
@@ -25,11 +23,9 @@ export const withIntl: ProxyFactory = (next) => {
 
     const intlMiddleware = createMiddleware(createRouting(localeRouting));
 
-    // Set before running the middleware, not after: next-intl copies the incoming request headers
-    // onto its response as `x-middleware-request-*`, and that is the only mechanism by which a
-    // header reaches the render — `withRoutes` rewrites without forwarding request headers, and the
-    // header copy below would overwrite the override list anyway. This is how next-intl's own
-    // locale header gets through. Always overwritten here, so it is never trusted from the client.
+    // Must be set *before* the middleware runs: next-intl snapshots incoming request headers onto
+    // its response as `x-middleware-request-*`, which is the only way a header reaches the render.
+    // Always overwritten here, so it is never trusted from the client.
     request.headers.set(LOCALE_ROUTING_HEADER, JSON.stringify(localeRouting));
 
     const intlResponse = intlMiddleware(request);
@@ -43,9 +39,7 @@ export const withIntl: ProxyFactory = (next) => {
     const locale = intlResponse.headers.get('x-middleware-request-x-next-intl-locale') ?? '';
 
     request.headers.set('x-bc-locale', locale);
-    // The prefix next-intl matched for this locale. Route resolution downstream has to strip
-    // exactly this much off the pathname, and it can't recompute it from build-time config.
-    // Empty when the locale is served unprefixed at "/".
+    // The prefix next-intl matched, which `withRoutes` strips. Empty when served at "/".
     request.headers.set('x-bc-locale-prefix', locale ? getLocalePrefix(localeRouting, locale) : '');
 
     // Continue the proxy chain

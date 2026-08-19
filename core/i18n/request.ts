@@ -8,8 +8,7 @@ import { getForwardedLocaleRouting } from './locale-config';
 const fallbackLocale = 'en';
 
 // A locale is only servable if a message file was bundled for it. Treating a missing file as "not
-// found" rather than letting the import reject keeps an unrecognised locale a 404 instead of a 500,
-// which also covers the case where no routing was forwarded to validate against.
+// found" keeps an unrecognised locale a 404 rather than a 500.
 const loadMessages = async (locale: string): Promise<Record<string, unknown>> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
@@ -21,8 +20,7 @@ const loadMessages = async (locale: string): Promise<Record<string, unknown>> =>
 
 export default getRequestConfig(async ({ requestLocale }) => {
   const locale = await requestLocale;
-  // Header-only: resolving this by fetching would recurse back into this request config via
-  // `client.fetch`. Requests that render a page always carry it, so the gate still applies.
+  // Header-only: fetching here would recurse back into this request config via `client.fetch`.
   const localeRouting = await getForwardedLocaleRouting();
 
   if (!locale || (localeRouting && !localeRouting.locales.includes(locale))) {

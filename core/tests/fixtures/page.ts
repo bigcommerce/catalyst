@@ -43,8 +43,7 @@ function normalizeForTrailingSlashEnvVar(url: string): string {
 }
 
 // Override expect(page).toHaveURL assertion to ensure we are also checking locale-specific URLs when using relative paths.
-// e.g. expect(page).toHaveURL('/account/orders/') will also accept /de-de/account/orders/ when the
-// test locale is served under a subfolder rather than at the bare root.
+// e.g. expect(page).toHaveURL('/account/orders/') will also accept /de-de/account/orders/.
 export async function toHaveURL(
   this: ExpectMatcherState,
   page: Page,
@@ -55,7 +54,7 @@ export async function toHaveURL(
   let pass: boolean;
   let matcherResult: MatcherReturnType | undefined;
 
-  // Resolved once up front so the synchronous failure message below can reuse it.
+  // Resolved up front so the sync failure message below can reuse it.
   const prefixedUrl =
     typeof url === 'string' && url.startsWith('/') && (await isTestLocalePrefixed())
       ? await withTestLocalePrefix(url)

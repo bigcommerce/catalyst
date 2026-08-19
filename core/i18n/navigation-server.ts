@@ -1,5 +1,4 @@
-// Importing this from a client component must be a build error, not a silent bundling of the
-// GraphQL client and KV adapters into the browser.
+// A client import must be a build error, not a silent bundling of the GraphQL client and KV.
 import 'server-only';
 
 import { createNavigation } from 'next-intl/navigation';
@@ -12,15 +11,10 @@ const createLocaleNavigation = (localeRouting: LocaleRouting) =>
 
 type LocaleNavigation = ReturnType<typeof createLocaleNavigation>;
 
-// Server-side redirects that respect the merchant's runtime locale subfolders.
+// Locale-aware redirects. `async` because subfolders are resolved at runtime; `await` them as you
+// would the sync versions — they still never return.
 //
-// These are `async` because the subfolder configuration is fetched at runtime rather than baked in
-// at build time. `await` them as you would the synchronous versions — they still never return.
-//
-// Kept out of `~/i18n/routing` so that resolving the runtime config (and with it `~/client` and
-// `~/lib/kv`) never reaches the client bundle.
-//
-// Redirect will append the locale prefix even when in the default locale.
+// Redirect appends the locale prefix even in the default locale.
 // More info: https://github.com/amannn/next-intl/issues/1335
 export async function redirect(...args: Parameters<LocaleNavigation['redirect']>): Promise<never> {
   const { redirect: localeRedirect } = createLocaleNavigation(await getLocaleRouting());

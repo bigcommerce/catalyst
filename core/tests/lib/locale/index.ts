@@ -27,8 +27,7 @@ const LocaleSettingsQuery = `
   }
 `;
 
-// Locale subfolders are merchant configuration, so the test suite reads them from the store rather
-// than from a build artifact — the same source the storefront itself uses.
+// Read from the store, the same source the storefront uses, rather than a build artifact.
 const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
   const { BIGCOMMERCE_STORE_HASH, BIGCOMMERCE_CHANNEL_ID, BIGCOMMERCE_STOREFRONT_TOKEN } = testEnv;
 
@@ -70,9 +69,8 @@ const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
   return deriveLocaleRouting(localeNodes);
 };
 
-// Deliberately does not swallow fetch failures. Degrading silently would let the alternate-locale
-// suite pass by skipping, which is worse than a loud failure — credentials that are present but
-// broken should surface, not disappear.
+// Deliberately does not swallow fetch failures: degrading silently would let the alternate-locale
+// suite pass by skipping.
 const resolveLocaleRouting = async (): Promise<LocaleRouting> => {
   const resolved = await fetchLocaleRouting();
 

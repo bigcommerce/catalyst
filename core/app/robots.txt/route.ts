@@ -42,8 +42,7 @@ const baseUrl = parseUrl(
 export const GET = async () => {
   const { data } = await client.fetch({
     document: RobotsTxtQuery,
-    // Excluded from the proxy, so there is no request locale here. This only ever needs the store's
-    // default channel, which is what a bare call resolves to.
+    // Outside the proxy, so there is no request locale: a bare call resolves the default channel.
     channelId: getChannelIdFromLocale(),
     fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
   });

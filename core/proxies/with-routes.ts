@@ -217,8 +217,7 @@ const updateStatusCache = async (
   return statusCache;
 };
 
-// `prefix` is the locale subfolder that `withIntl` matched, passed down via `x-bc-locale-prefix`.
-// It is empty for the locale served unprefixed at "/", in which case there is nothing to strip.
+// `prefix` is what `withIntl` matched, via `x-bc-locale-prefix`. Empty means nothing to strip.
 const clearLocaleFromPath = (path: string, prefix: string) => {
   if (!prefix) {
     return path;
