@@ -247,10 +247,52 @@ function normalizeForCompare(url: URL): string {
 const sameInternalUrl = (a: URL, b: URL) =>
   a.origin === b.origin && normalizeForCompare(a) === normalizeForCompare(b);
 
+// Diagnostic instrumentation for the routing cache. The cost being measured is
+// a few milliseconds inside the worker, underneath the network and the streamed
+// response, so it cannot be resolved by timing requests from outside. Reporting
+// it on the response lets a load test read the real number instead of inferring
+// one.
+//
+// EXPERIMENTAL BRANCH ONLY — DO NOT MERGE.
+//
+// Emitted unconditionally so the two benchmark deployments need no extra
+// configuration, which also removes the failure mode where one arm has the flag
+// and the other does not. Shipping this as-is would put internal cache timings
+// on every production response; gate it behind an env var before it goes
+// anywhere near a real store.
+
+interface RouteTiming {
+  // Wall time spent in `kv.mget`. On Workers the clock only advances across
+  // I/O, so a lookup served from in-process memory reports exactly 0 and one
+  // that reaches the shared store reports real elapsed time. That makes 0 a
+  // meaningful value here rather than a failed measurement.
+  kvMs: number;
+  // Wall time spent in origin fetches that block the response. Excludes the
+  // `waitUntil` background refreshes, which cost the request nothing.
+  originMs: number;
+  // Whether the route came back from the cache at all, independent of how long
+  // the lookup took.
+  routeCached: boolean;
+}
+
+const createRouteTiming = (): RouteTiming => ({ kvMs: 0, originMs: 0, routeCached: false });
+
+const applyServerTiming = (response: Response, timing: RouteTiming) => {
+  response.headers.set(
+    'Server-Timing',
+    [
+      `rt;dur=${timing.kvMs}`,
+      `origin;dur=${timing.originMs}`,
+      `cache;desc="${timing.routeCached ? 'hit' : 'miss'}"`,
+    ].join(','),
+  );
+};
+
 const getRouteInfo = async (
   request: NextRequest,
   event: NextFetchEvent,
   customerAccessToken?: string,
+  timing: RouteTiming = createRouteTiming(),
 ) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
@@ -259,17 +301,26 @@ const getRouteInfo = async (
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
     const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
+    const lookupStart = Date.now();
+
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       kvKey(pathname, channelId),
       kvKey(STORE_STATUS_KEY, channelId),
     );
+
+    timing.kvMs = Date.now() - lookupStart;
+    timing.routeCached = Boolean(routeCache);
 
     // If caches are old, update them in the background and return the old data (SWR-like behavior)
     // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
       event.waitUntil(updateStatusCache(channelId, event));
     } else if (!statusCache) {
+      const statusStart = Date.now();
+
       statusCache = await updateStatusCache(channelId, event);
+
+      timing.originMs += Date.now() - statusStart;
     }
 
     const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
@@ -288,7 +339,11 @@ const getRouteInfo = async (
     if (routeCache && routeCache.expiryTime < Date.now()) {
       event.waitUntil(updateRouteCache(pathname, channelId, event));
     } else if (!routeCache) {
+      const routeStart = Date.now();
+
       routeCache = await updateRouteCache(pathname, channelId, event);
+
+      timing.originMs += Date.now() - routeStart;
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -309,13 +364,15 @@ const getRouteInfo = async (
 };
 
 export const withRoutes: ProxyFactory = () => {
-  return (request, event) =>
+  return async (request, event) => {
+    const timing = createRouteTiming();
+
     // eslint-disable-next-line complexity
-    auth(async (req) => {
+    const response = await auth(async (req) => {
       const locale = req.headers.get('x-bc-locale') ?? '';
       const customerAccessToken = req.auth?.user?.customerAccessToken;
 
-      const { route, status } = await getRouteInfo(req, event, customerAccessToken);
+      const { route, status } = await getRouteInfo(req, event, customerAccessToken, timing);
 
       if (status === 'MAINTENANCE') {
         // 503 status code not working - https://github.com/vercel/next.js/issues/50155
@@ -448,6 +505,13 @@ export const withRoutes: ProxyFactory = () => {
       return NextResponse.rewrite(rewriteUrl);
       // @ts-expect-error auth() overload expects middleware return type, but we return NextResponse directly for the proxy
     })(request, event);
+
+    if (response instanceof Response) {
+      applyServerTiming(response, timing);
+    }
+
+    return response;
+  };
 };
 
 async function recordProductVisit(request: Request, productId: number) {
