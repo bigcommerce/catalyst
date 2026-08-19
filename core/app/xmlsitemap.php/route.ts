@@ -1,6 +1,6 @@
 /* eslint-disable check-file/folder-naming-convention */
-import { defaultLocale } from '~/i18n/locales';
-import { permanentRedirect } from '~/i18n/routing';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
+import { permanentRedirect } from 'next/navigation';
 
 /*
  * This route is used to redirect the legacy Stencil sitemap that lives on /xmlsitemap.php
@@ -10,5 +10,8 @@ import { permanentRedirect } from '~/i18n/routing';
  */
 
 export const GET = () => {
-  permanentRedirect({ href: '/sitemap.xml', locale: defaultLocale });
+  // Deliberately not the locale-aware redirect: /sitemap.xml is excluded from the proxy matcher, so
+  // it is not a localized route. Prefixing it would point at /<locale>/sitemap.xml, which 404s
+  // whenever every locale carries a prefix.
+  permanentRedirect('/sitemap.xml');
 };

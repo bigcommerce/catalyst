@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { GiftCertificateCheckBalanceSection } from '@/vibes/soul/sections/gift-certificate-balance-section';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -35,7 +35,7 @@ export default async function GiftCertificates(props: Props) {
   const data = await getGiftCertificatesData(currencyCode);
 
   if (!data.giftCertificatesEnabled) {
-    return redirect({ href: '/', locale });
+    return await redirect({ href: '/', locale });
   }
 
   return (

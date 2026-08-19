@@ -5,7 +5,6 @@ import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { prefixes } from '~/i18n/locales';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
@@ -218,8 +217,12 @@ const updateStatusCache = async (
   return statusCache;
 };
 
-const clearLocaleFromPath = (path: string, locale: string) => {
-  const prefix = prefixes[locale] ?? `/${locale}`;
+// `prefix` is the locale subfolder that `withIntl` matched, passed down via `x-bc-locale-prefix`.
+// It is empty for the locale served unprefixed at "/", in which case there is nothing to strip.
+const clearLocaleFromPath = (path: string, prefix: string) => {
+  if (!prefix) {
+    return path;
+  }
 
   if (path === prefix || path === `${prefix}/`) {
     return '/';
@@ -252,12 +255,15 @@ const getRouteInfo = async (
   event: NextFetchEvent,
   customerAccessToken?: string,
 ) => {
-  const locale = request.headers.get('x-bc-locale') ?? '';
+  const localePrefix = request.headers.get('x-bc-locale-prefix') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
-    const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
+    const pathname = clearLocaleFromPath(
+      request.nextUrl.pathname + request.nextUrl.search,
+      localePrefix,
+    );
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       kvKey(pathname, channelId),
@@ -313,6 +319,7 @@ export const withRoutes: ProxyFactory = () => {
     // eslint-disable-next-line complexity
     auth(async (req) => {
       const locale = req.headers.get('x-bc-locale') ?? '';
+      const localePrefix = req.headers.get('x-bc-locale-prefix') ?? '';
       const customerAccessToken = req.auth?.user?.customerAccessToken;
 
       const { route, status } = await getRouteInfo(req, event, customerAccessToken);
@@ -435,7 +442,7 @@ export const withRoutes: ProxyFactory = () => {
         default: {
           const { pathname } = new URL(req.url);
 
-          const cleanPathName = clearLocaleFromPath(pathname, locale);
+          const cleanPathName = clearLocaleFromPath(pathname, localePrefix);
 
           url = `/${locale}${cleanPathName}`;
         }

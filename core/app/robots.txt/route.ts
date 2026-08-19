@@ -13,7 +13,6 @@
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { defaultLocale } from '~/i18n/locales';
 
 const RobotsTxtQuery = graphql(`
   query RobotsTxtQuery {
@@ -43,7 +42,9 @@ const baseUrl = parseUrl(
 export const GET = async () => {
   const { data } = await client.fetch({
     document: RobotsTxtQuery,
-    channelId: getChannelIdFromLocale(defaultLocale),
+    // Excluded from the proxy, so there is no request locale here. This only ever needs the store's
+    // default channel, which is what a bare call resolves to.
+    channelId: getChannelIdFromLocale(),
     fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
   });
 
