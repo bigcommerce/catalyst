@@ -200,7 +200,8 @@ export default async function Cart({ params }: Props) {
         inventoryMessages = {
           quantityReadyToShipMessage:
             data.site.settings?.inventory?.showQuantityOnHand &&
-            !!item.stockPosition?.quantityOnHand
+            !!item.stockPosition?.quantityOnHand &&
+            !!item.stockPosition.quantityBackordered
               ? t('quantityReadyToShip', {
                   quantity: Number(item.stockPosition.quantityOnHand),
                 })
