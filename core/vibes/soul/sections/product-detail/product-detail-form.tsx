@@ -108,27 +108,6 @@ export function ProductDetailForm<F extends Field>({
     successMessage: 'Product added to cart successfully!',
   });
 
-  // Log form submission for debugging
-  const wrappedFormAction = async (formData: FormData) => {
-    console.log('🚀 [form] Submitting to cart:', {
-      productId: formData.get('id'),
-      quantity: formData.get('quantity'),
-      freeToolProductId: formData.get('freeToolProductId'),
-      freeToolVariantId: formData.get('freeToolVariantId'),
-      promoCode: formData.get('promoCode'),
-    });
-
-    const result = await formAction(formData);
-
-    console.log('✅ [form] Action completed:', {
-      status: result.lastResult?.status,
-      hasErrors: !!result.lastResult?.error,
-      successMessage: result.successMessage
-    });
-
-    return result;
-  };
-
   useEffect(() => {
     if (lastResult?.status === 'success') {
       // This is needed to refresh the Data Cache after the product has been added to the cart.
@@ -179,41 +158,8 @@ export function ProductDetailForm<F extends Field>({
   // Get current quantity from form
   const currentQuantity = Number(quantityControl.value) || 1;
 
-  console.log('🎁 [form] Promotions received:', {
-    hasPromotions: !!promotions,
-    promotionCount: promotions?.length || 0,
-    promotions: promotions,
-    currentQuantity
-  });
-
   // Filter promotions based on quantity and rules
-  const eligiblePromotions = promotions?.filter((promo: any) => {
-    const isEligible = currentQuantity >= promo.minimumQuantity;
-    console.log('🎁 [form] Checking promo eligibility:', {
-      promoId: promo.id,
-      promoName: promo.name,
-      minimumQuantity: promo.minimumQuantity,
-      currentQuantity,
-      isEligible
-    });
-    return isEligible;
-  }) || [];
-
-  console.log('🎁 [form] Eligible promotions:', eligiblePromotions.length, eligiblePromotions);
-
-  // Calculate how many free gifts user can select
-  const maxFreeGiftsAllowed = eligiblePromotions.reduce((total: number, promo: any) => {
-    if (promo.applyOnce) {
-      // Can only get 1 gift regardless of quantity
-      return total + 1;
-    } else {
-      // Can get multiple gifts based on how many times they meet minimum
-      const timesQualified = Math.floor(currentQuantity / promo.minimumQuantity);
-      return total + timesQualified;
-    }
-  }, 0);
-
-  console.log('🎁 [form] Max free gifts allowed:', maxFreeGiftsAllowed);
+  const eligiblePromotions = promotions?.filter((promo: any) => currentQuantity >= promo.minimumQuantity) || [];
 
   // Prepare free tool options from eligible promotions only
   const freeToolOptions =
@@ -260,7 +206,6 @@ export function ProductDetailForm<F extends Field>({
 
     if (selectedTool?.promoCode) {
       setSelectedPromoCode(selectedTool.promoCode);
-      console.log('🎟️ [form] Promo code selected:', selectedTool.promoCode);
     }
 
     // Find the promotion associated with this tool
@@ -271,7 +216,6 @@ export function ProductDetailForm<F extends Field>({
       )
     );
     setSelectedPromotion(promo);
-    console.log('🎁 [form] Promotion selected:', promo);
 
     setFreeToolError(undefined);
   };
@@ -282,14 +226,6 @@ export function ProductDetailForm<F extends Field>({
       ? 1  // Only 1 gift regardless of quantity
       : Math.floor(currentQuantity / selectedPromotion.minimumQuantity)  // Multiple gifts
     : 0;
-
-  console.log('🎁 [form] Free tool quantity calculated:', {
-    selectedPromotion: selectedPromotion?.name,
-    applyOnce: selectedPromotion?.applyOnce,
-    currentQuantity,
-    minimumQuantity: selectedPromotion?.minimumQuantity,
-    freeToolQuantity
-  });
 
   // Reset free tool selection if quantity changes and user no longer qualifies
   useEffect(() => {

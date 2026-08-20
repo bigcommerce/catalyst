@@ -91,12 +91,7 @@ export const updateQuantity = async ({
   unstable_expirePath('/cart');
 
   // Validate and adjust free gifts after quantity update
-  console.log('🔍 [update-quantity] Validating promotion gifts after quantity update');
-  const validation = await validatePromotionGifts();
-
-  if (validation.removedGifts.length > 0) {
-    console.log('⚠️ [update-quantity] Removed gifts:', validation.removedGifts);
-  }
+  await validatePromotionGifts();
 
   return cart;
 };

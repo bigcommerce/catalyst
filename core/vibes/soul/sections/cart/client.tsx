@@ -32,6 +32,11 @@ export interface CartLineItem {
   subtitle: string;
   quantity: number;
   price: string;
+  productEntityId?: number;
+  sku?: string;
+  brandName?: string;
+  currency?: string;
+  rawPrice?: number;
 }
 
 export interface CartSummaryItem {
@@ -282,33 +287,41 @@ export function CartClient<LineItem extends CartLineItem>({
                     const intent = formData.get('intent');
 
                     try {
-                      const analyticsItem = {
-                        product_id: (lineItem as any).productEntityId?.toString(),
-                        product_name: lineItem.title,
-                        sku: (lineItem as any).sku,
-                        brand_name: (lineItem as any).brandName,
-                        currency: (lineItem as any).currency,
-                        purchase_price: (lineItem as any).rawPrice,
-                      };
+                      const { productEntityId, sku, brandName, currency, rawPrice } = lineItem;
 
-                      if (intent === 'increment') {
-                        bodl.cart.productAdded({
-                          currency: analyticsItem.currency,
-                          product_value: analyticsItem.purchase_price,
-                          line_items: [{ ...analyticsItem, quantity: 1 }],
-                        });
-                      } else if (intent === 'decrement') {
-                        bodl.cart.productRemoved({
-                          currency: analyticsItem.currency,
-                          product_value: analyticsItem.purchase_price,
-                          line_items: [{ ...analyticsItem, quantity: 1 }],
-                        });
-                      } else if (intent === 'delete') {
-                        bodl.cart.productRemoved({
-                          currency: analyticsItem.currency,
-                          product_value: analyticsItem.purchase_price * lineItem.quantity,
-                          line_items: [{ ...analyticsItem, quantity: lineItem.quantity }],
-                        });
+                      if (
+                        productEntityId != null &&
+                        currency != null &&
+                        rawPrice != null
+                      ) {
+                        const analyticsItem = {
+                          product_id: productEntityId.toString(),
+                          product_name: lineItem.title,
+                          sku,
+                          brand_name: brandName,
+                          currency,
+                          purchase_price: rawPrice,
+                        };
+
+                        if (intent === 'increment') {
+                          bodl.cart.productAdded({
+                            currency,
+                            product_value: rawPrice,
+                            line_items: [{ ...analyticsItem, quantity: 1 }],
+                          });
+                        } else if (intent === 'decrement') {
+                          bodl.cart.productRemoved({
+                            currency,
+                            product_value: rawPrice,
+                            line_items: [{ ...analyticsItem, quantity: 1 }],
+                          });
+                        } else if (intent === 'delete') {
+                          bodl.cart.productRemoved({
+                            currency,
+                            product_value: rawPrice * lineItem.quantity,
+                            line_items: [{ ...analyticsItem, quantity: lineItem.quantity }],
+                          });
+                        }
                       }
                     } catch (error) {
                       // Analytics must never block the actual cart mutation below.

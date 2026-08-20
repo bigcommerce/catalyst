@@ -74,12 +74,7 @@ export async function removeItem({
       validatePromotionGifts = (await import('./validate-promotion-gifts')).validatePromotionGifts;
     }
 
-    console.log('🔍 [remove-item] Validating promotion gifts after item removal');
-    const validation = await validatePromotionGifts();
-
-    if (validation.removedGifts.length > 0) {
-      console.log('⚠️ [remove-item] Removed gifts:', validation.removedGifts);
-    }
+    await validatePromotionGifts();
   }
 
   return cart;
