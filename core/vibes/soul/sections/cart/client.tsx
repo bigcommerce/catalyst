@@ -280,33 +280,40 @@ export function CartClient<LineItem extends CartLineItem>({
                   lineItem={lineItem}
                   onSubmit={(formData) => {
                     const intent = formData.get('intent');
-                    const analyticsItem = {
-                      product_id: (lineItem as any).productEntityId?.toString(),
-                      product_name: lineItem.title,
-                      sku: (lineItem as any).sku,
-                      brand_name: (lineItem as any).brandName,
-                      currency: (lineItem as any).currency,
-                      purchase_price: (lineItem as any).rawPrice,
-                    };
 
-                    if (intent === 'increment') {
-                      bodl.cart.productAdded({
-                        currency: analyticsItem.currency,
-                        product_value: analyticsItem.purchase_price,
-                        line_items: [{ ...analyticsItem, quantity: 1 }],
-                      });
-                    } else if (intent === 'decrement') {
-                      bodl.cart.productRemoved({
-                        currency: analyticsItem.currency,
-                        product_value: analyticsItem.purchase_price,
-                        line_items: [{ ...analyticsItem, quantity: 1 }],
-                      });
-                    } else if (intent === 'delete') {
-                      bodl.cart.productRemoved({
-                        currency: analyticsItem.currency,
-                        product_value: analyticsItem.purchase_price * lineItem.quantity,
-                        line_items: [{ ...analyticsItem, quantity: lineItem.quantity }],
-                      });
+                    try {
+                      const analyticsItem = {
+                        product_id: (lineItem as any).productEntityId?.toString(),
+                        product_name: lineItem.title,
+                        sku: (lineItem as any).sku,
+                        brand_name: (lineItem as any).brandName,
+                        currency: (lineItem as any).currency,
+                        purchase_price: (lineItem as any).rawPrice,
+                      };
+
+                      if (intent === 'increment') {
+                        bodl.cart.productAdded({
+                          currency: analyticsItem.currency,
+                          product_value: analyticsItem.purchase_price,
+                          line_items: [{ ...analyticsItem, quantity: 1 }],
+                        });
+                      } else if (intent === 'decrement') {
+                        bodl.cart.productRemoved({
+                          currency: analyticsItem.currency,
+                          product_value: analyticsItem.purchase_price,
+                          line_items: [{ ...analyticsItem, quantity: 1 }],
+                        });
+                      } else if (intent === 'delete') {
+                        bodl.cart.productRemoved({
+                          currency: analyticsItem.currency,
+                          product_value: analyticsItem.purchase_price * lineItem.quantity,
+                          line_items: [{ ...analyticsItem, quantity: lineItem.quantity }],
+                        });
+                      }
+                    } catch (error) {
+                      // Analytics must never block the actual cart mutation below.
+                      // eslint-disable-next-line no-console
+                      console.error('Failed to report cart analytics event:', error);
                     }
 
                     startTransition(() => {
