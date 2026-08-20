@@ -130,27 +130,12 @@ export function ProductDetailForm<F extends Field>({
   };
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('🔬 [bodl-debug] effect fired, lastResult:', lastResult, 'analyticsProduct:', analyticsProduct);
-
     if (lastResult?.status === 'success') {
-      toast.success(successMessage);
-
-      if (analyticsProduct) {
-        const quantity = Number(quantityControl.value) || 1;
-
-        bodl.cart.productAdded({
-          currency: analyticsProduct.currency,
-          product_value: analyticsProduct.purchase_price * quantity,
-          line_items: [{ ...analyticsProduct, quantity }],
-        });
-      }
-
       // This is needed to refresh the Data Cache after the product has been added to the cart.
       // The cart id is not picked up after the first time the cart is created/updated.
       router.refresh();
     }
-  }, [lastResult, successMessage, router]);
+  }, [lastResult, router]);
 
   const [form, formFields] = useForm({
     lastResult,
@@ -162,9 +147,23 @@ export function ProductDetailForm<F extends Field>({
     defaultValue,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
-    onSubmit: () => {
-      // The actual submission is handled by `useActionState` above.
+    onSubmit: (event, { formData }) => {
+      // The actual submission is handled by `useActionState` above. Fired here
+      // (rather than gated on the post-submission lastResult) because this form
+      // is rendered through an async Server Component wrapper (Makeswift) that
+      // remounts on Next.js's post-action revalidation, so the client never
+      // reliably observes the success state transition.
       toast.success('Product added to cart successfully!');
+
+      if (analyticsProduct) {
+        const quantity = Number(formData.get('quantity')) || 1;
+
+        bodl.cart.productAdded({
+          currency: analyticsProduct.currency,
+          product_value: analyticsProduct.purchase_price * quantity,
+          line_items: [{ ...analyticsProduct, quantity }],
+        });
+      }
     },
   });
 
