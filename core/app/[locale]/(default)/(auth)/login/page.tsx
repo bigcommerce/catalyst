@@ -8,11 +8,30 @@ import { Slot } from '~/lib/makeswift/slot';
 
 import { login } from './_actions/login';
 
-export async function generateMetadata(): Promise<Metadata> {
+interface Props {
+  searchParams: Promise<{ redirectTo?: string }>;
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const t = await getTranslations('Login');
+  const { redirectTo } = await searchParams;
+
+  // The header's Sign In link appends ?redirectTo=<current path> on every
+  // page site-wide, so Google was crawling and indexing a distinct
+  // /login?redirectTo=... URL per page on the whole catalog — all rendering
+  // identical content, flagged in GSC as "Duplicate without user-selected
+  // canonical." Canonical + nofollow on the link discourage/consolidate
+  // this; noindex here is the hard guarantee that no ?redirectTo= variant
+  // is ever indexable, regardless of how Google discovers it. The bare
+  // /login (no redirectTo) stays indexable and canonical, as intended.
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/login`
+    : 'https://gitool.com/login';
 
   return {
     title: t('title'),
+    alternates: { canonical: canonicalUrl },
+    ...(redirectTo && { robots: { index: false, follow: true } }),
   };
 }
 

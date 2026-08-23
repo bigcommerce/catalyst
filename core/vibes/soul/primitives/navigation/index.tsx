@@ -590,6 +590,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         ? accountHref
                         : `${accountHref}?redirectTo=${encodeURIComponent(pathname)}`
                     }
+                    // This link renders with a different redirectTo value on every
+                    // page site-wide — nofollow stops crawlers from discovering a
+                    // fresh /login?redirectTo=... URL on each one. The canonical
+                    // tag on the login page itself handles anything already indexed.
+                    rel="nofollow"
                   >
                     <span>
                       <LogIn size={20} strokeWidth={1} className="mr-1 inline" />
