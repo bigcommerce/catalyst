@@ -56,10 +56,12 @@ export default async (): Promise<NextConfig> => {
         {
           // Redirect es-MX URLs to English equivalents — BigCommerce sitemap
           // generates these URLs but the catalog has no Spanish translations,
-          // causing 404s for users clicking through from Google.
+          // causing 404s for users clicking through from Google. Permanent
+          // (308) so GSC actually consolidates/clears these URLs from the
+          // index instead of continuing to treat the redirect as reversible.
           source: '/es-MX/:path*',
           destination: '/:path*',
-          permanent: false,
+          permanent: true,
         },
       ];
     },
