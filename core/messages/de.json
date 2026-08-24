@@ -469,6 +469,7 @@
             "additionalInformation": "Weitere Informationen",
             "currentStock": "{quantity, number} auf Lager",
             "backorderQuantity": "{quantity, number} wird nachbestellt",
+            "maxPurchasableQuantity": "Die maximale Abnahmemenge beträgt {quantity, number}. Bitte passen Sie dies an und versuchen Sie es erneut.",
             "loadingMoreImages": "Weitere Bilder werden geladen",
             "imagesLoaded": "{count, plural, =1 {1 weiteres Bild geladen, } other {# weitere Bilder geladen, }}",
             "playVideo": "Video abspielen",
