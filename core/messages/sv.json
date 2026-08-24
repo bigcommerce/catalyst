@@ -469,6 +469,7 @@
             "additionalInformation": "Ytterligare information",
             "currentStock": "{quantity, number} i lager",
             "backorderQuantity": "{quantity, number} kommer att vara restnoterade",
+            "maxPurchasableQuantity": "Den maximala köpbara kvantiteten är {quantity, number}. Justera och försök igen.",
             "loadingMoreImages": "Laddar fler bilder",
             "imagesLoaded": "{count, plural, =1 {1 till bild har laddats} other {# till bilder har laddats}}",
             "playVideo": "Spela upp video",

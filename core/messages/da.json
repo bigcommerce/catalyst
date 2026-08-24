@@ -469,6 +469,7 @@
             "additionalInformation": "Yderligere oplysninger",
             "currentStock": "{antal, number} på lager",
             "backorderQuantity": "{antal, number} vil være i restordre",
+            "maxPurchasableQuantity": "Den maksimale købsmængde er {quantity, number}. Juster, og prøv igen.",
             "loadingMoreImages": "Indlæser flere billeder",
             "imagesLoaded": "{count, plural, =1 {1 yderligere billede indlæst} other {# yderligere billeder indlæst}}",
             "playVideo": "Afspil video",
