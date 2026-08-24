@@ -239,6 +239,15 @@
         "postalCodeRequired": "Postal code is required"
       }
     },
+    "PaymentMethods": {
+      "Add": {
+        "title": "Add a payment method",
+        "Errors": {
+          "sessionExpired": "Your session has expired. Please log in again.",
+          "somethingWentWrong": "Something went wrong. Please try again."
+        }
+      }
+    },
     "Settings": {
       "title": "Account settings",
       "changePassword": "Change password",
