@@ -469,6 +469,7 @@
             "additionalInformation": "Aanvullende informatie",
             "currentStock": "{quantity, number} op voorraad",
             "backorderQuantity": "{hoeveelheid, aantal} staat in backorder",
+            "maxPurchasableQuantity": "De maximale aankoophoeveelheid is {quantity, number}. Pas aan en probeer het opnieuw.",
             "loadingMoreImages": "Meer afbeeldingen laden",
             "imagesLoaded": "{count, plural, =1 {1 afbeelding geladen} other {# afbeeldingen geladen}}",
             "playVideo": "Video afspelen",

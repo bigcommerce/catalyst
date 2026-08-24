@@ -469,6 +469,7 @@
             "additionalInformation": "Información adicional",
             "currentStock": "{cantidad, número} en existencias",
             "backorderQuantity": "{cantidad, número} en pedidos pendientes",
+            "maxPurchasableQuantity": "La cantidad máxima disponible para tu compra es {quantity, number}. Ajusta y vuelve a intentarlo.",
             "loadingMoreImages": "Cargando más imágenes",
             "imagesLoaded": "{count, plural, =1 {1 imagen más cargada} other {# imágenes más cargadas}}",
             "playVideo": "Ver vídeo",
