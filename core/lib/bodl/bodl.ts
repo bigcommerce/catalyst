@@ -25,6 +25,7 @@ export class Bodl {
 
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
+  readonly checkout = this.getCheckoutEvents();
   readonly consent = this.getConsentEvents();
 
   private readonly bodlScriptId = 'bodl-events-script';
@@ -196,6 +197,20 @@ export class Bodl {
         });
       },
     } satisfies Analytics.Cart.Events;
+  }
+
+  private getCheckoutEvents() {
+    return {
+      began: (payload) => {
+        Bodl.waitForBodlEvents(() => {
+          window.bodlEvents?.checkout.emitCheckoutBeginEvent({
+            event_id: uuidv4(),
+            channel_id: this.config.channelId,
+            ...payload,
+          });
+        });
+      },
+    } satisfies Analytics.Checkout.Events;
   }
 
   private getNavigationEvents() {

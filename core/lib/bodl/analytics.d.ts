@@ -74,6 +74,33 @@ declare namespace Analytics {
     }
   }
 
+  export namespace Checkout {
+    interface Product {
+      product_id: string;
+      product_name: string;
+      brand_name?: string;
+      sku?: string;
+      sale_price?: number;
+      purchase_price: number;
+      base_price?: number;
+      retail_price?: number;
+      currency: string;
+      category_names?: string[];
+      variant_id?: number[];
+      quantity?: number;
+    }
+
+    interface CheckoutBeganPayload {
+      currency: string;
+      cart_value: number;
+      line_items: Product[];
+    }
+
+    export interface Events {
+      began: (payload: CheckoutBeganPayload) => void;
+    }
+  }
+
   export namespace Consent {
     interface ConsentLoadedPayload {
       functional: boolean;

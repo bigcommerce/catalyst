@@ -237,7 +237,12 @@ export function CartClient<LineItem extends CartLineItem>({
             </div>
           </dl>
 
-          <CheckoutButton cartId={cartId} action={checkoutAction} className="mt-4 w-full">
+          <CheckoutButton
+            action={checkoutAction}
+            cartId={cartId}
+            className="mt-4 w-full"
+            lineItems={optimisticLineItems}
+          >
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
@@ -438,14 +443,57 @@ function CounterForm({
 function CheckoutButton({
   action,
   cartId,
+  lineItems,
   ...rest
 }: {
   action: Action<SubmissionResult | null, FormData>;
   cartId?: string;
+  lineItems: CartLineItem[];
 } & React.ComponentPropsWithoutRef<typeof Button>) {
   const [lastResult, formAction] = useActionState(action, null);
 
-  const [form] = useForm({ lastResult });
+  const [form] = useForm({
+    lastResult,
+    // Fired here (rather than gated on the post-action lastResult) because this
+    // form is rendered through an async Server Component wrapper (Makeswift)
+    // that remounts on Next.js's post-action revalidation, so the client never
+    // reliably observes the success state transition.
+    onSubmit: () => {
+      try {
+        const currency = lineItems.find((item) => item.currency != null)?.currency;
+
+        if (currency != null) {
+          const cartValue = lineItems.reduce(
+            (total, item) => total + (item.rawPrice ?? 0) * item.quantity,
+            0,
+          );
+
+          bodl.checkout.began({
+            currency,
+            cart_value: cartValue,
+            line_items: lineItems
+              .filter(
+                (item): item is CartLineItem & { productEntityId: number; rawPrice: number } =>
+                  item.productEntityId != null && item.rawPrice != null,
+              )
+              .map((item) => ({
+                product_id: item.productEntityId.toString(),
+                product_name: item.title,
+                sku: item.sku,
+                brand_name: item.brandName,
+                currency: item.currency ?? currency,
+                purchase_price: item.rawPrice,
+                quantity: item.quantity,
+              })),
+          });
+        }
+      } catch (error) {
+        // Analytics must never block the actual checkout redirect below.
+        // eslint-disable-next-line no-console
+        console.error('Failed to report checkout analytics event:', error);
+      }
+    },
+  });
 
   useEffect(() => {
     if (form.errors) {
@@ -456,7 +504,7 @@ function CheckoutButton({
   }, [form.errors]);
 
   return (
-    <form action={formAction}>
+    <form {...getFormProps(form)} action={formAction}>
       <SubmitButton {...rest} />
     </form>
   );
