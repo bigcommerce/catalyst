@@ -19,8 +19,12 @@ import {
   downloadCore,
   mergeCorePerFile,
   mergeCoreTree,
+  normalizeWorkspaceDeps,
   resolveProject,
+  rewriteWorkspaceSpecifier,
 } from './upgrade';
+
+const CLIENT = '@bigcommerce/catalyst-client';
 
 const SUPPORTS_TREE = (() => {
   try {
@@ -97,6 +101,66 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     engine === 'tree'
       ? mergeCoreTree(baseDir, theirsDir, oursDir)
       : mergeCorePerFile(baseDir, theirsDir, oursDir, emptyFile);
+
+  test(
+    'bumps a Catalyst dependency across the real 1.6.3 → 1.7.0 tags',
+    async () => {
+      const root = await mkTmp();
+      const baseDir = join(root, 'base');
+      const theirsDir = join(root, 'theirs');
+      const [baseVersions, targetVersions] = await Promise.all([
+        downloadCore(REPO, BASE_REF, baseDir),
+        downloadCore(REPO, TARGET_REF, theirsDir),
+      ]);
+
+      // The published client really did move between these two tags — the whole
+      // reason the dependency needs reconciling at all.
+      expect(baseVersions[CLIENT]).toBe('1.0.1');
+      expect(targetVersions[CLIENT]).toBe('1.0.2');
+
+      // Both tags still carry the workspace specifier in their committed tree,
+      // which is why an unassisted merge leaves the merchant's version frozen.
+      expect(await readFile(join(baseDir, 'package.json'), 'utf-8')).toContain(
+        `"${CLIENT}": "workspace:^"`,
+      );
+
+      // A flat project: `catalyst create` resolved the specifier at scaffold
+      // time, so the merchant holds a real range.
+      const oursDir = join(root, 'project');
+
+      await cp(baseDir, oursDir, { recursive: true });
+
+      const pkgPath = join(oursDir, 'package.json');
+
+      await writeFile(
+        pkgPath,
+        rewriteWorkspaceSpecifier(await readFile(pkgPath, 'utf-8'), CLIENT, '1.0.1'),
+      );
+      await initGitProject(oursDir);
+
+      const { workspace, bumped } = await normalizeWorkspaceDeps(
+        await readFile(pkgPath, 'utf-8'),
+        baseDir,
+        theirsDir,
+        baseVersions,
+        targetVersions,
+      );
+
+      expect(bumped).toContain(CLIENT);
+      // The project isn't on the workspace protocol, so there's nothing to migrate.
+      expect(workspace.map((finding) => finding.name)).not.toContain(CLIENT);
+
+      const emptyFile = join(root, '.empty');
+
+      await writeFile(emptyFile, '');
+
+      const result = await runMerge(baseDir, theirsDir, oursDir, emptyFile);
+
+      expect(result.conflicted).not.toContain('package.json');
+      expect(await readFile(pkgPath, 'utf-8')).toContain(`"${CLIENT}": "^1.0.2"`);
+    },
+    TIMEOUT,
+  );
 
   test(
     'clean project upgrades without conflicts and all changes staged',
