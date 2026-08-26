@@ -13,6 +13,7 @@ const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 const logEntrySchema = z.object({
   timestamp: z.string().nullable().optional(),
+  entry_type: z.string().optional(),
   level: z.string().optional(),
   messages: z.array(z.unknown()).optional(),
   is_exception: z.boolean().optional(),
@@ -58,6 +59,7 @@ export type QueryLogsResult = z.infer<typeof queryLogsSchema>;
 export interface QueryLogsParams {
   start: string;
   end: string;
+  entryType?: 'log' | 'request';
   method?: string;
   statusCode?: number;
   urlLike?: string;
@@ -203,12 +205,27 @@ function isRedundantExceptionName(name: string, message: string): boolean {
 const stringifyMessage = (message: unknown) =>
   typeof message === 'string' ? message : JSON.stringify(message);
 
+const joinMessages = (messages: LogEntry['messages']) =>
+  (messages ?? []).map(stringifyMessage).join(' ').replace(/\s+/g, ' ').trim();
+
+// Identifies Cloudflare's auto-generated per-request invocation row (as
+// opposed to real application output like console.* or exceptions).
+export function isRequestLogEntry(entry: LogEntry): boolean {
+  if (entry.entry_type != null) return entry.entry_type === 'request';
+
+  // Older API deployments don't send entry_type. Fall back to a heuristic:
+  // the auto-generated row's message is exactly "<method> <url>", duplicating
+  // the entry's request details.
+  const method = entry.request?.method;
+  const url = entry.request?.url;
+
+  if (!method || !url) return false;
+
+  return joinMessages(entry.messages) === `${method} ${url}`;
+}
+
 export function formatLogEntry(entry: LogEntry, format: LogLineFormat = 'default'): string {
-  const message = (entry.messages ?? [])
-    .map(stringifyMessage)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const message = joinMessages(entry.messages);
 
   if (format === 'short') return message;
 
@@ -236,6 +253,13 @@ export function formatLogEntry(entry: LogEntry, format: LogLineFormat = 'default
     if (parts.length > 0) requestStr = ` ${parts.join(' ')}${status}`;
   }
 
+  // A request row carries no application output — its message only duplicates
+  // the request details — so print it as a bare request line, without a level
+  // bracket or message.
+  if (format === 'request' && isRequestLogEntry(entry)) {
+    return `[${entry.timestamp ?? UNKNOWN_TIME}]${requestStr}`;
+  }
+
   // `requestStr` is empty outside the `request` format, so the level stays
   // adjacent to the timestamp there and only slides after the request details
   // when they are present.
@@ -254,6 +278,7 @@ export async function queryLogs(
   search.set('start', params.start);
   search.set('end', params.end);
 
+  if (params.entryType) search.set('entry_type', params.entryType);
   if (params.method) search.set('method', params.method);
   if (params.statusCode != null) search.set('status_code', String(params.statusCode));
   if (params.urlLike) search.set('url:like', params.urlLike); // colon param

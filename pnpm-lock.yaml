@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@opennextjs/cloudflare':
+        specifier: 1.17.3
+        version: 1.17.3(encoding@0.1.13)(next@16.2.11(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(wrangler@4.31.0)
     devDependencies:
       '@changesets/changelog-github':
         specifier: ^0.5.1

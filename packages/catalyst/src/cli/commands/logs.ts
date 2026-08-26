@@ -7,6 +7,7 @@ import { httpError } from '../lib/http-errors';
 import { consola } from '../lib/logger';
 import {
   formatLogEntry,
+  isRequestLogEntry,
   LOG_LEVELS,
   queryLogs,
   QueryLogsResult,
@@ -457,6 +458,8 @@ function printPaginationHints(
     ...(options.urlLike ? [`--url-like ${quoteArg(options.urlLike)}`] : []),
     ...(options.levelMin ? [`--level-min ${options.levelMin}`] : []),
     ...(options.limit != null ? [`--limit ${options.limit}`] : []),
+    // The entry_type filter derives from --format (default/short request only
+    // application logs), so echoing --format is enough to reproduce it.
     ...(options.format !== 'default' ? [`--format ${options.format}`] : []),
   ];
   const command = `${invocationPrefix()} logs query ${baseFlags.join(' ')}`;
@@ -486,6 +489,10 @@ a ready-to-run command when more entries are available), or toward newer
 entries with \`--before\`. Cursors are only valid with the same window and
 filters they came from. With \`--format json\`, the pagination cursors are
 emitted as a final \`{"meta": ...}\` line after the entries.
+
+The \`default\` and \`short\` formats show only application log output,
+excluding Cloudflare's auto-generated per-request rows. Use
+\`--format request\` (or \`json\`/\`pretty\`) to include them.
 
 Examples:
   # Last hour of logs
@@ -565,9 +572,14 @@ Examples:
       const projectUuid = resolveProjectUuid(options);
       const { start, end } = resolveTimeWindow(options);
 
+      // default/short show only application output, so ask the API to filter
+      // out Cloudflare's per-request rows (they don't consume the page limit).
+      const hideRequestRows = options.format === 'default' || options.format === 'short';
+
       const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
         start,
         end,
+        entryType: hideRequestRows ? 'log' : undefined,
         method: options.method,
         statusCode: options.statusCode,
         urlLike: options.urlLike,
@@ -612,10 +624,21 @@ Examples:
       // the narrowed value so it survives into the forEach closure.
       const lineFormat = options.format;
 
-      ordered.forEach((entry) => consola.log(formatLogEntry(entry, lineFormat)));
+      // Older API deployments ignore the entry_type param, so also drop
+      // request rows client-side — a no-op against new APIs.
+      const visible = hideRequestRows
+        ? ordered.filter((entry) => !isRequestLogEntry(entry))
+        : ordered;
+      const hiddenCount = ordered.length - visible.length;
+
+      visible.forEach((entry) => consola.log(formatLogEntry(entry, lineFormat)));
+
+      const shownPart = `${visible.length} ${visible.length === 1 ? 'entry' : 'entries'} shown`;
 
       consola.info(
-        `${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} shown (oldest first, times in UTC).`,
+        hiddenCount > 0
+          ? `${shownPart}, ${hiddenCount} request ${hiddenCount === 1 ? 'row' : 'rows'} hidden (oldest first, times in UTC). Use --format request to see request rows.`
+          : `${shownPart} (oldest first, times in UTC).`,
       );
 
       printPaginationHints(result.meta?.cursor_pagination, start, end, options);
