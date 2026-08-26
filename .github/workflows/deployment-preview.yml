@@ -1,0 +1,114 @@
+# Reusable wrapper around packages/deployment-preview-action. A reusable
+# workflow has to live in .github/workflows, so it cannot sit beside the
+# action itself. Prefer this over calling the action
+# directly: a workflow can declare `concurrency`, `permissions` and
+# `environment`, and an action cannot. The concurrency group in particular is
+# load-bearing -- every preview shares one hosting project, so two deploys at
+# once would race for it.
+name: Catalyst Deployment Preview
+
+on:
+  workflow_call:
+    inputs:
+      # These three are configuration, not credentials, so they are variables.
+      # Leave them unset and they are read from the matching repository or
+      # environment variable inside this workflow. That is the only way an
+      # environment-scoped variable resolves: expressions in your `with:` block
+      # are evaluated in your job, which does not declare the environment.
+      project-uuid:
+        description: UUID of the shared hosting project. Defaults to vars.PREVIEW_DEPLOYMENT_PROJECT_UUID.
+        type: string
+        default: ''
+      store-hash:
+        description: Store hash. Defaults to vars.BIGCOMMERCE_STORE_HASH.
+        type: string
+        default: ''
+      channel-id:
+        description: Channel the preview storefront serves. Defaults to vars.BIGCOMMERCE_CHANNEL_ID.
+        type: string
+        default: ''
+      environment:
+        description: Deployment environment holding the secrets, if you use one.
+        type: string
+        default: ''
+      command-phrase:
+        description: Comment prefix that redeploys the preview.
+        type: string
+        default: redeploy preview
+      auto-deploy-newest:
+        description: Deploy automatically on a push to the newest open pull request.
+        type: boolean
+        default: true
+      node-version:
+        type: string
+        default: '24'
+      pnpm-version:
+        type: string
+        default: '10'
+      working-directory:
+        type: string
+        default: .
+      api-host:
+        type: string
+        default: api.bigcommerce.com
+    secrets:
+      access-token:
+        required: true
+      storefront-token:
+        required: true
+      auth-secret:
+        required: true
+    outputs:
+      deployed:
+        description: '"true" when this run deployed the preview.'
+        value: ${{ jobs.preview.outputs.deployed }}
+      url:
+        description: URL of the shared preview.
+        value: ${{ jobs.preview.outputs.url }}
+
+# One shared project means deploys serialize across the whole repository, not
+# per pull request. Nothing cancels in progress: GitHub coalesces queued runs,
+# so rapid pushes collapse to the newest commit on their own.
+concurrency:
+  group: catalyst-deployment-preview
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  # Comment deletion and reactions go through the issues API, which
+  # pull-requests: write alone does not cover.
+  issues: write
+
+jobs:
+  preview:
+    name: Deploy preview
+    # Cheap gate so an unrelated comment does not start a runner. The action
+    # re-checks the phrase, the fork rule and the commenter's permission.
+    if: >-
+      github.event_name == 'pull_request' ||
+      (
+        github.event.issue.pull_request != null &&
+        startsWith(github.event.comment.body, inputs.command-phrase)
+      )
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    outputs:
+      deployed: ${{ steps.preview.outputs.deployed }}
+      url: ${{ steps.preview.outputs.url }}
+    steps:
+      - id: preview
+        uses: bigcommerce/catalyst/packages/deployment-preview-action@preview-action-v1
+        with:
+          project-uuid: ${{ inputs.project-uuid || vars.PREVIEW_DEPLOYMENT_PROJECT_UUID }}
+          store-hash: ${{ inputs.store-hash || vars.BIGCOMMERCE_STORE_HASH }}
+          access-token: ${{ secrets.access-token }}
+          storefront-token: ${{ secrets.storefront-token }}
+          channel-id: ${{ inputs.channel-id || vars.BIGCOMMERCE_CHANNEL_ID }}
+          auth-secret: ${{ secrets.auth-secret }}
+          command-phrase: ${{ inputs.command-phrase }}
+          auto-deploy-newest: ${{ inputs.auto-deploy-newest }}
+          node-version: ${{ inputs.node-version }}
+          pnpm-version: ${{ inputs.pnpm-version }}
+          working-directory: ${{ inputs.working-directory }}
+          api-host: ${{ inputs.api-host }}

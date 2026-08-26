@@ -1,0 +1,25 @@
+# Recommended. Copy to .github/workflows/preview-deployment.yml
+#
+# This file must be merged to your default branch before `redeploy preview`
+# works: GitHub always reads issue_comment workflows from the default branch.
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created]
+
+jobs:
+  preview:
+    uses: bigcommerce/catalyst/.github/workflows/deployment-preview.yml@preview-action-v1
+    with:
+      environment: Preview Deployments
+      # project-uuid is deliberately not passed. The reusable workflow reads
+      # the PREVIEW_DEPLOYMENT_PROJECT_UUID variable from inside the job that
+      # declares the environment, which is the only place an
+      # environment-scoped variable resolves.
+    secrets:
+      access-token: ${{ secrets.BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN }}
+      storefront-token: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+      auth-secret: ${{ secrets.AUTH_SECRET }}

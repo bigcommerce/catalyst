@@ -2,7 +2,9 @@
   "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
   "changelog": [
     "@changesets/changelog-github",
-    { "repo": "bigcommerce/catalyst" }
+    {
+      "repo": "bigcommerce/catalyst"
+    }
   ],
   "commit": false,
   "linked": [],
@@ -12,5 +14,8 @@
     "tag": true
   },
   "baseBranch": "canary",
-  "updateInternalDependencies": "patch"
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@bigcommerce/deployment-preview-action"
+  ]
 }
