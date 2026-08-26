@@ -68,6 +68,66 @@ Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.cataly
 
 Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
+## GraphQL Schema and Types
+
+Catalyst types its GraphQL documents with [gql.tada](https://gql-tada.0no.co/), which needs a local
+copy of your store's GraphQL Storefront API schema. Two files at the project root hold it:
+
+| File                       | What it is                                                        |
+| -------------------------- | ----------------------------------------------------------------- |
+| `bigcommerce.graphql`      | Your channel's Storefront API schema, in SDL.                     |
+| `bigcommerce-graphql.d.ts` | The gql.tada introspection type that `client/graphql.ts` imports. |
+
+Both are build-time and editor-time artifacts. Nothing reads them while your storefront serves a
+request — they exist so `tsc`, ESLint, and your editor can check every query and mutation against
+the real schema.
+
+### Generating them
+
+```bash
+pnpm run generate
+```
+
+(`npm run generate` if your project uses npm — the `generate` script in `package.json` is the same
+either way.)
+
+The script reads `BIGCOMMERCE_STORE_HASH`, `BIGCOMMERCE_CHANNEL_ID`, and
+`BIGCOMMERCE_STOREFRONT_TOKEN` from `.env.local`, downloads the schema for that channel, and writes
+both files. `pnpm run dev`, `pnpm run build`, and `pnpm run deploy` each run `generate` first, so the
+usual development loop keeps them current on its own. Run it directly after switching channels or
+when you want to pick up a Storefront API schema change mid-session.
+
+### Commit both files
+
+**Commit `bigcommerce.graphql` and `bigcommerce-graphql.d.ts` to your repository.** They are
+deliberately absent from `.gitignore`:
+
+- `pnpm run lint` and `pnpm run typecheck` fail without `bigcommerce-graphql.d.ts`, because
+  `client/graphql.ts` imports it. Committing it lets CI check a pull request with no store
+  credentials at all.
+- A fresh clone gets GraphQL autocomplete and validation immediately, before anything is run.
+- Schema changes land in your diffs, so a field your storefront depends on going away is something
+  you see in review rather than at deploy time.
+
+They show up as untracked the first time you run `pnpm run dev`, because `catalyst create` makes its
+initial commit before the first `generate`. Add them:
+
+```bash
+git add bigcommerce.graphql bigcommerce-graphql.d.ts
+git commit -m "Add generated GraphQL schema and types"
+```
+
+### Local versus CI regeneration
+
+`build` and `deploy` regenerate the schema before Next.js compiles, so a deployment always uses
+whatever is live on the channel at that moment; the committed copies are never what ships. Your
+build environment therefore needs the same three variables `generate` does — the ones already
+required for the build itself.
+
+A CI job that only lints, typechecks, or runs unit tests needs no credentials, because it uses the
+committed files. If you would rather have CI verify that they are current, run `pnpm run generate`
+there and fail the job when `git diff --exit-code` reports a change.
+
 ## Resources
 
 - [Catalyst Documentation](https://catalyst.dev/docs/)

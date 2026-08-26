@@ -12,6 +12,25 @@ The default branch for this repository is called `canary`. This is the primary d
 
 To contribute to the `canary` branch, you can create a new branch off of `canary` and submit a PR against that branch.
 
+## GraphQL Schema Artifacts
+
+`pnpm run -r generate` downloads the GraphQL Storefront API schema for the channel in your
+`core/.env.local` and writes `core/bigcommerce.graphql` plus the gql.tada introspection type
+`core/bigcommerce-graphql.d.ts`. Run it after cloning, and again whenever you need to pick up schema
+changes — `pnpm run dev` and `pnpm run build` in `core/` also run it first.
+
+**Both files are gitignored in this repository** (see the root `.gitignore`). That is the opposite of
+the guidance we give merchants, who are told to commit them in
+[`core/README.md`](core/README.md#graphql-schema-and-types), and the difference is intentional:
+contributors regularly work against an unreleased Storefront API schema on their own test store, so a
+committed schema here would produce a stream of diffs that belong to nobody's change and conflict
+constantly between `canary` and the `integrations/*` branches. CI regenerates the files from store
+credentials before it lints and typechecks — see `.github/workflows/basic.yml`.
+
+Keep it that way when you touch `.gitignore`: the entries in the root `.gitignore` cover the
+monorepo, and `core/.gitignore` — which becomes the scaffolded project's `.gitignore` — must not
+gain them.
+
 ## API Scope
 
 Catalyst is intended to work with the [BigCommerce Storefront GraphQL API](https://developer.bigcommerce.com/docs/storefront/graphql) and not directly integrate out of the box with the [REST Management API](https://developer.bigcommerce.com/docs/rest-management).
