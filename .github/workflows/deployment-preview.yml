@@ -79,6 +79,8 @@ permissions:
   # Comment deletion and reactions go through the issues API, which
   # pull-requests: write alone does not cover.
   issues: write
+  # Lets a `redeploy preview` comment show up in the pull request checks.
+  checks: write
 
 jobs:
   preview:

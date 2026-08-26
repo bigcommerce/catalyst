@@ -1,7 +1,7 @@
 // Nothing compiles action.yml, so a YAML or shell mistake would only surface in
 // a consumer's repository. Parse it here, and syntax-check every run block.
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import fs, { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -144,6 +144,64 @@ check('every required action input is supplied by the reusable workflow', () => 
   const required = Object.entries(action.inputs).filter(([, v]) => v.required).map(([k]) => k);
   const missing = required.filter((k) => !(k in step.with));
   if (missing.length) throw new Error(`missing: ${missing.join(', ')}`);
+});
+
+check('both in-repo pins track the package major', () => {
+  // The release workflow enforces this too, but failing here means a version
+  // bump that forgets the pins is caught in review, not at release time.
+  const { version } = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+  const major = version.split('.')[0];
+  const expected = `@preview-action-v${major}`;
+
+  const pins = [
+    join(REPO_ROOT, 'core', '.github', 'workflows', 'preview-deployment.yml'),
+    reusable,
+  ];
+
+  const wrong = pins
+    .filter((f) => !readFileSync(f, 'utf8').includes(expected))
+    .map((f) => f.replace(REPO_ROOT + '/', ''));
+
+  if (wrong.length) throw new Error(`do not reference ${expected}: ${wrong.join(', ')}`);
+});
+
+check('the check-run lifecycle is opened and always closed', () => {
+  const steps = action.runs.steps;
+  const open = steps.find((s) => s.name === 'Open a check run');
+  if (!open) throw new Error('no step opens a check run');
+  if (open.id !== 'check') throw new Error('the opening step needs id "check" for later steps to reference');
+
+  // Every exit path has to close it, or the pull request keeps a check
+  // spinning forever.
+  const closers = steps.filter((s) => (s.run || '').includes('check-runs/$CHECK_ID'));
+  const conclusions = closers.flatMap((s) => [...s.run.matchAll(/conclusion='([a-z]+)'/g)].map((m) => m[1]));
+
+  if (!conclusions.includes('success')) throw new Error('no success path closes the check run');
+  if (!conclusions.includes('failure')) throw new Error('no failure path closes the check run');
+});
+
+check('a missing checks permission does not fail the deploy', () => {
+  const open = action.runs.steps.find((s) => s.name === 'Open a check run');
+  if (!/\|\| true/.test(open.run)) {
+    throw new Error('creating the check run is fatal; consumers without checks:write would break');
+  }
+});
+
+check('workflows that call the action directly request checks:write', () => {
+  const files = [reusable, join(ROOT, 'examples', 'with-action.yml')];
+  const missing = files
+    .filter((f) => !(load(f).permissions || {})['checks'])
+    .map((f) => f.replace(REPO_ROOT + '/', ''));
+
+  if (missing.length) throw new Error(`missing checks: write in ${missing.join(', ')}`);
+});
+
+check('the release process is documented and linked', () => {
+  const releases = join(ROOT, 'RELEASES.md');
+  if (!fs.existsSync(releases)) throw new Error('RELEASES.md is missing');
+  if (!readFileSync(join(ROOT, 'README.md'), 'utf8').includes('RELEASES.md')) {
+    throw new Error('README does not link to RELEASES.md');
+  }
 });
 
 check('no reference still points at a standalone action repository', () => {

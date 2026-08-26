@@ -66,6 +66,13 @@ inputs:
   api-host:
     description: BigCommerce API host. Override only for non-production stores.
     default: api.bigcommerce.com
+  min-cli-version:
+    description: >-
+      Oldest @bigcommerce/catalyst the action supports. It shells out to
+      `catalyst deploy` from the consuming project, so the CLI version is the
+      project's, not the action's. Lower this only after verifying an older CLI
+      accepts --project-uuid and --secret.
+    default: 1.2.0
 
 outputs:
   deployed:
@@ -190,6 +197,36 @@ runs:
     # an opaque failure inside `catalyst deploy` several minutes later. The
     # project uuid is not checked here: absent entirely means the feature was
     # never switched on, which "Resolve event context" already skips.
+    # An issue_comment run is not attached to a commit, so GitHub shows nothing
+    # in the pull request's checks. Create a check run against the head SHA so a
+    # redeploy is visible where people already look, instead of only as a
+    # reaction on the comment.
+    - name: Open a check run
+      id: check
+      if: steps.ctx.outputs.is_takeover == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        HEAD_SHA: ${{ steps.ctx.outputs.head_sha }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+          -f name='Preview Deployment' \
+          -f head_sha="$HEAD_SHA" \
+          -f status='in_progress' \
+          -f details_url="$RUN_URL" \
+          --jq '.id' 2>/dev/null || true)
+
+        if [ -z "$id" ]; then
+          # Almost always a missing checks:write permission. Not worth failing a
+          # deploy over -- the comment reactions still report the outcome.
+          echo '::warning::Could not create a check run. Grant checks:write to show redeploys in the pull request checks.'
+        fi
+
+        echo "id=$id" >> "$GITHUB_OUTPUT"
+
     - name: Check configuration
       if: steps.ctx.outputs.applies == 'true'
       shell: bash
@@ -284,6 +321,51 @@ runs:
         NEWEST_PR: ${{ steps.eligible.outputs.newest_pr }}
       run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" defer
 
+    # The CLI comes from the consuming project, so the action cannot pin it. A
+    # too-old CLI would otherwise fail deep inside `catalyst deploy` with an
+    # unrecognised-flag error that says nothing about this action.
+    - name: Check the Catalyst CLI version
+      if: steps.eligible.outputs.should_deploy == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        MIN_CLI_VERSION: ${{ inputs.min-cli-version }}
+      run: |
+        set -euo pipefail
+
+        found=$(node -e "console.log(require('@bigcommerce/catalyst/package.json').version)" 2>/dev/null || true)
+
+        if [ -z "$found" ]; then
+          echo "::error::@bigcommerce/catalyst is not installed in '${{ inputs.working-directory }}'. This action deploys with the project's own CLI."
+          exit 1
+        fi
+
+        if ! node -e "
+          const cmp = (a, b) => {
+            const pa = a.split('-')[0].split('.').map(Number);
+            const pb = b.split('-')[0].split('.').map(Number);
+            for (let i = 0; i < 3; i++) {
+              if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+            }
+            return 0;
+          };
+          process.exit(cmp(process.argv[1], process.argv[2]) < 0 ? 1 : 0);
+        " "$found" "$MIN_CLI_VERSION"; then
+          {
+            echo '### Catalyst CLI is too old for this preview action'
+            echo
+            echo "Found \`@bigcommerce/catalyst@$found\`, but this action needs \`>= $MIN_CLI_VERSION\`."
+            echo
+            echo 'Either upgrade the CLI in your project, or pin an older major of this'
+            echo 'action that supported it.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "::error::@bigcommerce/catalyst@$found is older than the required $MIN_CLI_VERSION"
+          exit 1
+        fi
+
+        echo "Deploying with @bigcommerce/catalyst@$found"
+
     - name: Deploy
       if: steps.eligible.outputs.should_deploy == 'true'
       shell: bash
@@ -343,11 +425,22 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         COMMENT_ID: ${{ github.event.comment.id }}
+        CHECK_ID: ${{ steps.check.outputs.id }}
+        PREVIEW_URL: ${{ steps.preview.outputs.url }}
       run: |
         set -euo pipefail
+
         gh api --method POST \
           "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
           -f content='rocket' --silent
+
+        if [ -n "${CHECK_ID:-}" ]; then
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
+            -f status='completed' \
+            -f conclusion='success' \
+            -f 'output[title]=Preview deployed' \
+            -f "output[summary]=${PREVIEW_URL:-Deployed.}" --silent
+        fi
 
     # A command that dies in validation leaves no comment at all, which is
     # indistinguishable from one that was never received.
@@ -357,6 +450,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         COMMENT_ID: ${{ github.event.comment.id }}
+        CHECK_ID: ${{ steps.check.outputs.id }}
         PR_NUMBER: ${{ github.event.issue.number }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
@@ -365,6 +459,14 @@ runs:
         gh api --method POST \
           "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
           -f content='confused' --silent
+
+        if [ -n "${CHECK_ID:-}" ]; then
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
+            -f status='completed' \
+            -f conclusion='failure' \
+            -f 'output[title]=Redeploy failed' \
+            -f "output[summary]=See $RUN_URL" --silent
+        fi
 
         gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
           -f body="**Redeploy failed** — see the [run log]($RUN_URL).

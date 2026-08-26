@@ -1,0 +1,145 @@
+# Releases packages/deployment-preview-action.
+#
+# Deliberately manual and decoupled from the changesets pipeline: the action is
+# in .changeset/config.json `ignore`, so canary releases never version or tag
+# it. Bump the version and CHANGELOG in a normal pull request, then dispatch
+# this against the merged commit.
+#
+# Consumers reference the moving major tag:
+#   uses: bigcommerce/catalyst/packages/deployment-preview-action@preview-action-v1
+name: Release Deployment Preview Action
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        description: Report what would be tagged without creating anything.
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Tag the action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve and validate the version
+        id: version
+        run: |
+          set -euo pipefail
+
+          version=$(node -p "require('./packages/deployment-preview-action/package.json').version")
+
+          if ! printf '%s' "$version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::package.json version is not semver: '$version'"
+            exit 1
+          fi
+
+          major="${version%%.*}"
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "exact=preview-action-v$version" >> "$GITHUB_OUTPUT"
+          echo "moving=preview-action-v$major" >> "$GITHUB_OUTPUT"
+
+      # A released version is immutable. Re-tagging one would silently change
+      # what an existing pin resolves to.
+      - name: Refuse to overwrite a released version
+        env:
+          EXACT: ${{ steps.version.outputs.exact }}
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$EXACT" >/dev/null 2>&1; then
+            echo "::error::$EXACT already exists. Bump the version in package.json first."
+            exit 1
+          fi
+
+      # Catches releasing a new major while the shipped template and the
+      # reusable workflow still point at the previous one.
+      - name: Check the major matches what ships to consumers
+        env:
+          MOVING: ${{ steps.version.outputs.moving }}
+        run: |
+          set -euo pipefail
+
+          template='core/.github/workflows/preview-deployment.yml'
+          reusable='.github/workflows/deployment-preview.yml'
+          problems=0
+
+          for file in "$template" "$reusable"; do
+            if ! grep -q "@$MOVING\b" "$file"; then
+              found=$(grep -oE 'deployment-preview[^@]*@[A-Za-z0-9._-]+' "$file" | head -1)
+              echo "::error::$file does not reference @$MOVING (found: ${found:-none})"
+              problems=1
+            fi
+          done
+
+          [ "$problems" -eq 0 ] || exit 1
+
+      - name: Tag
+        if: ${{ !inputs.dry-run }}
+        env:
+          EXACT: ${{ steps.version.outputs.exact }}
+          MOVING: ${{ steps.version.outputs.moving }}
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git tag -a "$EXACT" -m "$EXACT"
+          # The moving major is expected to move, so this force is intentional.
+          git tag -f -a "$MOVING" -m "$MOVING -> $EXACT"
+
+          git push origin "$EXACT"
+          git push --force origin "$MOVING"
+
+      - name: Create the GitHub release
+        if: ${{ !inputs.dry-run }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXACT: ${{ steps.version.outputs.exact }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          notes=$(awk -v v="$VERSION" '
+            $0 ~ "^## \\[?" v "\\]?" { grab = 1; next }
+            grab && /^## / { exit }
+            grab { print }
+          ' packages/deployment-preview-action/CHANGELOG.md)
+
+          if [ -z "$(printf '%s' "$notes" | tr -d '[:space:]')" ]; then
+            notes="See packages/deployment-preview-action/CHANGELOG.md at this tag."
+          fi
+
+          gh release create "$EXACT" \
+            --title "Deployment Preview Action $VERSION" \
+            --notes "$notes"
+
+      - name: Summary
+        env:
+          EXACT: ${{ steps.version.outputs.exact }}
+          MOVING: ${{ steps.version.outputs.moving }}
+          DRY: ${{ inputs.dry-run }}
+        run: |
+          {
+            if [ "$DRY" = 'true' ]; then
+              echo "### Dry run — nothing was created"
+            else
+              echo "### Released"
+            fi
+            echo
+            echo "- \`$EXACT\` (immutable)"
+            echo "- \`$MOVING\` -> this commit (moving major)"
+            echo
+            echo 'Consumers pin the moving major:'
+            echo
+            echo '```yaml'
+            echo "uses: bigcommerce/catalyst/packages/deployment-preview-action@$MOVING"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

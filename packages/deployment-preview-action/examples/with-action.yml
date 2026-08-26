@@ -20,6 +20,8 @@ permissions:
   contents: read
   pull-requests: write
   issues: write
+  # Lets a `redeploy preview` comment show up in the pull request checks.
+  checks: write
 
 jobs:
   preview:

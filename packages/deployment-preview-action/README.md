@@ -93,6 +93,10 @@ To drive the action directly instead, see
 [`examples/with-action.yml`](examples/with-action.yml), and set the concurrency
 group yourself.
 
+Grant `checks: write` if you call the action directly, so a `redeploy preview`
+comment appears in the pull request checks rather than only as a reaction on the
+comment. Without it the deploy still runs; it is just less visible.
+
 ## Inputs
 
 | Input | Default | Description |
@@ -111,6 +115,7 @@ group yourself.
 | `pnpm-version` | `10` | The Catalyst CLI shells out to pnpm |
 | `working-directory` | `.` | For monorepos |
 | `api-host` | `api.bigcommerce.com` | |
+| `min-cli-version` | `1.2.0` | Oldest `@bigcommerce/catalyst` this action supports |
 
 ## Outputs
 
@@ -150,6 +155,17 @@ The action is tagged separately from Catalyst's package releases, as
 `@bigcommerce/create-catalyst@2.0.3`; a `@` inside a ref is ambiguous against
 `path@ref` parsing, so those tags are not usable here.
 
+## Catalyst CLI compatibility
+
+The action deploys using the CLI **your project** installs, not one of its own.
+
+| Action major | Requires |
+| --- | --- |
+| `preview-action-v1` | `@bigcommerce/catalyst` >= 1.2.0 |
+
+It checks this before deploying and fails with a clear message if your CLI is
+older. Override the floor with the `min-cli-version` input.
+
 ## Requirements
 
 - The project must be on Catalyst native hosting, with `@bigcommerce/catalyst`
@@ -179,6 +195,15 @@ The suite runs the preview logic against a stubbed BigCommerce and GitHub API.
 It covers the deploy-eligibility rules and, importantly, which comment updates
 notify and which stay silent — the difference between a useful preview bot and
 one that emails everybody on every push.
+
+## Releasing
+
+Released separately from Catalyst's changesets pipeline, on its own cadence.
+Consumers pin the moving major `preview-action-v<major>`, which advances with
+each release.
+
+See [RELEASES.md](RELEASES.md) for the process, the tag scheme, and how it has
+to be sequenced against `@bigcommerce/catalyst-core` releases.
 
 ## License
 
