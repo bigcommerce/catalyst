@@ -4,6 +4,10 @@
 
 Replace the Durable Object revalidation queue with a self-fetch queue, so ISR revalidation can work on native hosting at all.
 
+**This does not make anything faster, and changes no behavior today.** Catalyst currently ships no route with a revalidate window, so the queue is never invoked. From the built prerender manifest, every prerendered route is `initialRevalidateSeconds: false` and `dynamicRoutes` is empty. The `next: { revalidate }` options on the product and faceted-search queries are fetch-level data caching and do not feed this queue.
+
+What this fixes is a trap rather than a slowdown: with the previous config, the first route to adopt ISR would have failed to revalidate *silently*, because the error thrown below is an `IgnorableError` (`logLevel = 0`, dropped by OpenNext's logger under the default threshold). Pages would have gone permanently stale with nothing in the logs.
+
 OpenNext's `doQueue` routes revalidation through a Durable Object whose constructor reads `env.WORKER_SELF_REFERENCE` and throws without it:
 
 ```js
@@ -11,8 +15,6 @@ this.service = env.WORKER_SELF_REFERENCE;
 if (!this.service)
     throw new IgnorableError("No service binding for cache revalidation worker");
 ```
-
-`queueCache.send()` catches that error and only logs, so revalidation would fail silently rather than surface.
 
 **That binding cannot exist on native hosting.** A Cloudflare `service` binding resolves against account-level Workers, and a Catalyst deployment is a script inside a dispatch namespace, which is not addressable that way. Adding it was attempted and rejected at upload:
 
@@ -33,5 +35,3 @@ It remains wrapped in `queueCache`, so concurrent stale hits for one path still 
 **Trade-off:** the Durable Object's retry and max-concurrency handling is lost. A failed revalidation is retried on the next stale hit rather than by the queue itself, and revalidations are no longer capped at a concurrency limit.
 
 The `NEXT_CACHE_DO_QUEUE` binding is intentionally left in place. OpenNext's worker template exports all three Durable Object classes unconditionally, so it still resolves and needs no Durable Object migration; it is simply inert.
-
-Note this is latent until ISR is adopted — the build currently produces no routes with a revalidate window, so the queue is never invoked.
