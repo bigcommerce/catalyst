@@ -309,4 +309,10 @@ export const handlers = [
       data: { id: 1, url: 'https://example.com', channel_id: 1 },
     }),
   ),
+
+  // Default handler for the npm registry — 404 so the stale-CLI check stays
+  // silent by default. Tests that assert on it override with a version payload.
+  http.get('https://registry.npmjs.org/:scope/:name/latest', () =>
+    HttpResponse.json({ error: 'Not found' }, { status: 404 }),
+  ),
 ];
