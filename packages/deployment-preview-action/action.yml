@@ -212,12 +212,32 @@ runs:
       run: |
         set -euo pipefail
 
-        id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
-          -f name='Preview Deployment' \
-          -f head_sha="$HEAD_SHA" \
-          -f status='in_progress' \
-          -f details_url="$RUN_URL" \
-          --jq '.id' 2>/dev/null || true)
+        name='Preview Deployment'
+
+        # Reuse the check run from a previous redeploy of this same commit, so
+        # repeated commands update one entry instead of stacking up.
+        existing=$(gh api \
+          "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs?check_name=$(printf '%s' "$name" | sed 's/ /%20/g')" \
+          --jq '.check_runs[0].id // empty' 2>/dev/null || true)
+
+        id=''
+
+        if [ -n "$existing" ]; then
+          id=$(gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$existing" \
+            -f status='in_progress' \
+            -f details_url="$RUN_URL" \
+            --jq '.id' 2>/dev/null || true)
+        fi
+
+        # Either there was none, or the API refused to reopen a completed one.
+        if [ -z "$id" ]; then
+          id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name="$name" \
+            -f head_sha="$HEAD_SHA" \
+            -f status='in_progress' \
+            -f details_url="$RUN_URL" \
+            --jq '.id' 2>/dev/null || true)
+        fi
 
         if [ -z "$id" ]; then
           # Almost always a missing checks:write permission. Not worth failing a
