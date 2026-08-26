@@ -61,8 +61,8 @@ vi.mock('../lib/project-state', async (importOriginal) => {
     ...actual,
     getProjectState: vi.fn(() => ({
       projectUuid: 'mock-uuid',
-      hasMiddleware: true,
-      hasProxy: false,
+      hasMiddleware: false,
+      hasProxy: true,
       hasOpenNextDep: true,
       isLinked: true,
       isTransformed: true,

@@ -59,8 +59,8 @@ vi.mock('../lib/commerce-hosting', async (importOriginal) => {
 
 const transformedState = {
   projectUuid: 'abc-123',
-  hasMiddleware: true,
-  hasProxy: false,
+  hasMiddleware: false,
+  hasProxy: true,
   hasOpenNextDep: true,
   isLinked: true,
   isTransformed: true,

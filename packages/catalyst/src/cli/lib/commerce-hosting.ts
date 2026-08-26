@@ -13,7 +13,7 @@ import {
 } from './project';
 import { sortPackageJsonFields } from './sort-package-json';
 
-const OPENNEXT_CLOUDFLARE_VERSION = '1.17.3';
+const OPENNEXT_CLOUDFLARE_VERSION = '1.20.3';
 
 const corePackageJsonSchema = z.looseObject({
   dependencies: z.record(z.string(), z.string()).optional(),
@@ -41,20 +41,6 @@ const readProjectJson = (path: string): Record<string, unknown> => {
 const writeJson = (path: string, value: unknown) => {
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
-};
-
-const convertProxyToMiddleware = (projectDir: string) => {
-  const proxyPath = join(projectDir, 'proxy.ts');
-  const middlewarePath = join(projectDir, 'middleware.ts');
-
-  if (!existsSync(proxyPath)) return;
-
-  const contents = readFileSync(proxyPath, 'utf-8')
-    .replace('export const proxy', 'export const middleware')
-    .replace('export const config = {', "export const config = {\n  runtime: 'experimental-edge',");
-
-  writeFileSync(middlewarePath, contents);
-  unlinkSync(proxyPath);
 };
 
 // The default `instrumentation.ts` registers `@vercel/otel`, whose node
@@ -161,8 +147,6 @@ export const setupCommerceHosting = async ({
   if (accessToken) projectJson.accessToken = accessToken;
 
   writeJson(projectJsonPath, projectJson);
-
-  convertProxyToMiddleware(projectDir);
 };
 
 interface CommerceHostingApiContext {

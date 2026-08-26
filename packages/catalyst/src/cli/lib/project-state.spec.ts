@@ -87,7 +87,7 @@ describe('getProjectState', () => {
 
   test('hasOpenNextDep reflects package.json dependencies', async () => {
     await writePackageJson(tmpDir, {
-      dependencies: { '@opennextjs/cloudflare': '1.17.3' },
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
     });
 
     expect(getProjectState(tmpDir).hasOpenNextDep).toBe(true);
@@ -99,36 +99,48 @@ describe('getProjectState', () => {
     expect(getProjectState(tmpDir).hasOpenNextDep).toBe(false);
   });
 
-  test('isTransformed requires middleware present, proxy absent, and OpenNext dep installed', async () => {
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+  test('isTransformed requires only the OpenNext dep', async () => {
     await writePackageJson(tmpDir, {
-      dependencies: { '@opennextjs/cloudflare': '1.17.3' },
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
     });
 
     expect(getProjectState(tmpDir).isTransformed).toBe(true);
   });
 
-  test('isTransformed is false if proxy.ts still exists', async () => {
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+  // The rename is gone: @opennextjs/cloudflare 1.20.3 bundles `proxy.ts`
+  // natively, so keeping Next 16's own filename is the transformed state.
+  test('isTransformed is true with proxy.ts present', async () => {
     await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
     await writePackageJson(tmpDir, {
-      dependencies: { '@opennextjs/cloudflare': '1.17.3' },
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
     });
 
-    expect(getProjectState(tmpDir).isTransformed).toBe(false);
+    expect(getProjectState(tmpDir).isTransformed).toBe(true);
+  });
+
+  // Projects transformed by a pre-1.20.3 CLI carry the renamed `middleware.ts`.
+  // Next still honors that filename, so they stay transformed rather than being
+  // dragged back through a migration.
+  test('isTransformed is true for a legacy middleware.ts project', async () => {
+    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+    await writePackageJson(tmpDir, {
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
+    });
+
+    expect(getProjectState(tmpDir).isTransformed).toBe(true);
   });
 
   test('isTransformed is false if OpenNext dep missing', async () => {
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+    await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
 
     expect(getProjectState(tmpDir).isTransformed).toBe(false);
   });
 
   test('isFullySetUp requires both linked and transformed', async () => {
     await writeProjectJson(tmpDir, { projectUuid: 'abc-123' });
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+    await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
     await writePackageJson(tmpDir, {
-      dependencies: { '@opennextjs/cloudflare': '1.17.3' },
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
     });
 
     const state = getProjectState(tmpDir);
@@ -150,9 +162,9 @@ describe('getProjectState', () => {
   });
 
   test('transformed but unlinked (e.g. mid-setup before UUID is written)', async () => {
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+    await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
     await writePackageJson(tmpDir, {
-      dependencies: { '@opennextjs/cloudflare': '1.17.3' },
+      dependencies: { '@opennextjs/cloudflare': '1.20.3' },
     });
 
     const state = getProjectState(tmpDir);

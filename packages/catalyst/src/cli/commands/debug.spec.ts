@@ -28,8 +28,8 @@ const fullDiagnostics: Diagnostics = {
     isLinked: true,
     isTransformed: true,
     isFullySetUp: true,
-    hasMiddleware: true,
-    hasProxy: false,
+    hasMiddleware: false,
+    hasProxy: true,
     hasOpenNextDep: true,
   },
   config: {
@@ -125,8 +125,8 @@ test('prints a human-readable report by default', async () => {
   expect(output).toContain('Storefront:         @bigcommerce/catalyst-core@1.8.0');
   expect(output).toContain('Project UUID:       uuid-123');
   expect(output).toContain('Linked:             yes');
-  expect(output).toContain('middleware.ts:      present');
-  expect(output).toContain('proxy.ts:           absent');
+  expect(output).toContain('middleware.ts:      absent');
+  expect(output).toContain('proxy.ts:           present');
   expect(output).toContain('OpenNext dep:       installed');
   expect(output).toContain('Store hash:         present (source: project.json)');
   expect(output).toContain('Access token:       present (source: process.env)');

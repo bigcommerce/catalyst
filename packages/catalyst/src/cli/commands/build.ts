@@ -13,7 +13,7 @@ import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-export const WRANGLER_VERSION = '4.90.0';
+export const WRANGLER_VERSION = '4.126.0';
 
 // npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
 // through a narrow character allowlist. This also guards the value before

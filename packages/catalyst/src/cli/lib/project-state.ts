@@ -18,9 +18,9 @@ export interface ProjectState {
 
   // Derived signals — `isLinked` reflects intent (UUID registered via
   // `catalyst projects create` or commerce-hosting setup); `isTransformed`
-  // reflects on-disk readiness (middleware.ts swapped in, OpenNext dep
-  // installed). A deploy needs both, but `catalyst build` only cares about
-  // `isTransformed` so it can dispatch to OpenNext vs `next build`.
+  // reflects on-disk readiness (OpenNext dep installed). A deploy needs both,
+  // but `catalyst build` only cares about `isTransformed` so it can dispatch to
+  // OpenNext vs `next build`.
   isLinked: boolean;
   isTransformed: boolean;
   isFullySetUp: boolean;
@@ -43,6 +43,8 @@ export function getProjectState(cwd: string = process.cwd()): ProjectState {
   );
   const projectUuid = projectJson.success ? projectJson.data.projectUuid : undefined;
 
+  // Reported by `catalyst debug` only — neither gates the transform. Which of
+  // the two a project has just tells you whether it predates the rename removal.
   const hasMiddleware = existsSync(join(cwd, 'middleware.ts'));
   const hasProxy = existsSync(join(cwd, 'proxy.ts'));
 
@@ -52,7 +54,16 @@ export function getProjectState(cwd: string = process.cwd()): ProjectState {
     : false;
 
   const isLinked = Boolean(projectUuid);
-  const isTransformed = hasMiddleware && !hasProxy && hasOpenNextDep;
+
+  // Installing @opennextjs/cloudflare is the whole transform now. Setup used to
+  // also rename `proxy.ts` to `middleware.ts` (Next 16 renamed the convention
+  // and OpenNext only understood the old name), so this required middleware
+  // present and proxy absent. @opennextjs/cloudflare 1.20.3 bundles `proxy.ts`
+  // natively, so the rename is gone and a project keeping `proxy.ts` is fully
+  // transformed. Projects transformed by an older CLI still carry the renamed
+  // `middleware.ts`; Next continues to honor that filename, so they are left
+  // as-is rather than migrated back.
+  const isTransformed = hasOpenNextDep;
   const isFullySetUp = isLinked && isTransformed;
 
   return {

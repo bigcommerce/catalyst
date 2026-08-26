@@ -589,10 +589,6 @@ describe('setupCommerceHosting', () => {
     writeFileSync(join(projectDir, 'package.json'), JSON.stringify(contents, null, 2));
   }
 
-  function writeCoreProxyFile(contents: string) {
-    writeFileSync(join(projectDir, 'proxy.ts'), contents);
-  }
-
   function writeCoreInstrumentationFile(contents: string) {
     writeFileSync(join(projectDir, 'instrumentation.ts'), contents);
   }
@@ -877,57 +873,6 @@ describe('setupCommerceHosting', () => {
     writeCorePackageJson({ dependencies: { next: 42 } });
 
     await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
-  });
-
-  describe('proxy.ts → middleware.ts conversion', () => {
-    const proxyFixture = [
-      "import { composeProxies } from './proxies/compose-proxies';",
-      '',
-      'export const proxy = composeProxies();',
-      '',
-      'export const config = {',
-      "  matcher: ['/((?!api).*)'],",
-      '};',
-      '',
-    ].join('\n');
-
-    it('renames proxy.ts to middleware.ts, renames the export, and injects the edge runtime', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-      writeCoreProxyFile(proxyFixture);
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      const middlewarePath = join(projectDir, 'middleware.ts');
-      const proxyPath = join(projectDir, 'proxy.ts');
-
-      expect(existsSync(middlewarePath)).toBe(true);
-      expect(existsSync(proxyPath)).toBe(false);
-
-      const middleware = readFileSync(middlewarePath, 'utf-8');
-
-      expect(middleware).toContain('export const middleware = composeProxies()');
-      expect(middleware).not.toContain('export const proxy');
-      expect(middleware).toContain("runtime: 'experimental-edge'");
-    });
-
-    it('preserves the rest of the file contents', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-      writeCoreProxyFile(proxyFixture);
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      const middleware = readFileSync(join(projectDir, 'middleware.ts'), 'utf-8');
-
-      expect(middleware).toContain("import { composeProxies } from './proxies/compose-proxies';");
-      expect(middleware).toContain("matcher: ['/((?!api).*)']");
-    });
-
-    it('is a no-op when proxy.ts does not exist', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-
-      await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
-      expect(existsSync(join(projectDir, 'middleware.ts'))).toBe(false);
-    });
   });
 
   describe('instrumentation.ts removal', () => {

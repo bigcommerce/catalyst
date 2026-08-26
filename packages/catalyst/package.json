@@ -66,6 +66,6 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "1.17.3"
+    "@opennextjs/cloudflare": "1.20.3"
   }
 }

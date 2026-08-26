@@ -471,9 +471,9 @@ Example:
     }
 
     // The OpenNext build pipeline requires the project to be transformed
-    // (proxy.ts → middleware.ts, @opennextjs/cloudflare installed). Run setup
-    // here so first-run `catalyst deploy` works on a fresh self-hosted scaffold
-    // without forcing the user to re-run after a separate setup step.
+    // (@opennextjs/cloudflare installed). Run setup here so first-run
+    // `catalyst deploy` works on a fresh self-hosted scaffold without forcing
+    // the user to re-run after a separate setup step.
     if (!getProjectState().isTransformed) {
       const shouldSetup = await confirm({
         message:

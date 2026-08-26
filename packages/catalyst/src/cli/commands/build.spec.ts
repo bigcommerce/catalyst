@@ -62,15 +62,15 @@ const untransformedState = {
 
 const transformedState = {
   projectUuid: 'mock-uuid',
-  hasMiddleware: true,
-  hasProxy: false,
+  hasMiddleware: false,
+  hasProxy: true,
   hasOpenNextDep: true,
   isLinked: true,
   isTransformed: true,
   isFullySetUp: true,
 };
 
-const DEFAULT_WRANGLER_VERSION = '4.90.0';
+const DEFAULT_WRANGLER_VERSION = '4.126.0';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 vi.spyOn(process, 'exit').mockImplementation(() => null as never);

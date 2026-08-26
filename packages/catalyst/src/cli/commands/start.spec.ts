@@ -27,8 +27,8 @@ vi.mock('../lib/project-state', () => ({
 
 const transformedState = {
   projectUuid: 'abc-123',
-  hasMiddleware: true,
-  hasProxy: false,
+  hasMiddleware: false,
+  hasProxy: true,
   hasOpenNextDep: true,
   isLinked: true,
   isTransformed: true,

@@ -13,7 +13,7 @@
     "changeset:version": "changeset version && node .github/scripts/sync-catalyst-version.mts"
   },
   "dependencies": {
-    "@opennextjs/cloudflare": "1.17.3"
+    "@opennextjs/cloudflare": "1.20.3"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
