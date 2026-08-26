@@ -43,7 +43,9 @@ const selfFetchQueue = {
     const response = await fetch(`${protocol}://${host}${url}`, {
       method: 'HEAD',
       headers: {
-        // Inlined at build time; authorizes the revalidation.
+        // Inlined at build time; authorizes the revalidation. The name is
+        // Next's, so the leading underscores are not ours to rename.
+        // eslint-disable-next-line no-underscore-dangle
         'x-prerender-revalidate': process.env.__NEXT_PREVIEW_MODE_ID ?? '',
         'x-isr': '1',
       },
