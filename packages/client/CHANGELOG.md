@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.3
+
+### Patch Changes
+
+- [#3158](https://github.com/bigcommerce/catalyst/pull/3158) [`be1967c`](https://github.com/bigcommerce/catalyst/commit/be1967ce85e2e71bf2cf8e0c0837aad66e423ceb) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Surface a clearer error when `BIGCOMMERCE_STOREFRONT_TOKEN` is not a storefront JWT. Previously an incompatible token (e.g. an OAuth access token) produced a bare 401 with no explanation. The client now detects when a 401 is returned with a token that isn't a well-formed storefront JWT and throws `InvalidStorefrontTokenError` explaining that a storefront JWT is required and how to generate one.
+
 ## 1.0.2
 
 ### Patch Changes
