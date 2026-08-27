@@ -19,6 +19,12 @@ jobs:
   changesets-release:
     name: Changesets Release
     runs-on: ubuntu-latest
+    env:
+      # Linear access keys are per-pipeline, so each branch's package maps to
+      # its own pipeline: canary -> @bigcommerce/catalyst-core, the integration
+      # branches -> their makeswift packages. An unset key skips the Linear
+      # steps for that branch.
+      LINEAR_ACCESS_KEY: ${{ secrets[github.ref_name == 'integrations/makeswift' && 'LINEAR_ACCESS_KEY_MAKESWIFT' || github.ref_name == 'integrations/b2b-makeswift' && 'LINEAR_ACCESS_KEY_B2B_MAKESWIFT' || 'LINEAR_ACCESS_KEY'] }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -44,9 +50,10 @@ jobs:
           CLI_SEGMENT_WRITE_KEY: ${{ secrets.CLI_SEGMENT_WRITE_KEY }}
 
       - name: Sync Linear release
+        if: env.LINEAR_ACCESS_KEY != ''
         uses: linear/linear-release-action@v0
         with:
-          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          access_key: ${{ env.LINEAR_ACCESS_KEY }}
           command: sync
           # Only the storefront package ships as its own release; changes to
           # other workspace packages (client, create-catalyst, the CLI) are
@@ -90,16 +97,27 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Complete Linear release
-        if: steps.headline.outputs.found == 'true'
+      # The accumulating sync steps above run unversioned, so before completing
+      # we stamp the started release with its final version via one more sync
+      # (base_ref=HEAD scans no new commits). `complete` then targets that same
+      # version. Per Linear support, this versioned sync-then-complete pair is
+      # required for pipelines with no natural labeling moment.
+      - name: Version Linear release
+        if: steps.headline.outputs.found == 'true' && env.LINEAR_ACCESS_KEY != ''
         uses: linear/linear-release-action@v0
         with:
-          access_key: ${{ secrets.LINEAR_ACCESS_KEY }}
+          access_key: ${{ env.LINEAR_ACCESS_KEY }}
+          command: sync
+          base_ref: HEAD
+          version: ${{ steps.headline.outputs.tag }}
+          name: ${{ steps.headline.outputs.tag }}
+
+      - name: Complete Linear release
+        if: steps.headline.outputs.found == 'true' && env.LINEAR_ACCESS_KEY != ''
+        uses: linear/linear-release-action@v0
+        with:
+          access_key: ${{ env.LINEAR_ACCESS_KEY }}
           command: complete
-          # No `version`: the `catalyst-release` pipeline is a scheduled pipeline
-          # whose started release is unversioned (the accumulating `sync` steps
-          # above run without a version). Passing `version` makes `complete` look
-          # up an existing release with that exact version, which never exists and
-          # fails with `No release found with version "…"`. Omitting it completes
-          # the latest started release — the one sync has been accumulating into.
+          version: ${{ steps.headline.outputs.tag }}
+          name: ${{ steps.headline.outputs.tag }}
           release_notes: /tmp/release-notes.md
