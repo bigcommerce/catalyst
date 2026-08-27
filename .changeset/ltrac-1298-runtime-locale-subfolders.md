@@ -1,10 +1,10 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor
 ---
 
 Resolve merchant-configured locale subfolders at runtime instead of baking them in at build time, so custom locale paths such as `/fr-fr` and `/es-es` resolve consistently.
 
-Previously the subfolder table was captured during `next build` into `build-config.json` and statically imported by `i18n/locales.ts`. If the control panel returned incomplete locale data at build time, every localized URL 404'd until the next deploy — and because next-intl treats a custom subfolder as a *replacement* for the bare locale code rather than an alias, there was no fallback: `/es-es` simply did not match any route.
+Previously the subfolder table was captured during `next build` into `build-config.json` and statically imported by `i18n/locales.ts`. If the control panel returned incomplete locale data at build time, every localized URL 404'd until the next deploy — and because next-intl treats a custom subfolder as a _replacement_ for the bare locale code rather than an alias, there was no fallback: `/es-es` simply did not match any route.
 
 ## What changed
 
