@@ -93,6 +93,12 @@ To drive the action directly instead, see
 [`examples/with-action.yml`](examples/with-action.yml), and set the concurrency
 group yourself.
 
+Name your job to match the `check-name` input (`Preview Deployment` by
+default). A `redeploy preview` comment then reuses that job's own check row and
+turns it yellow, instead of adding a second row beside it. This matters because
+an `issue_comment` run is not attached to a commit, so GitHub will not show it
+in the pull request's checks on its own.
+
 Grant `checks: write` if you call the action directly, so a `redeploy preview`
 comment appears in the pull request checks rather than only as a reaction on the
 comment. Without it the deploy still runs; it is just less visible.
@@ -116,6 +122,7 @@ comment. Without it the deploy still runs; it is just less visible.
 | `working-directory` | `.` | For monorepos |
 | `api-host` | `api.bigcommerce.com` | |
 | `min-cli-version` | `1.2.0` | Oldest `@bigcommerce/catalyst` this action supports |
+| `check-name` | `Preview Deployment` | Check a redeploy reports against. Match your job's `name:` |
 
 ## Outputs
 

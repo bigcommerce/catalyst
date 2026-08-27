@@ -196,6 +196,21 @@ check('workflows that call the action directly request checks:write', () => {
   if (missing.length) throw new Error(`missing checks: write in ${missing.join(', ')}`);
 });
 
+check('the job name matches the check name, so a redeploy reuses one row', () => {
+  // If these drift, a redeploy adds a second check row next to the job's own
+  // instead of turning that one yellow.
+  const expected = action.inputs['check-name'].default;
+  const files = [reusable, join(ROOT, 'examples', 'with-action.yml')];
+  const wrong = [];
+
+  for (const f of files) {
+    const job = Object.values(load(f).jobs)[0];
+    if (job.name !== expected) wrong.push(`${f.replace(REPO_ROOT + '/', '')}: ${job.name}`);
+  }
+
+  if (wrong.length) throw new Error(`job name should be "${expected}" -- ${wrong.join(', ')}`);
+});
+
 check('the release process is documented and linked', () => {
   const releases = join(ROOT, 'RELEASES.md');
   if (!fs.existsSync(releases)) throw new Error('RELEASES.md is missing');

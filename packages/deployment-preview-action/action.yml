@@ -66,6 +66,14 @@ inputs:
   api-host:
     description: BigCommerce API host. Override only for non-production stores.
     default: api.bigcommerce.com
+  check-name:
+    description: >-
+      Name of the check this action reports a redeploy against. Set it to the
+      display name of the job that runs this action, and a redeploy reuses that
+      job's own check row instead of adding a second one. An issue_comment run
+      is not attached to a commit, so without this there is nothing in the pull
+      request's checks at all.
+    default: Preview Deployment
   min-cli-version:
     description: >-
       Oldest @bigcommerce/catalyst the action supports. It shells out to
@@ -208,16 +216,18 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.github-token }}
         HEAD_SHA: ${{ steps.ctx.outputs.head_sha }}
+        CHECK_NAME: ${{ inputs.check-name }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
         set -euo pipefail
 
-        name='Preview Deployment'
+        name="$CHECK_NAME"
 
         # Reuse the check run from a previous redeploy of this same commit, so
         # repeated commands update one entry instead of stacking up.
         existing=$(gh api \
-          "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs?check_name=$(printf '%s' "$name" | sed 's/ /%20/g')" \
+          -X GET "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
+          -f check_name="$name" \
           --jq '.check_runs[0].id // empty' 2>/dev/null || true)
 
         id=''
