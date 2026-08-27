@@ -14,8 +14,5 @@
     "tag": true
   },
   "baseBranch": "canary",
-  "updateInternalDependencies": "patch",
-  "ignore": [
-    "@bigcommerce/deployment-preview-action"
-  ]
+  "updateInternalDependencies": "patch"
 }
