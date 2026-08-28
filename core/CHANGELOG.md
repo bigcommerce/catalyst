@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.11.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.11.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.11.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/8f486d35c8c29f04745bbcefb1d32646496e077d/core/CHANGELOG.md#1110).
+
+### Patch Changes
+
+- [#3185](https://github.com/bigcommerce/catalyst/pull/3185) [`96af6d9`](https://github.com/bigcommerce/catalyst/commit/96af6d94db4fc99f2d316254555e1589c472115a) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Declare a revalidate window for Makeswift API requests, and add `MAKESWIFT_REVALIDATE_TARGET` to configure it.
+
+  The Makeswift SDK tags its responses with `@@makeswift` but never declares a TTL. Under the `fetchCache = 'default-cache'` segment config, Next.js reads "no cache config" as "cache forever", so published content was cached indefinitely and only the `site.published` webhook could refresh it. On any host Makeswift cannot reach — a local dev server, or a deployment it isn't configured to notify — content froze permanently, and deleting `.next` was the only way to see an edit.
+
+  Requests for the published site now declare a revalidate window: 3600 seconds by default, or 0 in development, where the webhook never arrives and the TTL is the only invalidation. Draft-mode requests are unchanged; they already opt out of caching, and adding a revalidate value there would trip Next.js's conflicting-config rule and cache the builder's live edits indefinitely.
+
 ## 1.10.0
 
 ### Minor Changes
