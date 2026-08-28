@@ -35,11 +35,6 @@ const SettingsQuery = graphql(`
           cdnUrl
           checkoutUrl
         }
-        locales {
-          code
-          isDefault
-          path
-        }
       }
     }
   }
@@ -63,7 +58,6 @@ async function writeSettingsToBuildConfig() {
   }
 
   return await writeBuildConfig({
-    locales: data.site.settings?.locales,
     urls: {
       ...data.site.settings?.url,
       cdnUrls,

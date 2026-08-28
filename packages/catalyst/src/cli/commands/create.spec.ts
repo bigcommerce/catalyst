@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
 
@@ -282,6 +282,113 @@ describe('happy paths', () => {
     expect(consola.warn).toHaveBeenCalledWith(
       '--use-existing has no effect without --hosting commerce. Ignoring.',
     );
+  });
+});
+
+// Regression tests for LTRAC-1324: credentials gathered during `create` have to
+// land in the scaffolded project's `.bigcommerce/project.json`, because that's
+// the only source `resolveCredentials` consults. Previously this was written
+// only on the `--hosting commerce` path, so a default scaffold left `catalyst
+// deploy` failing with "Missing credentials" and `catalyst projects create`
+// re-prompting for login.
+describe('credential persistence', () => {
+  const readProjectJson = (projectName: string): unknown =>
+    JSON.parse(readFileSync(join(tmpDir, projectName, '.bigcommerce', 'project.json'), 'utf-8'));
+
+  test('persists flag-provided creds to project.json on a default (self-hosted) scaffold', async () => {
+    const projectName = uniqueProjectName();
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'create',
+      '--project-name',
+      projectName,
+      '--project-dir',
+      tmpDir,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--channel-id',
+      '42',
+      '--storefront-token',
+      'flag-storefront-token',
+    ]);
+
+    expect(setupCommerceHosting).not.toHaveBeenCalled();
+    expect(readProjectJson(projectName)).toMatchObject({ storeHash, accessToken });
+  });
+
+  test('persists device-login creds to project.json when no cred flags are passed', async () => {
+    const projectName = uniqueProjectName();
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'create',
+      '--project-name',
+      projectName,
+      '--project-dir',
+      tmpDir,
+      '--channel-id',
+      '42',
+      '--storefront-token',
+      'flag-storefront-token',
+    ]);
+
+    expect(login).toHaveBeenCalled();
+    expect(readProjectJson(projectName)).toMatchObject({
+      storeHash: 'login-store-hash',
+      accessToken: 'login-access-token',
+    });
+  });
+
+  test('preserves projectUuid written by commerce-hosting setup', async () => {
+    const projectName = uniqueProjectName();
+    // Must be a real UUID — the project.json schema enforces `format: 'uuid'`,
+    // and this test is the only one that lets Conf read the written file back.
+    const projectUuid = '43eba682-0c48-11f1-9bd5-827a48b0ce1e';
+
+    vi.mocked(promptForCommerceHostingProject).mockResolvedValueOnce({
+      uuid: projectUuid,
+      name: 'commerce-project',
+      deployment_hostnames: [],
+    });
+
+    // Stand in for the real helper, which overwrites project.json wholesale.
+    // The credential write has to merge into that rather than clobber it.
+    vi.mocked(setupCommerceHosting).mockImplementationOnce(({ projectDir, projectUuid: uuid }) => {
+      mkdirSync(join(projectDir, '.bigcommerce'), { recursive: true });
+      writeFileSync(
+        join(projectDir, '.bigcommerce', 'project.json'),
+        JSON.stringify({ projectUuid: uuid, framework: 'catalyst' }),
+      );
+
+      return Promise.resolve();
+    });
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'create',
+      '--project-name',
+      projectName,
+      '--project-dir',
+      tmpDir,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--channel-id',
+      '42',
+      '--storefront-token',
+      'flag-storefront-token',
+      '--hosting',
+      'commerce',
+    ]);
+
+    expect(readProjectJson(projectName)).toMatchObject({ projectUuid, storeHash, accessToken });
   });
 });
 

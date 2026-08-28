@@ -1,5 +1,7 @@
 import { Command } from 'commander';
 import { execa } from 'execa';
+import { copyFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
@@ -134,6 +136,21 @@ test('threads --wrangler-version into the wrangler invocation', async () => {
     'pnpm',
     expect.arrayContaining(['dlx', `wrangler@${DEFAULT_WRANGLER_VERSION}`]),
     expect.anything(),
+  );
+});
+
+// Regression guard: `templates/public_headers` existed but was never copied,
+// so `/_next/static/*` shipped with the Workers Assets default of
+// `max-age=0, must-revalidate` and browsers revalidated every hashed asset on
+// every repeat view. Nothing asserted the copy, which is why it went unnoticed.
+test('writes _headers into the assets directory so static assets get immutable Cache-Control', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(copyFile).toHaveBeenCalledWith(
+    expect.stringContaining('public_headers'),
+    expect.stringContaining(join('.open-next', 'assets', '_headers')),
   );
 });
 

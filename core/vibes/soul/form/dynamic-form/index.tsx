@@ -19,6 +19,7 @@ import {
   startTransition,
   useActionState,
   useEffect,
+  useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 import RecaptchaWidget from 'react-google-recaptcha';
@@ -50,6 +51,7 @@ import { removeOptionsFromFields } from './utils';
 export interface DynamicFormActionArgs<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   passwordComplexity?: PasswordComplexitySettings | null;
+  countriesWithoutStates?: string[];
 }
 
 type Action<F extends Field, S, P> = (
@@ -79,6 +81,7 @@ export interface DynamicFormProps<F extends Field> {
   passwordComplexity?: PasswordComplexitySettings | null;
   errorTranslations?: FormErrorTranslationMap;
   recaptchaSiteKey?: string;
+  countriesWithoutStates?: string[];
 }
 
 export function DynamicForm<F extends Field>({
@@ -95,19 +98,32 @@ export function DynamicForm<F extends Field>({
   passwordComplexity,
   errorTranslations,
   recaptchaSiteKey,
+  countriesWithoutStates,
 }: DynamicFormProps<F>) {
   const t = useTranslations('Form');
   // Remove options from fields before passing to action to reduce payload size
   // Options are only needed for rendering, not for processing form submissions
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const fieldsWithoutOptions = removeOptionsFromFields(fields) as Array<F | FieldGroup<F>>;
-  const actionWithFields = action.bind(null, { fields: fieldsWithoutOptions, passwordComplexity });
+  const actionWithFields = action.bind(null, {
+    fields: fieldsWithoutOptions,
+    passwordComplexity,
+    countriesWithoutStates,
+  });
 
   const [{ lastResult, successMessage }, formAction] = useActionState(actionWithFields, {
     lastResult: null,
   });
 
-  const dynamicSchema = schema(fields, passwordComplexity, errorTranslations);
+  const [currentCountry, setCurrentCountry] = useState<string | undefined>(undefined);
+
+  const dynamicSchema = schema(
+    fields,
+    passwordComplexity,
+    errorTranslations,
+    countriesWithoutStates,
+    currentCountry,
+  );
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
     .reduce<z.infer<typeof dynamicSchema>>(
@@ -163,6 +179,19 @@ export function DynamicForm<F extends Field>({
     }
   }, [lastResult, successMessage, onSuccess]);
 
+  const countryValue = formFields.countryCode?.value;
+
+  useEffect(() => {
+    setCurrentCountry(typeof countryValue === 'string' ? countryValue : undefined);
+  }, [countryValue]);
+
+  const isCurrentCountryStateless =
+    countriesWithoutStates != null &&
+    typeof countryValue === 'string' &&
+    countriesWithoutStates.includes(countryValue);
+  const shouldHideStateField = (fieldName: string) =>
+    fieldName === 'stateOrProvince' && isCurrentCountryStateless;
+
   return (
     <FormProvider context={form.context}>
       <form {...getFormProps(form)} action={formAction} onChange={onChange}>
@@ -172,6 +201,8 @@ export function DynamicForm<F extends Field>({
               return (
                 <div className="flex flex-col gap-4 @sm:flex-row" key={index}>
                   {field.map((f) => {
+                    if (shouldHideStateField(f.name)) return null;
+
                     const groupFormField = formFields[f.name];
 
                     if (!groupFormField) return null;
@@ -187,6 +218,8 @@ export function DynamicForm<F extends Field>({
                 </div>
               );
             }
+
+            if (shouldHideStateField(field.name)) return null;
 
             const formField = formFields[field.name];
 

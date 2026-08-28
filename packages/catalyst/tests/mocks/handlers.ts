@@ -38,6 +38,11 @@ export const handlers = [
             domain: body.domain,
             project_uuid: '6b202364-10f3-11f1-8bc7-fe9b9d8b14ab',
             verification_status: 'pending',
+            // Only the create endpoint returns the records to publish.
+            pointing_records: {
+              a_record_value: '198.51.100.10',
+              cname_record_value: 'shared.hosting.bigcommerce.com',
+            },
           },
         },
         { status: 201 },
@@ -218,18 +223,16 @@ export const handlers = [
           level: 'error',
           messages: ['Unhandled exception while rendering /cart'],
           is_exception: true,
-          request_id: '8f1c2d3e4b5a6978',
           exception_name: 'TypeError',
           request: { method: 'GET', url: '/cart', status_code: 500 },
         },
       ],
       meta: {
         cursor_pagination: {
-          count: 1,
-          per_page: 50,
+          has_next_page: false,
+          has_prev_page: false,
           start_cursor: 'cursor_start',
           end_cursor: 'cursor_end',
-          links: {},
         },
       },
     }),
@@ -305,5 +308,11 @@ export const handlers = [
     HttpResponse.json({
       data: { id: 1, url: 'https://example.com', channel_id: 1 },
     }),
+  ),
+
+  // Default handler for the npm registry — 404 so the stale-CLI check stays
+  // silent by default. Tests that assert on it override with a version payload.
+  http.get('https://registry.npmjs.org/:scope/:name/latest', () =>
+    HttpResponse.json({ error: 'Not found' }, { status: 404 }),
   ),
 ];

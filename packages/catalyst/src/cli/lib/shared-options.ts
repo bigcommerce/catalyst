@@ -50,7 +50,7 @@ export const resolveProjectUuid = (options: { projectUuid?: string }) => {
 
   if (!projectUuid) {
     throw new Error(
-      'Project UUID is required. Please run either `catalyst project link` or `catalyst project create` or this command again with --project-uuid <uuid>.',
+      'Project UUID is required. Please run either `catalyst projects link` or `catalyst projects create` or this command again with --project-uuid <uuid>.',
     );
   }
 

@@ -3,5 +3,6 @@ export { BigCommerceGQLError } from './gql-error';
 export { BigCommerceAuthError } from './gql-auth-error';
 export { MissingCustomerAccessTokenError } from './missing-cat-error';
 export { InvalidCustomerAccessTokenError } from './invalid-cat-error';
+export { InvalidStorefrontTokenError } from './invalid-storefront-token-error';
 export { createClient } from './client';
 export { removeEdgesAndNodes } from './utils/removeEdgesAndNodes';

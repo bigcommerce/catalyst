@@ -1,10 +1,14 @@
 import { Command } from '@commander-js/extra-typings';
 import { execa } from 'execa';
+import { http, HttpResponse } from 'msw';
 import { execSync } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { afterEach, describe, expect, test, vi } from 'vitest';
+
+import { server } from '../../../tests/mocks/node';
+import { detectLockfileManager } from '../lib/detect-package-manager';
 
 // The tree engine runs many git subprocesses sequentially on Windows CI; give
 // every test in this file enough headroom (the fast ones finish in < 1 s).
@@ -13,12 +17,16 @@ vi.setConfig({ testTimeout: 30_000 });
 import {
   applyIndexState,
   computeBaseSimilarity,
+  findStaleCli,
   mergeCorePerFile,
   mergeCoreTree,
+  migrateWorkspaceDeps,
+  normalizeWorkspaceDeps,
   parseRef,
   resolveBaseRef,
   resolveProject,
   resolveStrategy,
+  rewriteWorkspaceSpecifier,
   upgrade,
 } from './upgrade';
 
@@ -524,5 +532,259 @@ describe.skipIf(!SUPPORTS_TREE)('mergeCoreTree rename fidelity', () => {
     expect(await exists(join(oursDir, 'old.ts'))).toBe(false);
     expect(result.conflicted).toHaveLength(0);
     expect(await readFile(join(oursDir, 'new.ts'), 'utf-8')).toBe('a\nb\nc\nd\ne-merchant\nf\n');
+  });
+});
+
+// ── Catalyst dependency reconciliation ────────────────────────────────────────
+
+const CLIENT = '@bigcommerce/catalyst-client';
+const ESLINT_CONFIG = '@bigcommerce/eslint-config-catalyst';
+
+// Mirrors the shape of a real core/package.json closely enough for the textual
+// rewrite: 2-space indent, deps split across two fields.
+const corePkg = (client: string, eslintConfig: string): string =>
+  `${JSON.stringify(
+    {
+      name: '@bigcommerce/catalyst-core',
+      version: '1.6.3',
+      dependencies: { [CLIENT]: client, next: '^15.5.0' },
+      devDependencies: { [ESLINT_CONFIG]: eslintConfig },
+    },
+    null,
+    2,
+  )}\n`;
+
+describe('rewriteWorkspaceSpecifier', () => {
+  test('swaps a workspace specifier for a caret range, leaving the rest byte-identical', () => {
+    const raw = corePkg('workspace:^', 'workspace:^');
+    const rewritten = rewriteWorkspaceSpecifier(raw, CLIENT, '1.0.2');
+
+    expect(rewritten).toContain(`"${CLIENT}": "^1.0.2"`);
+    // Only that one value moved.
+    expect(rewritten).toBe(raw.replace('"workspace:^",', '"^1.0.2",'));
+  });
+
+  test('leaves a dependency that is already a real range alone', () => {
+    const raw = corePkg('^1.0.1', 'workspace:^');
+
+    expect(rewriteWorkspaceSpecifier(raw, CLIENT, '1.0.2')).toBe(raw);
+  });
+
+  test('is a no-op for a package that is not present', () => {
+    const raw = corePkg('workspace:^', 'workspace:^');
+
+    expect(rewriteWorkspaceSpecifier(raw, '@bigcommerce/nope', '9.9.9')).toBe(raw);
+  });
+});
+
+describe('normalizeWorkspaceDeps', () => {
+  // Writes base/theirs trees carrying `workspace:^` (what every tag actually
+  // ships) and returns their dirs.
+  async function trees(root: string): Promise<{ baseDir: string; theirsDir: string }> {
+    const baseDir = join(root, 'base');
+    const theirsDir = join(root, 'theirs');
+
+    await Promise.all([
+      write(join(baseDir, 'package.json'), corePkg('workspace:^', 'workspace:^')),
+      write(join(theirsDir, 'package.json'), corePkg('workspace:^', 'workspace:^')),
+    ]);
+
+    return { baseDir, theirsDir };
+  }
+
+  test('rewrites both sides to each tag version when the project holds a real range', async () => {
+    const root = await mkTmp();
+    const { baseDir, theirsDir } = await trees(root);
+
+    const result = await normalizeWorkspaceDeps(
+      corePkg('^1.0.1', '^1.0.0'),
+      baseDir,
+      theirsDir,
+      { [CLIENT]: '1.0.1', [ESLINT_CONFIG]: '1.0.0' },
+      { [CLIENT]: '1.0.2', [ESLINT_CONFIG]: '1.0.0' },
+    );
+
+    expect(await readFile(join(baseDir, 'package.json'), 'utf-8')).toContain(
+      `"${CLIENT}": "^1.0.1"`,
+    );
+    expect(await readFile(join(theirsDir, 'package.json'), 'utf-8')).toContain(
+      `"${CLIENT}": "^1.0.2"`,
+    );
+    expect(result.workspace).toEqual([]);
+    // eslint-config-catalyst didn't move between the two tags.
+    expect(result.bumped).toEqual([CLIENT]);
+  });
+
+  test('leaves both sides untouched for a dependency the project still holds as workspace:', async () => {
+    const root = await mkTmp();
+    const { baseDir, theirsDir } = await trees(root);
+    const before = await readFile(join(baseDir, 'package.json'), 'utf-8');
+
+    const result = await normalizeWorkspaceDeps(
+      corePkg('workspace:^', 'workspace:^'),
+      baseDir,
+      theirsDir,
+      { [CLIENT]: '1.0.1', [ESLINT_CONFIG]: '1.0.0' },
+      { [CLIENT]: '1.0.2', [ESLINT_CONFIG]: '1.0.0' },
+    );
+
+    // Normalizing one side only would manufacture a conflict on a dependency
+    // that works fine as-is, so neither side moves.
+    expect(await readFile(join(baseDir, 'package.json'), 'utf-8')).toBe(before);
+    expect(await readFile(join(theirsDir, 'package.json'), 'utf-8')).toBe(before);
+    expect(result.bumped).toEqual([]);
+    expect(result.workspace).toEqual([
+      { name: CLIENT, ours: 'workspace:^', version: '1.0.2' },
+      { name: ESLINT_CONFIG, ours: 'workspace:^', version: '1.0.0' },
+    ]);
+  });
+
+  test('leaves a side alone when that tag never published the package', async () => {
+    const root = await mkTmp();
+    const { baseDir, theirsDir } = await trees(root);
+
+    const result = await normalizeWorkspaceDeps(
+      corePkg('^1.0.1', '^1.0.0'),
+      baseDir,
+      theirsDir,
+      {}, // the package didn't exist at the base ref
+      { [CLIENT]: '1.0.2' },
+    );
+
+    expect(await readFile(join(baseDir, 'package.json'), 'utf-8')).toContain(
+      `"${CLIENT}": "workspace:^"`,
+    );
+    expect(await readFile(join(theirsDir, 'package.json'), 'utf-8')).toContain(
+      `"${CLIENT}": "^1.0.2"`,
+    );
+    // Nothing to compare against on the base side, so no bump is claimed.
+    expect(result.bumped).toEqual([]);
+  });
+
+  test('returns nothing when a downloaded package.json is missing', async () => {
+    const root = await mkTmp();
+
+    await expect(
+      normalizeWorkspaceDeps(
+        corePkg('^1.0.1', '^1.0.0'),
+        join(root, 'nope'),
+        join(root, 'gone'),
+        {},
+        {},
+      ),
+    ).resolves.toEqual({ workspace: [], bumped: [] });
+  });
+});
+
+describe('migrateWorkspaceDeps', () => {
+  test('applies every finding to the project package.json text', () => {
+    const migrated = migrateWorkspaceDeps(corePkg('workspace:^', 'workspace:*'), [
+      { name: CLIENT, ours: 'workspace:^', version: '1.0.2' },
+      { name: ESLINT_CONFIG, ours: 'workspace:*', version: '1.0.0' },
+    ]);
+
+    expect(migrated).toContain(`"${CLIENT}": "^1.0.2"`);
+    expect(migrated).toContain(`"${ESLINT_CONFIG}": "^1.0.0"`);
+    expect(migrated).not.toContain('workspace:');
+  });
+});
+
+describe('findStaleCli', () => {
+  const withRegistryVersion = (version: string) =>
+    server.use(
+      http.get('https://registry.npmjs.org/:scope/:name/latest', () =>
+        HttpResponse.json({ name: '@bigcommerce/catalyst', version }),
+      ),
+    );
+
+  const projectWith = (cliRange: string) =>
+    JSON.stringify({ devDependencies: { '@bigcommerce/catalyst': cliRange } });
+
+  test('reports the gap when the pinned CLI is behind the published one', async () => {
+    withRegistryVersion('1.2.0');
+
+    await expect(findStaleCli(projectWith('1.1.0'))).resolves.toEqual({
+      current: '1.1.0',
+      latest: '1.2.0',
+    });
+  });
+
+  test('stays quiet when the project is already on the published version', async () => {
+    withRegistryVersion('1.2.0');
+
+    await expect(findStaleCli(projectWith('1.2.0'))).resolves.toBeNull();
+  });
+
+  test('stays quiet when the range already admits the published version', async () => {
+    withRegistryVersion('1.2.5');
+
+    // `^1.2.0` picks up 1.2.5 on the next install, so there is nothing to say.
+    await expect(findStaleCli(projectWith('^1.2.0'))).resolves.toBeNull();
+  });
+
+  test('reports a range that cannot reach the published version', async () => {
+    withRegistryVersion('2.0.0');
+
+    await expect(findStaleCli(projectWith('^1.1.0'))).resolves.toEqual({
+      current: '1.1.0',
+      latest: '2.0.0',
+    });
+  });
+
+  test('stays quiet when the registry returns a non-semver version', async () => {
+    withRegistryVersion('not-a-version');
+
+    await expect(findStaleCli(projectWith('1.1.0'))).resolves.toBeNull();
+  });
+
+  test('skips the registry entirely when the project has no CLI dependency', async () => {
+    await expect(
+      findStaleCli(JSON.stringify({ dependencies: { next: '^15.5.0' } })),
+    ).resolves.toBeNull();
+  });
+
+  test('ignores an unparseable range rather than throwing', async () => {
+    await expect(findStaleCli(projectWith('catalyst.tgz'))).resolves.toBeNull();
+  });
+
+  test('stays quiet when the registry is unreachable', async () => {
+    // The default handler 404s.
+    await expect(findStaleCli(projectWith('1.1.0'))).resolves.toBeNull();
+  });
+
+  test('stays quiet when package.json still has conflict markers', async () => {
+    await expect(
+      findStaleCli('<<<<<<< ours\n{}\n=======\n{}\n>>>>>>> theirs\n'),
+    ).resolves.toBeNull();
+  });
+});
+
+describe('detectLockfileManager', () => {
+  test.each([
+    ['pnpm-lock.yaml', 'pnpm'],
+    ['yarn.lock', 'yarn'],
+    ['bun.lock', 'bun'],
+    ['package-lock.json', 'npm'],
+  ])('maps %s to %s', async (lockfile, manager) => {
+    const root = await mkTmp();
+
+    await write(join(root, lockfile), '');
+
+    expect(await detectLockfileManager(root)).toBe(manager);
+  });
+
+  test('prefers pnpm when several lockfiles are present', async () => {
+    const root = await mkTmp();
+
+    await Promise.all([
+      write(join(root, 'package-lock.json'), ''),
+      write(join(root, 'pnpm-lock.yaml'), ''),
+    ]);
+
+    expect(await detectLockfileManager(root)).toBe('pnpm');
+  });
+
+  test('returns null when there is no lockfile, so the caller can keep looking', async () => {
+    expect(await detectLockfileManager(await mkTmp())).toBeNull();
   });
 });

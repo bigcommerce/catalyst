@@ -5,14 +5,14 @@ import PACKAGE_INFO from '../../package.json';
 
 import { auth } from './commands/auth';
 import { build } from './commands/build';
-import { channel } from './commands/channel';
+import { channels } from './commands/channels';
 import { create } from './commands/create';
 import { debug } from './commands/debug';
 import { deploy } from './commands/deploy';
 import { domains } from './commands/domains';
 import { env } from './commands/env';
 import { logs } from './commands/logs';
-import { project } from './commands/project';
+import { projects } from './commands/projects';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
 import { upgrade } from './commands/upgrade';
@@ -51,9 +51,9 @@ program
   .addCommand(deploy)
   .addCommand(domains)
   .addCommand(logs)
-  .addCommand(project)
+  .addCommand(projects)
   .addCommand(env)
-  .addCommand(channel)
+  .addCommand(channels)
   .addCommand(auth)
   .addCommand(upgrade)
   .addCommand(telemetry)

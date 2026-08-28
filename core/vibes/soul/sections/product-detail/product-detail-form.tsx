@@ -223,7 +223,13 @@ export function ProductDetailForm<F extends Field>({
       backorderMessage,
       showQuantityOnBackorder,
       unlimitedBackorder,
-    } = backorderDisplayData || { availableForBackorder: 0, availableOnHand: 0 };
+    } = backorderDisplayData || {
+      availableForBackorder: 0,
+      availableOnHand: 0,
+      backorderMessage: null,
+      showQuantityOnBackorder: false,
+      unlimitedBackorder: false,
+    };
 
     if (!showQuantityOnBackorder && !backorderMessage) {
       return undefined;
@@ -231,8 +237,23 @@ export function ProductDetailForm<F extends Field>({
 
     const orderQuantity = Number(formFields.quantity.value);
 
+    if (orderQuantity > availableForBackorder + availableOnHand) {
+      return {
+        backOrderErrorMessage: t('maxPurchasableQuantity', {
+          quantity: availableForBackorder + availableOnHand,
+        }),
+        backorderQuantityMessage: t('backorderQuantity', {
+          quantity: unlimitedBackorder
+            ? orderQuantity - availableOnHand
+            : Math.min(orderQuantity - availableOnHand, availableForBackorder),
+        }),
+        backorderInfoMessage: undefined,
+      };
+    }
+
     if (Number.isNaN(orderQuantity) || orderQuantity <= availableOnHand) {
       return {
+        backOrderErrorMessage: undefined,
         backorderQuantityMessage: undefined,
         backorderInfoMessage: undefined,
       };
@@ -240,12 +261,14 @@ export function ProductDetailForm<F extends Field>({
 
     if (!showQuantityOnBackorder) {
       return {
+        backOrderErrorMessage: undefined,
         backorderQuantityMessage: undefined,
         backorderInfoMessage: backorderMessage ?? undefined,
       };
     }
 
     return {
+      backOrderErrorMessage: undefined,
       backorderQuantityMessage: t('backorderQuantity', {
         quantity: unlimitedBackorder
           ? orderQuantity - availableOnHand
@@ -342,7 +365,9 @@ export function ProductDetailForm<F extends Field>({
               value={quantityControl.value}
             />
             <div className="flex flex-1 gap-x-3">
-              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              <SubmitButton disabled={ctaDisabled || !!backorderMessages?.backOrderErrorMessage}>
+                {ctaLabel}
+              </SubmitButton>
 
               {isQuotesEnabled && (
                 <Button
@@ -375,6 +400,15 @@ export function ProductDetailForm<F extends Field>({
             )}
             {additionalActions}
           </div>
+
+          {!!backorderMessages?.backOrderErrorMessage && (
+            <FormStatus
+              className="ease-initial duration-400 opacity-100 transition-opacity"
+              type="error"
+            >
+              {backorderMessages.backOrderErrorMessage}
+            </FormStatus>
+          )}
         </div>
       </form>
     </FormProvider>

@@ -82,6 +82,18 @@ export async function buildCatalystProject(
     },
   );
 
+  // Workers Assets serves `/_next/static/*` directly, bypassing the Next.js
+  // server that would normally set the immutable Cache-Control on it. Its
+  // default is `max-age=0, must-revalidate`, so browsers revalidate every
+  // hashed asset on every repeat view. `_headers` overrides that, and has to
+  // live inside the assets directory — written after the OpenNext build because
+  // that build regenerates the directory, and before the Wrangler dry-run so
+  // Wrangler validates it.
+  await copyFile(
+    join(getModuleCliPath(), 'templates', 'public_headers'),
+    join(openNextOutDir, 'assets', '_headers'),
+  );
+
   await execa(
     'pnpm',
     [
@@ -172,7 +184,7 @@ Examples:
 
     if (!projectUuid) {
       throw new Error(
-        'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+        'Project UUID is required. Please run `catalyst projects create` or `catalyst projects link` or this command again with --project-uuid <uuid>.',
       );
     }
 

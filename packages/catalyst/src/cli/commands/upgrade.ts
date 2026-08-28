@@ -15,9 +15,11 @@ import {
 } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
 import { dirname, join, relative } from 'node:path';
+import { minVersion, satisfies, lt as semverLt, validRange, valid as validSemver } from 'semver';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { detectLockfileManager, PackageManager } from '../lib/detect-package-manager';
 import { consola } from '../lib/logger';
 import { getTelemetry } from '../lib/telemetry';
 
@@ -26,6 +28,26 @@ const CorePackageJson = z.object({
   version: z.string(),
   catalyst: z.object({ version: z.string(), ref: z.string() }).optional(),
 });
+
+const DEP_FIELDS = [
+  'dependencies',
+  'devDependencies',
+  'optionalDependencies',
+  'peerDependencies',
+] as const;
+
+const DepsPackageJson = z.looseObject({
+  dependencies: z.record(z.string(), z.string()).optional(),
+  devDependencies: z.record(z.string(), z.string()).optional(),
+  optionalDependencies: z.record(z.string(), z.string()).optional(),
+  peerDependencies: z.record(z.string(), z.string()).optional(),
+});
+
+const WorkspacePackageJson = z.object({ name: z.string(), version: z.string() });
+
+// The CLI itself. `catalyst create` pins it exactly in devDependencies and it
+// doesn't exist in the upstream tree, so no merge will ever move it.
+const CATALYST_CLI_PACKAGE = '@bigcommerce/catalyst';
 
 // Catalyst versions are git tags on the upstream monorepo (e.g.
 // "@bigcommerce/catalyst-core@1.7.0"), NOT npm packages. GitHub serves a
@@ -123,6 +145,165 @@ async function readResolvedVersion(coreDir: string): Promise<string> {
 
   // catalyst.version is the source of truth; older tags lack it and fall back to version.
   return pkg.catalyst?.version ?? pkg.version;
+}
+
+// ── Catalyst dependency reconciliation ────────────────────────────────────────
+// Every tag's committed core/package.json still carries `workspace:` specifiers
+// for the Catalyst packages: core is `private`, so it is never published and
+// pnpm's publish-time rewrite never runs on the tagged tree. Base and theirs
+// therefore agree on those lines, the merge correctly leaves ours alone, and the
+// merchant's Catalyst dependency versions never move. `catalyst create` resolves
+// them at scaffold time instead, which is why flat projects hold a real range
+// and monorepo-structure projects still hold `workspace:^`.
+
+// Package name → the version that tag published. Indexing can miss: a package
+// that didn't exist yet at an older ref simply isn't in that tag's manifest.
+export type WorkspaceVersions = Record<string, string | undefined>;
+
+// A Catalyst dependency the merchant still references through the workspace
+// protocol, alongside the published version it would migrate to.
+export interface WorkspaceDepFinding {
+  name: string;
+  ours: string;
+  version: string;
+}
+
+const readDepSpecifiers = (raw: string): Record<string, string | undefined> => {
+  let parsed: z.infer<typeof DepsPackageJson>;
+
+  try {
+    parsed = DepsPackageJson.parse(JSON.parse(raw));
+  } catch {
+    return {}; // conflict markers or hand-broken JSON — nothing to reconcile
+  }
+
+  return Object.fromEntries(DEP_FIELDS.flatMap((field) => Object.entries(parsed[field] ?? {})));
+};
+
+// Scoped package names carry "@" and "/", and some carry "."; escape before
+// embedding in a pattern.
+const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Swap a dependency's `workspace:` specifier for `^<version>` in raw
+// package.json text. Deliberately textual rather than a JSON round-trip: parsing
+// and re-stringifying would reformat the whole file, desyncing the downloaded
+// trees from the merchant's copy and turning a one-line dependency bump into a
+// whole-file conflict. It also keeps working on a file that still has conflict
+// markers in other sections.
+export const rewriteWorkspaceSpecifier = (raw: string, name: string, version: string): string =>
+  raw.replace(
+    new RegExp(`("${escapeRegExp(name)}"\\s*:\\s*)"workspace:[^"]*"`, 'g'),
+    (_match, key: string) => `${key}"^${version}"`,
+  );
+
+// Rewrites the downloaded base/theirs package.json so each side names the
+// version its own tag actually shipped. The normal 3-way merge then carries the
+// bump for free — or conflicts, if the merchant pinned deliberately.
+//
+// A dependency the merchant still holds as `workspace:` is skipped on both
+// sides: normalizing there would manufacture a conflict on something that works
+// fine as-is. Those come back as findings for the migration prompt instead.
+export async function normalizeWorkspaceDeps(
+  ourPkgRaw: string,
+  baseDir: string,
+  theirsDir: string,
+  baseVersions: WorkspaceVersions,
+  targetVersions: WorkspaceVersions,
+): Promise<{ workspace: WorkspaceDepFinding[]; bumped: string[] }> {
+  const basePath = join(baseDir, 'package.json');
+  const theirsPath = join(theirsDir, 'package.json');
+  const [originalBase, originalTheirs] = await Promise.all([
+    readFile(basePath, 'utf-8').catch(() => null),
+    readFile(theirsPath, 'utf-8').catch(() => null),
+  ]);
+
+  if (originalBase === null || originalTheirs === null) return { workspace: [], bumped: [] };
+
+  const ourSpecifiers = readDepSpecifiers(ourPkgRaw);
+  const names = new Set(
+    [
+      ...Object.entries(readDepSpecifiers(originalBase)),
+      ...Object.entries(readDepSpecifiers(originalTheirs)),
+    ]
+      .filter(([, range]) => range?.startsWith('workspace:'))
+      .map(([name]) => name),
+  );
+
+  const decisions = [...names].map((name) => ({
+    name,
+    ours: ourSpecifiers[name],
+    baseVersion: baseVersions[name],
+    targetVersion: targetVersions[name],
+  }));
+
+  const workspace = decisions.flatMap(({ name, ours, targetVersion }) =>
+    ours?.startsWith('workspace:') && targetVersion !== undefined
+      ? [{ name, ours, version: targetVersion }]
+      : [],
+  );
+
+  // Everything else gets both sides pinned to the version its own tag shipped.
+  // A version is missing when the package didn't exist at that ref yet; leave
+  // that side untouched so the merge sees no change rather than a bogus one.
+  const normalizable = decisions.filter(({ ours }) => !ours?.startsWith('workspace:'));
+
+  const baseRaw = normalizable.reduce(
+    (acc, { name, baseVersion }) =>
+      baseVersion === undefined ? acc : rewriteWorkspaceSpecifier(acc, name, baseVersion),
+    originalBase,
+  );
+  const theirsRaw = normalizable.reduce(
+    (acc, { name, targetVersion }) =>
+      targetVersion === undefined ? acc : rewriteWorkspaceSpecifier(acc, name, targetVersion),
+    originalTheirs,
+  );
+  const bumped = normalizable
+    .filter(
+      ({ baseVersion, targetVersion }) =>
+        baseVersion !== undefined && targetVersion !== undefined && baseVersion !== targetVersion,
+    )
+    .map(({ name }) => name);
+
+  await Promise.all([
+    baseRaw === originalBase ? null : writeFile(basePath, baseRaw),
+    theirsRaw === originalTheirs ? null : writeFile(theirsPath, theirsRaw),
+  ]);
+
+  return { workspace, bumped };
+}
+
+// Applies the findings to the merchant's own package.json text.
+export const migrateWorkspaceDeps = (raw: string, findings: WorkspaceDepFinding[]): string =>
+  findings.reduce((acc, { name, version }) => rewriteWorkspaceSpecifier(acc, name, version), raw);
+
+// The CLI that performs upgrades can't upgrade itself through the merge, so
+// check npm directly. Best-effort: a registry hiccup must never fail an upgrade.
+export async function findStaleCli(
+  pkgRaw: string,
+): Promise<{ current: string; latest: string } | null> {
+  const range = readDepSpecifiers(pkgRaw)[CATALYST_CLI_PACKAGE];
+
+  // A merchant may point the dep at a tarball, git URL, or `link:` path, none of
+  // which minVersion() can parse (it throws rather than returning null).
+  if (range === undefined || !validRange(range)) return null;
+
+  const body: unknown = await fetch(`https://registry.npmjs.org/${CATALYST_CLI_PACKAGE}/latest`, {
+    // A hanging registry would otherwise stall the CLI indefinitely.
+    signal: AbortSignal.timeout(5000),
+  })
+    .then((res) => (res.ok ? res.json() : null))
+    .catch(() => null);
+  const latest = z.object({ version: z.string() }).safeParse(body).data?.version;
+
+  // The registry promises a string, not a semver one, and an unparseable version
+  // would throw straight out of satisfies(). A range that already admits the
+  // published version needs no advisory either — the next install picks it up,
+  // which leaves this for the exact pin `catalyst create` writes.
+  if (latest === undefined || !validSemver(latest) || satisfies(latest, range)) return null;
+
+  const current = minVersion(range)?.version;
+
+  return current !== undefined && semverLt(current, latest) ? { current, latest } : null;
 }
 
 // ── per-file 3-way merge engine ───────────────────────────────────────────────
@@ -620,31 +801,79 @@ export async function resolveProject(cwd: string): Promise<Project | null> {
 }
 
 // ── tarball download (source side stays the monorepo) ─────────────────────────
+// Harvests the versions the monorepo's publishable packages carried at this ref.
+// This is the only place they're knowable: the tag's core/package.json names them
+// as `workspace:`, and they version independently of core (no changesets
+// `linked`/`fixed` group), so an npm `latest` lookup would answer for today
+// rather than for the ref being downloaded.
+const readWorkspaceVersions = async (repoDir: string): Promise<WorkspaceVersions> => {
+  const packagesDir = join(repoDir, 'packages');
+  const entries = await readdir(packagesDir, { withFileTypes: true }).catch(() => []);
+
+  const manifests = await Promise.all(
+    entries
+      .filter((entry) => entry.isDirectory())
+      .map(async (entry) => {
+        const raw = await readFile(join(packagesDir, entry.name, 'package.json'), 'utf-8').catch(
+          () => null,
+        );
+
+        if (raw === null) return null;
+
+        try {
+          return WorkspacePackageJson.parse(JSON.parse(raw));
+        } catch {
+          return null;
+        }
+      }),
+  );
+
+  return Object.fromEntries(
+    manifests.filter((pkg) => pkg !== null).map(({ name, version }) => [name, version]),
+  );
+};
+
+const readCachedVersions = async (path: string): Promise<WorkspaceVersions | null> => {
+  const raw = await readFile(path, 'utf-8').catch(() => null);
+
+  if (raw === null) return null;
+
+  try {
+    return z.record(z.string(), z.string()).parse(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+};
+
 export async function downloadCore(
   repository: string,
   ref: string,
   destDir: string,
   token?: string,
-): Promise<void> {
+): Promise<WorkspaceVersions> {
   // Never cache moving tags (latest/canary/alpha) — they'd go stale silently.
   const cacheable = !MOVING_TAGS.has(parseRef(ref).version);
   // Use a separator before the ref so that repository strings differing only
   // by characters that sanitize to '_' (e.g. '/' vs '_') produce distinct keys.
   const cacheKey = `${repository.replace(/[^a-zA-Z0-9._-]/g, '_')}__${ref.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
   const cachePath = join(CACHE_DIR, cacheKey);
+  const versionsPath = `${cachePath}.versions.json`;
 
   // Guard against a partially-written cache entry: two concurrent downloadCore
   // calls for the same ref can race — the first creates cachePath mid-copy, and
   // the second sees it as present but gets an incomplete directory. Validate with
-  // a package.json sentinel (every extracted core/ tree must have one).
-  if (
-    cacheable &&
-    (await pathExists(cachePath)) &&
-    (await pathExists(join(cachePath, 'package.json')))
-  ) {
+  // a package.json sentinel (every extracted core/ tree must have one) plus the
+  // versions sidecar, which also makes entries written before the sidecar existed
+  // fall through to a fresh download rather than answering with no versions.
+  const cachedVersions =
+    cacheable && (await pathExists(join(cachePath, 'package.json')))
+      ? await readCachedVersions(versionsPath)
+      : null;
+
+  if (cachedVersions) {
     await cp(cachePath, destDir, { recursive: true });
 
-    return;
+    return cachedVersions;
   }
 
   // encodeURIComponent turns "@bigcommerce/catalyst-core@1.7.0" into
@@ -681,16 +910,23 @@ export async function downloadCore(
   const coreDir = join(rawDir, 'core');
   const sourceDir = (await pathExists(coreDir)) ? coreDir : rawDir;
 
+  // Read the sibling packages before rawDir is torn down — destDir keeps core/ only.
+  const workspaceVersions = await readWorkspaceVersions(rawDir);
+
   await rename(sourceDir, destDir);
   await rm(tarballPath, { force: true });
   await rm(rawDir, { recursive: true, force: true });
 
   if (cacheable) {
     await mkdir(CACHE_DIR, { recursive: true });
-    await cp(destDir, cachePath, { recursive: true }).catch(() => {
-      /* best-effort cache; ignore failures */
-    });
+    await cp(destDir, cachePath, { recursive: true })
+      .then(() => writeFile(versionsPath, JSON.stringify(workspaceVersions)))
+      .catch(() => {
+        /* best-effort cache; ignore failures */
+      });
   }
+
+  return workspaceVersions;
 }
 
 // ── base-ref resolution / auto-detect ─────────────────────────────────────────
@@ -727,7 +963,36 @@ export async function resolveBaseRef(
 }
 
 // ── summary output ────────────────────────────────────────────────────────────
-function printSummary(result: MergeResult, relDir: string, stampedPkg: boolean): void {
+function printWorkspaceFindings(findings: WorkspaceDepFinding[]): void {
+  if (findings.length === 0) return;
+
+  const pad = Math.max(...findings.map((finding) => finding.name.length));
+  const rows = findings
+    .map((finding) => `  ${finding.name.padEnd(pad)}  ${finding.ours} → ^${finding.version}`)
+    .join('\n');
+
+  consola.warn(
+    `Catalyst dependencies still using the workspace protocol (${findings.length}):\n${rows}\n\nThey resolve to your local packages/ copies, which \`catalyst upgrade\` does not update — so they never receive upgrades.`,
+  );
+}
+
+interface Summary {
+  result: MergeResult;
+  relDir: string;
+  stampedPkg: boolean;
+  migratedDeps: number;
+  packageManager: PackageManager;
+  staleCli: { current: string; latest: string } | null;
+}
+
+function printSummary({
+  result,
+  relDir,
+  stampedPkg,
+  migratedDeps,
+  packageManager,
+  staleCli,
+}: Summary): void {
   // package.json is excluded from the conflict list when the stamp resolved it.
   const unresolved = result.conflicted.filter((f) => !(stampedPkg && f === 'package.json'));
 
@@ -741,14 +1006,37 @@ function printSummary(result: MergeResult, relDir: string, stampedPkg: boolean):
 
   consola.log(`\n${parts.join(', ')}`);
 
+  // Any package.json change can move dependencies, and the upgrade never installs,
+  // so the lockfile is left behind either way.
+  const pkgConflicted = unresolved.includes('package.json');
+  const depsChanged =
+    migratedDeps > 0 ||
+    [...result.applied, ...result.added, ...result.conflicted].includes('package.json');
+
+  // Stay quiet while package.json itself is unresolved: an install against a
+  // manifest full of conflict markers just fails. It joins the resolution steps
+  // below instead, so it runs in the right order.
+  if (depsChanged && !pkgConflicted) {
+    consola.info(
+      `Dependencies changed — run \`${packageManager} install\` to update your lockfile.`,
+    );
+  }
+
   if (unresolved.length) {
     const files = unresolved.map((f) => `  ${f}`).join('\n');
+    const install = depsChanged && pkgConflicted ? ` && ${packageManager} install` : '';
 
     consola.warn(
-      `\nStaged the clean changes. ${unresolved.length} file(s) need conflict resolution (the <<<ours/===/theirs>>> markers):\n${files}\n\nResolve them, then: git add ${relDir} && git commit`,
+      `\nStaged the clean changes. ${unresolved.length} file(s) need conflict resolution (the <<<ours/===/theirs>>> markers):\n${files}\n\nResolve them, then: git add ${relDir} && git commit${install}`,
     );
   } else {
     consola.success('Staged all changes — review with `git diff --cached`, then commit.');
+  }
+
+  if (staleCli) {
+    consola.info(
+      `Your Catalyst CLI is behind (${staleCli.current} → ${staleCli.latest}). Update it with \`${packageManager} add -D ${CATALYST_CLI_PACKAGE}@${staleCli.latest}\`.`,
+    );
   }
 }
 
@@ -893,10 +1181,20 @@ to raise the GitHub API rate limit.`,
 
       await writeFile(emptyFile, '');
 
+      // Start the registry check now so its round-trip overlaps the tarball
+      // downloads rather than adding dead air after the merge. Reading the
+      // pre-merge manifest is also more robust: the CLI dependency isn't in
+      // either upstream tree, so nothing below can move it, and this way the
+      // advisory survives a merge that leaves conflict markers in package.json.
+      const staleCliCheck = findStaleCli(project.rawContent).catch(() => null);
+
       const downloadSpinner = yoctoSpinner().start(`Downloading ${baseRef} and ${upstreamRef}...`);
 
+      let baseVersions: WorkspaceVersions;
+      let targetVersions: WorkspaceVersions;
+
       try {
-        await Promise.all([
+        [baseVersions, targetVersions] = await Promise.all([
           downloadCore(options.repository, baseRef, baseDir, token),
           downloadCore(options.repository, upstreamRef, theirsDir, token),
         ]);
@@ -931,6 +1229,18 @@ to raise the GitHub API rate limit.`,
         ? `${basePackage}@${resolvedVersion}`
         : upstreamRef;
 
+      // ── 3c. Teach the merge about Catalyst dependency versions ──────────
+      // Runs before the dry run so the preview shows the dependency change too.
+      // rawContent predates the 3b backfill, which only touches the `catalyst`
+      // field — dependency specifiers are identical either way.
+      const { workspace: workspaceDeps, bumped } = await normalizeWorkspaceDeps(
+        project.rawContent,
+        baseDir,
+        theirsDir,
+        baseVersions,
+        targetVersions,
+      );
+
       // ── 4. Dry run: show the unified diff and stop ──────────────────────
       if (options.dryRun) {
         const diffSpinner = yoctoSpinner().start('Generating diff...');
@@ -956,6 +1266,8 @@ to raise the GitHub API rate limit.`,
         diffSpinner.success(`Diff ready — ${fileCount} file(s) affected.`);
         consola.log('\nDiff preview (--dry-run, not applied):\n');
         consola.log(diff.stdout);
+
+        printWorkspaceFindings(workspaceDeps);
 
         return;
       }
@@ -988,14 +1300,17 @@ to raise the GitHub API rate limit.`,
       // ── 6. Stamp catalyst.ref (skip if package.json itself conflicted) ──
       const patchedRaw = await readFile(pkgPath, 'utf-8');
 
-      let stampedPkg = false;
+      // Non-null once the stamp has written clean JSON, and then it is exactly
+      // what sits on disk. Stays null when package.json came out of the merge
+      // carrying conflict markers.
+      let stampedText: string | null = null;
 
       try {
         const patchedPkg = z.record(z.string(), z.unknown()).parse(JSON.parse(patchedRaw));
 
         patchedPkg.catalyst = { version: resolvedVersion, ref: newRef };
-        await writeFile(pkgPath, `${JSON.stringify(patchedPkg, null, 2)}\n`);
-        stampedPkg = true;
+        stampedText = `${JSON.stringify(patchedPkg, null, 2)}\n`;
+        await writeFile(pkgPath, stampedText);
         consola.success(`catalyst.ref updated → ${newRef}`);
       } catch {
         // package.json has conflict markers (scripts, deps, etc.). The catalyst
@@ -1020,7 +1335,7 @@ to raise the GitHub API rate limit.`,
 
         if (updated !== patchedRaw) {
           await writeFile(pkgPath, updated);
-          // stampedPkg stays false — the file still has conflict markers in other
+          // stampedText stays null — the file still has conflict markers in other
           // sections, so it must stay as a UU unmerged entry so the editor shows
           // the merge UI. Only the catalyst field was resolved in place.
           consola.success(`catalyst.ref updated → ${newRef}`);
@@ -1034,11 +1349,44 @@ to raise the GitHub API rate limit.`,
         }
       }
 
+      // ── 6b. Offer to migrate workspace-protocol Catalyst dependencies ────
+      printWorkspaceFindings(workspaceDeps);
+
+      let migratedDeps = 0;
+
+      if (workspaceDeps.length) {
+        // Rewriting a package.json that still holds conflict markers could land
+        // inside a hunk the merchant hasn't reviewed, so the swap is only ever
+        // applied to a file the stamp already parsed cleanly. Past that, --yes
+        // means yes (as it does for the inferred base ref), and a non-interactive
+        // run falls through to printing the versions.
+        const accepted =
+          stampedText !== null &&
+          (options.yes === true ||
+            (Boolean(process.stdin.isTTY) &&
+              (await confirm({
+                message: 'Replace them with the published versions?',
+                default: true,
+              }).catch(() => false))));
+
+        if (accepted && stampedText !== null) {
+          await writeFile(pkgPath, migrateWorkspaceDeps(stampedText, workspaceDeps));
+          migratedDeps = workspaceDeps.length;
+          consola.success(
+            `Migrated ${migratedDeps} dependenc${migratedDeps === 1 ? 'y' : 'ies'} to published versions.`,
+          );
+        } else {
+          consola.info(
+            "Keeping the workspace references. Switching abandons any local packages/ copy you've customized; otherwise apply the versions above in package.json and reinstall.",
+          );
+        }
+      }
+
       // ── 7. Stage the clean changes; mark conflicts as real unmerged entries ─
       // Staging is a convenience; the merge already landed on disk, so never let
       // a git quirk here fail the whole upgrade.
       try {
-        await applyIndexState(gitRoot, relDir, baseDir, theirsDir, result, stampedPkg);
+        await applyIndexState(gitRoot, relDir, baseDir, theirsDir, result, stampedText !== null);
       } catch (err) {
         consola.warn(
           `Couldn't auto-stage the changes (${err instanceof Error ? err.message : String(err)}). Your files are merged on disk — run \`git add ${relDir}\` yourself.`,
@@ -1049,6 +1397,12 @@ to raise the GitHub API rate limit.`,
         .then((r) => r.stdout.trim())
         .catch(() => 'unknown');
 
+      // The lockfile lives at the repo root for both layouts and is committed by
+      // every real project, so it answers this on its own. Catalyst scaffolds with
+      // pnpm, which makes it the least-surprising answer when there isn't one.
+      const packageManager = (await detectLockfileManager(gitRoot)) ?? 'pnpm';
+      const staleCli = await staleCliCheck;
+
       await getTelemetry().track('upgrade', {
         strategy,
         gitVersion,
@@ -1058,9 +1412,20 @@ to raise the GitHub API rate limit.`,
         deleted: result.deleted.length,
         conflicts: result.conflicted.length,
         hasConflicts: result.conflicted.length > 0,
+        workspaceDepsFound: workspaceDeps.length,
+        workspaceDepsMigrated: migratedDeps,
+        catalystDepsBumped: bumped.length,
+        cliOutdated: staleCli !== null,
       });
 
-      printSummary(result, relDir, stampedPkg);
+      printSummary({
+        result,
+        relDir,
+        stampedPkg: stampedText !== null,
+        migratedDeps,
+        packageManager,
+        staleCli,
+      });
     } finally {
       await rm(tmpDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 });
     }
