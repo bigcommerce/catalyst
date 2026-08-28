@@ -1,5 +1,0 @@
----
-"@bigcommerce/catalyst-core": patch
----
-
-Expire entries in the in-memory KV layer after 60 seconds. `lib/kv` keeps a per-process `MemoryKvAdapter` in front of whichever shared adapter is selected (Cloudflare KV, Upstash, Vercel Runtime Cache) and skips the shared store whenever memory holds every requested key. Those entries never expired, so once a process had seen a key it stopped consulting the shared store for it entirely. Refreshes were then driven solely by the `expiryTime` each caller embeds in the cached value — and that path refetches from the **origin**, not from the shared store. So every process independently refetched on a clock starting from whenever it first cached the key, rather than picking up a value another process had already fetched and shared. Cached data was never wrong, but origin requests and cache writes scaled with process count. Capacity is also raised from 500 to 4096 entries, since cache keys include the query string and so accumulate faster than the number of real paths suggests.

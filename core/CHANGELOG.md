@@ -1,5 +1,81 @@
 # Changelog
 
+## 1.11.0
+
+### Minor Changes
+
+- [#3173](https://github.com/bigcommerce/catalyst/pull/3173) [`06775b2`](https://github.com/bigcommerce/catalyst/commit/06775b2709e203af6bc14719c3e3aa9ad18290f5) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Resolve merchant-configured locale subfolders at runtime instead of baking them in at build time, so custom locale paths such as `/fr-fr` and `/es-es` resolve consistently.
+
+  Previously the subfolder table was captured during `next build` into `build-config.json` and statically imported by `i18n/locales.ts`. If the control panel returned incomplete locale data at build time, every localized URL 404'd until the next deploy — and because next-intl treats a custom subfolder as a _replacement_ for the bare locale code rather than an alias, there was no fallback: `/es-es` simply did not match any route.
+
+  ## What changed
+  - Added `i18n/locale-config.ts`, which reads locale configuration from BigCommerce at runtime and caches it in KV with the same stale-while-revalidate pattern as `proxies/with-routes.ts`. An empty locale list is never cached.
+  - **Locales are no longer written to `build-config.json` at all.** A build-time snapshot of merchant-configurable data is either redundant or wrong, and using it as a fallback risked silently serving the stale URL space this change exists to fix. Runtime is now the only source. A warm cache rides out a BigCommerce outage; only a cold cache combined with an unreachable API cannot resolve, and that returns `503` with `retry-after` rather than a 404 that would tell crawlers these pages are gone.
+  - `proxies/with-intl.ts` now builds its next-intl middleware per request from that configuration. It resolves the configuration once per request and forwards it to the render as `x-bc-locale-routing`, so rendering and redirects reuse exactly what resolved the inbound URL rather than fetching it again — the two can't disagree, and there is no extra round trip. It also passes the matched subfolder as `x-bc-locale-prefix`, which `proxies/with-routes.ts` strips instead of recomputing from build-time data.
+  - `Link`, `useRouter` and `usePathname` now read the runtime configuration through a new provider in `app/[locale]/layout.tsx`, so generated URLs agree with what the proxy resolves. Canonical and hreflang URLs in `lib/seo/canonical.ts` and the header locale switcher do the same.
+  - `redirect` and `permanentRedirect` moved from `~/i18n/routing` to `~/i18n/navigation-server` and are now `async` — `await` them. This keeps the GraphQL client and KV out of the client bundle.
+  - Removed `generateStaticParams` from `app/[locale]/layout.tsx`, which only added a build-time dependency on the locale list — every route under `[locale]` already renders on demand because the tree reads cookies. The build's route rendering modes are unchanged.
+  - `i18n/locales.ts` is removed. The locale gates in `i18n/request.ts` and `app/[locale]/layout.tsx` now use the runtime list, and the sitemap/robots/favicon routes resolve the default channel directly instead of routing through a locale.
+
+  Behaviour change for channel-per-locale stores: `robots.txt`, the sitemap index and the favicon now resolve the default channel directly rather than via the default locale, because they run outside the proxy and have no request locale. Stores that map their default locale to a non-default channel in `channels.config.ts` will see those three served from `BIGCOMMERCE_CHANNEL_ID`.
+
+  Locale detection is unchanged: a shopper is still redirected to their language's subfolder, and an explicit choice in the locale switcher still wins on later requests.
+
+  Fixed along the way:
+  - `/xmlsitemap.php` and `/admin` redirected through the locale-aware helper, resolving to `/<locale>/sitemap.xml` and `/<locale>/` whenever every locale carries a prefix. The sitemap target was a 404, since `/sitemap.xml` is excluded from the proxy. Both now use plain redirects; `/admin` also no longer performs an uncached GraphQL request on every hit to a route that is disabled by default.
+  - Losing the KV cache no longer takes the storefront down. A read failure now degrades to a fetch instead of being treated as unresolvable.
+  - Locale configuration is validated where it is fetched, so an unusable value can no longer be cached and then rejected on every read, which would have silently turned the cache into a per-request refetch. Subfolders are normalized (surrounding slashes and whitespace trimmed), and locale codes and prefixes are constrained to safe URL shapes.
+  - An unrecognised locale returns 404 rather than 500 when no message file exists for it.
+  - A locale whose configured subfolder cannot be expressed in a URL is now skipped individually, with an error logged, instead of making the whole configuration unusable.
+  - The Playwright URL fixtures asserted `/<locale-code>/...` instead of the configured subfolder, so alternate-locale assertions were wrong for any store whose subfolder differs from its locale code (for example `de` served at `/de-de`). They now resolve the subfolder from the store.
+
+- [#3062](https://github.com/bigcommerce/catalyst/pull/3062) [`98b618f`](https://github.com/bigcommerce/catalyst/commit/98b618fb8ab76de86e598ead56032263bd2217bc) Thanks [@bc-yaroslav-zhmutskyi](https://github.com/bc-yaroslav-zhmutskyi)! - Add Wallet Payment buttons integration for cart page
+
+  ## What changed
+  - Render wallet payment buttons (e.g. PayPal) on the cart page when payment wallets are configured for the cart.
+  - Added `getPaymentWallets`, `getPaymentWalletWithInitializationData`, and `getCurrencyData` GraphQL queries in the cart's `page-data.ts` to fetch configured wallets and their initialization data.
+  - Added a `ClientWalletButtons` client component (`core/components/wallet-buttons`) that streams wallet init options and renders a container per wallet button.
+  - Added a `WalletButtonsInitializer` (`core/lib/wallet-buttons`) that lazily injects the BigCommerce Checkout SDK loader script and initializes each wallet button against the `/graphql` endpoint, with an `InitializationError` for missing loader.
+  - Wired `walletButtonsInitOptions` and `cartId` through the cart section component, and exposed `getCurrencyData` currency formatting details.
+  - Extended the GraphQL proxy (`with-graphql-proxy.ts` / `proxy.ts`) to support Checkout SDK wallet-button requests.
+  - Added `NEXT_PUBLIC_CHECKOUT_SDK_DEV_URL` to `.env.example` to optionally override the Checkout SDK loader URL in development.
+  - Added e2e coverage (`wallet-buttons.spec.ts`) verifying the loader script and wallet button containers render only when wallets are configured.
+
+### Patch Changes
+
+- [#3181](https://github.com/bigcommerce/catalyst/pull/3181) [`20b55e0`](https://github.com/bigcommerce/catalyst/commit/20b55e050d33beca85c163eef7fa517a8334b47e) Thanks [@animesh1987](https://github.com/animesh1987)! - Display an error message and disable Add to Cart when the requested quantity exceeds available-to-sell (on-hand + backorder allowance) on the PDP.
+
+- [#3181](https://github.com/bigcommerce/catalyst/pull/3181) [`20b55e0`](https://github.com/bigcommerce/catalyst/commit/20b55e050d33beca85c163eef7fa517a8334b47e) Thanks [@animesh1987](https://github.com/animesh1987)! - Only show the "ready to ship" quantity message in the cart when part of the line item is also backordered. Previously it appeared any time `showQuantityOnHand` was enabled and any quantity was on hand, even for fully in-stock items where the message added no useful information.
+
+- [#3182](https://github.com/bigcommerce/catalyst/pull/3182) [`eb38614`](https://github.com/bigcommerce/catalyst/commit/eb38614915058d751bb834ec74274ac679a766c7) Thanks [@parthshahp](https://github.com/parthshahp)! - Fix consent-gated cookies being withheld on stores that have cookie consent disabled. c15t grants every consent category client-side when consent is disabled, but only in its in-memory store, so no consent cookie is ever written and server-side checks treated the shopper as having declined — silently dropping the selected currency and preventing the `catalyst.visitorId` / `catalyst.visitId` cookies from being set. Server-side consent checks now fall back to the store's cookie-consent setting when no consent cookie is present: on stores with consent disabled, consent is implicitly granted, so the analytics proxy starts visits on the first request and the currency preference persists.
+
+- [#3176](https://github.com/bigcommerce/catalyst/pull/3176) [`332aa76`](https://github.com/bigcommerce/catalyst/commit/332aa76e41bf988d734acecaafeb40dc9f674dc1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Expire entries in the in-memory KV layer after 60 seconds. `lib/kv` keeps a per-process `MemoryKvAdapter` in front of whichever shared adapter is selected (Cloudflare KV, Upstash, Vercel Runtime Cache) and skips the shared store whenever memory holds every requested key. Those entries never expired, so once a process had seen a key it stopped consulting the shared store for it entirely. Refreshes were then driven solely by the `expiryTime` each caller embeds in the cached value — and that path refetches from the **origin**, not from the shared store. So every process independently refetched on a clock starting from whenever it first cached the key, rather than picking up a value another process had already fetched and shared. Cached data was never wrong, but origin requests and cache writes scaled with process count. Capacity is also raised from 500 to 4096 entries, since cache keys include the query string and so accumulate faster than the number of real paths suggests.
+
+- [#3171](https://github.com/bigcommerce/catalyst/pull/3171) [`0c49112`](https://github.com/bigcommerce/catalyst/commit/0c49112e9363468b517122c620891ac5666ecc76) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fix session cookie deletion being silently broken after logout. `stripSessionCookieExpiry` was stripping `Expires` from all session token `Set-Cookie` headers, including deletion directives (empty value + `Expires=past`). This turned cookie deletions into permanent empty-value session cookies, so the browser never removed them and stale cookies accumulated across login/logout cycles.
+
+- [#3174](https://github.com/bigcommerce/catalyst/pull/3174) [`f647d91`](https://github.com/bigcommerce/catalyst/commit/f647d91cc0284d64d768aaebb5531cc1bec3c803) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix the product page `og:image` tag pointing at an unfetchable URL. `ProductPageMetadataQuery` requested `urlTemplate`, which returns a URL containing a literal `{:size}` placeholder that the `<Image>` CDN loader substitutes at render time. `generateMetadata` has no such loader, so the placeholder was emitted verbatim into the Open Graph tag.
+
+  ## Migration
+
+  In `core/app/[locale]/(default)/product/[slug]/page-data.ts`, update the `defaultImage` selection in `ProductPageMetadataQuery` to request a concrete URL:
+
+  ```diff
+    defaultImage {
+      altText
+  -   url: urlTemplate(lossy: true)
+  +   url(width: 1200, lossy: true)
+    }
+  ```
+
+  `width: 1200` matches the Open Graph and `summary_large_image` recommendation. Height is omitted intentionally — the stencil resizer fits the image inside the given box rather than cropping, so requesting `1200x630` would return a smaller square image for a square product photo.
+
+- [#3081](https://github.com/bigcommerce/catalyst/pull/3081) [`50a7263`](https://github.com/bigcommerce/catalyst/commit/50a7263d00e82720146877ea97073d821f3418b5) Thanks [@mfaris9](https://github.com/mfaris9)! - Fix Account Registration validating State/Province as required for countries without any states (e.g., Algeria). The register page now queries per-country state data from BigCommerce and hides the State/Province field entirely when the selected country has no states.
+
+- [#3188](https://github.com/bigcommerce/catalyst/pull/3188) [`96bb3c3`](https://github.com/bigcommerce/catalyst/commit/96bb3c3101d23b7a3e5396e612c94c2f9ff64416) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- Updated dependencies [[`be1967c`](https://github.com/bigcommerce/catalyst/commit/be1967ce85e2e71bf2cf8e0c0837aad66e423ceb)]:
+  - @bigcommerce/catalyst-client@1.0.3
+
 ## 1.10.1
 
 ### Patch Changes
