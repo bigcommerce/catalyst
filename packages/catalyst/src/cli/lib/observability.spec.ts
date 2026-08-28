@@ -5,7 +5,13 @@ import { server } from '../../../tests/mocks/node';
 
 import { UserActionableError } from './errors';
 import { consola } from './logger';
-import { formatLogEntry, formatV3Error, queryLogs, resolveTimeWindow } from './observability';
+import {
+  formatLogEntry,
+  formatV3Error,
+  isRequestLogEntry,
+  queryLogs,
+  resolveTimeWindow,
+} from './observability';
 
 const projectUuid = '6b202364-10f3-11f1-8bc7-fe9b9d8b14ab';
 const storeHash = 'test-store';
@@ -159,6 +165,9 @@ describe('formatLogEntry', () => {
 
     expect(line).toContain('GET /cart (500)');
     expect(line).toContain('boom');
+    // Order is [timestamp] request [LEVEL] message.
+    expect(line.indexOf('GET /cart')).toBeLessThan(line.indexOf('ERROR'));
+    expect(line.indexOf('ERROR')).toBeLessThan(line.indexOf('boom'));
   });
 
   test('prints only the message in the short format', () => {
@@ -271,6 +280,64 @@ describe('formatLogEntry', () => {
     expect(line).toContain('UNKNOWN');
     expect(line).toContain('orphan log');
   });
+
+  test('renders a bare request line for request rows in the request format', () => {
+    const line = formatLogEntry(
+      {
+        timestamp: '2026-06-01T12:34:56.789Z',
+        entry_type: 'request',
+        level: 'info',
+        messages: ['GET https://store.example/foo'],
+        request: { method: 'GET', url: 'https://store.example/foo', status_code: 200 },
+      },
+      'request',
+    );
+
+    // No level bracket and no message — the message only duplicates the
+    // request details.
+    expect(line).toBe('[2026-06-01T12:34:56.789Z] GET https://store.example/foo (200)');
+  });
+});
+
+describe('isRequestLogEntry', () => {
+  test('trusts entry_type=request even when the message differs from method+url', () => {
+    expect(
+      isRequestLogEntry({
+        entry_type: 'request',
+        messages: ['something else entirely'],
+        request: { method: 'GET', url: '/cart', status_code: 200 },
+      }),
+    ).toBe(true);
+  });
+
+  test('trusts entry_type=log even when the message equals method+url', () => {
+    expect(
+      isRequestLogEntry({
+        entry_type: 'log',
+        messages: ['GET /cart'],
+        request: { method: 'GET', url: '/cart', status_code: 200 },
+      }),
+    ).toBe(false);
+  });
+
+  test('falls back to the message heuristic when entry_type is absent (older API)', () => {
+    expect(
+      isRequestLogEntry({
+        messages: ['GET https://store.example/foo'],
+        request: { method: 'GET', url: 'https://store.example/foo', status_code: 200 },
+      }),
+    ).toBe(true);
+  });
+
+  test('returns false for real application output or missing request details', () => {
+    expect(
+      isRequestLogEntry({
+        messages: ['rendering /cart failed'],
+        request: { method: 'GET', url: '/cart', status_code: 500 },
+      }),
+    ).toBe(false);
+    expect(isRequestLogEntry({ messages: ['GET /cart'] })).toBe(false);
+  });
 });
 
 describe('formatV3Error', () => {
@@ -314,10 +381,10 @@ describe('queryLogs', () => {
           meta: {
             cursor_pagination: {
               count: 1,
-              per_page: 50,
+              per_page: 1,
               start_cursor: 'cursor_start',
               end_cursor: 'cursor_end',
-              links: {},
+              links: { next: '?after=cursor_end' },
             },
           },
         }),
@@ -331,8 +398,46 @@ describe('queryLogs', () => {
 
     expect(result.data).toHaveLength(1);
     expect(result.data[0].level).toBe('error');
-    // TODO(TRAC-934): meta.cursor_pagination is no longer parsed; the
-    // fixture keeps it to confirm the schema tolerates (ignores) extra keys.
+    expect(result.meta?.cursor_pagination?.links?.next).toBe('?after=cursor_end');
+    expect(result.meta?.cursor_pagination?.end_cursor).toBe('cursor_end');
+  });
+
+  test('tolerates a response without meta (pre-pagination backend)', async () => {
+    server.use(http.get(logsUrl, () => HttpResponse.json({ data: [] })));
+
+    const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    });
+
+    expect(result.data).toHaveLength(0);
+    expect(result.meta?.cursor_pagination?.end_cursor).toBeUndefined();
+  });
+
+  test('tolerates null cursors on an empty page', async () => {
+    server.use(
+      http.get(logsUrl, () =>
+        HttpResponse.json({
+          data: [],
+          meta: {
+            cursor_pagination: {
+              has_next_page: false,
+              has_prev_page: true,
+              start_cursor: null,
+              end_cursor: null,
+            },
+          },
+        }),
+      ),
+    );
+
+    const result = await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+    });
+
+    expect(result.meta?.cursor_pagination?.has_next_page).toBe(false);
+    expect(result.meta?.cursor_pagination?.end_cursor).toBeNull();
   });
 
   test('accepts levels outside the known set and non-string messages', async () => {
@@ -385,7 +490,6 @@ describe('queryLogs', () => {
       statusCode: 500,
       urlLike: '/cart',
       levelMin: 'warn',
-      limit: 25,
     });
 
     expect(captured?.get('start')).toBe('2026-06-01T00:00:00Z');
@@ -394,7 +498,72 @@ describe('queryLogs', () => {
     expect(captured?.get('status_code')).toBe('500');
     expect(captured?.get('url:like')).toBe('/cart');
     expect(captured?.get('level:min')).toBe('warn');
+    expect(captured?.get('limit')).toBeNull();
+    expect(captured?.get('after')).toBeNull();
+    expect(captured?.get('before')).toBeNull();
+  });
+
+  test('forwards limit and cursor params', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(logsUrl, ({ request }) => {
+        captured = new URL(request.url).searchParams;
+
+        return HttpResponse.json({ data: [] });
+      }),
+    );
+
+    await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+      limit: 25,
+      after: 'cursor_end',
+    });
+
     expect(captured?.get('limit')).toBe('25');
+    expect(captured?.get('after')).toBe('cursor_end');
+    expect(captured?.get('before')).toBeNull();
+  });
+
+  test('forwards entryType as the entry_type query param', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(logsUrl, ({ request }) => {
+        captured = new URL(request.url).searchParams;
+
+        return HttpResponse.json({ data: [] });
+      }),
+    );
+
+    await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+      entryType: 'log',
+    });
+
+    expect(captured?.get('entry_type')).toBe('log');
+  });
+
+  test('forwards a before cursor', async () => {
+    let captured: URLSearchParams | undefined;
+
+    server.use(
+      http.get(logsUrl, ({ request }) => {
+        captured = new URL(request.url).searchParams;
+
+        return HttpResponse.json({ data: [] });
+      }),
+    );
+
+    await queryLogs(projectUuid, storeHash, accessToken, apiHost, {
+      start: '2026-06-01T00:00:00Z',
+      end: '2026-06-02T00:00:00Z',
+      before: 'cursor_start',
+    });
+
+    expect(captured?.get('before')).toBe('cursor_start');
     expect(captured?.get('after')).toBeNull();
   });
 

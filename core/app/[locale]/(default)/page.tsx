@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 
-import { locales } from '~/i18n/locales';
 import { getMakeswiftPageMetadata, Page as MakeswiftPage } from '~/lib/makeswift';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -23,9 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export function generateStaticParams(): Params[] {
-  return locales.map((locale) => ({ locale }));
-}
+// Intentionally no `generateStaticParams`: see the catch-all route for why the locale fan-out is
+// gone.
 
 export default async function Home({ params }: Props) {
   const { locale } = await params;

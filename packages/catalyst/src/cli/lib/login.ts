@@ -141,7 +141,7 @@ async function manualLogin(apiHost: string): Promise<LoginResult> {
 }
 
 // Interactive login orchestrator. Used by `catalyst create`, `catalyst auth
-// login`, and `catalyst project create` to gather credentials when none are
+// login`, and `catalyst projects create` to gather credentials when none are
 // supplied via flags/env/config.
 //
 // Happy path: opens the browser device-code flow. When that fails (e.g. the

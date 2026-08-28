@@ -6,7 +6,7 @@ import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { GiftCertificatePurchaseSection } from '@/vibes/soul/sections/gift-certificate-purchase-section';
 import { GiftCertificateSettingsFragment } from '~/app/[locale]/(default)/gift-certificates/purchase/fragment';
 import { ExistingResultType } from '~/client/util';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
 
@@ -156,7 +156,7 @@ export default async function GiftCertificatePurchasePage({ params }: Props) {
   const data = await getGiftCertificatePurchaseData(currencyCode);
 
   if (!data.giftCertificateSettings?.isEnabled) {
-    return redirect({ href: '/', locale });
+    return await redirect({ href: '/', locale });
   }
 
   const expiryDate = getExpiryDate(data.giftCertificateSettings.expiry);

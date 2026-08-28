@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Sorry, geen resultaten voor '{term}'.",
                 "subtitle": "Probeer een andere zoekopdracht"
-            }
+            },
+            "semanticSearchPlaceholder": "Beschrijf wat je zoekt"
         },
         "FacetedSearch": {
             "filters": "Filters",
@@ -524,6 +525,7 @@
             "additionalInformation": "Aanvullende informatie",
             "currentStock": "{quantity, number} op voorraad",
             "backorderQuantity": "{hoeveelheid, aantal} staat in backorder",
+            "maxPurchasableQuantity": "De maximale aankoophoeveelheid is {quantity, number}. Pas aan en probeer het opnieuw.",
             "loadingMoreImages": "Meer afbeeldingen laden",
             "imagesLoaded": "{count, plural, =1 {1 afbeelding geladen} other {# afbeeldingen geladen}}",
             "playVideo": "Video afspelen",
@@ -624,6 +626,9 @@
         "search": "Zoeken"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+ nog {count, plural, =1 {# aanbieding} other {# aanbiedingen}}"
+        },
         "Header": {
             "home": "Home",
             "toggleNavigation": "Navigatie in- of uitschakelen",

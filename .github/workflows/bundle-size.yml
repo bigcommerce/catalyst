@@ -72,6 +72,8 @@ jobs:
           PKG_NAME=$(node -p "require('./pr/core/package.json').name")
           if [ "$PKG_NAME" = "@bigcommerce/catalyst-makeswift" ]; then
             echo "branch=integrations/makeswift" >> $GITHUB_OUTPUT
+          elif [ "$PKG_NAME" = "@bigcommerce/catalyst-b2b-makeswift" ]; then
+            echo "branch=integrations/b2b-makeswift" >> $GITHUB_OUTPUT
           else
             echo "branch=canary" >> $GITHUB_OUTPUT
           fi

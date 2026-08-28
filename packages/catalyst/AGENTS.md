@@ -8,7 +8,7 @@ CLI tool for Catalyst development and deployment — handles build, dev server, 
 src/cli/
 ├── index.ts          # Entry point (#!/usr/bin/env node)
 ├── program.ts        # Commander program setup, registers all commands
-├── commands/         # CLI command implementations (auth, build, deploy, logs, project, start, telemetry, version)
+├── commands/         # CLI command implementations (auth, build, channels, create, deploy, domains, env, logs, projects, start, telemetry, upgrade, version)
 ├── hooks/            # Pre/post action hooks (telemetry)
 └── lib/              # Utilities (auth, logger, project config, credentials, wrangler config, telemetry, deployment errors)
 templates/            # OpenNext config and public_headers template
@@ -18,15 +18,23 @@ dist/cli.js           # Bundled output (single ESM file)
 
 ## CLI Commands
 
+Resource-based commands are named in the plural (`projects`, `channels`, `domains`, `logs`). Each keeps the singular form as a commander alias (`project`, `channel`, `domain`, `log`) for backward compatibility — telemetry still reports the canonical plural name, since `getCommandPath` walks `Command.name()`.
+
 | Command | Description |
 |---------|-------------|
 | `auth whoami/login/logout` | Manage authentication (device code OAuth flow, credential storage) |
 | `build` | Build Catalyst project using OpenNext/Cloudflare adapter |
+| `channels create/link/update` | Manage BigCommerce channels |
+| `create` | Scaffold a new Catalyst project |
+| `debug` | Print diagnostic information about the local project |
 | `deploy` | Deploy to Cloudflare with bundle upload |
-| `logs` | View logs (`tail` default, `query` planned). Supports `--format` (default/json/pretty/short/request) |
-| `project create/list/link` | Manage BigCommerce infrastructure projects |
+| `domains add/list/status/claim/transfer/remove` | Manage custom domains for the linked project |
+| `env add/remove/list` | Manage persistent deployment environment variables |
+| `logs tail/query` | View logs (`tail` is the default). Supports `--format` (default/json/pretty/short/request) |
+| `projects create/list/link/delete` | Manage BigCommerce infrastructure projects |
 | `start` | Start local preview using OpenNext Cloudflare adapter |
 | `telemetry` | Enable/disable/check telemetry |
+| `upgrade` | Upgrade the project to a newer Catalyst release |
 | `version` | Display version and platform info |
 
 ## Development
@@ -52,7 +60,7 @@ pnpm build
 pnpm exec <repo-root>/packages/catalyst/dist/cli.js <command>
 ```
 
-For example: `pnpm exec <repo-root>/packages/catalyst/dist/cli.js project list`.
+For example: `pnpm exec <repo-root>/packages/catalyst/dist/cli.js projects list`.
 
 ## Build
 

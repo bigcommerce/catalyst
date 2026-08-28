@@ -19,6 +19,25 @@ const corePackageJsonSchema = z.looseObject({
   dependencies: z.record(z.string(), z.string()).optional(),
 });
 
+// Loose on purpose: the point is to carry unknown keys through untouched, so
+// this only asserts the file holds an object at all.
+const projectJsonSchema = z.looseObject({});
+
+// Existing contents of `.bigcommerce/project.json`, or an empty object if it is
+// absent, unreadable, or not a JSON object. A corrupt file shouldn't fail setup
+// -- the keys this helper writes are enough to rebuild a working project.
+const readProjectJson = (path: string): Record<string, unknown> => {
+  if (!existsSync(path)) return {};
+
+  try {
+    const parsed = projectJsonSchema.safeParse(JSON.parse(readFileSync(path, 'utf-8')));
+
+    return parsed.success ? parsed.data : {};
+  } catch {
+    return {};
+  }
+};
+
 const writeJson = (path: string, value: unknown) => {
   mkdirSync(dirname(path), { recursive: true });
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
@@ -121,15 +140,27 @@ export const setupCommerceHosting = async ({
 
   writeJson(corePackageJsonPath, sortPackageJsonFields(pkg));
 
-  const projectJson: Record<string, string> = {
+  const projectJsonPath = join(projectDir, '.bigcommerce', 'project.json');
+
+  // Merge rather than rebuild. `catalyst env` stores deployment variables under
+  // `env` in this same file and `apiHost` is persisted here too, so
+  // constructing a fresh object silently dropped both. Losing `env` is the
+  // costly one: those entries are sent as secrets on every `catalyst deploy`,
+  // so a wipe means the next deploy ships a worker without its storefront
+  // credentials, with nothing in the output mentioning env vars. `deploy` and
+  // `projects link` both reach this on projects that already hold real values.
+  const projectJson: Record<string, unknown> = {
+    ...readProjectJson(projectJsonPath),
     projectUuid,
     framework: 'catalyst',
   };
 
+  // Absent means "not supplied on this run", not "clear it" -- linking without
+  // credentials must not drop credentials the project already had.
   if (storeHash) projectJson.storeHash = storeHash;
   if (accessToken) projectJson.accessToken = accessToken;
 
-  writeJson(join(projectDir, '.bigcommerce', 'project.json'), projectJson);
+  writeJson(projectJsonPath, projectJson);
 
   convertProxyToMiddleware(projectDir);
 };
@@ -163,7 +194,7 @@ async function promptForNewProjectName(api: CommerceHostingApiContext): Promise<
 }
 
 // Generic "select an existing project, or create a new one" prompt — used by
-// `catalyst project link` and by `catalyst deploy` when its linked project is
+// `catalyst projects link` and by `catalyst deploy` when its linked project is
 // missing. Distinct from `promptForCommerceHostingProject` which has
 // default-name + auto-create semantics tailored to `catalyst create`.
 //

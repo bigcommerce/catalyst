@@ -12,7 +12,7 @@ import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 import { program } from '../program';
 
-import { channel } from './channel';
+import { channels } from './channels';
 
 vi.mock('@inquirer/prompts', () => ({
   select: vi.fn(),
@@ -92,33 +92,34 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('channel', () => {
+describe('channels', () => {
   test('has the update subcommand', () => {
-    expect(channel).toBeInstanceOf(Command);
-    expect(channel.name()).toBe('channel');
+    expect(channels).toBeInstanceOf(Command);
+    expect(channels.name()).toBe('channels');
+    expect(channels.aliases()).toContain('channel');
 
-    const update = channel.commands.find((cmd) => cmd.name() === 'update');
+    const update = channels.commands.find((cmd) => cmd.name() === 'update');
 
     expect(update).toBeDefined();
     expect(update?.description()).toContain('Update a BigCommerce channel');
   });
 
   test('has the link subcommand', () => {
-    const link = channel.commands.find((cmd) => cmd.name() === 'link');
+    const link = channels.commands.find((cmd) => cmd.name() === 'link');
 
     expect(link).toBeDefined();
     expect(link?.description()).toContain('Link this Catalyst project to a BigCommerce channel');
   });
 
   test('has the create subcommand', () => {
-    const create = channel.commands.find((cmd) => cmd.name() === 'create');
+    const create = channels.commands.find((cmd) => cmd.name() === 'create');
 
     expect(create).toBeDefined();
     expect(create?.description()).toContain('Create a new Catalyst storefront channel');
   });
 });
 
-describe('channel update', () => {
+describe('channels update', () => {
   test('happy path: prompts for channel and hostname, then PUTs', async () => {
     let putBody: unknown;
     let putChannelId: string | undefined;
@@ -146,7 +147,7 @@ describe('channel update', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'update',
       '--store-hash',
       storeHash,
@@ -173,7 +174,7 @@ describe('channel update', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'update',
       '--store-hash',
       storeHash,
@@ -208,7 +209,7 @@ describe('channel update', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'update',
       '--store-hash',
       storeHash,
@@ -240,7 +241,7 @@ describe('channel update', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'update',
       '--store-hash',
       storeHash,
@@ -248,7 +249,7 @@ describe('channel update', () => {
       accessToken,
     ]);
 
-    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst project create'));
+    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst projects create'));
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
@@ -265,7 +266,7 @@ describe('channel update', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'channel',
+        'channels',
         'update',
         '--store-hash',
         storeHash,
@@ -278,7 +279,7 @@ describe('channel update', () => {
   });
 });
 
-describe('channel link', () => {
+describe('channels link', () => {
   const initUrl =
     'https://cxm-prd.bigcommerceapp.com/stores/:storeHash/cli-api/v3/channels/:channelId/init';
 
@@ -305,7 +306,7 @@ describe('channel link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'link',
       '--store-hash',
       storeHash,
@@ -344,7 +345,7 @@ describe('channel link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'link',
       '--store-hash',
       storeHash,
@@ -375,7 +376,7 @@ describe('channel link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'link',
       '--store-hash',
       storeHash,
@@ -405,7 +406,7 @@ describe('channel link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'link',
       '--store-hash',
       storeHash,
@@ -428,7 +429,7 @@ describe('channel link', () => {
       ),
     );
 
-    await program.parseAsync(['node', 'catalyst', 'channel', 'link', '--channel-id', '2']);
+    await program.parseAsync(['node', 'catalyst', 'channels', 'link', '--channel-id', '2']);
 
     expect(config.get('storeHash')).toBe('mock-store-hash');
     expect(config.get('accessToken')).toBe('mock-access-token');
@@ -436,7 +437,7 @@ describe('channel link', () => {
   });
 });
 
-describe('channel create', () => {
+describe('channels create', () => {
   const eligibilityUrl =
     'https://cxm-prd.bigcommerceapp.com/stores/:storeHash/cli-api/v3/channels/catalyst/eligibility';
   const createUrl =
@@ -466,7 +467,7 @@ describe('channel create', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'create',
       '--store-hash',
       storeHash,
@@ -527,7 +528,7 @@ describe('channel create', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'create',
       '--store-hash',
       storeHash,
@@ -557,7 +558,7 @@ describe('channel create', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'create',
       '--store-hash',
       storeHash,
@@ -608,7 +609,7 @@ describe('channel create', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'channel',
+      'channels',
       'create',
       '--store-hash',
       storeHash,

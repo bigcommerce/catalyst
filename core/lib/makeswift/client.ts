@@ -4,7 +4,7 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
 import { getLocale } from 'next-intl/server';
 
-import { defaultLocale } from '~/i18n/locales';
+import { getLocaleRouting } from '~/i18n/locale-config';
 
 import { runtime } from './runtime';
 
@@ -63,7 +63,7 @@ export const client = new CatalystMakeswift(process.env.MAKESWIFT_SITE_API_KEY, 
 export const getPageSnapshot = async ({ path, locale }: { path: string; locale: string }) =>
   await client.getPageSnapshot(path, {
     siteVersion: await getSiteVersion(),
-    locale: normalizeLocale(locale),
+    locale: await normalizeLocale(locale),
   });
 
 export const getComponentSnapshot = async (snapshotId: string) => {
@@ -71,18 +71,20 @@ export const getComponentSnapshot = async (snapshotId: string) => {
 
   return await client.getComponentSnapshot(snapshotId, {
     siteVersion: await getSiteVersion(),
-    locale: normalizeLocale(locale),
+    locale: await normalizeLocale(locale),
   });
 };
 
-function normalizeLocale(locale: string): string | undefined {
+async function normalizeLocale(locale: string): Promise<string | undefined> {
+  const { defaultLocale } = await getLocaleRouting();
+
   return locale === defaultLocale ? undefined : locale;
 }
 
 export async function getMakeswiftPageMetadata({ path, locale }: { path: string; locale: string }) {
   const { data: pages } = await client.getPages({
     pathPrefix: path,
-    locale: normalizeLocale(locale),
+    locale: await normalizeLocale(locale),
     siteVersion: await getSiteVersion(),
   });
 

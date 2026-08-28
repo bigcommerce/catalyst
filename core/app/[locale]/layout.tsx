@@ -23,7 +23,8 @@ import { ConsentManager } from '~/components/consent-manager';
 import { ScriptsFragment } from '~/components/consent-manager/scripts-fragment';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
-import { routing } from '~/i18n/routing';
+import { getLocaleRouting } from '~/i18n/locale-config';
+import { LocaleRoutingProvider } from '~/i18n/locale-routing-provider';
 import { SiteTheme } from '~/lib/makeswift/components/site-theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
 import { getToastNotification } from '~/lib/server-toast';
@@ -132,7 +133,9 @@ export default async function RootLayout({ params, children }: Props) {
   const toastNotificationCookieData = await getToastNotification();
   const siteVersion = await getSiteVersion();
 
-  if (!routing.locales.includes(locale)) {
+  const localeRouting = await getLocaleRouting();
+
+  if (!localeRouting.locales.includes(locale)) {
     notFound();
   }
 
@@ -153,26 +156,28 @@ export default async function RootLayout({ params, children }: Props) {
         </head>
         <body className="flex min-h-screen flex-col">
           <NextIntlClientProvider>
-            <ConsentManager
-              isCookieConsentEnabled={isCookieConsentEnabled}
-              privacyPolicyUrl={privacyPolicyUrl}
-              scripts={scripts}
-            >
-              <NuqsAdapter>
-                <AnalyticsProvider
-                  channelId={rootData.data.channel.entityId}
-                  isCookieConsentEnabled={isCookieConsentEnabled}
-                  settings={rootData.data.site.settings}
-                >
-                  <Providers>
-                    {toastNotificationCookieData && (
-                      <CookieNotifications {...toastNotificationCookieData} />
-                    )}
-                    {children}
-                  </Providers>
-                </AnalyticsProvider>
-              </NuqsAdapter>
-            </ConsentManager>
+            <LocaleRoutingProvider localeRouting={localeRouting}>
+              <ConsentManager
+                isCookieConsentEnabled={isCookieConsentEnabled}
+                privacyPolicyUrl={privacyPolicyUrl}
+                scripts={scripts}
+              >
+                <NuqsAdapter>
+                  <AnalyticsProvider
+                    channelId={rootData.data.channel.entityId}
+                    isCookieConsentEnabled={isCookieConsentEnabled}
+                    settings={rootData.data.site.settings}
+                  >
+                    <Providers>
+                      {toastNotificationCookieData && (
+                        <CookieNotifications {...toastNotificationCookieData} />
+                      )}
+                      {children}
+                    </Providers>
+                  </AnalyticsProvider>
+                </NuqsAdapter>
+              </ConsentManager>
+            </LocaleRoutingProvider>
           </NextIntlClientProvider>
           <VercelComponents />
           <ContainerQueryPolyfill />
@@ -182,8 +187,8 @@ export default async function RootLayout({ params, children }: Props) {
   );
 }
 
-export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }));
-}
+// Intentionally no `generateStaticParams`: every route under `[locale]` already renders on demand
+// (the tree reads cookies), so it would only add a build-time dependency on the locale list, and
+// anything it did prerender would bake in stale subfolder prefixes.
 
 export const fetchCache = 'default-cache';

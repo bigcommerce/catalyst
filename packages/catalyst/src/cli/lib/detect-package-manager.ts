@@ -1,6 +1,35 @@
+import { access } from 'node:fs/promises';
+import { join } from 'node:path';
 import { detectPackageManager as detectFromDir } from 'nypm';
 
 export type PackageManager = 'npm' | 'pnpm' | 'yarn' | 'bun';
+
+// Lockfile -> package manager, in nypm's own check order.
+const PROJECT_LOCKFILES = [
+  ['pnpm-lock.yaml', 'pnpm'],
+  ['yarn.lock', 'yarn'],
+  ['bun.lock', 'bun'],
+  ['bun.lockb', 'bun'],
+  ['package-lock.json', 'npm'],
+] as const satisfies ReadonlyArray<readonly [string, PackageManager]>;
+
+// Detect a project's package manager from its lockfile alone, returning null
+// when the directory has none so the caller can decide its own last resort.
+// Unlike detectProjectPackageManager() this never throws — nypm parses
+// package.json to read `packageManager`, which blows up on a manifest left full
+// of merge conflict markers — and it can express "I don't know", which nypm
+// can't, since it falls back to npm internally.
+export const detectLockfileManager = async (dir: string): Promise<PackageManager | null> => {
+  const found = await Promise.all(
+    PROJECT_LOCKFILES.map(async ([file, manager]) =>
+      access(join(dir, file))
+        .then(() => manager)
+        .catch(() => null),
+    ),
+  );
+
+  return found.find((manager) => manager !== null) ?? null;
+};
 
 // Detect the package manager that INVOKED the CLI (via npx / pnpm dlx / yarn dlx
 // / bunx) by parsing the leading token of npm_config_user_agent, which every

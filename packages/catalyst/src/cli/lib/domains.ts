@@ -10,10 +10,28 @@ export const domainStatusSchema = z.enum(['pending', 'verified', 'failed', 'unkn
 
 export type DomainStatus = z.infer<typeof domainStatusSchema>;
 
+// The DNS records the merchant publishes to point a domain at their project.
+// The API sends `pointing_records: null` until the domain is bound and the
+// records are known, and nulls individual values it doesn't have, so every
+// field is treated as optional.
+const pointingRecordsSchema = z.object({
+  a_record_value: z.string().nullish(),
+  cname_record_value: z.string().nullish(),
+});
+
+export type PointingRecords = z.infer<typeof pointingRecordsSchema>;
+
 const domainSchema = z.object({
   domain: z.string(),
   project_uuid: z.string(),
   verification_status: domainStatusSchema,
+});
+
+// Only the create endpoint returns the records — they're layered onto the domain
+// resource in that one response, so the domain shape itself stays without them.
+// A caller that doesn't keep them can't fetch them again.
+const createdDomainSchema = domainSchema.extend({
+  pointing_records: pointingRecordsSchema.nullish(),
 });
 
 const ownershipVerificationSchema = z.object({
@@ -79,11 +97,16 @@ const domainResponseSchema = z.object({
   data: domainSchema,
 });
 
+const createdDomainResponseSchema = z.object({
+  data: createdDomainSchema,
+});
+
 const domainListResponseSchema = z.object({
   data: z.array(domainSchema),
 });
 
 export type Domain = z.infer<typeof domainSchema>;
+export type CreatedDomain = z.infer<typeof createdDomainSchema>;
 export type DomainStatusFilter = Exclude<DomainStatus, 'unknown'>;
 
 interface ListDomainsFilters {
@@ -185,7 +208,7 @@ export async function createDomain(
   storeHash: string,
   accessToken: string,
   apiHost: string,
-): Promise<Domain> {
+): Promise<CreatedDomain> {
   const response = await fetch(domainsUrl(storeHash, projectUuid, apiHost), {
     method: 'POST',
     headers: {
@@ -199,7 +222,7 @@ export async function createDomain(
 
   const result: unknown = await response.json();
 
-  return domainResponseSchema.parse(result).data;
+  return createdDomainResponseSchema.parse(result).data;
 }
 
 export async function getDomain(

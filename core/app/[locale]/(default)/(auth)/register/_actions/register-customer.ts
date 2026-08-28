@@ -12,7 +12,7 @@ import { signIn } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { getCartId } from '~/lib/cart';
 import { assertRecaptchaTokenPresent, getRecaptchaFromForm } from '~/lib/recaptcha';
 
@@ -340,7 +340,7 @@ function parseRegisterCustomerInput(
 }
 
 export async function registerCustomer<F extends Field>(
-  { fields, passwordComplexity }: DynamicFormActionArgs<F>,
+  { fields, passwordComplexity, countriesWithoutStates }: DynamicFormActionArgs<F>,
   _prevState: {
     lastResult: SubmissionResult | null;
   },
@@ -350,8 +350,11 @@ export async function registerCustomer<F extends Field>(
   const locale = await getLocale();
   const cartId = await getCartId();
 
+  const countryCode = formData.get('countryCode');
+  const currentCountry = typeof countryCode === 'string' ? countryCode : undefined;
+
   const submission = parseWithZod(formData, {
-    schema: schema(fields, passwordComplexity),
+    schema: schema(fields, passwordComplexity, undefined, countriesWithoutStates, currentCountry),
   });
 
   if (submission.status !== 'success') {
@@ -422,5 +425,5 @@ export async function registerCustomer<F extends Field>(
     };
   }
 
-  return redirect({ href: '/account/orders', locale });
+  return await redirect({ href: '/account/orders', locale });
 }

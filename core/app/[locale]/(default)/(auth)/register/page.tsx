@@ -64,6 +64,10 @@ export default async function Register({ params }: Props) {
   const { addressFields, customerFields, countries, passwordComplexitySettings } =
     registerCustomerData;
 
+  const countriesWithoutStates = (countries ?? [])
+    .filter((country) => country.statesOrProvinces.length === 0)
+    .map((country) => country.code);
+
   const recaptchaSiteKey = await getRecaptchaSiteKey();
 
   const fields = transformFieldsToLayout(
@@ -112,6 +116,7 @@ export default async function Register({ params }: Props) {
   return (
     <DynamicFormSection
       action={registerCustomer}
+      countriesWithoutStates={countriesWithoutStates}
       errorTranslations={{
         firstName: {
           invalid_type: t('FieldErrors.firstNameRequired'),

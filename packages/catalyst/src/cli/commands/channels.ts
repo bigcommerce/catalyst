@@ -43,7 +43,7 @@ const parseChannelId = (value: string): number => {
 // login (persisting on success). Returns null when the user aborts login.
 // `channel link` is an onboarding command — a fresh clone has neither
 // .env.local nor .bigcommerce/project.json — so it logs the user in like
-// `catalyst project create`, rather than erroring like the operational commands.
+// `catalyst projects create`, rather than erroring like the operational commands.
 async function resolveCredentialsWithLogin(
   options: { storeHash?: string; accessToken?: string; loginUrl: string },
   config: Conf<ProjectConfigSchema>,
@@ -82,10 +82,10 @@ const update = new Command('update')
     `
 Examples:
   # Pick a channel and hostname interactively
-  $ catalyst channel update
+  $ catalyst channels update
 
   # Skip both prompts
-  $ catalyst channel update --channel-id 123 --hostname my-storefront.example.com`,
+  $ catalyst channels update --channel-id 123 --hostname my-storefront.example.com`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -122,7 +122,7 @@ Examples:
     } catch (error) {
       if (error instanceof NoLinkedProjectError) {
         consola.info(
-          "When you're ready to create a project, run `catalyst project create` or re-run `catalyst channel update`.",
+          "When you're ready to create a project, run `catalyst projects create` or re-run `catalyst channels update`.",
         );
         process.exit(0);
 
@@ -146,13 +146,13 @@ const link = new Command('link')
     `
 Examples:
   # Pick a channel interactively (logs you in if needed)
-  $ catalyst channel link
+  $ catalyst channels link
 
   # Non-interactive
-  $ catalyst channel link --store-hash <hash> --access-token <token> --channel-id 123
+  $ catalyst channels link --store-hash <hash> --access-token <token> --channel-id 123
 
   # Append extra environment variables to .env.local
-  $ catalyst channel link --channel-id 123 --env MY_FLAG=1`,
+  $ catalyst channels link --channel-id 123 --env MY_FLAG=1`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -180,7 +180,7 @@ Examples:
 
     if (!credentials) {
       consola.info(
-        'Login aborted. Re-run `catalyst channel link` when you have your credentials ready.',
+        'Login aborted. Re-run `catalyst channels link` when you have your credentials ready.',
       );
       process.exit(0);
 
@@ -195,9 +195,9 @@ Examples:
     let channelName: string | undefined;
 
     if (channelId === undefined) {
-      const channels = await fetchAvailableChannels(storeHash, accessToken, apiHost);
+      const availableChannels = await fetchAvailableChannels(storeHash, accessToken, apiHost);
 
-      if (channels.length === 0) {
+      if (availableChannels.length === 0) {
         consola.info(
           'No storefront channels found on this store. Create one with `catalyst create` and try again.',
         );
@@ -208,14 +208,14 @@ Examples:
 
       channelId = await select({
         message: 'Which channel would you like to link?',
-        choices: sortChannelsByPlatform(channels).map((c) => ({
+        choices: sortChannelsByPlatform(availableChannels).map((c) => ({
           name: c.name,
           value: c.id,
           description: channelPlatformLabel(c.platform),
         })),
       });
 
-      channelName = channels.find((c) => c.id === channelId)?.name;
+      channelName = availableChannels.find((c) => c.id === channelId)?.name;
     }
 
     const initData = await getChannelInit(channelId, storeHash, accessToken, options.cliApiOrigin);
@@ -253,13 +253,13 @@ const create = new Command('create')
     `
 Examples:
   # Create a channel interactively (logs you in if needed)
-  $ catalyst channel create
+  $ catalyst channels create
 
   # Non-interactive, and link it to this project afterwards
-  $ catalyst channel create --name "My Store" --locale en --no-sample-data --link
+  $ catalyst channels create --name "My Store" --locale en --no-sample-data --link
 
   # Add additional storefront languages (max 4)
-  $ catalyst channel create --name "My Store" --additional-locales es fr`,
+  $ catalyst channels create --name "My Store" --additional-locales es fr`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -300,7 +300,7 @@ Examples:
 
     if (!credentials) {
       consola.info(
-        'Login aborted. Re-run `catalyst channel create` when you have your credentials ready.',
+        'Login aborted. Re-run `catalyst channels create` when you have your credentials ready.',
       );
       process.exit(0);
 
@@ -361,7 +361,10 @@ Examples:
     process.exit(0);
   });
 
-export const channel = new Command('channel')
+// Resource commands are plural; the singular form stays as an alias so existing
+// scripts and muscle memory keep working.
+export const channels = new Command('channels')
+  .alias('channel')
   .configureHelp({ showGlobalOptions: true })
   .description('Manage BigCommerce channels.')
   .addCommand(create)
