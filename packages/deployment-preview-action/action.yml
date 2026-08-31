@@ -14,26 +14,26 @@ inputs:
       UUID of the hosting project every preview deploys into. Not a secret.
       Find it with `catalyst project list`. All previews share this one project,
       so it serves one pull request at a time.
-    required: true
+    default: ''
   store-hash:
     description: Store hash, as seen in the control panel URL. Not a secret.
-    required: true
+    default: ''
   access-token:
     description: >-
       Store API token with the store_infrastructure_projects_manage and
       store_infrastructure_deployments_manage scopes.
-    required: true
+    default: ''
   storefront-token:
     description: Storefront API token, required by the Catalyst build.
-    required: true
+    default: ''
   channel-id:
     description: Channel ID the preview storefront serves. Not a secret.
-    required: true
+    default: ''
   auth-secret:
     description: >-
       Auth.js secret for the preview. Generate with `openssl rand -hex 32`.
       Does not need to match production, and is better if it does not.
-    required: true
+    default: ''
 
   github-token:
     description: Token used to read pull requests and manage preview comments.
@@ -98,6 +98,46 @@ outputs:
 runs:
   using: composite
   steps:
+    # Configuration comes from inputs, or from conventionally named environment
+    # variables when an input is not given. The action runs in its own context,
+    # so a consumer can set these once at the workflow or job level and never
+    # wire an input. Resolved once here and exported, so later steps do not each
+    # repeat the same plumbing.
+    - name: Resolve configuration
+      shell: bash
+      env:
+        INPUT_PROJECT_UUID: ${{ inputs.project-uuid }}
+        INPUT_STORE_HASH: ${{ inputs.store-hash }}
+        INPUT_ACCESS_TOKEN: ${{ inputs.access-token }}
+        INPUT_STOREFRONT_TOKEN: ${{ inputs.storefront-token }}
+        INPUT_CHANNEL_ID: ${{ inputs.channel-id }}
+        INPUT_AUTH_SECRET: ${{ inputs.auth-secret }}
+      run: |
+        set -euo pipefail
+
+        project_uuid="${INPUT_PROJECT_UUID:-${BIGCOMMERCE_PREVIEW_PROJECT_UUID:-}}"
+        store_hash="${INPUT_STORE_HASH:-${BIGCOMMERCE_STORE_HASH:-}}"
+        access_token="${INPUT_ACCESS_TOKEN:-${BIGCOMMERCE_ACCESS_TOKEN:-}}"
+        storefront_token="${INPUT_STOREFRONT_TOKEN:-${BIGCOMMERCE_STOREFRONT_TOKEN:-}}"
+        channel_id="${INPUT_CHANNEL_ID:-${BIGCOMMERCE_CHANNEL_ID:-}}"
+        auth_secret="${INPUT_AUTH_SECRET:-${AUTH_SECRET:-}}"
+
+        # A value that arrived by input is already masked; one that arrived as a
+        # plain env var is not, so register the credentials either way.
+        for secret in "$access_token" "$storefront_token" "$auth_secret"; do
+          [ -n "$secret" ] && echo "::add-mask::$secret"
+        done
+
+        {
+          echo "PREVIEW_DEPLOYMENT_PROJECT_UUID=$project_uuid"
+          echo "CATALYST_STORE_HASH=$store_hash"
+          echo "CATALYST_ACCESS_TOKEN=$access_token"
+          echo "BIGCOMMERCE_STORE_HASH=$store_hash"
+          echo "BIGCOMMERCE_STOREFRONT_TOKEN=$storefront_token"
+          echo "BIGCOMMERCE_CHANNEL_ID=$channel_id"
+          echo "AUTH_SECRET=$auth_secret"
+        } >> "$GITHUB_ENV"
+
     # Runs before checkout on purpose. The comment path builds and deploys pull
     # request code with the store credentials in scope, so the fork and
     # permission checks must happen before any repository code is fetched, let
@@ -110,7 +150,6 @@ runs:
         EVENT_NAME: ${{ github.event_name }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
         COMMAND_PHRASE: ${{ inputs.command-phrase }}
-        PROJECT_UUID: ${{ inputs.project-uuid }}
         # Never interpolate these with ${{ }}: comment text is attacker
         # controlled on a public repository and would be spliced into the shell.
         COMMENT_BODY: ${{ github.event.comment.body }}
@@ -131,7 +170,7 @@ runs:
         # the default for a freshly scaffolded storefront. Skip quietly rather
         # than failing every pull request. A half-configured setup still fails
         # loudly in "Check configuration" below.
-        [ -n "${PROJECT_UUID:-}" ] || skip 'Preview deployments are not configured; set the PREVIEW_DEPLOYMENT_PROJECT_UUID variable to enable them.'
+        [ -n "${PREVIEW_DEPLOYMENT_PROJECT_UUID:-}" ] || skip 'Preview deployments are not configured; set BIGCOMMERCE_PREVIEW_PROJECT_UUID to enable them.'
 
         if [ "$EVENT_NAME" = 'pull_request' ]; then
           # Forked pull requests get a read-only token and no secrets.
@@ -261,18 +300,13 @@ runs:
       if: steps.ctx.outputs.applies == 'true'
       shell: bash
       env:
-        STORE_HASH: ${{ inputs.store-hash }}
-        CHANNEL_ID: ${{ inputs.channel-id }}
-        ACCESS_TOKEN: ${{ inputs.access-token }}
-        STOREFRONT_TOKEN: ${{ inputs.storefront-token }}
-        AUTH_SECRET: ${{ inputs.auth-secret }}
       run: |
         missing=()
-        [ -n "$STORE_HASH" ] || missing+=('variable BIGCOMMERCE_STORE_HASH')
-        [ -n "$CHANNEL_ID" ] || missing+=('variable BIGCOMMERCE_CHANNEL_ID')
-        [ -n "$ACCESS_TOKEN" ] || missing+=('secret BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN')
-        [ -n "$STOREFRONT_TOKEN" ] || missing+=('secret BIGCOMMERCE_STOREFRONT_TOKEN')
-        [ -n "$AUTH_SECRET" ] || missing+=('secret AUTH_SECRET')
+        [ -n "${BIGCOMMERCE_STORE_HASH:-}" ] || missing+=('BIGCOMMERCE_STORE_HASH (variable)')
+        [ -n "${BIGCOMMERCE_CHANNEL_ID:-}" ] || missing+=('BIGCOMMERCE_CHANNEL_ID (variable)')
+        [ -n "${CATALYST_ACCESS_TOKEN:-}" ] || missing+=('BIGCOMMERCE_ACCESS_TOKEN (secret)')
+        [ -n "${BIGCOMMERCE_STOREFRONT_TOKEN:-}" ] || missing+=('BIGCOMMERCE_STOREFRONT_TOKEN (secret)')
+        [ -n "${AUTH_SECRET:-}" ] || missing+=('AUTH_SECRET (secret)')
 
         if [ ${#missing[@]} -gt 0 ]; then
           {
@@ -327,9 +361,6 @@ runs:
       shell: bash
       env:
         CATALYST_API_HOST: ${{ inputs.api-host }}
-        CATALYST_STORE_HASH: ${{ inputs.store-hash }}
-        CATALYST_ACCESS_TOKEN: ${{ inputs.access-token }}
-        PREVIEW_DEPLOYMENT_PROJECT_UUID: ${{ inputs.project-uuid }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
         IS_TAKEOVER: ${{ steps.ctx.outputs.is_takeover }}
@@ -343,9 +374,6 @@ runs:
       shell: bash
       env:
         CATALYST_API_HOST: ${{ inputs.api-host }}
-        CATALYST_STORE_HASH: ${{ inputs.store-hash }}
-        CATALYST_ACCESS_TOKEN: ${{ inputs.access-token }}
-        PREVIEW_DEPLOYMENT_PROJECT_UUID: ${{ inputs.project-uuid }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
         NEWEST_PR: ${{ steps.eligible.outputs.newest_pr }}
@@ -402,19 +430,12 @@ runs:
       working-directory: ${{ inputs.working-directory }}
       env:
         CATALYST_API_HOST: ${{ inputs.api-host }}
-        CATALYST_STORE_HASH: ${{ inputs.store-hash }}
-        CATALYST_ACCESS_TOKEN: ${{ inputs.access-token }}
-        PROJECT_UUID: ${{ inputs.project-uuid }}
-        BIGCOMMERCE_STORE_HASH: ${{ inputs.store-hash }}
-        BIGCOMMERCE_STOREFRONT_TOKEN: ${{ inputs.storefront-token }}
-        BIGCOMMERCE_CHANNEL_ID: ${{ inputs.channel-id }}
-        AUTH_SECRET: ${{ inputs.auth-secret }}
       run: |
         # The env above feeds this build; the deployed Worker gets its own
         # environment, which only --secret populates. AUTH_TRUST_HOST is
         # preview-only -- Auth.js rejects the preview hostname without it.
         pnpm exec catalyst deploy \
-          --project-uuid "$PROJECT_UUID" \
+          --project-uuid "$PREVIEW_DEPLOYMENT_PROJECT_UUID" \
           --secret "BIGCOMMERCE_STORE_HASH=$BIGCOMMERCE_STORE_HASH" \
           --secret "BIGCOMMERCE_STOREFRONT_TOKEN=$BIGCOMMERCE_STOREFRONT_TOKEN" \
           --secret "BIGCOMMERCE_CHANNEL_ID=$BIGCOMMERCE_CHANNEL_ID" \
@@ -427,9 +448,6 @@ runs:
       shell: bash
       env:
         CATALYST_API_HOST: ${{ inputs.api-host }}
-        CATALYST_STORE_HASH: ${{ inputs.store-hash }}
-        CATALYST_ACCESS_TOKEN: ${{ inputs.access-token }}
-        PREVIEW_DEPLOYMENT_PROJECT_UUID: ${{ inputs.project-uuid }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
       run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" hostname
@@ -439,9 +457,6 @@ runs:
       shell: bash
       env:
         CATALYST_API_HOST: ${{ inputs.api-host }}
-        CATALYST_STORE_HASH: ${{ inputs.store-hash }}
-        CATALYST_ACCESS_TOKEN: ${{ inputs.access-token }}
-        PREVIEW_DEPLOYMENT_PROJECT_UUID: ${{ inputs.project-uuid }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
         PREVIEW_URL: ${{ steps.preview.outputs.url }}

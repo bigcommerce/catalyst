@@ -105,14 +105,23 @@ comment. Without it the deploy still runs; it is just less visible.
 
 ## Inputs
 
+Configuration can be passed as an input, or set as the environment variable in
+the second column. A value must come from one of the two; the action fails with
+a message naming anything missing.
+
+| Input | Or set | Description |
+| --- | --- | --- |
+| `project-uuid` | `BIGCOMMERCE_PREVIEW_PROJECT_UUID` | Shared hosting project. Absent means previews are off |
+| `store-hash` | `BIGCOMMERCE_STORE_HASH` | |
+| `access-token` | `BIGCOMMERCE_ACCESS_TOKEN` | Store API token |
+| `storefront-token` | `BIGCOMMERCE_STOREFRONT_TOKEN` | |
+| `channel-id` | `BIGCOMMERCE_CHANNEL_ID` | |
+| `auth-secret` | `AUTH_SECRET` | |
+
+The remaining inputs are optional:
+
 | Input | Default | Description |
 | --- | --- | --- |
-| `project-uuid` | — | **Required.** Shared hosting project |
-| `store-hash` | — | **Required.** |
-| `access-token` | — | **Required.** Store API token |
-| `storefront-token` | — | **Required.** |
-| `channel-id` | — | **Required.** |
-| `auth-secret` | — | **Required.** |
 | `github-token` | `github.token` | Reads pull requests, manages comments |
 | `command-phrase` | `redeploy preview` | Keep your job's `if:` in sync |
 | `auto-deploy-newest` | `true` | `false` requires the command every time |

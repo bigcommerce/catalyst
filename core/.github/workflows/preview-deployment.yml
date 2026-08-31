@@ -8,10 +8,10 @@
 #        catalyst project list          # copy the UUID
 #
 #   2. Under Settings -> Environments, create "Preview Deployments" and add:
-#        variables  PREVIEW_DEPLOYMENT_PROJECT_UUID
+#        variables  BIGCOMMERCE_PREVIEW_PROJECT_UUID
 #                   BIGCOMMERCE_STORE_HASH
 #                   BIGCOMMERCE_CHANNEL_ID
-#        secrets    BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN
+#        secrets    BIGCOMMERCE_ACCESS_TOKEN
 #                   BIGCOMMERCE_STOREFRONT_TOKEN
 #                   AUTH_SECRET    (openssl rand -hex 32; do not reuse production's)
 #
@@ -35,6 +35,6 @@ jobs:
     with:
       environment: Preview Deployments
     secrets:
-      access-token: ${{ secrets.BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN }}
+      access-token: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
       storefront-token: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
       auth-secret: ${{ secrets.AUTH_SECRET }}

@@ -105,16 +105,20 @@ jobs:
     outputs:
       deployed: ${{ steps.preview.outputs.deployed }}
       url: ${{ steps.preview.outputs.url }}
+    env:
+      # Read by the action when the matching input is not given. Set here so the
+      # environment is in scope, which is the only place environment-scoped
+      # variables and secrets resolve.
+      BIGCOMMERCE_PREVIEW_PROJECT_UUID: ${{ inputs.project-uuid || vars.BIGCOMMERCE_PREVIEW_PROJECT_UUID }}
+      BIGCOMMERCE_STORE_HASH: ${{ inputs.store-hash || vars.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CHANNEL_ID: ${{ inputs.channel-id || vars.BIGCOMMERCE_CHANNEL_ID }}
+      BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.access-token }}
+      BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.storefront-token }}
+      AUTH_SECRET: ${{ secrets.auth-secret }}
     steps:
       - id: preview
         uses: bigcommerce/catalyst/packages/deployment-preview-action@preview-action-v1
         with:
-          project-uuid: ${{ inputs.project-uuid || vars.PREVIEW_DEPLOYMENT_PROJECT_UUID }}
-          store-hash: ${{ inputs.store-hash || vars.BIGCOMMERCE_STORE_HASH }}
-          access-token: ${{ secrets.access-token }}
-          storefront-token: ${{ secrets.storefront-token }}
-          channel-id: ${{ inputs.channel-id || vars.BIGCOMMERCE_CHANNEL_ID }}
-          auth-secret: ${{ secrets.auth-secret }}
           command-phrase: ${{ inputs.command-phrase }}
           auto-deploy-newest: ${{ inputs.auto-deploy-newest }}
           node-version: ${{ inputs.node-version }}

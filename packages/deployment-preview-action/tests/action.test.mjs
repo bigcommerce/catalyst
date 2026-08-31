@@ -53,11 +53,30 @@ check('every run block is valid bash', () => {
   if (broken.length) throw new Error(broken.join('\n        '));
 });
 
-check('required inputs have no default', () => {
-  const wrong = Object.entries(action.inputs)
-    .filter(([, v]) => v.required && v.default !== undefined)
-    .map(([k]) => k);
-  if (wrong.length) throw new Error(`required inputs with defaults: ${wrong.join(', ')}`);
+check('configuration resolves from inputs or conventional env vars', () => {
+  const resolve = action.runs.steps.find((s) => s.name === 'Resolve configuration');
+  if (!resolve) throw new Error('no "Resolve configuration" step');
+
+  // Every credential must have both an input path and an env fallback.
+  const expected = [
+    ['inputs.project-uuid', 'BIGCOMMERCE_PREVIEW_PROJECT_UUID'],
+    ['inputs.store-hash', 'BIGCOMMERCE_STORE_HASH'],
+    ['inputs.access-token', 'BIGCOMMERCE_ACCESS_TOKEN'],
+    ['inputs.storefront-token', 'BIGCOMMERCE_STOREFRONT_TOKEN'],
+    ['inputs.channel-id', 'BIGCOMMERCE_CHANNEL_ID'],
+    ['inputs.auth-secret', 'AUTH_SECRET'],
+  ];
+  const wired = JSON.stringify(resolve.env || {}) + resolve.run;
+  const missing = expected.filter(([i, e]) => !wired.includes(i) || !wired.includes(e));
+
+  if (missing.length) throw new Error(`not resolvable: ${missing.map(([i]) => i).join(', ')}`);
+});
+
+check('credentials arriving as plain env vars are masked', () => {
+  const resolve = action.runs.steps.find((s) => s.name === 'Resolve configuration');
+  if (!resolve.run.includes('::add-mask::')) {
+    throw new Error('a token passed as an env var would appear unmasked in logs');
+  }
 });
 
 check('every output maps to a real step id', () => {
@@ -82,8 +101,6 @@ check('a configuration preflight exists and covers every credential input', () =
   const expected = Object.entries(action.inputs)
     .filter(([name, v]) => v.required && name !== 'project-uuid')
     .map(([name]) => name);
-  // The env keys are shell names; what matters is which inputs they read.
-  const wired = JSON.stringify(step.env || {});
   const unchecked = expected.filter((name) => !wired.includes(`inputs.${name}`));
 
   if (unchecked.length) throw new Error(`not checked by the preflight: ${unchecked.join(', ')}`);
@@ -95,15 +112,15 @@ check('the preflight labels each item as a secret or a variable', () => {
 
   if (!labels.length) throw new Error('preflight reports nothing');
 
-  const unlabelled = labels.filter((l) => !/^(secret|variable) /.test(l));
+  const unlabelled = labels.filter((l) => !/ \((secret|variable)\)$/.test(l));
   if (unlabelled.length) throw new Error(`unlabelled: ${unlabelled.join(', ')}`);
 
   // Store hash and channel id are configuration, not credentials.
   for (const name of ['BIGCOMMERCE_STORE_HASH', 'BIGCOMMERCE_CHANNEL_ID']) {
-    if (!labels.includes(`variable ${name}`)) throw new Error(`${name} is not labelled a variable`);
+    if (!labels.includes(`${name} (variable)`)) throw new Error(`${name} is not labelled a variable`);
   }
-  for (const name of ['BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN', 'BIGCOMMERCE_STOREFRONT_TOKEN', 'AUTH_SECRET']) {
-    if (!labels.includes(`secret ${name}`)) throw new Error(`${name} is not labelled a secret`);
+  for (const name of ['BIGCOMMERCE_ACCESS_TOKEN', 'BIGCOMMERCE_STOREFRONT_TOKEN', 'AUTH_SECRET']) {
+    if (!labels.includes(`${name} (secret)`)) throw new Error(`${name} is not labelled a secret`);
   }
 });
 
@@ -138,12 +155,13 @@ check('every input the reusable workflow passes exists on the action', () => {
   if (unknown.length) throw new Error(`unknown inputs: ${unknown.join(', ')}`);
 });
 
-check('every required action input is supplied by the reusable workflow', () => {
-  const wf = load(reusable);
-  const step = wf.jobs.preview.steps.find((s) => s.uses);
-  const required = Object.entries(action.inputs).filter(([, v]) => v.required).map(([k]) => k);
-  const missing = required.filter((k) => !(k in step.with));
-  if (missing.length) throw new Error(`missing: ${missing.join(', ')}`);
+check('the reusable workflow supplies configuration through job env', () => {
+  const job = load(reusable).jobs.preview;
+  const expected = ['BIGCOMMERCE_PREVIEW_PROJECT_UUID', 'BIGCOMMERCE_STORE_HASH',
+                    'BIGCOMMERCE_CHANNEL_ID', 'BIGCOMMERCE_ACCESS_TOKEN',
+                    'BIGCOMMERCE_STOREFRONT_TOKEN', 'AUTH_SECRET'];
+  const missing = expected.filter((k) => !(k in (job.env || {})));
+  if (missing.length) throw new Error(`missing job env: ${missing.join(', ')}`);
 });
 
 check('both in-repo pins track the package major', () => {
@@ -209,6 +227,17 @@ check('the job name matches the check name, so a redeploy reuses one row', () =>
   }
 
   if (wrong.length) throw new Error(`job name should be "${expected}" -- ${wrong.join(', ')}`);
+});
+
+check('every env fallback is documented in the README', () => {
+  // The action.yml no longer marks these required, so the README table is the
+  // only place a consumer learns what has to be supplied.
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  const resolve = action.runs.steps.find((s) => s.name === 'Resolve configuration');
+  const fallbacks = [...resolve.run.matchAll(/:-\$\{([A-Z_]+):-\}\}/g)].map((m) => m[1]);
+
+  const undocumented = fallbacks.filter((name) => !readme.includes(name));
+  if (undocumented.length) throw new Error(`not in the README: ${undocumented.join(', ')}`);
 });
 
 check('the release process is documented and linked', () => {

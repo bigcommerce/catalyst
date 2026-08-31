@@ -36,14 +36,14 @@ jobs:
       )
     runs-on: ubuntu-latest
     environment: Preview Deployments
+    env:
+      BIGCOMMERCE_PREVIEW_PROJECT_UUID: ${{ vars.BIGCOMMERCE_PREVIEW_PROJECT_UUID }}
+      BIGCOMMERCE_STORE_HASH: ${{ vars.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CHANNEL_ID: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
+      BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+      BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
     steps:
       # Do not check out first. The action checks out the pull request itself,
-      # after the permission and fork checks have run.
+      # after the permission and fork checks.
       - uses: bigcommerce/catalyst/packages/deployment-preview-action@preview-action-v1
-        with:
-          project-uuid: ${{ vars.PREVIEW_DEPLOYMENT_PROJECT_UUID }}
-          store-hash: ${{ vars.BIGCOMMERCE_STORE_HASH }}
-          access-token: ${{ secrets.BIGCOMMERCE_PREVIEW_DEPLOYMENT_ACCESS_TOKEN }}
-          storefront-token: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
-          channel-id: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
-          auth-secret: ${{ secrets.AUTH_SECRET }}
