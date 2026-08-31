@@ -88,7 +88,14 @@ const cloudflareConfig = defineCloudflareConfig({
 });
 
 const config: OpenNextConfig = {
-  buildCommand: 'node_modules/.bin/next build',
+  // Invoke Next through `node` on its published bin rather than the
+  // `node_modules/.bin/next` shim. OpenNext runs this string via
+  // `execSync`, which shells out to cmd.exe on native Windows — where the
+  // extensionless POSIX shim and forward-slash path both fail to resolve.
+  // Calling `node <bin>` works identically across sh and cmd.exe (node.exe
+  // accepts forward slashes) while still bypassing the project's `build`
+  // script so the `generate` step is skipped.
+  buildCommand: 'node ./node_modules/next/dist/bin/next build',
   ...cloudflareConfig,
 };
 
