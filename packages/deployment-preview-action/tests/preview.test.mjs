@@ -119,44 +119,6 @@ run('hostname fails clearly when the uuid is not on the store',
   (c) => { eq(c.exit, 1, 'exit'); has(c.stderr, 'No hosting project with UUID', 'stderr'); });
 
 // ---- announce ----
-run('announce posts on this PR and notifies the displaced one',
-  { cmd: 'announce', pr: 3, pulls: [3, 5],
-    comments: { 5: [{ id: 1, body: deployed('https://preview.example.store') }] },
-    env: { PREVIEW_URL: 'https://preview.example.store', COMMIT: 'abcdef1234', RUN_URL: 'https://run' } },
-  (c) => {
-    eq(c.exit, 0, 'exit');
-    has(c.comments[3][0].body, '**Preview deployed**', 'own comment');
-    has(c.comments[3][0].body, 'Commit `abcdef1', 'commit shown');
-    // The displaced PR was advertising a live preview, so it is deleted and
-    // reposted rather than edited, to actually notify.
-    eq(c.calls.filter((x) => x.endsWith('#5')), ['delete#5', 'create#5'], 'displaced PR notified');
-    has(c.comments[5][0].body, '**Preview replaced**', 'displaced body');
-    has(c.comments[5][0].body, 'now serves #3', 'names the new owner');
-  });
-
-run('announce leaves an already-correct notice untouched',
-  { cmd: 'announce', pr: 3, pulls: [3, 5],
-    comments: {
-      3: [{ id: 1, body: deployed('https://preview.example.store') }],
-      5: [{ id: 2, body: `${MARKER}\n**Preview replaced** — the shared preview now serves #3, so the URL above no longer reflects this pull request.\n\nComment \`redeploy preview\` here to point it back at these changes.\n` }],
-    },
-    env: { PREVIEW_URL: 'https://preview.example.store', RUN_URL: 'https://run' } },
-  (c) => {
-    eq(c.exit, 0, 'exit');
-    // Repeated pushes to #3 must not re-notify #5 every time.
-    eq(c.calls.filter((x) => x.endsWith('#5')), [], 'no churn on #5');
-  });
-
-run('announce quietly refreshes a deferral notice on another PR',
-  { cmd: 'announce', pr: 5, pulls: [3, 5],
-    comments: { 3: [{ id: 2, body: `${MARKER}\n**Preview not deployed** — the shared preview is reserved for the newest pull request (#5).\n` }] },
-    env: { PREVIEW_URL: 'https://preview.example.store', RUN_URL: 'https://run' } },
-  (c) => {
-    eq(c.exit, 0, 'exit');
-    eq(c.calls.filter((x) => x.endsWith('#3')), ['patch#3'], 'edited in place, no notification');
-    has(c.comments[3][0].body, '**Preview replaced**', 'body updated');
-  });
-
 run('announce ignores closed PRs entirely',
   { cmd: 'announce', pr: 5, pulls: [5],
     comments: { 3: [{ id: 2, body: deployed('https://preview.example.store') }] },
@@ -171,6 +133,61 @@ run('announce omits the commit when it is unavailable',
     if (body.includes('``')) throw new Error('rendered empty backticks: ' + JSON.stringify(body));
     has(body, '[build log](https://run)', 'build log');
   });
+
+run('announce posts on this PR and notifies the displaced one',
+  { cmd: 'announce', pr: 3, pulls: [3, 5],
+    comments: { 5: [{ id: 1, body: deployed('https://preview.example.store') }] },
+    env: { PREVIEW_URL: 'https://preview.example.store', COMMIT: 'abcdef1234', RUN_URL: 'https://run' } },
+  (c) => {
+    eq(c.exit, 0, 'exit');
+    has(c.comments[3][0].body, '**Preview deployed**', 'own comment');
+    has(c.comments[3][0].body, 'Commit `abcdef1', 'commit shown');
+    eq(c.calls.filter((x) => x.endsWith('#5')), ['delete#5', 'create#5'], 'displaced PR notified');
+    has(c.comments[5][0].body, '**Preview replaced**', 'displaced body');
+    // Deliberately does not name the new owner: the notice must stay true when
+    // a third pull request takes the preview later.
+    if (/#\d/.test(c.comments[5][0].body)) throw new Error('notice names a PR and will go stale');
+  },
+);
+
+run('a replaced notice is never rewritten again',
+  { cmd: 'announce', pr: 3, pulls: [3, 5, 9],
+    comments: { 5: [{ id: 2, body: `${MARKER}\n**Preview replaced** — the shared preview now serves another pull request, so it no longer reflects these changes.\n\nComment \`redeploy preview\` to point it back here.\n` }] },
+    env: { PREVIEW_URL: 'https://preview.example.store', RUN_URL: 'https://run' } },
+  (c) => {
+    eq(c.exit, 0, 'exit');
+    eq(c.calls.filter((x) => x.endsWith('#5')), [], 'no churn on an already-replaced PR');
+  },
+);
+
+run('a deferral notice on another PR is left alone',
+  { cmd: 'announce', pr: 5, pulls: [3, 5],
+    comments: { 3: [{ id: 2, body: `${MARKER}\n**Preview not deployed** — the shared preview is reserved for the newest pull request (#5).\n` }] },
+    env: { PREVIEW_URL: 'https://preview.example.store', RUN_URL: 'https://run' } },
+  (c) => {
+    eq(c.exit, 0, 'exit');
+    // It never held the preview, so telling it the preview was replaced would
+    // be wrong. It refreshes itself on its own next push.
+    eq(c.calls.filter((x) => x.endsWith('#3')), [], 'deferral notice untouched');
+  },
+);
+
+run('stops at the displaced PR instead of visiting every open one',
+  { cmd: 'announce', pr: 2, pulls: [2, 3, 4, 5, 6],
+    // #4 also holds a deployed comment. Without an early exit the sweep would
+    // rewrite it too; with one it is never reached.
+    comments: {
+      6: [{ id: 1, body: deployed('https://preview.example.store') }],
+      4: [{ id: 2, body: deployed('https://preview.example.store') }],
+    },
+    env: { PREVIEW_URL: 'https://preview.example.store', RUN_URL: 'https://run' } },
+  (c) => {
+    eq(c.exit, 0, 'exit');
+    eq(c.calls.filter((x) => x.endsWith('#6')), ['delete#6', 'create#6'], 'displaced PR handled');
+    // #3, #4 and #5 sort after #6 by recency in the stub, so they are never read.
+    eq(c.calls.filter((x) => x.endsWith('#4')), [], 'stopped before the next holder');
+  },
+);
 
 // ---- defer ----
 run('defer creates a notice when none exists',

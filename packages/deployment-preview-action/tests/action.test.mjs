@@ -240,6 +240,23 @@ check('every env fallback is documented in the README', () => {
   if (undocumented.length) throw new Error(`not in the README: ${undocumented.join(', ')}`);
 });
 
+check('the README describes the comments the code actually posts', () => {
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  const source = readFileSync(join(ROOT, 'scripts', 'catalyst-preview.mjs'), 'utf8');
+
+  // The notice must stay pull-request-agnostic, or it goes stale the moment a
+  // third pull request takes the preview and the sweep would have to revisit it.
+  const replaced = source.slice(source.indexOf('function replacedBody'));
+  const body = replaced.slice(0, replaced.indexOf('\n}'));
+  if (/#\$\{/.test(body) || /#\d/.test(body)) {
+    throw new Error('replacedBody names a pull request; the README says it does not');
+  }
+
+  if (!readme.includes('does not name the pull request that took over')) {
+    throw new Error('README no longer explains why the notice is pull-request-agnostic');
+  }
+});
+
 check('the release process is documented and linked', () => {
   const releases = join(ROOT, 'RELEASES.md');
   if (!fs.existsSync(releases)) throw new Error('RELEASES.md is missing');

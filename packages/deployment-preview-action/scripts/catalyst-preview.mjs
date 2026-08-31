@@ -128,24 +128,23 @@ async function newestOpenPullRequest() {
   return newest?.number ?? null;
 }
 
-async function openPullRequestNumbers() {
-  const numbers = [];
-
-  // Bounded rather than following Link headers to the end: this only drives
-  // comment housekeeping, and a repository with more than 300 open pull
-  // requests does not need every one of them revisited on each deploy.
-  for (let page = 1; page <= 3; page++) {
+/**
+ * Walks open pull requests newest-activity-first, yielding page by page. The
+ * pull request holding the preview was commented on by this action when it
+ * deployed, which bumped its `updated_at`, so it sorts near the front and the
+ * caller stops long before the end of the list.
+ */
+async function* openPullRequestsByRecency() {
+  for (let page = 1; ; page++) {
     const response = await github(
-      `/repos/${REPOSITORY}/pulls?state=open&per_page=100&page=${page}`,
+      `/repos/${REPOSITORY}/pulls?state=open&sort=updated&direction=desc&per_page=100&page=${page}`,
     );
     const batch = await response.json();
 
-    numbers.push(...batch.map((pull) => pull.number));
+    for (const pull of batch) yield pull.number;
 
-    if (batch.length < 100) break;
+    if (batch.length < 100) return;
   }
-
-  return numbers;
 }
 
 async function findPreviewComment(pullNumber) {
@@ -217,11 +216,11 @@ function deployedBody(url) {
   return `${MARKER}\n${DEPLOYED_HEADING} → ${url}\n\n${meta}\n`;
 }
 
-function replacedBody(servingPr) {
+function replacedBody() {
   return (
-    `${MARKER}\n**Preview replaced** — the shared preview now serves #${servingPr}, ` +
-    `so the URL above no longer reflects this pull request.\n\n` +
-    `Comment \`redeploy preview\` here to point it back at these changes.\n`
+    `${MARKER}\n**Preview replaced** — the shared preview now serves another pull ` +
+    `request, so it no longer reflects these changes.\n\n` +
+    `Comment \`redeploy preview\` to point it back here.\n`
   );
 }
 
@@ -285,28 +284,27 @@ async function announce() {
   await announceLoudly(PR_NUMBER, deployedBody(url));
   console.log(`  announced on #${PR_NUMBER}`);
 
-  const stale = replacedBody(PR_NUMBER);
-
-  for (const pullNumber of await openPullRequestNumbers()) {
+  // At most one other pull request advertises the preview, so stop as soon as
+  // it is found rather than visiting every open pull request. The notice does
+  // not name the pull request that took over, so it never needs rewriting and
+  // an already-replaced comment is never touched again.
+  for await (const pullNumber of openPullRequestsByRecency()) {
     if (pullNumber === PR_NUMBER) continue;
 
     const existing = await findPreviewComment(pullNumber);
 
-    // Already correct, so leave it alone. This is what keeps a series of
-    // pushes to one pull request from re-notifying every other one.
-    if (!existing || existing.body === stale) continue;
+    if (!existing?.body.startsWith(`${MARKER}\n${DEPLOYED_HEADING}`)) continue;
 
-    if (existing.body.startsWith(`${MARKER}\n${DEPLOYED_HEADING}`)) {
-      // This pull request just lost the preview it was advertising, which is
-      // worth a notification rather than a silent edit.
-      await deleteComment(existing.id);
-      await createComment(pullNumber, stale);
-      console.log(`  notified #${pullNumber} that its preview was replaced`);
-    } else {
-      await patchComment(existing.id, stale);
-      console.log(`  refreshed the notice on #${pullNumber}`);
-    }
+    // Losing the preview is worth a notification, so replace the comment
+    // rather than editing it in place.
+    await deleteComment(existing.id);
+    await createComment(pullNumber, replacedBody());
+    console.log(`  notified #${pullNumber} that its preview was replaced`);
+
+    return;
   }
+
+  console.log('  no other pull request was holding the preview');
 }
 
 async function defer() {

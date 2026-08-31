@@ -19,9 +19,15 @@ That shapes the behaviour:
 | Push to any older pull request | No deploy; its comment explains how to claim the preview |
 | `redeploy preview` comment on any pull request | Deploys that pull request |
 
-When a pull request takes the preview over, the one that had it gets its comment
-rewritten, so no thread is left advertising a URL that now serves someone else's
-code.
+When a pull request takes the preview over, the one that had it gets a notice in
+place of its old comment, so no thread is left advertising a URL that now serves
+someone else's code. That notice does not name the pull request that took over —
+which keeps it true when a third one takes it later, and means it is written once
+and never revisited.
+
+Finding that pull request costs one listing call, not one per open pull request.
+Open pull requests are walked newest-activity-first and the search stops at the
+first one holding a preview, because only one ever does.
 
 ## Setup
 
@@ -208,9 +214,10 @@ pnpm --filter @bigcommerce/deployment-preview-action test
 ```
 
 The suite runs the preview logic against a stubbed BigCommerce and GitHub API.
-It covers the deploy-eligibility rules and, importantly, which comment updates
-notify and which stay silent — the difference between a useful preview bot and
-one that emails everybody on every push.
+Two things it pins down deliberately: which comment updates notify and which stay
+silent — the difference between a useful preview bot and one that emails everybody
+on every push — and that the sweep stops at the pull request holding the preview
+rather than walking every open one.
 
 ## Releasing
 
