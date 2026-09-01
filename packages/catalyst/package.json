@@ -24,7 +24,7 @@
     "build": "tsup"
   },
   "engines": {
-    "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
+    "node": "^22.0.0 || ^24.0.0"
   },
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",
@@ -66,6 +66,11 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "1.17.3"
+    "@opennextjs/cloudflare": "^1.17.3"
+  },
+  "peerDependenciesMeta": {
+    "@opennextjs/cloudflare": {
+      "optional": true
+    }
   }
 }

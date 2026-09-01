@@ -2,8 +2,10 @@ import { confirm, input, select, Separator } from '@inquirer/prompts';
 import { colorize } from 'consola/utils';
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
+import { minVersion, satisfies, lt as semverLt, validRange } from 'semver';
 import { z } from 'zod';
 
+import type { PackageManager } from './detect-package-manager';
 import { consola } from './logger';
 import {
   createProject,
@@ -13,10 +15,18 @@ import {
 } from './project';
 import { sortPackageJsonFields } from './sort-package-json';
 
-// Exported so the Cloudflare context contract test can assert which version
-// its symbol-key assumption was verified against. See
-// `cloudflare-context-symbol.spec.ts`.
-export const OPENNEXT_CLOUDFLARE_VERSION = '1.17.3';
+// Exported so `cloudflare-context-symbol.spec.ts` can assert the version its
+// symbol-key assumption was verified against. Keep it exact: a range would
+// admit versions that key was never checked against, and that failure is silent
+// (null context, so every native-hosted store degrades to an in-process cache).
+//
+// This is what new projects are pinned to, not a floor existing ones are held
+// at -- see `reconcileOpenNextVersion`.
+export const OPENNEXT_CLOUDFLARE_VERSION = '1.20.6';
+
+// The `next` peer range OPENNEXT_CLOUDFLARE_VERSION declares. Update both
+// together, from the new adapter's `peerDependencies.next`.
+export const OPENNEXT_REQUIRED_NEXT_RANGE = '>=15.5.24 <16 || >=16.3.3';
 
 const corePackageJsonSchema = z.looseObject({
   dependencies: z.record(z.string(), z.string()).optional(),
@@ -118,6 +128,101 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
       consola.info('Dropped @vercel/otel from package.json.');
     }
   }
+};
+
+// The adapter pin lives in the project's own package.json, and `deploy` skips
+// `setupCommerceHosting` once transformed, so a CLI bump never reaches an
+// existing project by itself. `catalyst upgrade` can't move it either: the pin
+// is injected, so it is absent from the upstream tree and no merge ever sees it
+// (same reason `findStaleCli` checks the CLI's own pin out-of-band).
+export const reconcileOpenNextVersion = async (
+  projectDir: string,
+  packageManager: PackageManager,
+  { canUpgrade }: { canUpgrade: boolean },
+): Promise<boolean> => {
+  const corePackageJsonPath = join(projectDir, 'package.json');
+
+  if (!existsSync(corePackageJsonPath)) return false;
+
+  const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(corePackageJsonPath, 'utf-8')));
+  const range = pkg.dependencies?.['@opennextjs/cloudflare'];
+
+  // Not a Commerce Hosting project; adding the dep is setup's job.
+  if (range === undefined) return false;
+
+  // Tarball, git URL, or `link:` -- minVersion() throws on these.
+  if (!validRange(range)) return false;
+
+  // Already admits the target; their next install picks it up.
+  if (satisfies(OPENNEXT_CLOUDFLARE_VERSION, range)) return false;
+
+  const current = minVersion(range)?.version;
+
+  // Only nudge a project that is behind; downgrading one ahead would be wrong.
+  if (current === undefined || !semverLt(current, OPENNEXT_CLOUDFLARE_VERSION)) return false;
+
+  const manualStep = `\`${packageManager} add @opennextjs/cloudflare@${OPENNEXT_CLOUDFLARE_VERSION}\``;
+  const behind = `This project pins @opennextjs/cloudflare ${current}, but this CLI targets ${OPENNEXT_CLOUDFLARE_VERSION}.`;
+
+  // Bumping past what the project's Next supports would leave an unsupported
+  // dependency set, so don't offer an upgrade that can't work.
+  const nextRange = pkg.dependencies?.next;
+  const nextVersion =
+    nextRange !== undefined && validRange(nextRange) ? minVersion(nextRange) : null;
+
+  if (nextVersion !== null && !satisfies(nextVersion.version, OPENNEXT_REQUIRED_NEXT_RANGE)) {
+    consola.warn(
+      `${behind} That release needs Next.js ${OPENNEXT_REQUIRED_NEXT_RANGE}, but this project ` +
+        `is on ${nextVersion.version}. Run \`catalyst upgrade\` to move core and Next first, ` +
+        'then re-run the deploy to pick up the adapter.',
+    );
+
+    return false;
+  }
+
+  // `--prebuilt` uploads an existing bundle, never rebuilt against a new adapter.
+  if (!canUpgrade) {
+    consola.warn(
+      `${behind} The deploy will use the existing build output. Re-run without \`--prebuilt\`, ` +
+        `or update it with ${manualStep}, to pick up adapter fixes released since then.`,
+    );
+
+    return false;
+  }
+
+  // Never rewrite deps unattended: pnpm treats the lockfile as frozen in CI, so
+  // the install that has to follow would fail the deploy.
+  if (!process.stdin.isTTY) {
+    consola.warn(
+      `${behind} Skipping the upgrade prompt in a non-interactive environment. Update it with ` +
+        `${manualStep} and commit the lockfile to pick up adapter fixes released since then.`,
+    );
+
+    return false;
+  }
+
+  const shouldUpgrade = await confirm({
+    message:
+      `${behind} Adapter fixes released since then are not applied. ` +
+      `Update it to ${OPENNEXT_CLOUDFLARE_VERSION} and reinstall now?`,
+    default: true,
+  });
+
+  if (!shouldUpgrade) {
+    consola.info(`Keeping @opennextjs/cloudflare ${current}. Update it later with ${manualStep}.`);
+
+    return false;
+  }
+
+  pkg.dependencies = {
+    ...pkg.dependencies,
+    '@opennextjs/cloudflare': OPENNEXT_CLOUDFLARE_VERSION,
+  };
+
+  writeJson(corePackageJsonPath, sortPackageJsonFields(pkg));
+  consola.info(`Updated @opennextjs/cloudflare to ${OPENNEXT_CLOUDFLARE_VERSION}.`);
+
+  return true;
 };
 
 export const setupCommerceHosting = async ({
