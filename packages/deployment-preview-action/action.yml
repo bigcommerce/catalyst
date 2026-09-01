@@ -299,7 +299,6 @@ runs:
     - name: Check configuration
       if: steps.ctx.outputs.applies == 'true'
       shell: bash
-      env:
       run: |
         missing=()
         [ -n "${BIGCOMMERCE_STORE_HASH:-}" ] || missing+=('BIGCOMMERCE_STORE_HASH (variable)')

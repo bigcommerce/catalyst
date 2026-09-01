@@ -271,5 +271,32 @@ check('no reference still points at a standalone action repository', () => {
   if (stale.length) throw new Error(`stale refs in: ${stale.join(', ')}`);
 });
 
+// js-yaml reads a keyword with nothing under it as null and moves on, but the
+// runner refuses to load the manifest at all: "Unexpected type 'NullToken'
+// encountered while reading 'environment'". Nothing else here catches that,
+// because every other test works on the parsed tree, where the key is simply
+// absent-looking.
+check('no step declares an empty env or with block', () => {
+  const empties = [];
+
+  const scan = (steps, where) =>
+    (steps ?? []).forEach((step, i) => {
+      for (const key of ['env', 'with']) {
+        if (key in step && step[key] === null) {
+          empties.push(`${where} step ${i + 1} (${step.name ?? step.uses}): ${key}`);
+        }
+      }
+    });
+
+  scan(action.runs.steps, 'action.yml');
+
+  for (const file of [reusable, ...examples]) {
+    const doc = load(file);
+    for (const [name, job] of Object.entries(doc.jobs ?? {})) scan(job.steps, `${file} job ${name}`);
+  }
+
+  if (empties.length) throw new Error(`empty blocks: ${empties.join('; ')}`);
+});
+
 console.log(failures ? `\n${failures} failing\n` : '\nall passing\n');
 process.exit(failures ? 1 : 0);
