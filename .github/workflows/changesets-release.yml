@@ -73,6 +73,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # changesets tags packages as `<name>@<version>`. A workflow references an
+      # action as `owner/repo/path@ref`, so that tag shape cannot be used to pin
+      # one. Mirror the version into @-free tags the action can actually be
+      # referenced by. Idempotent: it only acts when the version is new.
+      - name: Tag the deployment preview action
+        if: github.ref_name == 'canary'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          version=$(node -p "require('./packages/deployment-preview-action/package.json').version")
+          exact="preview-action-v$version"
+          moving="preview-action-v${version%%.*}"
+
+          if git ls-remote --exit-code --tags origin "refs/tags/$exact" >/dev/null 2>&1; then
+            echo "$exact already exists; nothing to tag."
+            exit 0
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+          git tag -a "$exact" -m "$exact"
+          # The moving major is meant to move.
+          git tag -f -a "$moving" -m "$moving -> $exact"
+
+          git push origin "$exact"
+          git push --force origin "$moving"
+
+          echo "Tagged $exact and moved $moving." >> "$GITHUB_STEP_SUMMARY"
+
       - name: Resolve headline package
         id: headline
         if: steps.changesets.outputs.published == 'true'

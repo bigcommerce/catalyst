@@ -1,0 +1,40 @@
+# Deploys a preview of each pull request to a BigCommerce native hosting
+# project, and comments the URL on the pull request.
+#
+# This does nothing until you configure it, so it is safe to leave in place:
+#
+#   1. Create the project the previews deploy into:
+#        catalyst project create my-store-preview
+#        catalyst project list          # copy the UUID
+#
+#   2. Under Settings -> Environments, create "Preview Deployments" and add:
+#        variables  BIGCOMMERCE_PREVIEW_PROJECT_UUID
+#                   BIGCOMMERCE_STORE_HASH
+#                   BIGCOMMERCE_CHANNEL_ID
+#        secrets    BIGCOMMERCE_ACCESS_TOKEN
+#                   BIGCOMMERCE_STOREFRONT_TOKEN
+#                   AUTH_SECRET    (openssl rand -hex 32; do not reuse production's)
+#
+# Every preview shares that one project, so it serves one pull request at a
+# time. The newest open pull request deploys on push; any other one takes the
+# preview over by commenting `redeploy preview`.
+#
+# The `redeploy preview` command only works once this file is on your default
+# branch, because GitHub always reads issue_comment workflows from there.
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created]
+
+jobs:
+  preview:
+    uses: bigcommerce/catalyst/.github/workflows/deployment-preview.yml@preview-action-v1
+    with:
+      environment: Preview Deployments
+    secrets:
+      access-token: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+      storefront-token: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+      auth-secret: ${{ secrets.AUTH_SECRET }}

@@ -1,0 +1,518 @@
+name: Catalyst Deployment Preview
+description: >-
+  Deploy a BigCommerce Catalyst pull request preview to a shared native hosting
+  project, and keep the pull request comments describing it accurate.
+author: BigCommerce
+
+branding:
+  icon: eye
+  color: blue
+
+inputs:
+  project-uuid:
+    description: >-
+      UUID of the hosting project every preview deploys into. Not a secret.
+      Find it with `catalyst project list`. All previews share this one project,
+      so it serves one pull request at a time.
+    default: ''
+  store-hash:
+    description: Store hash, as seen in the control panel URL. Not a secret.
+    default: ''
+  access-token:
+    description: >-
+      Store API token with the store_infrastructure_projects_manage and
+      store_infrastructure_deployments_manage scopes.
+    default: ''
+  storefront-token:
+    description: Storefront API token, required by the Catalyst build.
+    default: ''
+  channel-id:
+    description: Channel ID the preview storefront serves. Not a secret.
+    default: ''
+  auth-secret:
+    description: >-
+      Auth.js secret for the preview. Generate with `openssl rand -hex 32`.
+      Does not need to match production, and is better if it does not.
+    default: ''
+
+  github-token:
+    description: Token used to read pull requests and manage preview comments.
+    default: ${{ github.token }}
+  command-phrase:
+    description: >-
+      Comment prefix that redeploys the preview for the commenting pull request.
+      Keep the `if:` on your workflow job in sync with this.
+    default: redeploy preview
+  auto-deploy-newest:
+    description: >-
+      When true, a push to the newest open pull request deploys automatically.
+      Set false to require the command every time.
+    default: 'true'
+  checkout:
+    description: >-
+      Whether this action checks out the repository. Leave enabled: the comment
+      path needs the pull request's merge ref, and the checkout has to happen
+      after the permission and fork checks, not before.
+    default: 'true'
+  node-version:
+    description: Node version used to build the storefront.
+    default: '24'
+  pnpm-version:
+    description: pnpm version. The Catalyst CLI shells out to pnpm to build.
+    default: '10'
+  working-directory:
+    description: Directory containing the Catalyst project.
+    default: .
+  api-host:
+    description: BigCommerce API host. Override only for non-production stores.
+    default: api.bigcommerce.com
+  check-name:
+    description: >-
+      Name of the check this action reports a redeploy against. Set it to the
+      display name of the job that runs this action, and a redeploy reuses that
+      job's own check row instead of adding a second one. An issue_comment run
+      is not attached to a commit, so without this there is nothing in the pull
+      request's checks at all.
+    default: Preview Deployment
+  min-cli-version:
+    description: >-
+      Oldest @bigcommerce/catalyst the action supports. It shells out to
+      `catalyst deploy` from the consuming project, so the CLI version is the
+      project's, not the action's. Lower this only after verifying an older CLI
+      accepts --project-uuid and --secret.
+    default: 1.2.0
+
+outputs:
+  deployed:
+    description: '"true" when this run deployed the preview.'
+    value: ${{ steps.eligible.outputs.should_deploy }}
+  url:
+    description: URL of the shared preview, set only when this run deployed.
+    value: ${{ steps.preview.outputs.url }}
+  reason:
+    description: >-
+      Why this run did or did not deploy: newest, takeover, not-newest,
+      manual-only, or not-applicable.
+    value: ${{ steps.eligible.outputs.reason || steps.ctx.outputs.reason }}
+
+runs:
+  using: composite
+  steps:
+    # Configuration comes from inputs, or from conventionally named environment
+    # variables when an input is not given. The action runs in its own context,
+    # so a consumer can set these once at the workflow or job level and never
+    # wire an input. Resolved once here and exported, so later steps do not each
+    # repeat the same plumbing.
+    - name: Resolve configuration
+      shell: bash
+      env:
+        INPUT_PROJECT_UUID: ${{ inputs.project-uuid }}
+        INPUT_STORE_HASH: ${{ inputs.store-hash }}
+        INPUT_ACCESS_TOKEN: ${{ inputs.access-token }}
+        INPUT_STOREFRONT_TOKEN: ${{ inputs.storefront-token }}
+        INPUT_CHANNEL_ID: ${{ inputs.channel-id }}
+        INPUT_AUTH_SECRET: ${{ inputs.auth-secret }}
+      run: |
+        set -euo pipefail
+
+        project_uuid="${INPUT_PROJECT_UUID:-${BIGCOMMERCE_PREVIEW_PROJECT_UUID:-}}"
+        store_hash="${INPUT_STORE_HASH:-${BIGCOMMERCE_STORE_HASH:-}}"
+        access_token="${INPUT_ACCESS_TOKEN:-${BIGCOMMERCE_ACCESS_TOKEN:-}}"
+        storefront_token="${INPUT_STOREFRONT_TOKEN:-${BIGCOMMERCE_STOREFRONT_TOKEN:-}}"
+        channel_id="${INPUT_CHANNEL_ID:-${BIGCOMMERCE_CHANNEL_ID:-}}"
+        auth_secret="${INPUT_AUTH_SECRET:-${AUTH_SECRET:-}}"
+
+        # A value that arrived by input is already masked; one that arrived as a
+        # plain env var is not, so register the credentials either way.
+        for secret in "$access_token" "$storefront_token" "$auth_secret"; do
+          [ -n "$secret" ] && echo "::add-mask::$secret"
+        done
+
+        {
+          echo "PREVIEW_DEPLOYMENT_PROJECT_UUID=$project_uuid"
+          echo "CATALYST_STORE_HASH=$store_hash"
+          echo "CATALYST_ACCESS_TOKEN=$access_token"
+          echo "BIGCOMMERCE_STORE_HASH=$store_hash"
+          echo "BIGCOMMERCE_STOREFRONT_TOKEN=$storefront_token"
+          echo "BIGCOMMERCE_CHANNEL_ID=$channel_id"
+          echo "AUTH_SECRET=$auth_secret"
+        } >> "$GITHUB_ENV"
+
+    # Runs before checkout on purpose. The comment path builds and deploys pull
+    # request code with the store credentials in scope, so the fork and
+    # permission checks must happen before any repository code is fetched, let
+    # alone executed by `pnpm install`.
+    - name: Resolve event context
+      id: ctx
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        EVENT_NAME: ${{ github.event_name }}
+        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        COMMAND_PHRASE: ${{ inputs.command-phrase }}
+        # Never interpolate these with ${{ }}: comment text is attacker
+        # controlled on a public repository and would be spliced into the shell.
+        COMMENT_BODY: ${{ github.event.comment.body }}
+        COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
+        IS_FORK_PR: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+      run: |
+        set -euo pipefail
+
+        skip() {
+          echo "applies=false" >> "$GITHUB_OUTPUT"
+          echo "is_takeover=false" >> "$GITHUB_OUTPUT"
+          echo "reason=not-applicable" >> "$GITHUB_OUTPUT"
+          echo "::notice::$1"
+          exit 0
+        }
+
+        # No project at all means the feature was never switched on, which is
+        # the default for a freshly scaffolded storefront. Skip quietly rather
+        # than failing every pull request. A half-configured setup still fails
+        # loudly in "Check configuration" below.
+        [ -n "${PREVIEW_DEPLOYMENT_PROJECT_UUID:-}" ] || skip 'Preview deployments are not configured; set BIGCOMMERCE_PREVIEW_PROJECT_UUID to enable them.'
+
+        if [ "$EVENT_NAME" = 'pull_request' ]; then
+          # Forked pull requests get a read-only token and no secrets.
+          [ "$IS_FORK_PR" = 'false' ] || skip 'Previews are not available for pull requests from forks.'
+
+          {
+            echo 'applies=true'
+            echo 'is_takeover=false'
+            echo "head_sha=${{ github.event.pull_request.head.sha }}"
+          } >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        if [ "$EVENT_NAME" != 'issue_comment' ]; then
+          skip "Ignoring '$EVENT_NAME'; this action handles pull_request and issue_comment."
+        fi
+
+        [ -n "${COMMENT_BODY:-}" ] || skip 'Comment had no body.'
+
+        # Only the first line counts, so the command quoted inside a longer
+        # comment cannot trigger a deploy.
+        first_line=$(printf '%s' "$COMMENT_BODY" | head -1)
+        case "$first_line" in
+          "$COMMAND_PHRASE"*) ;;
+          *) skip "Comment does not start with '$COMMAND_PHRASE'." ;;
+        esac
+
+        # Anyone can comment; only collaborators who could merge may move the preview.
+        permission=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$COMMENT_AUTHOR/permission" \
+          --jq '.permission' 2>/dev/null || echo 'none')
+
+        case "$permission" in
+          admin | maintain | write) ;;
+          *)
+            echo "::error::@$COMMENT_AUTHOR has '$permission' permission; write access is required."
+            exit 1
+            ;;
+        esac
+
+        # issue_comment carries no head, and `gh pr view` needs a git remote
+        # that does not exist yet, so fetch the branch over REST.
+        pull_request=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER")
+        head_repo=$(printf '%s' "$pull_request" | jq -r '.head.repo.full_name')
+
+        if [ "$head_repo" != "$GITHUB_REPOSITORY" ]; then
+          echo "::error::Previews are not available for pull requests from forks (head is '$head_repo')."
+          exit 1
+        fi
+
+        {
+          echo 'applies=true'
+          echo 'is_takeover=true'
+          echo "head_sha=$(printf '%s' "$pull_request" | jq -r '.head.sha')"
+        } >> "$GITHUB_OUTPUT"
+
+    # Acknowledges the command within seconds, rather than after a multi-minute
+    # build. Without it a takeover looks like a command that was never received.
+    - name: Acknowledge the command
+      if: steps.ctx.outputs.is_takeover == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        COMMENT_ID: ${{ github.event.comment.id }}
+      run: |
+        set -euo pipefail
+        gh api --method POST \
+          "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+          -f content='eyes' --silent
+
+    # Fails fast and names everything missing at once, rather than surfacing as
+    # an opaque failure inside `catalyst deploy` several minutes later. The
+    # project uuid is not checked here: absent entirely means the feature was
+    # never switched on, which "Resolve event context" already skips.
+    # An issue_comment run is not attached to a commit, so GitHub shows nothing
+    # in the pull request's checks. Create a check run against the head SHA so a
+    # redeploy is visible where people already look, instead of only as a
+    # reaction on the comment.
+    - name: Open a check run
+      id: check
+      if: steps.ctx.outputs.is_takeover == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        HEAD_SHA: ${{ steps.ctx.outputs.head_sha }}
+        CHECK_NAME: ${{ inputs.check-name }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        name="$CHECK_NAME"
+
+        # Reuse the check run from a previous redeploy of this same commit, so
+        # repeated commands update one entry instead of stacking up.
+        existing=$(gh api \
+          -X GET "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
+          -f check_name="$name" \
+          --jq '.check_runs[0].id // empty' 2>/dev/null || true)
+
+        id=''
+
+        if [ -n "$existing" ]; then
+          id=$(gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$existing" \
+            -f status='in_progress' \
+            -f details_url="$RUN_URL" \
+            --jq '.id' 2>/dev/null || true)
+        fi
+
+        # Either there was none, or the API refused to reopen a completed one.
+        if [ -z "$id" ]; then
+          id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+            -f name="$name" \
+            -f head_sha="$HEAD_SHA" \
+            -f status='in_progress' \
+            -f details_url="$RUN_URL" \
+            --jq '.id' 2>/dev/null || true)
+        fi
+
+        if [ -z "$id" ]; then
+          # Almost always a missing checks:write permission. Not worth failing a
+          # deploy over -- the comment reactions still report the outcome.
+          echo '::warning::Could not create a check run. Grant checks:write to show redeploys in the pull request checks.'
+        fi
+
+        echo "id=$id" >> "$GITHUB_OUTPUT"
+
+    - name: Check configuration
+      if: steps.ctx.outputs.applies == 'true'
+      shell: bash
+      run: |
+        missing=()
+        [ -n "${BIGCOMMERCE_STORE_HASH:-}" ] || missing+=('BIGCOMMERCE_STORE_HASH (variable)')
+        [ -n "${BIGCOMMERCE_CHANNEL_ID:-}" ] || missing+=('BIGCOMMERCE_CHANNEL_ID (variable)')
+        [ -n "${CATALYST_ACCESS_TOKEN:-}" ] || missing+=('BIGCOMMERCE_ACCESS_TOKEN (secret)')
+        [ -n "${BIGCOMMERCE_STOREFRONT_TOKEN:-}" ] || missing+=('BIGCOMMERCE_STOREFRONT_TOKEN (secret)')
+        [ -n "${AUTH_SECRET:-}" ] || missing+=('AUTH_SECRET (secret)')
+
+        if [ ${#missing[@]} -gt 0 ]; then
+          {
+            echo '### Preview deployment is not fully configured'
+            echo
+            echo 'A preview project is set, so previews are switched on, but this is missing:'
+            echo
+            printf -- '- `%s`\n' "${missing[@]}"
+            echo
+            echo 'Add it under Settings → Environments, or as a repository secret or variable.'
+            echo
+            echo 'Already added it? Check that the environment it lives in is passed to the'
+            echo 'workflow -- environment secrets and variables are invisible to jobs that do'
+            echo 'not opt in, and resolve to an empty string with no warning.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "::error::Missing configuration: ${missing[*]}"
+          exit 1
+        fi
+
+    - name: Check out the pull request
+      if: steps.ctx.outputs.applies == 'true' && inputs.checkout == 'true'
+      uses: actions/checkout@v4
+      with:
+        # issue_comment runs against the default branch, so the pull request's
+        # own head has to be requested explicitly.
+        ref: ${{ github.event_name == 'issue_comment' && format('refs/pull/{0}/merge', github.event.issue.number) || '' }}
+
+    - name: Set up pnpm
+      if: steps.ctx.outputs.applies == 'true'
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Set up Node
+      if: steps.ctx.outputs.applies == 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: pnpm
+        cache-dependency-path: ${{ inputs.working-directory }}/pnpm-lock.yaml
+
+    - name: Install dependencies
+      if: steps.ctx.outputs.applies == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: pnpm install --frozen-lockfile
+
+    - name: Check eligibility
+      id: eligible
+      if: steps.ctx.outputs.applies == 'true'
+      shell: bash
+      env:
+        CATALYST_API_HOST: ${{ inputs.api-host }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        IS_TAKEOVER: ${{ steps.ctx.outputs.is_takeover }}
+        AUTO_DEPLOY_NEWEST: ${{ inputs.auto-deploy-newest }}
+      run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" check
+
+    # A push to an older branch stops here. The comment is edited in place so
+    # repeated pushes do not spam the thread with notifications.
+    - name: Record deferral
+      if: steps.eligible.outputs.should_deploy == 'false'
+      shell: bash
+      env:
+        CATALYST_API_HOST: ${{ inputs.api-host }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        NEWEST_PR: ${{ steps.eligible.outputs.newest_pr }}
+      run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" defer
+
+    # The CLI comes from the consuming project, so the action cannot pin it. A
+    # too-old CLI would otherwise fail deep inside `catalyst deploy` with an
+    # unrecognised-flag error that says nothing about this action.
+    - name: Check the Catalyst CLI version
+      if: steps.eligible.outputs.should_deploy == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        MIN_CLI_VERSION: ${{ inputs.min-cli-version }}
+      run: |
+        set -euo pipefail
+
+        found=$(node -e "console.log(require('@bigcommerce/catalyst/package.json').version)" 2>/dev/null || true)
+
+        if [ -z "$found" ]; then
+          echo "::error::@bigcommerce/catalyst is not installed in '${{ inputs.working-directory }}'. This action deploys with the project's own CLI."
+          exit 1
+        fi
+
+        if ! node -e "
+          const cmp = (a, b) => {
+            const pa = a.split('-')[0].split('.').map(Number);
+            const pb = b.split('-')[0].split('.').map(Number);
+            for (let i = 0; i < 3; i++) {
+              if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+            }
+            return 0;
+          };
+          process.exit(cmp(process.argv[1], process.argv[2]) < 0 ? 1 : 0);
+        " "$found" "$MIN_CLI_VERSION"; then
+          {
+            echo '### Catalyst CLI is too old for this preview action'
+            echo
+            echo "Found \`@bigcommerce/catalyst@$found\`, but this action needs \`>= $MIN_CLI_VERSION\`."
+            echo
+            echo 'Either upgrade the CLI in your project, or pin an older major of this'
+            echo 'action that supported it.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          echo "::error::@bigcommerce/catalyst@$found is older than the required $MIN_CLI_VERSION"
+          exit 1
+        fi
+
+        echo "Deploying with @bigcommerce/catalyst@$found"
+
+    - name: Deploy
+      if: steps.eligible.outputs.should_deploy == 'true'
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        CATALYST_API_HOST: ${{ inputs.api-host }}
+      run: |
+        # The env above feeds this build; the deployed Worker gets its own
+        # environment, which only --secret populates. AUTH_TRUST_HOST is
+        # preview-only -- Auth.js rejects the preview hostname without it.
+        pnpm exec catalyst deploy \
+          --project-uuid "$PREVIEW_DEPLOYMENT_PROJECT_UUID" \
+          --secret "BIGCOMMERCE_STORE_HASH=$BIGCOMMERCE_STORE_HASH" \
+          --secret "BIGCOMMERCE_STOREFRONT_TOKEN=$BIGCOMMERCE_STOREFRONT_TOKEN" \
+          --secret "BIGCOMMERCE_CHANNEL_ID=$BIGCOMMERCE_CHANNEL_ID" \
+          --secret "AUTH_SECRET=$AUTH_SECRET" \
+          --secret "AUTH_TRUST_HOST=true"
+
+    - name: Read preview URL
+      id: preview
+      if: steps.eligible.outputs.should_deploy == 'true'
+      shell: bash
+      env:
+        CATALYST_API_HOST: ${{ inputs.api-host }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+      run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" hostname
+
+    - name: Announce the deployment
+      if: steps.eligible.outputs.should_deploy == 'true'
+      shell: bash
+      env:
+        CATALYST_API_HOST: ${{ inputs.api-host }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        PR_NUMBER: ${{ github.event.pull_request.number || github.event.issue.number }}
+        PREVIEW_URL: ${{ steps.preview.outputs.url }}
+        COMMIT: ${{ steps.ctx.outputs.head_sha }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: node "$GITHUB_ACTION_PATH/scripts/catalyst-preview.mjs" announce
+
+    - name: Mark the command as done
+      if: success() && steps.ctx.outputs.is_takeover == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        COMMENT_ID: ${{ github.event.comment.id }}
+        CHECK_ID: ${{ steps.check.outputs.id }}
+        PREVIEW_URL: ${{ steps.preview.outputs.url }}
+      run: |
+        set -euo pipefail
+
+        gh api --method POST \
+          "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+          -f content='rocket' --silent
+
+        if [ -n "${CHECK_ID:-}" ]; then
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
+            -f status='completed' \
+            -f conclusion='success' \
+            -f 'output[title]=Preview deployed' \
+            -f "output[summary]=${PREVIEW_URL:-Deployed.}" --silent
+        fi
+
+    # A command that dies in validation leaves no comment at all, which is
+    # indistinguishable from one that was never received.
+    - name: Report command failure
+      if: failure() && steps.ctx.outputs.is_takeover == 'true'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        COMMENT_ID: ${{ github.event.comment.id }}
+        CHECK_ID: ${{ steps.check.outputs.id }}
+        PR_NUMBER: ${{ github.event.issue.number }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        set -euo pipefail
+
+        gh api --method POST \
+          "repos/$GITHUB_REPOSITORY/issues/comments/$COMMENT_ID/reactions" \
+          -f content='confused' --silent
+
+        if [ -n "${CHECK_ID:-}" ]; then
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
+            -f status='completed' \
+            -f conclusion='failure' \
+            -f 'output[title]=Redeploy failed' \
+            -f "output[summary]=See $RUN_URL" --silent
+        fi
+
+        gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+          -f body="**Redeploy failed** — see the [run log]($RUN_URL).
+
+        The preview still serves whatever was deployed before this attempt."

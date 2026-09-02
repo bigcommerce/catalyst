@@ -1,0 +1,49 @@
+# Use this only if you need to control the job yourself. You are then
+# responsible for the concurrency group -- every preview shares one hosting
+# project, so without it two deploys can race.
+#
+# This file must be merged to your default branch before `redeploy preview`
+# works: GitHub always reads issue_comment workflows from the default branch.
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: catalyst-deployment-preview
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  # Lets a `redeploy preview` comment show up in the pull request checks.
+  checks: write
+
+jobs:
+  preview:
+    # Must match the action's `check-name`, so a redeploy reuses this job's
+    # check row instead of adding a second one.
+    name: Preview Deployment
+    if: >-
+      github.event_name == 'pull_request' ||
+      (
+        github.event.issue.pull_request != null &&
+        startsWith(github.event.comment.body, 'redeploy preview')
+      )
+    runs-on: ubuntu-latest
+    environment: Preview Deployments
+    env:
+      BIGCOMMERCE_PREVIEW_PROJECT_UUID: ${{ vars.BIGCOMMERCE_PREVIEW_PROJECT_UUID }}
+      BIGCOMMERCE_STORE_HASH: ${{ vars.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CHANNEL_ID: ${{ vars.BIGCOMMERCE_CHANNEL_ID }}
+      BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+      BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.BIGCOMMERCE_STOREFRONT_TOKEN }}
+      AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+    steps:
+      # Do not check out first. The action checks out the pull request itself,
+      # after the permission and fork checks.
+      - uses: bigcommerce/catalyst/packages/deployment-preview-action@preview-action-v1
