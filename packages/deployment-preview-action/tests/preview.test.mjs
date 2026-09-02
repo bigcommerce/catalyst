@@ -3,11 +3,13 @@ import { spawnSync } from 'node:child_process';
 import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCRATCH = mkdtempSync(join(tmpdir(), 'catalyst-preview-'));
-const STUB = join(HERE, 'stub.mjs');
+// --import takes a module specifier, not a path. A bare Windows path reads as a
+// URL whose protocol is the drive letter, which the ESM loader rejects.
+const STUB = pathToFileURL(join(HERE, 'stub.mjs')).href;
 const SCRIPT = join(HERE, '..', 'scripts', 'catalyst-preview.mjs');
 
 const UUID = 'e484675f-4a4b-11f1-9409-8a648dbfa924';
@@ -27,7 +29,7 @@ function run(name, opts, assert) {
   writeFileSync(statePath, JSON.stringify({ pulls, comments, projects, calls: [], bcStatus, ghStatus }, null, 2));
   writeFileSync(outPath, '');
 
-  const res = spawnSync('node', ['--import', STUB, SCRIPT, cmd], {
+  const res = spawnSync(process.execPath, ['--import', STUB, SCRIPT, cmd], {
     encoding: 'utf8',
     env: {
       ...process.env,

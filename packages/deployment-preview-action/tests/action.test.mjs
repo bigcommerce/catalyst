@@ -47,6 +47,15 @@ check('every run block is valid bash', () => {
     if (!step.run) continue;
     writeFileSync(script, step.run);
     const result = spawnSync('bash', ['-n', script], { encoding: 'utf8' });
+
+    // Nothing to check against on a machine without bash. Say so rather than
+    // reading result.stderr, which is null when the spawn itself failed.
+    if (result.error) {
+      console.log(`  SKIP  every run block is valid bash (no bash: ${result.error.code})`);
+
+      return;
+    }
+
     if (result.status !== 0) broken.push(`${step.name}: ${result.stderr.trim()}`);
   }
 
