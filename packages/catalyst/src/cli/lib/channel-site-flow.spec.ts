@@ -317,4 +317,62 @@ describe('runChannelSiteUrlFlow', () => {
 
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('not found on this store'));
   });
+
+  // The site-URL write is the moment checkout is most likely left behind on the
+  // old domain, so the flow re-fetches the site and runs the diagnostic.
+  test('warns when the updated site URL leaves checkout on another domain', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://project-one.catalyst-sandbox.store',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://project-one.catalyst-sandbox.store', type: 'primary' },
+              { url: 'https://catalyst-demo-site.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await runChannelSiteUrlFlow({
+      storeHash,
+      accessToken,
+      apiHost,
+      projectUuid: linkedProjectUuid,
+      channelId: 2,
+      hostname: 'project-one.catalyst-sandbox.store',
+    });
+
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('site URL'));
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('catalyst-demo-site.mybigcommerce.com'),
+    );
+  });
+
+  // The write already succeeded by this point, so a failing diagnostic must not
+  // surface as a failed update.
+  test('still reports success when the follow-up diagnostic fetch fails', async () => {
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({}, { status: 500 }),
+      ),
+    );
+
+    await expect(
+      runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname: 'project-one.catalyst-sandbox.store',
+      }),
+    ).resolves.toBeUndefined();
+
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('site URL'));
+  });
 });

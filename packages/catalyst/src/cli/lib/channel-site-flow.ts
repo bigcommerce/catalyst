@@ -1,6 +1,12 @@
 import { select } from '@inquirer/prompts';
 
-import { type Channel, fetchAvailableChannels, updateChannelSiteUrl } from './channels';
+import {
+  type Channel,
+  fetchAvailableChannels,
+  getChannelSite,
+  updateChannelSiteUrl,
+} from './channels';
+import { warnOnCrossDomainCheckout } from './checkout-url';
 import { selectOrCreateInfrastructureProject } from './commerce-hosting';
 import { consola } from './logger';
 import { fetchProjects, type ProjectListItem } from './project';
@@ -141,4 +147,27 @@ export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Pr
   const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
   consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+
+  // Moving the site URL is exactly when checkout is most likely to be left
+  // behind on the previous domain, so check here rather than making the user
+  // think to run `catalyst channels checkout-url`. The narrow PUT response
+  // above carries no `urls`, hence the re-fetch. Soft-fail: the site URL is
+  // already updated, so a failed diagnostic must not look like a failed write.
+  try {
+    const site = await getChannelSite(
+      channel.id,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
+    );
+
+    await warnOnCrossDomainCheckout(site, {
+      storeHash: options.storeHash,
+      accessToken: options.accessToken,
+      apiHost: options.apiHost,
+      projectUuid: project.uuid,
+    });
+  } catch {
+    // Diagnostics are advisory; the write above succeeded.
+  }
 }

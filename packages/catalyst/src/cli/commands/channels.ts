@@ -16,6 +16,7 @@ import {
   sortChannelsByPlatform,
   updateChannelCheckoutUrl,
 } from '../lib/channels';
+import { warnOnCrossDomainCheckout } from '../lib/checkout-url';
 import { NoLinkedProjectError } from '../lib/commerce-hosting';
 import { runCreateChannelFlow } from '../lib/create-channel-flow';
 import { parseEnvAssignment } from '../lib/env-config';
@@ -451,6 +452,7 @@ Examples:
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
+  .addOption(projectUuidOption())
   .addOption(
     new Option(
       '--channel-id <id>',
@@ -517,6 +519,14 @@ Examples:
 
     consola.success(`Channel ${label}:`);
     reportChannelSite(site);
+
+    await warnOnCrossDomainCheckout(site, {
+      storeHash,
+      accessToken,
+      apiHost,
+      projectUuid: options.projectUuid ?? config.get('projectUuid'),
+    });
+
     process.exit(0);
   });
 
