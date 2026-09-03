@@ -45,9 +45,14 @@ async function resolveProject(options: ChannelSiteFlowOptions): Promise<ProjectL
   return selectOrCreateInfrastructureProject(api, options.projectUuid);
 }
 
-async function resolveChannel(
-  options: ChannelSiteFlowOptions,
-): Promise<{ id: number; name?: string }> {
+// Exported so `catalyst channels checkout-url` resolves channels the same way
+// rather than re-deriving the Catalyst-platform filter and its error copy.
+export async function resolveChannel(options: {
+  storeHash: string;
+  accessToken: string;
+  apiHost: string;
+  channelId?: number;
+}): Promise<{ id: number; name?: string }> {
   if (options.channelId !== undefined) {
     return { id: options.channelId };
   }
