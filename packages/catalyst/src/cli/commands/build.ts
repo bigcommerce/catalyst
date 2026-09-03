@@ -56,6 +56,15 @@ export async function buildCatalystProject(
   const openNextOutDir = join(coreDir, '.open-next');
   const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
 
+  consola.start('Generating GraphQL types...');
+
+  await execa('node', [join(coreDir, 'scripts', 'generate.cjs')], {
+    stdio: 'inherit',
+    cwd: coreDir,
+  });
+
+  consola.success('GraphQL types generated');
+
   const wranglerConfig = getWranglerConfig(projectUuid);
 
   // Wrangler's --outdir writes alongside existing files instead of replacing
