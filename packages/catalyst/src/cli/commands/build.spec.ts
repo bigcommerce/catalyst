@@ -178,7 +178,11 @@ test('runs GraphQL codegen before the OpenNext build so it is not a silent prere
   );
 
   const steps = vi.mocked(execa).mock.calls.map(([file, args]) => {
-    if (file === 'node' && Array.isArray(args) && args.some((a) => String(a).includes('generate.cjs'))) {
+    if (
+      file === 'node' &&
+      Array.isArray(args) &&
+      args.some((a) => String(a).includes('generate.cjs'))
+    ) {
       return 'generate';
     }
 
