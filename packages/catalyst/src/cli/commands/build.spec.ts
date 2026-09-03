@@ -166,6 +166,36 @@ test('writes _headers into the assets directory so static assets get immutable C
   );
 });
 
+test('runs GraphQL codegen before the OpenNext build so it is not a silent prerequisite', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'node',
+    expect.arrayContaining([expect.stringContaining(join('scripts', 'generate.cjs'))]),
+    expect.objectContaining({ cwd: process.cwd() }),
+  );
+
+  const steps = vi.mocked(execa).mock.calls.map(([file, args]) => {
+    if (
+      file === 'node' &&
+      Array.isArray(args) &&
+      args.some((a) => String(a).includes('generate.cjs'))
+    ) {
+      return 'generate';
+    }
+
+    if (Array.isArray(args) && args.includes('opennextjs-cloudflare')) {
+      return 'build';
+    }
+
+    return 'other';
+  });
+
+  expect(steps.indexOf('generate')).toBeLessThan(steps.indexOf('build'));
+});
+
 test('rejects an invalid --wrangler-version value', async () => {
   vi.mocked(getProjectState).mockReturnValue(transformedState);
 
