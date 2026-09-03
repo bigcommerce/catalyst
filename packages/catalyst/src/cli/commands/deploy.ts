@@ -9,6 +9,7 @@ import { z } from 'zod';
 
 import { assertAuthorized } from '../lib/auth-errors';
 import { loadBuildEnv } from '../lib/build-env';
+import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   cleanupCloudflareIncompatibilities,
@@ -391,6 +392,10 @@ Example:
     '--update-site-url',
     "After a successful deploy, prompt to update a channel's site URL to the new hostname.",
   )
+  .option(
+    '--update-checkout-url',
+    "After a successful deploy, prompt to update a channel's checkout URL.",
+  )
   .addOption(
     new Option(
       '--secret <value>',
@@ -586,26 +591,44 @@ Example:
       apiHost,
     );
 
-    if (!options.updateSiteUrl) {
-      return;
-    }
-
-    try {
-      await runChannelSiteUrlFlow({
-        storeHash,
-        accessToken,
-        apiHost,
-        projectUuid,
-        preferHostname: deploymentHostname,
-      });
-    } catch (error) {
-      // Soft-fail: the deploy already succeeded and the bundle is live. A
-      // non-zero exit here would be misleading.
+    // Soft-failed: the bundle is already live, so a non-zero exit here would
+    // misrepresent what happened.
+    const warnChannelFlowFailed = (what: string, error: unknown) => {
       consola.warn(
-        `Failed to update channel site URL: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to update channel ${what}: ${error instanceof Error ? error.message : String(error)}`,
       );
       consola.info(
         'Update it manually in the control panel, or re-run `catalyst auth login` if the token is missing the store_channel_settings scope.',
       );
+    };
+
+    // Carried over so both flags don't ask which channel twice.
+    let resolvedChannelId: number | undefined;
+
+    if (options.updateSiteUrl) {
+      try {
+        ({ channelId: resolvedChannelId } = await runChannelSiteUrlFlow({
+          storeHash,
+          accessToken,
+          apiHost,
+          projectUuid,
+          preferHostname: deploymentHostname,
+        }));
+      } catch (error) {
+        warnChannelFlowFailed('site URL', error);
+      }
+    }
+
+    if (options.updateCheckoutUrl) {
+      try {
+        await runChannelCheckoutUrlFlow({
+          storeHash,
+          accessToken,
+          apiHost,
+          channelId: resolvedChannelId,
+        });
+      } catch (error) {
+        warnChannelFlowFailed('checkout URL', error);
+      }
     }
   });

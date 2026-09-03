@@ -16,7 +16,7 @@ import {
   sortChannelsByPlatform,
   updateChannelCheckoutUrl,
 } from '../lib/channels';
-import { warnOnCrossDomainCheckout } from '../lib/checkout-url';
+import { normalizeCheckoutUrl, warnOnCrossDomainCheckout } from '../lib/checkout-url';
 import { NoLinkedProjectError } from '../lib/commerce-hosting';
 import { runCreateChannelFlow } from '../lib/create-channel-flow';
 import { parseEnvAssignment } from '../lib/env-config';
@@ -45,30 +45,14 @@ const parseChannelId = (value: string): number => {
   return parsed;
 };
 
-// Validates only the unambiguous parts: parses as a URL, uses https. The
-// same-main-domain rule is BigCommerce's to enforce (see
-// `updateChannelCheckoutUrl`). A bare hostname gets `https://` prefixed, as
-// `runChannelSiteUrlFlow` does for site URLs.
+// Adapts the shared normalizer to commander, which formats InvalidArgumentError
+// as an option-level usage error.
 const parseCheckoutUrl = (value: string): string => {
-  const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(value) ? value : `https://${value}`;
-  let parsed: URL;
-
   try {
-    parsed = new URL(withScheme);
-  } catch {
-    throw new InvalidArgumentError(
-      `"${value}" is not a valid URL. Pass a hostname or an https URL, e.g. https://checkout.example.com.`,
-    );
+    return normalizeCheckoutUrl(value);
+  } catch (error) {
+    throw new InvalidArgumentError(error instanceof Error ? error.message : String(error));
   }
-
-  if (parsed.protocol !== 'https:') {
-    throw new InvalidArgumentError(
-      `The checkout URL must use https, but "${value}" uses ${parsed.protocol.replace(':', '')}.`,
-    );
-  }
-
-  // BigCommerce wants the origin; a pasted URL often carries more.
-  return parsed.origin;
 };
 
 const CHECKOUT_URL_NOTES = `
