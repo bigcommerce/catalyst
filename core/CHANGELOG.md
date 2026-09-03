@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.11.1
+
+### Patch Changes
+
+- [#3170](https://github.com/bigcommerce/catalyst/pull/3170) [`ccad51f`](https://github.com/bigcommerce/catalyst/commit/ccad51fcdd5f907d5db2b87c3bbb082565a0f7c0) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Use Cloudflare Workers KV for the routing cache on BigCommerce Native Hosting. `proxies/with-routes` caches redirects and storefront status through the KV abstraction in `lib/kv`, which previously had no Cloudflare option and silently degraded to an in-process memory cache that isn't shared across edge invocations. When the per-project `CATALYST_ROUTES_KV` namespace is bound to the Worker, `createKVAdapter` now selects a `CloudflareKvAdapter`. Vercel Runtime Cache still takes priority, and Upstash/memory remain the fallbacks; the binding is duck-typed so an unrelated env var of the same name falls through cleanly instead of throwing.
+
+- [#3202](https://github.com/bigcommerce/catalyst/pull/3202) [`715f481`](https://github.com/bigcommerce/catalyst/commit/715f4813ae758be091ff23487ee69159d8044ee0) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade Next.js from 16.2.11 to 16.3.4.
+
+  16.3.3 patches two critical advisories: unauthenticated remote code execution on Windows-hosted servers ([GHSA-p293-qw3h-jr36](https://github.com/vercel/next.js/security/advisories/GHSA-p293-qw3h-jr36)) and unauthenticated remote code execution in the Image Optimization API when AVIF files are used ([GHSA-2xp9-vwfh-vxw4](https://github.com/vercel/next.js/security/advisories/GHSA-2xp9-vwfh-vxw4)). 16.3.4 re-enables AVIF image optimization after that fix.
+
+  Also picked up are backported fixes for optimistic-routing bugs that caused repeated prefetch loops, a Nav Inspector request loop on repeat captures, and cache-entry reuse that discards only entries predating a tag revalidation rather than all of them.
+
 ## 1.11.0
 
 ### Minor Changes
