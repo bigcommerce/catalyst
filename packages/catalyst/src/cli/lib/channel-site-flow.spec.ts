@@ -371,7 +371,7 @@ describe('runChannelSiteUrlFlow', () => {
         channelId: 2,
         hostname: 'project-one.catalyst-sandbox.store',
       }),
-    ).resolves.toBeUndefined();
+    ).resolves.toEqual({ channelId: 2 });
 
     expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('site URL'));
   });

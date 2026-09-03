@@ -1,5 +1,6 @@
 import { type ChannelSiteDetails, findChannelSiteUrl } from './channels';
 import { listDomains } from './domains';
+import { UserActionableError } from './errors';
 import { consola } from './logger';
 
 export interface CheckoutDomainContext {
@@ -34,6 +35,42 @@ function hostnameOf(url: string): string | undefined {
 
 export function sharesMainDomain(a: string, b: string): boolean {
   return mainDomain(a) === mainDomain(b);
+}
+
+// Validates only what is unambiguous: that the value is a URL and uses https.
+// The domain *relationship* rule is left to BigCommerce for the reason given on
+// `mainDomain` above — a local guess would reject valid setups. A bare hostname
+// gets `https://` prefixed, matching how `runChannelSiteUrlFlow` treats site
+// URLs, and any path or query is dropped since the API wants an origin.
+export function normalizeCheckoutUrl(value: string): string {
+  const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(value) ? value : `https://${value}`;
+  let parsed: URL;
+
+  try {
+    parsed = new URL(withScheme);
+  } catch {
+    throw new UserActionableError(
+      `"${value}" is not a valid URL. Pass a hostname or an https URL, e.g. https://checkout.example.com.`,
+    );
+  }
+
+  if (parsed.protocol !== 'https:') {
+    throw new UserActionableError(
+      `The checkout URL must use https, but "${value}" uses ${parsed.protocol.replace(':', '')}.`,
+    );
+  }
+
+  return parsed.origin;
+}
+
+// The checkout subdomain a merchant almost always wants for a given storefront
+// URL: `https://www.example.com` suggests `https://checkout.example.com`. Used
+// only to pre-fill a prompt, so an unparseable storefront URL just means no
+// suggestion.
+export function suggestCheckoutUrl(storefrontUrl: string): string | undefined {
+  const host = hostnameOf(storefrontUrl);
+
+  return host ? `https://checkout.${mainDomain(host)}` : undefined;
 }
 
 // Whether the storefront hostname is a custom domain the merchant added to this

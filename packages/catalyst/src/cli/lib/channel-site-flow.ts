@@ -130,7 +130,13 @@ async function resolveHostname(
   return selected;
 }
 
-export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Promise<void> {
+export interface ChannelSiteFlowResult {
+  channelId: number;
+}
+
+export async function runChannelSiteUrlFlow(
+  options: ChannelSiteFlowOptions,
+): Promise<ChannelSiteFlowResult> {
   const project = await resolveProject(options);
   const channel = await resolveChannel(options);
   const hostname = await resolveHostname(project, options);
@@ -170,4 +176,9 @@ export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Pr
   } catch {
     // Diagnostics are advisory; the write above succeeded.
   }
+
+  // Returned so a caller running several channel flows back to back (e.g.
+  // `catalyst deploy --update-site-url --update-checkout-url`) reuses the
+  // channel this one resolved instead of prompting for it again.
+  return { channelId: channel.id };
 }
