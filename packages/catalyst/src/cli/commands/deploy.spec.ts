@@ -2,7 +2,7 @@ import { confirm, input, select } from '@inquirer/prompts';
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
-import { mkdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
   afterAll,
@@ -18,7 +18,7 @@ import {
 
 import { server } from '../../../tests/mocks/node';
 import { textHistory } from '../../../tests/mocks/spinner';
-import { setupCommerceHosting } from '../lib/commerce-hosting';
+import { OPENNEXT_CLOUDFLARE_VERSION, setupCommerceHosting } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
@@ -878,6 +878,41 @@ describe('transformation guard', () => {
 
     expect(setupCommerceHosting).not.toHaveBeenCalled();
     expect(installDependencies).not.toHaveBeenCalled();
+  });
+
+  test('warns about a drifted OpenNext pin under --prebuilt without touching it', async () => {
+    // --prebuilt uploads an existing bundle, so moving the adapter here would
+    // ship dependencies the built worker was never compiled against.
+    const pkgPath = join(tmpDir, 'package.json');
+
+    await writeFile(
+      pkgPath,
+      JSON.stringify({ dependencies: { '@opennextjs/cloudflare': '1.17.3' } }, null, 2),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(setupCommerceHosting).not.toHaveBeenCalled();
+    expect(installDependencies).not.toHaveBeenCalled();
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining(OPENNEXT_CLOUDFLARE_VERSION));
+
+    const parsed: unknown = JSON.parse(await readFile(pkgPath, 'utf-8'));
+
+    expect(parsed).toMatchObject({ dependencies: { '@opennextjs/cloudflare': '1.17.3' } });
   });
 });
 

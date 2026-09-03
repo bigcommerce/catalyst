@@ -13,6 +13,7 @@ import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   cleanupCloudflareIncompatibilities,
   NoLinkedProjectError,
+  reconcileOpenNextVersion,
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
@@ -502,6 +503,17 @@ Example:
       // (`core/instrumentation.ts`, `@vercel/otel`). Sweep them on every deploy
       // so the fix lands without forcing a re-link.
       await cleanupCloudflareIncompatibilities(process.cwd());
+
+      // The build path offers to move a stale adapter pin. `--prebuilt` skips
+      // the build, so surface it here instead -- without changing dependencies
+      // the existing bundle was never compiled against.
+      if (options.prebuilt) {
+        const projectDir = process.cwd();
+
+        await reconcileOpenNextVersion(projectDir, await detectProjectPackageManager(projectDir), {
+          canUpgrade: false,
+        });
+      }
     }
 
     if (options.prebuilt) {

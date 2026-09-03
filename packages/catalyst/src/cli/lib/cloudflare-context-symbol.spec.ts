@@ -59,5 +59,5 @@ test('getCloudflareContext resolves the value synchronously, with no await', () 
 test('the pinned OpenNext version this contract was verified against is unchanged', () => {
   // A bump here is the trigger to re-verify the symbol key above against the
   // new version's `dist/api/cloudflare-context.js`.
-  expect(OPENNEXT_CLOUDFLARE_VERSION).toBe('1.17.3');
+  expect(OPENNEXT_CLOUDFLARE_VERSION).toBe('1.20.6');
 });
