@@ -53,11 +53,11 @@ on:
         default: api.bigcommerce.com
       check-name:
         description: >-
-          Check name a redeploy reports against. Defaults to this workflow's job
-          name so the redeploy reuses that job's own check row. If your calling
-          job renames it, set this to match.
+          Name of the check row a redeploy reports against. Keep it distinct
+          from the job name: GitHub refuses API changes to the check runs it
+          manages for a job, so the action can only update rows it created.
         type: string
-        default: Preview Deployment
+        default: Preview Deployment (redeploy)
     secrets:
       access-token:
         required: true

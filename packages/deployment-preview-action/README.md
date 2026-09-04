@@ -99,11 +99,16 @@ To drive the action directly instead, see
 [`examples/with-action.yml`](examples/with-action.yml), and set the concurrency
 group yourself.
 
-Name your job to match the `check-name` input (`Preview Deployment` by
-default). A `redeploy preview` comment then reuses that job's own check row and
-turns it yellow, instead of adding a second row beside it. This matters because
-an `issue_comment` run is not attached to a commit, so GitHub will not show it
-in the pull request's checks on its own.
+A `redeploy preview` comment adds its own check row, named by the
+`check-name` input (`Preview Deployment (redeploy)` by default). An
+`issue_comment` run is not attached to a commit, so GitHub shows nothing in the
+pull request's checks on its own.
+
+Keep that name distinct from your job's. GitHub refuses API changes to the check
+runs it manages for a job, so a row named after the job would be found by the
+reuse lookup and then rejected with a 403. The action tags its own rows with an
+`external_id` and only ever touches those; on a commit that already ran a push
+deploy you will see two rows, reporting two different events.
 
 Grant `checks: write` if you call the action directly, so a `redeploy preview`
 comment appears in the pull request checks rather than only as a reaction on the
@@ -137,7 +142,7 @@ The remaining inputs are optional:
 | `working-directory` | `.` | For monorepos |
 | `api-host` | `api.bigcommerce.com` | |
 | `min-cli-version` | `1.2.0` | Oldest `@bigcommerce/catalyst` this action supports |
-| `check-name` | `Preview Deployment` | Check a redeploy reports against. Match your job's `name:` |
+| `check-name` | `Preview Deployment (redeploy)` | Check row a redeploy reports against. Keep it distinct from your job's `name:` |
 
 ## Outputs
 

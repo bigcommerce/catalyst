@@ -223,19 +223,53 @@ check('workflows that call the action directly request checks:write', () => {
   if (missing.length) throw new Error(`missing checks: write in ${missing.join(', ')}`);
 });
 
-check('the job name matches the check name, so a redeploy reuses one row', () => {
-  // If these drift, a redeploy adds a second check row next to the job's own
-  // instead of turning that one yellow.
+check('the redeploy check row is never named after a job', () => {
+  // GitHub rejects API changes to the check runs it manages for a job. A shared
+  // name means the reuse lookup finds one of those and the PATCH 403s, which is
+  // what used to fail a redeploy after it had already deployed.
   const expected = action.inputs['check-name'].default;
-  const files = [reusable, join(ROOT, 'examples', 'with-action.yml')];
-  const wrong = [];
+  const clashing = [reusable, join(ROOT, 'examples', 'with-action.yml')]
+    .flatMap((f) => Object.values(load(f).jobs).map((job) => [f, job.name]))
+    .filter(([, name]) => name === expected)
+    .map(([f]) => f.replace(REPO_ROOT + '/', ''));
 
-  for (const f of files) {
-    const job = Object.values(load(f).jobs)[0];
-    if (job.name !== expected) wrong.push(`${f.replace(REPO_ROOT + '/', '')}: ${job.name}`);
+  if (clashing.length) throw new Error(`job named "${expected}" in ${clashing.join(', ')}`);
+});
+
+check('the check run is claimed by external_id, not by name alone', () => {
+  const step = action.runs.steps.find((s) => s.name === 'Open a check run');
+  if (!step) throw new Error('no "Open a check run" step');
+
+  if (!/select\(\.external_id ==/.test(step.run)) {
+    throw new Error('the lookup does not filter on external_id, so it can find a job row');
   }
 
-  if (wrong.length) throw new Error(`job name should be "${expected}" -- ${wrong.join(', ')}`);
+  if (!/-f external_id=/.test(step.run)) {
+    throw new Error('the check run is created without an external_id, so it cannot be found again');
+  }
+});
+
+check('a refused check-run request cannot be mistaken for an id', () => {
+  // gh writes error bodies to stdout, so `id=$(gh api ... || true)` captures
+  // JSON on failure. Every captured value has to be filtered to digits.
+  const step = action.runs.steps.find((s) => s.name === 'Open a check run');
+  const assignments = step.run.match(/^\s*(?:id|existing)=.*$/gm) ?? [];
+
+  if (assignments.length < 3) throw new Error(`expected 3 captures, found ${assignments.length}`);
+
+  const unguarded = assignments.filter((line) => !line.includes('numeric') && !/=''$/.test(line.trim()));
+  if (unguarded.length) throw new Error(`unfiltered: ${unguarded.map((l) => l.trim()).join(' | ')}`);
+});
+
+check('a check-run failure cannot fail a deploy that already succeeded', () => {
+  const closing = action.runs.steps.filter((s) => /^(Mark the command as done|Report command failure)$/.test(s.name));
+  if (closing.length !== 2) throw new Error(`expected 2 closing steps, found ${closing.length}`);
+
+  const strict = closing
+    .filter((s) => /check-runs\/\$CHECK_ID/.test(s.run) && !/\|\| echo '::warning::/.test(s.run))
+    .map((s) => s.name);
+
+  if (strict.length) throw new Error(`patch is fatal in: ${strict.join(', ')}`);
 });
 
 check('every env fallback is documented in the README', () => {

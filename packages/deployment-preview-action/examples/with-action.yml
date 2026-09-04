@@ -25,8 +25,6 @@ permissions:
 
 jobs:
   preview:
-    # Must match the action's `check-name`, so a redeploy reuses this job's
-    # check row instead of adding a second one.
     name: Preview Deployment
     if: >-
       github.event_name == 'pull_request' ||

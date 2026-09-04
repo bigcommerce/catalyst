@@ -68,12 +68,12 @@ inputs:
     default: api.bigcommerce.com
   check-name:
     description: >-
-      Name of the check this action reports a redeploy against. Set it to the
-      display name of the job that runs this action, and a redeploy reuses that
-      job's own check row instead of adding a second one. An issue_comment run
-      is not attached to a commit, so without this there is nothing in the pull
-      request's checks at all.
-    default: Preview Deployment
+      Name of the check run a redeploy reports against. An issue_comment run is
+      not attached to a commit, so without a row of its own there is nothing in
+      the pull request's checks at all. Keep this distinct from the job's name:
+      GitHub refuses API changes to the check runs it manages for a job, so the
+      action can only update rows it created itself.
+    default: Preview Deployment (redeploy)
   min-cli-version:
     description: >-
       Oldest @bigcommerce/catalyst the action supports. It shells out to
@@ -256,42 +256,53 @@ runs:
         GH_TOKEN: ${{ inputs.github-token }}
         HEAD_SHA: ${{ steps.ctx.outputs.head_sha }}
         CHECK_NAME: ${{ inputs.check-name }}
+        EXTERNAL_ID: catalyst-preview-redeploy
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: |
         set -euo pipefail
 
         name="$CHECK_NAME"
 
-        # Reuse the check run from a previous redeploy of this same commit, so
-        # repeated commands update one entry instead of stacking up.
-        existing=$(gh api \
+        # gh prints an error body to stdout, so a refused request leaves JSON
+        # where an id should be. Passing that on builds a nonsense URL and
+        # fails a deploy that already succeeded, so filter every value.
+        numeric() { case "${1:-}" in '' | *[!0-9]*) printf '' ;; *) printf '%s' "$1" ;; esac; }
+
+        # Reuse the row from a previous redeploy of this same commit, so
+        # repeated commands update one entry instead of stacking up. Match on
+        # external_id, not just the name: GitHub rejects any API change to the
+        # check runs it manages for a job, so picking one of those up here
+        # would guarantee a 403.
+        existing=$(numeric "$(gh api \
           -X GET "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
           -f check_name="$name" \
-          --jq '.check_runs[0].id // empty' 2>/dev/null || true)
+          --jq "[.check_runs[] | select(.external_id == \"$EXTERNAL_ID\") | .id] | first // empty" \
+          2>/dev/null || true)")
 
         id=''
 
         if [ -n "$existing" ]; then
-          id=$(gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$existing" \
+          id=$(numeric "$(gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$existing" \
             -f status='in_progress' \
             -f details_url="$RUN_URL" \
-            --jq '.id' 2>/dev/null || true)
+            --jq '.id' 2>/dev/null || true)")
         fi
 
         # Either there was none, or the API refused to reopen a completed one.
         if [ -z "$id" ]; then
-          id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+          id=$(numeric "$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
             -f name="$name" \
             -f head_sha="$HEAD_SHA" \
             -f status='in_progress' \
+            -f external_id="$EXTERNAL_ID" \
             -f details_url="$RUN_URL" \
-            --jq '.id' 2>/dev/null || true)
+            --jq '.id' 2>/dev/null || true)")
         fi
 
         if [ -z "$id" ]; then
-          # Almost always a missing checks:write permission. Not worth failing a
+          # Usually a missing checks:write permission. Not worth failing a
           # deploy over -- the comment reactions still report the outcome.
-          echo '::warning::Could not create a check run. Grant checks:write to show redeploys in the pull request checks.'
+          echo '::warning::Could not open a check run. Grant checks:write to show redeploys in the pull request checks.'
         fi
 
         echo "id=$id" >> "$GITHUB_OUTPUT"
@@ -479,11 +490,14 @@ runs:
           -f content='rocket' --silent
 
         if [ -n "${CHECK_ID:-}" ]; then
+          # A failure here is bookkeeping, not the deploy, which has already
+          # succeeded and been announced. Warn rather than turn the run red.
           gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
             -f status='completed' \
             -f conclusion='success' \
             -f 'output[title]=Preview deployed' \
-            -f "output[summary]=${PREVIEW_URL:-Deployed.}" --silent
+            -f "output[summary]=${PREVIEW_URL:-Deployed.}" --silent \
+            || echo '::warning::Deployed, but could not update the check run.'
         fi
 
     # A command that dies in validation leaves no comment at all, which is
@@ -505,11 +519,14 @@ runs:
           -f content='confused' --silent
 
         if [ -n "${CHECK_ID:-}" ]; then
+          # Keep going regardless: the comment below is the part that tells
+          # the author what happened.
           gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$CHECK_ID" \
             -f status='completed' \
             -f conclusion='failure' \
             -f 'output[title]=Redeploy failed' \
-            -f "output[summary]=See $RUN_URL" --silent
+            -f "output[summary]=See $RUN_URL" --silent \
+            || echo '::warning::Could not update the check run.'
         fi
 
         gh api --method POST "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
