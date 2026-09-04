@@ -310,6 +310,55 @@ export const handlers = [
     }),
   ),
 
+  // Default handler for getChannelSite. Mirrors a real response: `ssl_status`
+  // is null on shared SSL, and the checkout URL is a subdomain of the
+  // storefront, which is the only shape BigCommerce accepts.
+  http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+    HttpResponse.json({
+      data: {
+        id: 1,
+        url: 'https://example.com',
+        channel_id: 1,
+        ssl_status: null,
+        is_checkout_url_customized: true,
+        urls: [
+          { url: 'https://example.com', type: 'primary' },
+          { url: 'https://store-abc-1.mybigcommerce.com', type: 'canonical' },
+          { url: 'https://checkout.example.com', type: 'checkout' },
+        ],
+      },
+    }),
+  ),
+
+  // Default handlers for updateChannelCheckoutUrl / deleteChannelCheckoutUrl.
+  // The PUT echoes back the full site, as the real API does.
+  http.put(
+    'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+    async ({ request }) => {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const body = (await request.json()) as { url: string };
+
+      return HttpResponse.json({
+        data: {
+          id: 1,
+          url: 'https://example.com',
+          channel_id: 1,
+          ssl_status: null,
+          is_checkout_url_customized: true,
+          urls: [
+            { url: 'https://example.com', type: 'primary' },
+            { url: body.url, type: 'checkout' },
+          ],
+        },
+      });
+    },
+  ),
+
+  http.delete(
+    'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+
   // Default handler for the npm registry — 404 so the stale-CLI check stays
   // silent by default. Tests that assert on it override with a version payload.
   http.get('https://registry.npmjs.org/:scope/:name/latest', () =>

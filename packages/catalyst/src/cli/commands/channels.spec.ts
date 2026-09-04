@@ -117,6 +117,13 @@ describe('channels', () => {
     expect(create).toBeDefined();
     expect(create?.description()).toContain('Create a new Catalyst storefront channel');
   });
+
+  test('has the checkout-url subcommand', () => {
+    const checkoutUrl = channels.commands.find((cmd) => cmd.name() === 'checkout-url');
+
+    expect(checkoutUrl).toBeDefined();
+    expect(checkoutUrl?.description()).toContain("channel's checkout URL");
+  });
 });
 
 describe('channels update', () => {
@@ -628,5 +635,236 @@ describe('channels create', () => {
       additionalLocales: ['es'],
     });
     expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Created channel 42'));
+  });
+});
+
+describe('channels checkout-url', () => {
+  const sitePath = 'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site';
+  const checkoutPath = `${sitePath}/checkout-url`;
+
+  const credentials = ['--store-hash', storeHash, '--access-token', accessToken];
+
+  const run = (...args: string[]) =>
+    program.parseAsync(['node', 'catalyst', 'channels', 'checkout-url', ...credentials, ...args]);
+
+  test('shows the storefront, canonical and checkout URLs for a channel', async () => {
+    await run('--channel-id', '2');
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('https://example.com'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://checkout.example.com'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  // An inherited checkout URL is the failure mode this command exists to make
+  // visible, so the explanation must appear rather than a bare URL list.
+  test('explains the fallback when the channel has no checkout URL of its own', async () => {
+    server.use(
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://storefront.example.com',
+            channel_id: 2,
+            ssl_status: null,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://storefront.example.com', type: 'primary' },
+              { url: 'https://unrelated.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2');
+
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining("falls back to the default channel's primary URL"),
+    );
+  });
+
+  test('prints (none) when the site has no checkout URL at all', async () => {
+    server.use(
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: { id: 1, url: 'https://storefront.example.com', channel_id: 2, urls: [] },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2');
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('(none)'));
+  });
+
+  test('prompts for the channel when --channel-id is omitted', async () => {
+    mockSelect.mockResolvedValueOnce(2);
+
+    await run();
+
+    expect(mockSelect).toHaveBeenCalledTimes(1);
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('Channel "Catalyst Storefront" (2)'),
+    );
+  });
+
+  test('sets the checkout URL', async () => {
+    let putBody: unknown;
+    let putChannelId: string | undefined;
+
+    server.use(
+      http.put(checkoutPath, async ({ request, params }) => {
+        putBody = await request.json();
+        putChannelId = String(params.channelId);
+
+        return HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://example.com',
+            channel_id: 2,
+            is_checkout_url_customized: true,
+            urls: [
+              { url: 'https://example.com', type: 'primary' },
+              { url: 'https://checkout.example.com', type: 'checkout' },
+            ],
+          },
+        });
+      }),
+    );
+
+    await run('--channel-id', '2', '--url', 'https://checkout.example.com');
+
+    expect(putChannelId).toBe('2');
+    expect(putBody).toEqual({ url: 'https://checkout.example.com' });
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('checkout URL to https://checkout.example.com'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('accepts a bare hostname and normalises away a path', async () => {
+    let putBody: unknown;
+
+    server.use(
+      http.put(checkoutPath, async ({ request }) => {
+        putBody = await request.json();
+
+        return HttpResponse.json({ data: { id: 1, url: 'https://example.com', channel_id: 2 } });
+      }),
+    );
+
+    await run('--channel-id', '2', '--url', 'checkout.example.com/some/path');
+
+    expect(putBody).toEqual({ url: 'https://checkout.example.com' });
+  });
+
+  test('rejects a non-https checkout URL before calling the API', async () => {
+    let called = false;
+
+    server.use(
+      http.put(checkoutPath, () => {
+        called = true;
+
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    await expect(run('--channel-id', '2', '--url', 'http://checkout.example.com')).rejects.toThrow(
+      'must use https',
+    );
+    expect(called).toBe(false);
+  });
+
+  test('rejects an unparseable checkout URL', async () => {
+    await expect(run('--channel-id', '2', '--url', 'https://')).rejects.toThrow(
+      'is not a valid URL',
+    );
+  });
+
+  test('unsets the checkout URL', async () => {
+    let deleted = false;
+
+    server.use(
+      http.delete(checkoutPath, () => {
+        deleted = true;
+
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(deleted).toBe(true);
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('shared checkout domain'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  // Unsetting is the one path that creates the inherited-checkout state, and
+  // the domain it falls back to belongs to the default channel, so it can't be
+  // predicted before the delete. It has to be reported afterwards.
+  test('reports where checkout landed after --unset and warns when cross-domain', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('shared checkout domain'));
+    // The inherited target is surfaced, not just "done".
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
+    );
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('a different domain than the storefront'),
+    );
+  });
+
+  test('stays quiet after --unset when the shared checkout domain still matches', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://checkout.example.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
+  test('refuses --url together with --unset', async () => {
+    await expect(
+      run('--channel-id', '2', '--url', 'https://checkout.example.com', '--unset'),
+    ).rejects.toThrow('Pass either --url or --unset, not both.');
   });
 });

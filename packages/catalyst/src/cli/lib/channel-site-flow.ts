@@ -1,6 +1,12 @@
 import { select } from '@inquirer/prompts';
 
-import { type Channel, fetchAvailableChannels, updateChannelSiteUrl } from './channels';
+import {
+  type Channel,
+  fetchAvailableChannels,
+  getChannelSite,
+  updateChannelSiteUrl,
+} from './channels';
+import { warnOnCrossDomainCheckout } from './checkout-url';
 import { selectOrCreateInfrastructureProject } from './commerce-hosting';
 import { consola } from './logger';
 import { fetchProjects, type ProjectListItem } from './project';
@@ -45,9 +51,14 @@ async function resolveProject(options: ChannelSiteFlowOptions): Promise<ProjectL
   return selectOrCreateInfrastructureProject(api, options.projectUuid);
 }
 
-async function resolveChannel(
-  options: ChannelSiteFlowOptions,
-): Promise<{ id: number; name?: string }> {
+// Exported so `catalyst channels checkout-url` resolves channels the same way
+// rather than re-deriving the Catalyst-platform filter and its error copy.
+export async function resolveChannel(options: {
+  storeHash: string;
+  accessToken: string;
+  apiHost: string;
+  channelId?: number;
+}): Promise<{ id: number; name?: string }> {
   if (options.channelId !== undefined) {
     return { id: options.channelId };
   }
@@ -119,7 +130,13 @@ async function resolveHostname(
   return selected;
 }
 
-export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Promise<void> {
+export interface ChannelSiteFlowResult {
+  channelId: number;
+}
+
+export async function runChannelSiteUrlFlow(
+  options: ChannelSiteFlowOptions,
+): Promise<ChannelSiteFlowResult> {
   const project = await resolveProject(options);
   const channel = await resolveChannel(options);
   const hostname = await resolveHostname(project, options);
@@ -136,4 +153,32 @@ export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Pr
   const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
   consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+
+  // Moving the site URL is exactly when checkout is most likely to be left
+  // behind on the previous domain, so check here rather than making the user
+  // think to run `catalyst channels checkout-url`. The narrow PUT response
+  // above carries no `urls`, hence the re-fetch. Soft-fail: the site URL is
+  // already updated, so a failed diagnostic must not look like a failed write.
+  try {
+    const site = await getChannelSite(
+      channel.id,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
+    );
+
+    await warnOnCrossDomainCheckout(site, {
+      storeHash: options.storeHash,
+      accessToken: options.accessToken,
+      apiHost: options.apiHost,
+      projectUuid: project.uuid,
+    });
+  } catch {
+    // Diagnostics are advisory; the write above succeeded.
+  }
+
+  // Returned so a caller running several channel flows back to back (e.g.
+  // `catalyst deploy --update-site-url --update-checkout-url`) reuses the
+  // channel this one resolved instead of prompting for it again.
+  return { channelId: channel.id };
 }
