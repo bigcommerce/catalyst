@@ -4,7 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vit
 import { server } from '../../../tests/mocks/node';
 
 import { type ChannelSiteDetails } from './channels';
-import { sharesMainDomain, warnOnCrossDomainCheckout } from './checkout-url';
+import { sharesMainDomain, suggestCheckoutUrl, warnOnCrossDomainCheckout } from './checkout-url';
 import { consola } from './logger';
 
 const storeHash = 'test-store';
@@ -77,15 +77,60 @@ describe('sharesMainDomain', () => {
     ).toBe(false);
   });
 
-  test('is case-insensitive', () => {
+  test('is case-insensitive and tolerates a trailing dot', () => {
     expect(sharesMainDomain('Example.COM', 'checkout.example.com')).toBe(true);
+    expect(sharesMainDomain('example.com.', 'checkout.example.com')).toBe(true);
   });
 
-  // Documents the known heuristic limitation: without the public suffix list
-  // these two reduce to `co.uk` and compare equal. The consequence is a missed
-  // warning, never a blocked write, which is why the write path doesn't use this.
-  test('known limitation: multi-part public suffixes compare equal', () => {
-    expect(sharesMainDomain('www.example.co.uk', 'checkout.other.co.uk')).toBe(true);
+  test('treats siblings under a shared parent as sharing', () => {
+    expect(sharesMainDomain('www.example.com', 'checkout.example.com')).toBe(true);
+    expect(sharesMainDomain('shop.example.co.uk', 'checkout.example.co.uk')).toBe(true);
+  });
+
+  // A bare public suffix must never be the thing that makes two hostnames
+  // match. Comparing last-two-labels collapsed both of these to `co.uk` and
+  // stayed silent on a genuinely cross-domain checkout.
+  test('does not let a multi-part public suffix mask a cross-domain pair', () => {
+    expect(sharesMainDomain('www.example.co.uk', 'checkout.other.co.uk')).toBe(false);
+    expect(sharesMainDomain('www.example.com.au', 'checkout.other.com.au')).toBe(false);
+  });
+
+  // Documents the remaining imprecision and its direction: deeply nested pairs
+  // read as not sharing, which costs a redundant warning rather than a missed
+  // one. The write path never consults this.
+  test('known limitation: deeply nested siblings read as not sharing', () => {
+    expect(sharesMainDomain('a.b.example.com', 'c.d.example.com')).toBe(false);
+  });
+});
+
+describe('suggestCheckoutUrl', () => {
+  test('suggests the checkout sibling of the storefront domain', () => {
+    expect(suggestCheckoutUrl('https://www.example.com')).toBe('https://checkout.example.com');
+    expect(suggestCheckoutUrl('https://catalyst-demo.site')).toBe(
+      'https://checkout.catalyst-demo.site',
+    );
+  });
+
+  // Reducing to the last two labels suggested `https://checkout.co.uk` here,
+  // which pre-filled the deploy prompt with a domain the merchant doesn't own.
+  test('never suggests a bare public suffix', () => {
+    expect(suggestCheckoutUrl('https://www.example.co.uk')).toBe('https://checkout.example.co.uk');
+    expect(suggestCheckoutUrl('https://www.example.com.au')).toBe(
+      'https://checkout.example.com.au',
+    );
+  });
+
+  test('always suggests a hostname that satisfies the same-main-domain rule', () => {
+    const storefront = 'https://shop.example.co.uk';
+    const suggestion = suggestCheckoutUrl(storefront);
+
+    if (!suggestion) throw new Error('expected a suggestion');
+
+    expect(sharesMainDomain(new URL(storefront).hostname, new URL(suggestion).hostname)).toBe(true);
+  });
+
+  test('returns undefined for an unparseable storefront URL', () => {
+    expect(suggestCheckoutUrl('not a url')).toBeUndefined();
   });
 });
 

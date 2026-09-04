@@ -12,18 +12,11 @@ export interface CheckoutDomainContext {
   projectUuid?: string;
 }
 
-// Reduces a hostname to its last two labels. This is a heuristic, NOT a real
-// registrable-domain lookup: without the public suffix list, `example.co.uk`
-// and `other.co.uk` both reduce to `co.uk` and compare as equal.
-//
-// That tradeoff is deliberate *here*, because the only consumer is a warning:
-// the failure mode is staying silent when we could have spoken up, never
-// blocking a legitimate change. The write path makes no such guess —
-// BigCommerce enforces the real rule and its rejection is surfaced verbatim
-// (see `updateChannelCheckoutUrl`).
-function mainDomain(hostname: string): string {
-  return hostname.toLowerCase().split('.').slice(-2).join('.');
-}
+const normalizeHostname = (hostname: string) => hostname.toLowerCase().replace(/\.$/, '');
+
+const parentDomain = (hostname: string) => hostname.split('.').slice(1).join('.');
+
+const isSubdomainOf = (hostname: string, parent: string) => hostname.endsWith(`.${parent}`);
 
 function hostnameOf(url: string): string | undefined {
   try {
@@ -33,15 +26,43 @@ function hostnameOf(url: string): string | undefined {
   }
 }
 
+// Whether two hostnames sit under the same registrable domain, which is the
+// relationship BigCommerce requires between a channel's storefront and its
+// checkout URL.
+//
+// Decided without the public suffix list, so it is a heuristic — but a
+// deliberately conservative one. Two hostnames count as sharing only when one
+// is a subdomain of the other, or when they have the same immediate parent and
+// that parent has at least two labels. The label floor is what stops a bare
+// public suffix from being the thing that makes them "match": `example.co.uk`
+// and `other.co.uk` have parents `example.co.uk` and `other.co.uk`, so they
+// correctly do not share, where comparing last-two-labels would have collapsed
+// both to `co.uk` and stayed silent on a genuinely cross-domain setup.
+//
+// The residual imprecision runs the safe way. A deeply nested pair such as
+// `a.b.example.com` and `c.d.example.com` compares as not sharing and earns a
+// warning it doesn't need, which is noise rather than a missed problem. The
+// write path makes no guess at all: BigCommerce enforces the real rule and its
+// rejection is surfaced verbatim (see `updateChannelCheckoutUrl`).
 export function sharesMainDomain(a: string, b: string): boolean {
-  return mainDomain(a) === mainDomain(b);
+  const first = normalizeHostname(a);
+  const second = normalizeHostname(b);
+
+  if (first === second) return true;
+
+  if (isSubdomainOf(first, second) || isSubdomainOf(second, first)) return true;
+
+  const parent = parentDomain(first);
+
+  return parent === parentDomain(second) && parent.split('.').length >= 2;
 }
 
 // Validates only what is unambiguous: that the value is a URL and uses https.
 // The domain *relationship* rule is left to BigCommerce for the reason given on
-// `mainDomain` above — a local guess would reject valid setups. A bare hostname
-// gets `https://` prefixed, matching how `runChannelSiteUrlFlow` treats site
-// URLs, and any path or query is dropped since the API wants an origin.
+// `sharesMainDomain` above — a local guess would reject valid setups. A bare
+// hostname gets `https://` prefixed, matching how `runChannelSiteUrlFlow`
+// treats site URLs, and any path or query is dropped since the API wants an
+// origin.
 export function normalizeCheckoutUrl(value: string): string {
   const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(value) ? value : `https://${value}`;
   let parsed: URL;
@@ -63,14 +84,24 @@ export function normalizeCheckoutUrl(value: string): string {
   return parsed.origin;
 }
 
-// The checkout subdomain a merchant almost always wants for a given storefront
-// URL: `https://www.example.com` suggests `https://checkout.example.com`. Used
-// only to pre-fill a prompt, so an unparseable storefront URL just means no
-// suggestion.
+// The checkout subdomain a merchant most likely wants for a given storefront
+// URL: `https://www.example.com` suggests `https://checkout.example.com`.
+//
+// Only a leading `www.` is stripped — deriving the registrable domain would
+// need the public suffix list, and reducing to the last two labels would
+// suggest nonsense like `https://checkout.co.uk` for a storefront on
+// `www.example.co.uk`. Prefixing the storefront host (minus `www.`) can never
+// produce a bare public suffix, and always satisfies the same-main-domain rule.
+// This only pre-fills an editable prompt, so an unparseable storefront URL just
+// means no suggestion.
 export function suggestCheckoutUrl(storefrontUrl: string): string | undefined {
   const host = hostnameOf(storefrontUrl);
 
-  return host ? `https://checkout.${mainDomain(host)}` : undefined;
+  if (!host) return undefined;
+
+  const base = normalizeHostname(host).replace(/^www\./, '');
+
+  return `https://checkout.${base}`;
 }
 
 // Whether the storefront hostname is a custom domain the merchant added to this
@@ -132,13 +163,13 @@ export async function warnOnCrossDomainCheckout(
   const isCustomDomain = await isProjectCustomDomain(storefrontHost, context);
 
   if (isCustomDomain === true) {
+    const suggestion = suggestCheckoutUrl(`https://${storefrontHost}`);
+
     consola.info(
-      `To fix it, point checkout.${mainDomain(storefrontHost)} at BigCommerce, provision a ` +
-        'certificate for it there, then run:',
+      `To fix it, point ${suggestion?.replace('https://', '') ?? 'your checkout subdomain'} at ` +
+        'BigCommerce, provision a certificate for it there, then run:',
     );
-    consola.log(
-      `  catalyst channels checkout-url --url https://checkout.${mainDomain(storefrontHost)}`,
-    );
+    consola.log(`  catalyst channels checkout-url --url ${suggestion ?? '<url>'}`);
 
     return;
   }

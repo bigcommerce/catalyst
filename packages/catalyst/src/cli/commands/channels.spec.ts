@@ -804,6 +804,64 @@ describe('channels checkout-url', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
+  // Unsetting is the one path that creates the inherited-checkout state, and
+  // the domain it falls back to belongs to the default channel, so it can't be
+  // predicted before the delete. It has to be reported afterwards.
+  test('reports where checkout landed after --unset and warns when cross-domain', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('shared checkout domain'));
+    // The inherited target is surfaced, not just "done".
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
+    );
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('a different domain than the storefront'),
+    );
+  });
+
+  test('stays quiet after --unset when the shared checkout domain still matches', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://checkout.example.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
   test('refuses --url together with --unset', async () => {
     await expect(
       run('--channel-id', '2', '--url', 'https://checkout.example.com', '--unset'),

@@ -467,12 +467,32 @@ Examples:
     });
     const label = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
+    // Resolving the project is only needed to tailor the cross-domain guidance,
+    // so it stays optional on every path below.
+    const diagnosticContext = {
+      storeHash,
+      accessToken,
+      apiHost,
+      projectUuid: options.projectUuid ?? config.get('projectUuid'),
+    };
+
     if (options.unset) {
       await deleteChannelCheckoutUrl(channel.id, storeHash, accessToken, apiHost);
 
       consola.success(
         `Removed the custom checkout URL from channel ${label}. Checkout now uses the shared checkout domain.`,
       );
+
+      // Unsetting is the one path that *creates* the inherited-checkout state
+      // the rest of this command warns about, and the domain it falls back to
+      // is the default channel's — not this one's — so it can't be predicted
+      // beforehand. Re-read the site to show where checkout actually landed and
+      // warn if that is a different domain than the storefront.
+      const reverted = await getChannelSite(channel.id, storeHash, accessToken, apiHost);
+
+      reportChannelSite(reverted);
+      await warnOnCrossDomainCheckout(reverted, diagnosticContext);
+
       process.exit(0);
 
       // Unreachable in production; prevents continuation when process.exit is mocked in tests.
@@ -502,12 +522,7 @@ Examples:
     consola.success(`Channel ${label}:`);
     reportChannelSite(site);
 
-    await warnOnCrossDomainCheckout(site, {
-      storeHash,
-      accessToken,
-      apiHost,
-      projectUuid: options.projectUuid ?? config.get('projectUuid'),
-    });
+    await warnOnCrossDomainCheckout(site, diagnosticContext);
 
     process.exit(0);
   });
