@@ -104,11 +104,14 @@ A `redeploy preview` comment adds its own check row, named by the
 `issue_comment` run is not attached to a commit, so GitHub shows nothing in the
 pull request's checks on its own.
 
-Keep that name distinct from your job's. GitHub refuses API changes to the check
-runs it manages for a job, so a row named after the job would be found by the
-reuse lookup and then rejected with a 403. The action tags its own rows with an
-`external_id` and only ever touches those; on a commit that already ran a push
-deploy you will see two rows, reporting two different events.
+Keep that name distinct from your job's, so the redeploy's result and the push
+deploy's result do not overwrite each other in the checks list.
+
+Each redeploy opens a new row rather than reopening the last one. A check run
+belongs to the workflow run that created it: another run's update is accepted
+and then silently ignored, so a reopened row would sit on the previous result
+while the new deploy ran. GitHub lists only the newest row per name, so the
+superseded ones do not pile up in the pull request.
 
 Grant `checks: write` if you call the action directly, so a `redeploy preview`
 comment appears in the pull request checks rather than only as a reaction on the

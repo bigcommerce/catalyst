@@ -236,29 +236,30 @@ check('the redeploy check row is never named after a job', () => {
   if (clashing.length) throw new Error(`job named "${expected}" in ${clashing.join(', ')}`);
 });
 
-check('the check run is claimed by external_id, not by name alone', () => {
+check('a redeploy opens its own check row instead of reusing one', () => {
+  // A check run belongs to the run that created it. Another run's PATCH is
+  // accepted and silently ignored, so a reused row would still show the
+  // previous result while this deploy was running -- verified against the API.
   const step = action.runs.steps.find((s) => s.name === 'Open a check run');
   if (!step) throw new Error('no "Open a check run" step');
 
-  if (!/select\(\.external_id ==/.test(step.run)) {
-    throw new Error('the lookup does not filter on external_id, so it can find a job row');
+  if (/--method PATCH/.test(step.run)) {
+    throw new Error('the step patches a check run; only the run that created one can update it');
   }
 
   if (!/-f external_id=/.test(step.run)) {
-    throw new Error('the check run is created without an external_id, so it cannot be found again');
+    throw new Error('the check run is created without an external_id');
   }
 });
 
 check('a refused check-run request cannot be mistaken for an id', () => {
   // gh writes error bodies to stdout, so `id=$(gh api ... || true)` captures
-  // JSON on failure. Every captured value has to be filtered to digits.
+  // JSON on failure. That has to be filtered down to digits.
   const step = action.runs.steps.find((s) => s.name === 'Open a check run');
-  const assignments = step.run.match(/^\s*(?:id|existing)=.*$/gm) ?? [];
 
-  if (assignments.length < 3) throw new Error(`expected 3 captures, found ${assignments.length}`);
-
-  const unguarded = assignments.filter((line) => !line.includes('numeric') && !/=''$/.test(line.trim()));
-  if (unguarded.length) throw new Error(`unfiltered: ${unguarded.map((l) => l.trim()).join(' | ')}`);
+  if (!/case "\$id" in/.test(step.run) || !/\*\[!0-9\]\*/.test(step.run)) {
+    throw new Error('the captured id is not filtered to digits');
+  }
 });
 
 check('a check-run failure cannot fail a deploy that already succeeded', () => {

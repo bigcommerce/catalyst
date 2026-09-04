@@ -70,9 +70,8 @@ inputs:
     description: >-
       Name of the check run a redeploy reports against. An issue_comment run is
       not attached to a commit, so without a row of its own there is nothing in
-      the pull request's checks at all. Keep this distinct from the job's name:
-      GitHub refuses API changes to the check runs it manages for a job, so the
-      action can only update rows it created itself.
+      the pull request's checks at all. Keep this distinct from the job's name,
+      so the two do not overwrite each other in the checks list.
     default: Preview Deployment (redeploy)
   min-cli-version:
     description: >-
@@ -261,49 +260,30 @@ runs:
       run: |
         set -euo pipefail
 
-        name="$CHECK_NAME"
+        # Always open a fresh row rather than reusing one. A check run belongs
+        # to the workflow run that created it: another run's PATCH comes back
+        # 200 and changes nothing, so a reused row would sit on the previous
+        # result while this deploy ran. GitHub lists only the newest row per
+        # name, so the superseded ones stay out of the way.
+        id=$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
+          -f name="$CHECK_NAME" \
+          -f head_sha="$HEAD_SHA" \
+          -f status='in_progress' \
+          -f external_id="$EXTERNAL_ID" \
+          -f details_url="$RUN_URL" \
+          --jq '.id' 2>/dev/null || true)
 
         # gh prints an error body to stdout, so a refused request leaves JSON
         # where an id should be. Passing that on builds a nonsense URL and
-        # fails a deploy that already succeeded, so filter every value.
-        numeric() { case "${1:-}" in '' | *[!0-9]*) printf '' ;; *) printf '%s' "$1" ;; esac; }
-
-        # Reuse the row from a previous redeploy of this same commit, so
-        # repeated commands update one entry instead of stacking up. Match on
-        # external_id, not just the name: GitHub rejects any API change to the
-        # check runs it manages for a job, so picking one of those up here
-        # would guarantee a 403.
-        existing=$(numeric "$(gh api \
-          -X GET "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
-          -f check_name="$name" \
-          --jq "[.check_runs[] | select(.external_id == \"$EXTERNAL_ID\") | .id] | first // empty" \
-          2>/dev/null || true)")
-
-        id=''
-
-        if [ -n "$existing" ]; then
-          id=$(numeric "$(gh api --method PATCH "repos/$GITHUB_REPOSITORY/check-runs/$existing" \
-            -f status='in_progress' \
-            -f details_url="$RUN_URL" \
-            --jq '.id' 2>/dev/null || true)")
-        fi
-
-        # Either there was none, or the API refused to reopen a completed one.
-        if [ -z "$id" ]; then
-          id=$(numeric "$(gh api --method POST "repos/$GITHUB_REPOSITORY/check-runs" \
-            -f name="$name" \
-            -f head_sha="$HEAD_SHA" \
-            -f status='in_progress' \
-            -f external_id="$EXTERNAL_ID" \
-            -f details_url="$RUN_URL" \
-            --jq '.id' 2>/dev/null || true)")
-        fi
-
-        if [ -z "$id" ]; then
-          # Usually a missing checks:write permission. Not worth failing a
-          # deploy over -- the comment reactions still report the outcome.
-          echo '::warning::Could not open a check run. Grant checks:write to show redeploys in the pull request checks.'
-        fi
+        # fails a deploy that already succeeded.
+        case "$id" in
+          '' | *[!0-9]*)
+            id=''
+            # Usually a missing checks:write permission. Not worth failing a
+            # deploy over -- the comment reactions still report the outcome.
+            echo '::warning::Could not open a check run. Grant checks:write to show redeploys in the pull request checks.'
+            ;;
+        esac
 
         echo "id=$id" >> "$GITHUB_OUTPUT"
 
