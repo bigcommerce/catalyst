@@ -24,7 +24,7 @@ import './components/brand-banner/brand-banner.makeswift';
 
 import './components/site-theme/register';
 
-import { MakeswiftComponentType } from '@makeswift/runtime';
+import { MakeswiftComponentType } from '@makeswift/runtime/react/builtins';
 
 import { runtime } from './runtime';
 

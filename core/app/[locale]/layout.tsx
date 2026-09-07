@@ -1,10 +1,8 @@
-import { DraftModeScript } from '@makeswift/runtime/next/server';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
-import { draftMode } from 'next/headers';
-import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -139,11 +137,10 @@ export default async function RootLayout({ params, children }: Props) {
   const [messages] = await Promise.all([getMessages(), getUser()]);
 
   return (
-    <MakeswiftProvider previewMode={(await draftMode()).isEnabled || (await headers()).get('x-makeswift-draft-mode-active') === '1'}>
+    <MakeswiftProvider siteVersion={await getSiteVersion()}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
         <head>
           <SiteTheme />
-          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
           {/* Schema.org Organization structured data for SEO */}
           <script
             type="application/ld+json"

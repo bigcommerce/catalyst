@@ -1,4 +1,4 @@
-import { MakeswiftComponentType } from '@makeswift/runtime';
+import { MakeswiftComponentType } from '@makeswift/runtime/react/builtins';
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
 
 import { ButtonLink, Props } from '@/vibes/soul/primitives/button-link';

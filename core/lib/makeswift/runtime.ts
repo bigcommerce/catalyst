@@ -1,4 +1,4 @@
-import { ReactRuntime } from '@makeswift/runtime/react';
+import { ReactRuntime } from '@makeswift/runtime/next';
 
 export const breakpoints = {
   small: { width: 640, viewport: 390, label: 'Small' },
@@ -9,4 +9,6 @@ export const breakpoints = {
 
 export const runtime = new ReactRuntime({
   breakpoints,
+  apiOrigin: process.env.MAKESWIFT_API_ORIGIN,
+  appOrigin: process.env.MAKESWIFT_APP_ORIGIN,
 });
