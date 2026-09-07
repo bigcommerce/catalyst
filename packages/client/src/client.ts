@@ -232,7 +232,12 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return response.text();
   }
 
-  private async getCanonicalUrl(channelId?: string) {
+  /**
+   * The BigCommerce-managed storefront URL for a channel.
+   * @param {string} [channelId]
+   * @returns {Promise<string>}
+   */
+  async getCanonicalUrl(channelId?: string) {
     const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;
