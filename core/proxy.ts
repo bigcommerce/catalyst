@@ -5,8 +5,10 @@ import { withChannelId } from './proxies/with-channel-id';
 import { withGraphqlProxy } from './proxies/with-graphql-proxy';
 import { withIntl } from './proxies/with-intl';
 import { withRoutes } from './proxies/with-routes';
+import { withUcpProxy } from './proxies/with-ucp-proxy';
 
 export const proxy = composeProxies(
+  withUcpProxy,
   withAuth,
   withAnalyticsCookies,
   withIntl,
@@ -19,7 +21,7 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
-     * - api (API routes)
+     * - api (API routes; note `/api/ucp` is carved back in by the entry below)
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - _vercel (vercel internals, eg: web vitals)
@@ -30,5 +32,10 @@ export const config = {
      * - robots.txt (robots route)
      */
     '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt).*)',
+    /*
+     * UCP endpoints, proxied to the store's canonical domain by `withUcpProxy`. Declared
+     * separately so the `api` exclusion above keeps applying to every other API route.
+     */
+    '/api/ucp/:path*',
   ],
 };
