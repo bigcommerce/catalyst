@@ -165,11 +165,21 @@ export async function runChannelSiteUrlFlow(
       options.apiHost,
     );
 
-    await warnOnCrossDomainCheckout(site, {
+    const report = await warnOnCrossDomainCheckout(site, {
       storeHash: options.storeHash,
       accessToken: options.accessToken,
       apiHost: options.apiHost,
     });
+
+    // Can run mid-deploy, so it prints a command rather than prompting. Skipped
+    // on a managed zone, where no checkout URL can be set at all.
+    if (report.crossDomain && report.storefrontOnManagedZone !== true) {
+      consola.info('Set a checkout URL for this channel with:');
+      consola.log(
+        `  catalyst channels update --channel-id ${channel.id}` +
+          ` --checkout-url ${report.suggestion ?? '<domain>'}`,
+      );
+    }
   } catch {
     // Diagnostics are advisory; the write above succeeded.
   }

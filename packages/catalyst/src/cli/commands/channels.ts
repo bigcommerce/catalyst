@@ -493,8 +493,8 @@ function reportChannelSite(site: ChannelSiteDetails): void {
 
   if (!site.isCheckoutUrlCustomized) {
     consola.info(
-      'This channel has no checkout URL of its own, so BigCommerce falls back to the default ' +
-        "channel's primary URL. That may be a different domain than the storefront above.",
+      'This channel has no checkout URL of its own, so checkout uses the default ' +
+        "channel's primary URL.",
     );
   }
 }
