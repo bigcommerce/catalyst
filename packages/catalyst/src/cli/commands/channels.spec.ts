@@ -4,7 +4,17 @@ import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
-import { afterAll, afterEach, beforeAll, describe, expect, MockInstance, test, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  MockInstance,
+  test,
+  vi,
+} from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 import { consola } from '../lib/logger';
@@ -855,7 +865,7 @@ describe('channels checkout URLs', () => {
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
   });
 
-  test('stays quiet after --unset when the shared checkout domain still matches', async () => {
+  test('remove stays quiet when the shared checkout domain still matches', async () => {
     server.use(
       http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
       http.get(sitePath, () =>
@@ -874,7 +884,7 @@ describe('channels checkout URLs', () => {
       ),
     );
 
-    await run('--channel-id', '2', '--unset');
+    await run('remove', '--channel-id', '2');
 
     expect(consola.warn).not.toHaveBeenCalled();
   });
@@ -936,5 +946,146 @@ describe('channels checkout URLs', () => {
 
     expect(sitePutCalled).toBe(false);
     expect(mockSelect).not.toHaveBeenCalled();
+  });
+
+  describe('interactive offer to set a checkout URL', () => {
+    const crossDomainSite = {
+      data: {
+        id: 1,
+        url: 'https://canary.example.com',
+        channel_id: 2,
+        is_checkout_url_customized: false,
+        urls: [
+          { url: 'https://canary.example.com', type: 'primary' },
+          { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+        ],
+      },
+    };
+
+    const projectsPath = 'https://:apiHost/stores/:storeHash/v3/infrastructure/projects';
+
+    // The managed hosting zone is derived from the store's deployment
+    // hostnames, so this fixture makes `catalyst-sandbox.store` the zone.
+    const withManagedZone = () =>
+      server.use(
+        http.get(projectsPath, () =>
+          HttpResponse.json({
+            data: [
+              {
+                uuid: linkedProjectUuid,
+                name: 'Project One',
+                deployment_hostnames: ['project-one.catalyst-sandbox.store'],
+              },
+            ],
+          }),
+        ),
+      );
+
+    // `canary.example.com` is off that zone, so it reads as the merchant's own
+    // domain and the offer applies.
+    const onOwnDomain = () => {
+      withManagedZone();
+      server.use(http.get(sitePath, () => HttpResponse.json(crossDomainSite)));
+    };
+
+    beforeEach(() => {
+      Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    });
+
+    afterEach(() => {
+      Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    });
+
+    test('offers to set one, then writes the answer', async () => {
+      let putBody: unknown;
+
+      onOwnDomain();
+      server.use(
+        http.put(checkoutPath, async ({ request }) => {
+          putBody = await request.json();
+
+          return HttpResponse.json({
+            data: { id: 1, url: 'https://canary.example.com', channel_id: 2 },
+          });
+        }),
+      );
+
+      mockConfirm.mockResolvedValueOnce(true);
+      mockInput.mockResolvedValueOnce('https://checkout.canary.example.com');
+
+      await run('--channel-id', '2', '--project-uuid', linkedProjectUuid);
+
+      expect(mockConfirm.mock.calls[0]?.[0].message).toContain('Set a checkout URL');
+      expect(putBody).toEqual({ url: 'https://checkout.canary.example.com' });
+    });
+
+    test('declining leaves the channel alone and prints the command to run later', async () => {
+      let putCalled = false;
+
+      onOwnDomain();
+      server.use(
+        http.put(checkoutPath, () => {
+          putCalled = true;
+
+          return HttpResponse.json({ data: {} });
+        }),
+      );
+
+      mockConfirm.mockResolvedValueOnce(false);
+
+      await run('--channel-id', '2', '--project-uuid', linkedProjectUuid);
+
+      expect(putCalled).toBe(false);
+      expect(mockInput).not.toHaveBeenCalled();
+      expect(consola.info).toHaveBeenCalledWith(
+        expect.stringContaining('--channel-id 2 --checkout-url <domain>'),
+      );
+    });
+
+    // Offering here would walk the user into a guaranteed 422, since a checkout
+    // subdomain on the managed zone can't be issued a certificate.
+    test('does not offer when the storefront is on the managed hosting zone', async () => {
+      withManagedZone();
+      server.use(
+        http.get(sitePath, () =>
+          HttpResponse.json({
+            data: {
+              ...crossDomainSite.data,
+              url: 'https://project-one.catalyst-sandbox.store',
+              urls: [
+                { url: 'https://project-one.catalyst-sandbox.store', type: 'primary' },
+                { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+              ],
+            },
+          }),
+        ),
+      );
+
+      await run('--channel-id', '2', '--project-uuid', linkedProjectUuid);
+
+      expect(mockConfirm).not.toHaveBeenCalled();
+      expect(consola.info).toHaveBeenCalledWith(
+        expect.stringContaining('auto-generated deployment hostname'),
+      );
+    });
+
+    test('does not offer when checkout already matches the storefront', async () => {
+      await run('--channel-id', '2', '--project-uuid', linkedProjectUuid);
+
+      expect(mockConfirm).not.toHaveBeenCalled();
+    });
+
+    // `channels checkout-url` has to stay scriptable.
+    test('prints the command instead of prompting when not a TTY', async () => {
+      Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+      onOwnDomain();
+
+      await run('--channel-id', '2', '--project-uuid', linkedProjectUuid);
+
+      expect(mockConfirm).not.toHaveBeenCalled();
+      expect(consola.info).toHaveBeenCalledWith(
+        expect.stringContaining('--checkout-url https://checkout.canary.example.com'),
+      );
+    });
   });
 });

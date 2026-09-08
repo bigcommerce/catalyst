@@ -1,8 +1,9 @@
-import { select } from '@inquirer/prompts';
+import { confirm, select } from '@inquirer/prompts';
 import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
 
+import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
 import { resolveChannel, runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   channelPlatformLabel,
@@ -549,7 +550,51 @@ Examples:
     consola.success(`Channel ${label}:`);
     reportChannelSite(site);
 
-    await warnOnCrossDomainCheckout(site, { storeHash, accessToken, apiHost });
+    const report = await warnOnCrossDomainCheckout(site, { storeHash, accessToken, apiHost });
+
+    // The channel and site are already in hand, so offer to fix it rather than
+    // making the user re-run `channels update --checkout-url`.
+    //
+    // Not offered on a managed zone, where BigCommerce would reject every value
+    // (the diagnostic explains why), nor without a TTY, so the command stays
+    // scriptable — matching the guards in `commerce-hosting`.
+    if (report.crossDomain && report.storefrontOnManagedZone !== true) {
+      const suggested = report.suggestion ?? '<domain>';
+
+      if (!process.stdin.isTTY) {
+        consola.info(
+          `Set one with \`catalyst channels update --channel-id ${channel.id} --checkout-url ${suggested}\`.`,
+        );
+        process.exit(0);
+
+        return;
+      }
+
+      const shouldSet = await confirm({
+        message: 'Set a checkout URL for this channel now?',
+        default: true,
+      });
+
+      if (shouldSet) {
+        await runChannelCheckoutUrlFlow({
+          storeHash,
+          accessToken,
+          apiHost,
+          // Already chosen above; don't ask again.
+          channelId: channel.id,
+          channelName: channel.name,
+          storefrontUrl: findChannelSiteUrl(site, 'primary') ?? site.url,
+        });
+
+        process.exit(0);
+
+        return;
+      }
+
+      consola.info(
+        `When you're ready, run \`catalyst channels update --channel-id ${channel.id} --checkout-url <domain>\`.`,
+      );
+    }
 
     process.exit(0);
   });
