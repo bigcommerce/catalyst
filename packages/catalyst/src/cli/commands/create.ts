@@ -333,13 +333,6 @@ Examples:
       envVars.BIGCOMMERCE_ACCESS_TOKEN = accessToken;
     }
 
-    // Convenience for shells that auto-load .env.local (direnv, dotenv-cli):
-    // exporting CATALYST_ACCESS_TOKEN lets the CLI's `--access-token` env
-    // binding pick it up. The CLI itself does *not* read this file when
-    // resolving credentials — `.bigcommerce/project.json`, written below, is
-    // what makes subsequent commands work without re-auth.
-    if (accessToken) envVars.CATALYST_ACCESS_TOKEN = accessToken;
-
     // Resolve the Commerce Hosting project before extraction so credential checks
     // and prompts happen up-front. We defer the file mutations
     // (`setupCommerceHosting`) until after extraction.
