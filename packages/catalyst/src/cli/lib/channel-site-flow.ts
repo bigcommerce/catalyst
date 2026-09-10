@@ -1,6 +1,12 @@
 import { select } from '@inquirer/prompts';
 
-import { type Channel, fetchAvailableChannels, updateChannelSiteUrl } from './channels';
+import {
+  type Channel,
+  fetchAvailableChannels,
+  getChannelSite,
+  updateChannelSiteUrl,
+} from './channels';
+import { warnOnCrossDomainCheckout } from './checkout-url';
 import { selectOrCreateInfrastructureProject } from './commerce-hosting';
 import { consola } from './logger';
 import { fetchProjects, type ProjectListItem } from './project';
@@ -147,6 +153,36 @@ export async function runChannelSiteUrlFlow(
   const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
   consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+
+  // Moving the site URL is when checkout is most likely left behind. The PUT
+  // response above carries no `urls`, hence the re-fetch. Soft-failed: the write
+  // already succeeded, so a failed diagnostic mustn't look like a failed write.
+  try {
+    const site = await getChannelSite(
+      channel.id,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
+    );
+
+    const report = await warnOnCrossDomainCheckout(site, {
+      storeHash: options.storeHash,
+      accessToken: options.accessToken,
+      apiHost: options.apiHost,
+    });
+
+    // Can run mid-deploy, so it prints a command rather than prompting. Skipped
+    // on a managed zone, where no checkout URL can be set at all.
+    if (report.crossDomain && report.storefrontOnManagedZone !== true) {
+      consola.info('Set a checkout URL for this channel with:');
+      consola.log(
+        `  catalyst channels update --channel-id ${channel.id}` +
+          ` --checkout-url ${report.suggestion ?? '<domain>'}`,
+      );
+    }
+  } catch {
+    // Diagnostics are advisory; the write above succeeded.
+  }
 
   // Returned so `channels update --hostname --checkout-url` reuses this channel
   // rather than resolving it twice.

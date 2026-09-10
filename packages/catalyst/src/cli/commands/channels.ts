@@ -16,6 +16,7 @@ import {
   sortChannelsByPlatform,
   updateChannelCheckoutUrl,
 } from '../lib/channels';
+import { warnOnCrossDomainCheckout } from '../lib/checkout-url';
 import { NoLinkedProjectError } from '../lib/commerce-hosting';
 import { runCreateChannelFlow } from '../lib/create-channel-flow';
 import { parseEnvAssignment } from '../lib/env-config';
@@ -225,6 +226,7 @@ Examples:
 
         consola.success(`Updated channel ${label} checkout URL to ${options.checkoutUrl}.`);
         reportChannelSite(updated);
+        await warnOnCrossDomainCheckout(updated, { storeHash, accessToken, apiHost });
       } else {
         await deleteChannelCheckoutUrl(channel.id, storeHash, accessToken, apiHost);
 
@@ -233,10 +235,12 @@ Examples:
         );
 
         // The fallback domain belongs to the default channel, so it can't be
-        // known before the delete. Re-read the site to show where it landed.
+        // known before the delete. Re-read the site to show where it landed, and
+        // warn if that's a different domain than the storefront.
         const reverted = await getChannelSite(channel.id, storeHash, accessToken, apiHost);
 
         reportChannelSite(reverted);
+        await warnOnCrossDomainCheckout(reverted, { storeHash, accessToken, apiHost });
       }
     }
 
@@ -489,8 +493,8 @@ function reportChannelSite(site: ChannelSiteDetails): void {
 
   if (!site.isCheckoutUrlCustomized) {
     consola.info(
-      'This channel has no checkout URL of its own, so BigCommerce falls back to the default ' +
-        "channel's primary URL. That may be a different domain than the storefront above.",
+      'This channel has no checkout URL of its own, so checkout uses the default ' +
+        "channel's primary URL.",
     );
   }
 }
@@ -560,6 +564,8 @@ Examples:
 
     consola.success(`Channel ${label}:`);
     reportChannelSite(site);
+
+    await warnOnCrossDomainCheckout(site, { storeHash, accessToken, apiHost });
 
     process.exit(0);
   });

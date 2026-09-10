@@ -704,7 +704,7 @@ describe('channels checkout URLs', () => {
     await run('info', '--channel-id', '2');
 
     expect(consola.info).toHaveBeenCalledWith(
-      expect.stringContaining("falls back to the default channel's primary URL"),
+      expect.stringContaining("checkout uses the default channel's primary URL"),
     );
   });
 
@@ -851,6 +851,32 @@ describe('channels checkout URLs', () => {
     expect(consola.log).toHaveBeenCalledWith(
       expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
     );
+    // The inherited domain is unrelated to the storefront, so it also warns.
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
+  });
+
+  test('stays quiet after --unset when the shared checkout domain still matches', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://checkout.example.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('--channel-id', '2', '--unset');
+
+    expect(consola.warn).not.toHaveBeenCalled();
   });
 
   // Commander enforces this via `Option.conflicts`. It exits 1, which ends the
