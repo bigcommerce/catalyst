@@ -1,6 +1,7 @@
 import { getDomain } from 'tldts';
 
 import { type ChannelSiteDetails, findChannelSiteUrl } from './channels';
+import { UserActionableError } from './errors';
 import { consola } from './logger';
 import { fetchProjects } from './project';
 
@@ -59,6 +60,30 @@ export function suggestCheckoutUrl(storefrontUrl: string): string | undefined {
   const base = normalizeHostname(host).replace(/^www\./, '');
 
   return `https://checkout.${base}`;
+}
+
+// Validates only the unambiguous parts: parses as a URL, uses https. A bare
+// hostname gets `https://` prefixed; path and query are dropped since the API
+// wants an origin.
+export function normalizeCheckoutUrl(value: string): string {
+  const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(value) ? value : `https://${value}`;
+  let parsed: URL;
+
+  try {
+    parsed = new URL(withScheme);
+  } catch {
+    throw new UserActionableError(
+      `"${value}" is not a valid URL. Pass a hostname or an https URL, e.g. https://checkout.example.com.`,
+    );
+  }
+
+  if (parsed.protocol !== 'https:') {
+    throw new UserActionableError(
+      `The checkout URL must use https, but "${value}" uses ${parsed.protocol.replace(':', '')}.`,
+    );
+  }
+
+  return parsed.origin;
 }
 
 // Whether a hostname sits on a BigCommerce-managed hosting zone — the

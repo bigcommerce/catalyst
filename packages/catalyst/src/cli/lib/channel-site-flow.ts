@@ -184,7 +184,8 @@ export async function runChannelSiteUrlFlow(
     // Diagnostics are advisory; the write above succeeded.
   }
 
-  // Returned so `channels update --hostname --checkout-url` reuses this channel
-  // rather than resolving it twice.
+  // Returned so a caller running several channel flows back to back — `channels
+  // update --hostname --checkout-url`, or `deploy --update-site-url
+  // --update-checkout-url` — reuses this channel instead of resolving it twice.
   return { channelId: channel.id };
 }
