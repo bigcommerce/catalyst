@@ -117,6 +117,33 @@ describe('channels', () => {
     expect(create).toBeDefined();
     expect(create?.description()).toContain('Create a new Catalyst storefront channel');
   });
+
+  test('exposes info, create, link and update', () => {
+    expect(channels.commands.map((cmd) => cmd.name()).sort()).toEqual([
+      'create',
+      'info',
+      'link',
+      'update',
+    ]);
+  });
+
+  test('defaults to info so bare `channels` reports the current state', async () => {
+    mockSelect.mockResolvedValueOnce(2);
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'channels',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('Channel "Catalyst Storefront" (2)'),
+    );
+  });
 });
 
 describe('channels update', () => {
@@ -628,5 +655,260 @@ describe('channels create', () => {
       additionalLocales: ['es'],
     });
     expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('Created channel 42'));
+  });
+});
+
+describe('channels checkout URLs', () => {
+  const sitePath = 'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site';
+  const checkoutPath = `${sitePath}/checkout-url`;
+
+  const credentials = ['--store-hash', storeHash, '--access-token', accessToken];
+
+  const run = (...args: string[]) =>
+    program.parseAsync(['node', 'catalyst', 'channels', ...args, ...credentials]);
+
+  test('shows the storefront, canonical and checkout URLs for a channel', async () => {
+    await run('info', '--channel-id', '2');
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('https://example.com'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://checkout.example.com'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  // An inherited checkout URL is the failure mode this command exists to make
+  // visible, so the explanation must appear rather than a bare URL list.
+  test('explains the fallback when the channel has no checkout URL of its own', async () => {
+    server.use(
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://storefront.example.com',
+            channel_id: 2,
+            ssl_status: null,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://storefront.example.com', type: 'primary' },
+              { url: 'https://unrelated.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('info', '--channel-id', '2');
+
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining("falls back to the default channel's primary URL"),
+    );
+  });
+
+  test('prints (none) when the site has no checkout URL at all', async () => {
+    server.use(
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: { id: 1, url: 'https://storefront.example.com', channel_id: 2, urls: [] },
+        }),
+      ),
+    );
+
+    await run('info', '--channel-id', '2');
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('(none)'));
+  });
+
+  test('prompts for the channel when --channel-id is omitted', async () => {
+    mockSelect.mockResolvedValueOnce(2);
+
+    await run();
+
+    expect(mockSelect).toHaveBeenCalledTimes(1);
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('Channel "Catalyst Storefront" (2)'),
+    );
+  });
+
+  test('update --checkout-url sets the checkout URL', async () => {
+    let putBody: unknown;
+    let putChannelId: string | undefined;
+
+    server.use(
+      http.put(checkoutPath, async ({ request, params }) => {
+        putBody = await request.json();
+        putChannelId = String(params.channelId);
+
+        return HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://example.com',
+            channel_id: 2,
+            is_checkout_url_customized: true,
+            urls: [
+              { url: 'https://example.com', type: 'primary' },
+              { url: 'https://checkout.example.com', type: 'checkout' },
+            ],
+          },
+        });
+      }),
+    );
+
+    await run('update', '--channel-id', '2', '--checkout-url', 'https://checkout.example.com');
+
+    expect(putChannelId).toBe('2');
+    expect(putBody).toEqual({ url: 'https://checkout.example.com' });
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('checkout URL to https://checkout.example.com'),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('update --checkout-url accepts a bare hostname and normalises a path', async () => {
+    let putBody: unknown;
+
+    server.use(
+      http.put(checkoutPath, async ({ request }) => {
+        putBody = await request.json();
+
+        return HttpResponse.json({ data: { id: 1, url: 'https://example.com', channel_id: 2 } });
+      }),
+    );
+
+    await run('update', '--channel-id', '2', '--checkout-url', 'checkout.example.com/some/path');
+
+    expect(putBody).toEqual({ url: 'https://checkout.example.com' });
+  });
+
+  test('update rejects a non-https checkout URL before calling the API', async () => {
+    let called = false;
+
+    server.use(
+      http.put(checkoutPath, () => {
+        called = true;
+
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    await expect(
+      run('update', '--channel-id', '2', '--checkout-url', 'http://checkout.example.com'),
+    ).rejects.toThrow('must use https');
+    expect(called).toBe(false);
+  });
+
+  test('update rejects an unparseable checkout URL', async () => {
+    await expect(run('update', '--channel-id', '2', '--checkout-url', 'https://')).rejects.toThrow(
+      'is not a valid URL',
+    );
+  });
+
+  test('update --remove-checkout-url unsets the checkout URL', async () => {
+    let deleted = false;
+
+    server.use(
+      http.delete(checkoutPath, () => {
+        deleted = true;
+
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    await run('update', '--channel-id', '2', '--remove-checkout-url');
+
+    expect(deleted).toBe(true);
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('shared checkout domain'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  // The domain checkout falls back to belongs to the default channel, so it
+  // can't be predicted before the delete — it has to be reported afterwards.
+  test('update --remove-checkout-url reports where checkout landed', async () => {
+    server.use(
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+      http.get(sitePath, () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://www.example.com',
+            channel_id: 2,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://www.example.com', type: 'primary' },
+              { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+    );
+
+    await run('update', '--channel-id', '2', '--remove-checkout-url');
+
+    expect(consola.success).toHaveBeenCalledWith(expect.stringContaining('shared checkout domain'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('https://store-abc-1.mybigcommerce.com'),
+    );
+  });
+
+  // Commander enforces this via `Option.conflicts`. It exits 1, which ends the
+  // process in production; here `process.exit` is mocked, so the action still
+  // runs afterwards — the exit code is the signal worth asserting.
+  test('update refuses --checkout-url together with --remove-checkout-url', async () => {
+    server.use(
+      http.put(checkoutPath, () =>
+        HttpResponse.json({ data: { id: 1, url: 'https://example.com', channel_id: 2 } }),
+      ),
+    );
+
+    await run(
+      'update',
+      '--channel-id',
+      '2',
+      '--checkout-url',
+      'checkout.example.com',
+      '--remove-checkout-url',
+    );
+
+    expect(exitMock).toHaveBeenCalledWith(1);
+  });
+
+  // `--checkout-url` on its own must not drag the caller through the hostname
+  // prompt for a storefront URL they never asked to change.
+  test('update --checkout-url alone leaves the storefront URL untouched', async () => {
+    let sitePutCalled = false;
+
+    server.use(
+      http.put(sitePath, () => {
+        sitePutCalled = true;
+
+        return HttpResponse.json({ data: { id: 1, url: 'https://example.com', channel_id: 2 } });
+      }),
+    );
+
+    await run('update', '--channel-id', '2', '--checkout-url', 'checkout.example.com');
+
+    expect(sitePutCalled).toBe(false);
+    expect(mockSelect).not.toHaveBeenCalled();
+  });
+
+  test('update --remove-checkout-url alone leaves the storefront URL untouched', async () => {
+    let sitePutCalled = false;
+
+    server.use(
+      http.put(sitePath, () => {
+        sitePutCalled = true;
+
+        return HttpResponse.json({ data: { id: 1, url: 'https://example.com', channel_id: 2 } });
+      }),
+      http.delete(checkoutPath, () => new HttpResponse(null, { status: 204 })),
+    );
+
+    await run('update', '--channel-id', '2', '--remove-checkout-url');
+
+    expect(sitePutCalled).toBe(false);
+    expect(mockSelect).not.toHaveBeenCalled();
   });
 });

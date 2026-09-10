@@ -45,9 +45,14 @@ async function resolveProject(options: ChannelSiteFlowOptions): Promise<ProjectL
   return selectOrCreateInfrastructureProject(api, options.projectUuid);
 }
 
-async function resolveChannel(
-  options: ChannelSiteFlowOptions,
-): Promise<{ id: number; name?: string }> {
+// Exported so `channels info` and `channels update` resolve channels the same
+// way rather than re-deriving the Catalyst-platform filter and its error copy.
+export async function resolveChannel(options: {
+  storeHash: string;
+  accessToken: string;
+  apiHost: string;
+  channelId?: number;
+}): Promise<{ id: number; name?: string }> {
   if (options.channelId !== undefined) {
     return { id: options.channelId };
   }
@@ -119,7 +124,13 @@ async function resolveHostname(
   return selected;
 }
 
-export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Promise<void> {
+export interface ChannelSiteFlowResult {
+  channelId: number;
+}
+
+export async function runChannelSiteUrlFlow(
+  options: ChannelSiteFlowOptions,
+): Promise<ChannelSiteFlowResult> {
   const project = await resolveProject(options);
   const channel = await resolveChannel(options);
   const hostname = await resolveHostname(project, options);
@@ -136,4 +147,8 @@ export async function runChannelSiteUrlFlow(options: ChannelSiteFlowOptions): Pr
   const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
   consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+
+  // Returned so `channels update --hostname --checkout-url` reuses this channel
+  // rather than resolving it twice.
+  return { channelId: channel.id };
 }
