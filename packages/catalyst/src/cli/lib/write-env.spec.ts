@@ -78,7 +78,7 @@ ENABLE_ADMIN_ROUTE=true
 
     writeEnv(projectDir, {
       BIGCOMMERCE_STORE_HASH: 'abc123',
-      CATALYST_ACCESS_TOKEN: 'tok_secret',
+      CUSTOM_TRACKING_ID: 'trk_123',
     });
 
     expect(readLocal()).toBe(
@@ -92,7 +92,7 @@ BIGCOMMERCE_CHANNEL_ID=1
 ENABLE_ADMIN_ROUTE=true
 
 # Additional variables set by the Catalyst CLI (not in .env.example).
-CATALYST_ACCESS_TOKEN=tok_secret
+CUSTOM_TRACKING_ID=trk_123
 `,
     );
   });

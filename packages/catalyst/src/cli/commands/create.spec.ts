@@ -186,9 +186,14 @@ describe('happy paths', () => {
         BIGCOMMERCE_STORE_HASH: storeHash,
         BIGCOMMERCE_CHANNEL_ID: '42',
         BIGCOMMERCE_STOREFRONT_TOKEN: 'flag-storefront-token',
-        CATALYST_ACCESS_TOKEN: accessToken,
       }),
     );
+
+    // `.env.local` is BIGCOMMERCE_* only. `objectContaining` above would happily
+    // pass if a CATALYST_* credential crept back in, so assert none is written.
+    const [, writtenEnv] = vi.mocked(writeEnv).mock.calls[0];
+
+    expect(Object.keys(writtenEnv).filter((key) => key.startsWith('CATALYST_'))).toEqual([]);
   });
 
   test('--hosting commerce sets up commerce hosting and writes BIGCOMMERCE_ACCESS_TOKEN', async () => {
