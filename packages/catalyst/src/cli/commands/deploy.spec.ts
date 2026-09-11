@@ -2,7 +2,7 @@ import { confirm, input, select } from '@inquirer/prompts';
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { http, HttpResponse } from 'msw';
-import { mkdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
   afterAll,
@@ -18,7 +18,7 @@ import {
 
 import { server } from '../../../tests/mocks/node';
 import { textHistory } from '../../../tests/mocks/spinner';
-import { setupCommerceHosting } from '../lib/commerce-hosting';
+import { OPENNEXT_CLOUDFLARE_VERSION, setupCommerceHosting } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
@@ -879,6 +879,41 @@ describe('transformation guard', () => {
     expect(setupCommerceHosting).not.toHaveBeenCalled();
     expect(installDependencies).not.toHaveBeenCalled();
   });
+
+  test('warns about a drifted OpenNext pin under --prebuilt without touching it', async () => {
+    // --prebuilt uploads an existing bundle, so moving the adapter here would
+    // ship dependencies the built worker was never compiled against.
+    const pkgPath = join(tmpDir, 'package.json');
+
+    await writeFile(
+      pkgPath,
+      JSON.stringify({ dependencies: { '@opennextjs/cloudflare': '1.17.3' } }, null, 2),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--prebuilt',
+      '--dry-run',
+    ]);
+
+    expect(setupCommerceHosting).not.toHaveBeenCalled();
+    expect(installDependencies).not.toHaveBeenCalled();
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining(OPENNEXT_CLOUDFLARE_VERSION));
+
+    const parsed: unknown = JSON.parse(await readFile(pkgPath, 'utf-8'));
+
+    expect(parsed).toMatchObject({ dependencies: { '@opennextjs/cloudflare': '1.17.3' } });
+  });
 });
 
 describe('--update-site-url', () => {
@@ -1010,5 +1045,107 @@ describe('--update-site-url', () => {
       expect.stringContaining('Failed to update channel site URL'),
     );
     expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst auth login'));
+  });
+
+  test('--update-checkout-url prompts for a checkout URL and PUTs it', async () => {
+    let putBody: unknown;
+    let putChannelId: string | undefined;
+
+    server.use(
+      http.put(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+        async ({ request, params }) => {
+          putBody = await request.json();
+          putChannelId = String(params.channelId);
+
+          return HttpResponse.json({
+            data: { id: 1, url: 'https://example.com', channel_id: 2 },
+          });
+        },
+      ),
+    );
+
+    vi.mocked(select).mockResolvedValueOnce(2); // channel
+    vi.mocked(input).mockResolvedValueOnce('https://checkout.example.com');
+
+    await program.parseAsync(deployArgs(['--update-checkout-url']));
+
+    expect(putChannelId).toBe('2');
+    expect(putBody).toEqual({ url: 'https://checkout.example.com' });
+    expect(consola.success).toHaveBeenCalledWith(
+      expect.stringContaining('checkout URL to https://checkout.example.com'),
+    );
+  });
+
+  // Running both flows must not ask which channel twice — the checkout flow
+  // reuses the channel the site-URL flow already resolved.
+  test('reuses the resolved channel when both update flags are passed', async () => {
+    let checkoutChannelId: string | undefined;
+
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({
+          data: { id: 1, url: 'https://project-one.catalyst-sandbox.store', channel_id: 2 },
+        }),
+      ),
+      http.put(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+        ({ params }) => {
+          checkoutChannelId = String(params.channelId);
+
+          return HttpResponse.json({
+            data: { id: 1, url: 'https://example.com', channel_id: 2 },
+          });
+        },
+      ),
+    );
+
+    vi.mocked(select)
+      .mockResolvedValueOnce(2) // channel, asked once by the site-URL flow
+      .mockResolvedValueOnce('project-one.catalyst-sandbox.store'); // hostname
+    vi.mocked(input).mockResolvedValueOnce('https://checkout.example.com');
+
+    await program.parseAsync(deployArgs(['--update-site-url', '--update-checkout-url']));
+
+    expect(checkoutChannelId).toBe('2');
+    // Two selects total: channel + hostname. A third would mean the checkout
+    // flow re-prompted for the channel.
+    expect(vi.mocked(select)).toHaveBeenCalledTimes(2);
+  });
+
+  test('does not call the checkout URL API when the flag is omitted', async () => {
+    let putCalled = false;
+
+    server.use(
+      http.put(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+        () => {
+          putCalled = true;
+
+          return HttpResponse.json({}, { status: 200 });
+        },
+      ),
+    );
+
+    await program.parseAsync(deployArgs());
+
+    expect(putCalled).toBe(false);
+  });
+
+  test('soft-fails with a warning when the checkout URL update errors', async () => {
+    server.use(
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url', () =>
+        HttpResponse.json({}, { status: 401 }),
+      ),
+    );
+
+    vi.mocked(select).mockResolvedValueOnce(2);
+    vi.mocked(input).mockResolvedValueOnce('https://checkout.example.com');
+
+    await program.parseAsync(deployArgs(['--update-checkout-url']));
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to update channel checkout URL'),
+    );
   });
 });

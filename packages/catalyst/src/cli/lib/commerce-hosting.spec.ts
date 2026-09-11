@@ -7,10 +7,13 @@ import { z } from 'zod';
 
 import {
   cleanupCloudflareIncompatibilities,
+  OPENNEXT_CLOUDFLARE_VERSION,
   promptAndCreateCommerceHostingProject,
   promptForCommerceHostingProject,
+  reconcileOpenNextVersion,
   setupCommerceHosting,
 } from './commerce-hosting';
+import { consola } from './logger';
 import * as projectLib from './project';
 import { InfrastructureProjectValidationError } from './project';
 
@@ -1053,5 +1056,167 @@ describe('cleanupCloudflareIncompatibilities', () => {
     await cleanupCloudflareIncompatibilities(projectDir);
 
     expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(false);
+  });
+});
+
+describe('reconcileOpenNextVersion', () => {
+  let dir: string;
+  let warnSpy: MockInstance;
+  let infoSpy: MockInstance;
+
+  const OK = { canUpgrade: true };
+
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), 'catalyst-opennext-drift-'));
+    warnSpy = vi.spyOn(consola, 'warn').mockImplementation(() => undefined);
+    infoSpy = vi.spyOn(consola, 'info').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    rmSync(dir, { recursive: true, force: true });
+    warnSpy.mockRestore();
+    infoSpy.mockRestore();
+  });
+
+  const writePkg = (contents: unknown) =>
+    writeFileSync(join(dir, 'package.json'), JSON.stringify(contents, null, 2));
+
+  const readPin = () => {
+    const parsed: unknown = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf-8'));
+
+    return z
+      .looseObject({ dependencies: z.record(z.string(), z.string()).optional() })
+      .parse(parsed).dependencies?.['@opennextjs/cloudflare'];
+  };
+
+  // A compatible Next version, so the peer gate is not what is under test.
+  const compatibleNext = { next: '~16.3.4' };
+
+  describe('cases it must stay out of', () => {
+    it('does nothing when the project has no package.json', async () => {
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the project does not depend on the adapter', async () => {
+      writePkg({ dependencies: compatibleNext });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the range already admits the target', async () => {
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '^1.17.3' } });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the project is pinned ahead of the CLI', async () => {
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '1.99.0' } });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.99.0');
+    });
+
+    it('does nothing for a specifier semver cannot parse', async () => {
+      writePkg({
+        dependencies: { ...compatibleNext, '@opennextjs/cloudflare': 'github:owner/repo#abc' },
+      });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the project is behind', () => {
+    const behind = () =>
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '1.17.3' } });
+
+    it('bumps the pin and reports a change when the user accepts', async () => {
+      behind();
+      confirmMock.mockResolvedValueOnce(true);
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(true);
+      } finally {
+        restoreTty();
+      }
+
+      expect(readPin()).toBe(OPENNEXT_CLOUDFLARE_VERSION);
+    });
+
+    it('leaves the pin alone and reports no change when the user declines', async () => {
+      behind();
+      confirmMock.mockResolvedValueOnce(false);
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(readPin()).toBe('1.17.3');
+      expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('pnpm add'));
+    });
+
+    it('never prompts or mutates in a non-interactive environment', async () => {
+      // pnpm treats the lockfile as frozen in CI, so the install that has to
+      // follow a rewrite would fail the deploy outright.
+      behind();
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('non-interactive'));
+    });
+
+    it('warns without mutating when the build output cannot be rebuilt', async () => {
+      behind();
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', { canUpgrade: false })).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('--prebuilt'));
+    });
+
+    it('refuses the upgrade when the project Next version is too old for it', async () => {
+      // Bumping here would leave an unsupported dependency set.
+      writePkg({ dependencies: { next: '~16.1.5', '@opennextjs/cloudflare': '1.17.3' } });
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('catalyst upgrade'));
+    });
+
+    it('names the project package manager in the manual fallback', async () => {
+      behind();
+
+      await reconcileOpenNextVersion(dir, 'npm', OK);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(`npm add @opennextjs/cloudflare@${OPENNEXT_CLOUDFLARE_VERSION}`),
+      );
+    });
   });
 });
