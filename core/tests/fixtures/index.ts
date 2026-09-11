@@ -11,6 +11,7 @@ import { extendedBrowser } from './browser';
 import { CatalogFixture } from './catalog';
 import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
+import { InventoryFixture } from './inventory';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
 import { PromotionFixture } from './promotion';
@@ -25,6 +26,7 @@ interface Fixtures {
   catalog: CatalogFixture;
   customer: CustomerFixture;
   currency: CurrencyFixture;
+  inventory: InventoryFixture;
   promotion: PromotionFixture;
   redirects: RedirectsFixture;
   settings: SettingsFixture;
@@ -80,6 +82,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(catalogFixture);
 
       await catalogFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  inventory: [
+    async ({ page }, use, currentTest) => {
+      const inventoryFixture = new InventoryFixture(page, currentTest);
+
+      await use(inventoryFixture);
+
+      await inventoryFixture.cleanup();
     },
     { scope: 'test' },
   ],
