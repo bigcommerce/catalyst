@@ -98,8 +98,8 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
   const shouldRemove = await confirm({
     message:
       'Catalyst found instrumentation.ts, which is incompatible with the Cloudflare Workers ' +
-      'bundle when it uses @vercel/otel (causes "Failed to prepare server" at cold start). ' +
-      'Remove it and drop @vercel/otel from package.json?',
+      'bundle when it uses @vercel/otel (causes "Failed to prepare server" at cold start).\n' +
+      'Remove it and drop @vercel/otel from package.json? (required for native hosting)',
     default: true,
   });
 
