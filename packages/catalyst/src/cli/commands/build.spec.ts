@@ -4,11 +4,13 @@ import { copyFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
+import { reconcileOpenNextVersion } from '../lib/commerce-hosting';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { getProjectState } from '../lib/project-state';
 import { program } from '../program';
 
-import { build } from './build';
+import { build, WRANGLER_VERSION } from './build';
 
 vi.mock('execa', () => ({
   execa: vi.fn(() => Promise.resolve({})),
@@ -46,6 +48,18 @@ vi.mock('../lib/project-config', () => ({
 
 // The required-env check has its own unit tests; here we only care about
 // command routing, so keep it a no-op regardless of the ambient environment.
+vi.mock('../lib/commerce-hosting', () => ({
+  reconcileOpenNextVersion: vi.fn(() => Promise.resolve(false)),
+}));
+
+vi.mock('../lib/install-dependencies', () => ({
+  installDependencies: vi.fn(),
+}));
+
+vi.mock('../lib/detect-package-manager', () => ({
+  detectProjectPackageManager: vi.fn(() => Promise.resolve('pnpm')),
+}));
+
 vi.mock('../lib/required-build-env', () => ({
   assertRequiredBuildEnv: vi.fn(),
 }));
@@ -69,8 +83,6 @@ const transformedState = {
   isTransformed: true,
   isFullySetUp: true,
 };
-
-const DEFAULT_WRANGLER_VERSION = '4.90.0';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 vi.spyOn(process, 'exit').mockImplementation(() => null as never);
@@ -117,7 +129,7 @@ test('uses the pinned default Wrangler version when the flag is absent', async (
 
   expect(execa).toHaveBeenCalledWith(
     'pnpm',
-    expect.arrayContaining(['dlx', `wrangler@${DEFAULT_WRANGLER_VERSION}`]),
+    expect.arrayContaining(['dlx', `wrangler@${WRANGLER_VERSION}`]),
     expect.anything(),
   );
 });
@@ -134,7 +146,7 @@ test('threads --wrangler-version into the wrangler invocation', async () => {
   );
   expect(execa).not.toHaveBeenCalledWith(
     'pnpm',
-    expect.arrayContaining(['dlx', `wrangler@${DEFAULT_WRANGLER_VERSION}`]),
+    expect.arrayContaining(['dlx', `wrangler@${WRANGLER_VERSION}`]),
     expect.anything(),
   );
 });
@@ -154,6 +166,36 @@ test('writes _headers into the assets directory so static assets get immutable C
   );
 });
 
+test('runs GraphQL codegen before the OpenNext build so it is not a silent prerequisite', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'node',
+    expect.arrayContaining([expect.stringContaining(join('scripts', 'generate.cjs'))]),
+    expect.objectContaining({ cwd: process.cwd() }),
+  );
+
+  const steps = vi.mocked(execa).mock.calls.map(([file, args]) => {
+    if (
+      file === 'node' &&
+      Array.isArray(args) &&
+      args.some((a) => String(a).includes('generate.cjs'))
+    ) {
+      return 'generate';
+    }
+
+    if (Array.isArray(args) && args.includes('opennextjs-cloudflare')) {
+      return 'build';
+    }
+
+    return 'other';
+  });
+
+  expect(steps.indexOf('generate')).toBeLessThan(steps.indexOf('build'));
+});
+
 test('rejects an invalid --wrangler-version value', async () => {
   vi.mocked(getProjectState).mockReturnValue(transformedState);
 
@@ -162,4 +204,25 @@ test('rejects an invalid --wrangler-version value', async () => {
   ).rejects.toThrow(/not a valid Wrangler version/);
 
   expect(execa).not.toHaveBeenCalled();
+});
+
+test('offers to move a stale adapter pin before the build, and installs when it moves', async () => {
+  // `catalyst build` invokes the project's own adapter, so the pin has to be
+  // reconciled before anything compiles against it.
+  vi.mocked(reconcileOpenNextVersion).mockResolvedValueOnce(true);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(reconcileOpenNextVersion).toHaveBeenCalledWith(expect.any(String), 'pnpm', {
+    canUpgrade: true,
+  });
+  expect(installDependencies).toHaveBeenCalledWith(expect.any(String), 'pnpm');
+});
+
+test('does not install when the adapter pin is already current', async () => {
+  vi.mocked(reconcileOpenNextVersion).mockResolvedValueOnce(false);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(installDependencies).not.toHaveBeenCalled();
 });

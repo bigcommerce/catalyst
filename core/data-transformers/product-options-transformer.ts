@@ -4,6 +4,7 @@ import { getTranslations } from 'next-intl/server';
 
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { getDateFieldBounds } from '~/lib/date-field-limits';
 
 export const productOptionsTransformer = async (
   productOptions: ResultOf<typeof ProductOptionsFragment>['productOptions'],
@@ -204,6 +205,7 @@ export const productOptionsTransformer = async (
           required: option.isRequired,
           name: option.entityId.toString(),
           defaultValue: option.defaultDate ?? undefined,
+          ...getDateFieldBounds(option.limitDateBy, option.earliest, option.latest),
         };
       }
 

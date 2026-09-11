@@ -33,6 +33,7 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { useAddToQuote, useAddToShoppingList } from '~/b2b/use-product-details';
 import { useEvents } from '~/components/analytics/events';
 import { usePathname, useRouter } from '~/i18n/routing';
+import { getDisabledDates } from '~/lib/date-field-limits';
 
 import { revalidateCart } from './actions/revalidate-cart';
 import { Field, schema, SchemaRawShape } from './schema';
@@ -506,6 +507,7 @@ function FormField({
       return (
         <DatePicker
           defaultValue={controls.value}
+          disabledDays={getDisabledDates({ minDate: field.minDate, maxDate: field.maxDate })}
           errors={formField.errors}
           key={formField.id}
           label={field.label}

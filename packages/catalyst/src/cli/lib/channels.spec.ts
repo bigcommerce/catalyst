@@ -6,7 +6,11 @@ import { server } from '../../../tests/mocks/node';
 import {
   type Channel,
   channelPlatformLabel,
+  deleteChannelCheckoutUrl,
+  findChannelSiteUrl,
+  getChannelSite,
   sortChannelsByPlatform,
+  updateChannelCheckoutUrl,
   updateChannelSiteUrl,
 } from './channels';
 
@@ -108,6 +112,193 @@ describe('updateChannelSiteUrl', () => {
     await expect(
       updateChannelSiteUrl(channelId, 'https://x.example', storeHash, accessToken, apiHost),
     ).rejects.toThrow('Failed to update channel site: Something went wrong on our end.');
+  });
+});
+
+const sitePath = 'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site';
+const checkoutPath = `${sitePath}/checkout-url`;
+
+const siteBody = {
+  id: 7,
+  url: 'https://example.com',
+  channel_id: channelId,
+  ssl_status: null,
+  is_checkout_url_customized: true,
+  urls: [
+    { url: 'https://example.com', type: 'primary' },
+    { url: 'https://store-abc-1.mybigcommerce.com', type: 'canonical' },
+    { url: 'https://checkout.example.com', type: 'checkout' },
+  ],
+};
+
+describe('getChannelSite', () => {
+  test('maps the site, tolerating the null ssl_status the API really returns', async () => {
+    server.use(http.get(sitePath, () => HttpResponse.json({ data: siteBody })));
+
+    const site = await getChannelSite(channelId, storeHash, accessToken, apiHost);
+
+    expect(site).toEqual({
+      id: 7,
+      url: 'https://example.com',
+      channelId,
+      sslStatus: null,
+      isCheckoutUrlCustomized: true,
+      urls: [
+        { url: 'https://example.com', type: 'primary' },
+        { url: 'https://store-abc-1.mybigcommerce.com', type: 'canonical' },
+        { url: 'https://checkout.example.com', type: 'checkout' },
+      ],
+    });
+  });
+
+  // The narrower `PUT .../site` response omits these, so they must default
+  // rather than fail to parse.
+  test('defaults the optional fields when the response omits them', async () => {
+    server.use(
+      http.get(sitePath, () =>
+        HttpResponse.json({ data: { id: 7, url: 'https://example.com', channel_id: channelId } }),
+      ),
+    );
+
+    const site = await getChannelSite(channelId, storeHash, accessToken, apiHost);
+
+    expect(site.sslStatus).toBeNull();
+    expect(site.isCheckoutUrlCustomized).toBe(false);
+    expect(site.urls).toEqual([]);
+  });
+
+  test('throws with a re-auth hint on 403', async () => {
+    server.use(http.get(sitePath, () => HttpResponse.json({}, { status: 403 })));
+
+    await expect(getChannelSite(channelId, storeHash, accessToken, apiHost)).rejects.toThrow(
+      'Re-run `catalyst auth login`',
+    );
+  });
+
+  test('throws a readable error on other failures', async () => {
+    server.use(http.get(sitePath, () => HttpResponse.json({}, { status: 500 })));
+
+    await expect(getChannelSite(channelId, storeHash, accessToken, apiHost)).rejects.toThrow(
+      'Failed to fetch channel site: Something went wrong on our end.',
+    );
+  });
+});
+
+describe('updateChannelCheckoutUrl', () => {
+  test('PUTs the url to the hyphenated channel-scoped path and returns the site', async () => {
+    let receivedBody: unknown;
+    let receivedChannelId: string | undefined;
+
+    server.use(
+      http.put(checkoutPath, async ({ request, params }) => {
+        receivedBody = await request.json();
+        receivedChannelId = String(params.channelId);
+
+        return HttpResponse.json({ data: siteBody });
+      }),
+    );
+
+    const site = await updateChannelCheckoutUrl(
+      channelId,
+      'https://checkout.example.com',
+      storeHash,
+      accessToken,
+      apiHost,
+    );
+
+    expect(receivedBody).toEqual({ url: 'https://checkout.example.com' });
+    expect(receivedChannelId).toBe(String(channelId));
+    expect(site.isCheckoutUrlCustomized).toBe(true);
+  });
+
+  // The same-main-domain rule is enforced by BigCommerce, not locally, so its
+  // explanation has to survive the trip to the user verbatim.
+  test("surfaces BigCommerce's same-main-domain 422 verbatim", async () => {
+    server.use(
+      http.put(checkoutPath, () =>
+        HttpResponse.json(
+          {
+            status: 422,
+            title: 'Incorrect checkout url https://checkout.example.org.',
+            detail:
+              'Your checkout and storefront must be within the same main domain like "main.com" and "subdomain.main.com"',
+          },
+          { status: 422 },
+        ),
+      ),
+    );
+
+    await expect(
+      updateChannelCheckoutUrl(
+        channelId,
+        'https://checkout.example.org',
+        storeHash,
+        accessToken,
+        apiHost,
+      ),
+    ).rejects.toThrow('must be within the same main domain');
+  });
+
+  test('throws with a re-auth hint on 401', async () => {
+    server.use(http.put(checkoutPath, () => HttpResponse.json({}, { status: 401 })));
+
+    await expect(
+      updateChannelCheckoutUrl(channelId, 'https://c.example.com', storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Re-run `catalyst auth login`');
+  });
+});
+
+describe('deleteChannelCheckoutUrl', () => {
+  test('DELETEs the checkout url', async () => {
+    let called = false;
+
+    server.use(
+      http.delete(checkoutPath, () => {
+        called = true;
+
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    await expect(
+      deleteChannelCheckoutUrl(channelId, storeHash, accessToken, apiHost),
+    ).resolves.toBeUndefined();
+    expect(called).toBe(true);
+  });
+
+  test('throws with a re-auth hint on 403', async () => {
+    server.use(http.delete(checkoutPath, () => HttpResponse.json({}, { status: 403 })));
+
+    await expect(
+      deleteChannelCheckoutUrl(channelId, storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Re-run `catalyst auth login`');
+  });
+
+  test('throws a readable error on other failures', async () => {
+    server.use(http.delete(checkoutPath, () => HttpResponse.json({}, { status: 500 })));
+
+    await expect(
+      deleteChannelCheckoutUrl(channelId, storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Failed to remove channel checkout URL: Something went wrong on our end.');
+  });
+});
+
+describe('findChannelSiteUrl', () => {
+  const site = {
+    id: 7,
+    url: 'https://example.com',
+    channelId,
+    sslStatus: null,
+    isCheckoutUrlCustomized: true,
+    urls: [
+      { url: 'https://example.com', type: 'primary' },
+      { url: 'https://checkout.example.com', type: 'checkout' },
+    ],
+  };
+
+  test('returns the url for a role, or undefined when absent', () => {
+    expect(findChannelSiteUrl(site, 'checkout')).toBe('https://checkout.example.com');
+    expect(findChannelSiteUrl(site, 'canonical')).toBeUndefined();
   });
 });
 

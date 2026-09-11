@@ -1,8 +1,13 @@
-// The compatibility date, compatibility flags, Durable Object classes, and
-// migration tag below are mirrored in Ignition, which builds its own Worker
-// metadata at deploy time (pkg/cloudflare/upload/metadata.go and
+// The compatibility date, compatibility flags, Durable Object classes,
+// migration tag, and KV namespace binding below are mirrored in Ignition,
+// which builds its own Worker metadata at deploy time
+// (pkg/cloudflare/upload/metadata.go and
 // pkg/cloudflare/upload/migrations/migrations.go). Keep both sides in sync
 // when changing any of them.
+//
+// Note that only the CATALYST_ROUTES_KV *binding name* is shared with
+// Ignition — the namespace id here is a local-only placeholder (see below),
+// while Ignition binds the real per-project namespace it provisioned.
 export function getCompatibilityDate(now = new Date()): string {
   const date = new Date(now);
 
@@ -15,6 +20,20 @@ export function getCompatibilityDate(now = new Date()): string {
 
   return date.toISOString().slice(0, 10);
 }
+
+// Namespace id for the routing cache KV binding in the *generated* config,
+// which only ever drives local `wrangler dev`/`opennextjs-cloudflare preview`
+// (where Miniflare keys its simulated store under `.wrangler/state/v3/kv`)
+// and the `wrangler deploy --dry-run` bundling step, which never resolves
+// bindings against the Cloudflare API. Ignition overwrites this with the real
+// per-project namespace id when it uploads the Worker.
+//
+// The value is deliberately not a 32-char lowercase hex string — the only
+// shape a real provisioned Cloudflare namespace id can take — so it cannot
+// collide with a production store's cache even if this config were somehow
+// used against the live API. Such a request fails closed with an invalid-id
+// error instead of reading or writing someone's real routing cache.
+const LOCAL_ROUTES_KV_NAMESPACE_ID = 'catalyst-routes-kv-local';
 
 export function getWranglerConfig(projectUuid: string) {
   return {
@@ -46,6 +65,12 @@ export function getWranglerConfig(projectUuid: string) {
       {
         binding: 'NEXT_INC_CACHE_R2_BUCKET',
         bucket_name: `project-${projectUuid}`,
+      },
+    ],
+    kv_namespaces: [
+      {
+        binding: 'CATALYST_ROUTES_KV',
+        id: LOCAL_ROUTES_KV_NAMESPACE_ID,
       },
     ],
     durable_objects: {
