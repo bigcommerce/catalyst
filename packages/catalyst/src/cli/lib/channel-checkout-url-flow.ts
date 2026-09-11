@@ -13,6 +13,10 @@ export interface ChannelCheckoutUrlFlowOptions {
   // skipped.
   channelId?: number;
   url?: string;
+  // Set by a caller that already resolved the channel and fetched the site, so
+  // the flow neither re-prompts nor re-reads.
+  channelName?: string;
+  storefrontUrl?: string;
 }
 
 // Prompts for a checkout URL and writes it.
@@ -24,27 +28,37 @@ export interface ChannelCheckoutUrlFlowOptions {
 export async function runChannelCheckoutUrlFlow(
   options: ChannelCheckoutUrlFlowOptions,
 ): Promise<void> {
-  const channel = await resolveChannel(options);
+  const channel =
+    options.channelId !== undefined
+      ? { id: options.channelId, name: options.channelName }
+      : await resolveChannel(options);
   const label = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
-  const site = await getChannelSite(
-    channel.id,
-    options.storeHash,
-    options.accessToken,
-    options.apiHost,
-  );
+  let storefrontUrl = options.storefrontUrl;
 
-  const storefrontUrl = findChannelSiteUrl(site, 'primary') ?? site.url;
-  const currentCheckoutUrl = findChannelSiteUrl(site, 'checkout');
-
-  consola.info(`Channel ${label} storefront is ${storefrontUrl}.`);
-
-  if (currentCheckoutUrl) {
-    consola.info(
-      `Checkout is currently ${currentCheckoutUrl}${
-        site.isCheckoutUrlCustomized ? '' : ', inherited from the default channel'
-      }.`,
+  // The storefront URL only feeds the prompt default, so skip the read when the
+  // caller already has it.
+  if (!storefrontUrl) {
+    const site = await getChannelSite(
+      channel.id,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
     );
+
+    storefrontUrl = findChannelSiteUrl(site, 'primary') ?? site.url;
+
+    const currentCheckoutUrl = findChannelSiteUrl(site, 'checkout');
+
+    consola.info(`Channel ${label} storefront is ${storefrontUrl}.`);
+
+    if (currentCheckoutUrl) {
+      consola.info(
+        `Checkout is currently ${currentCheckoutUrl}${
+          site.isCheckoutUrlCustomized ? '' : ', inherited from the default channel'
+        }.`,
+      );
+    }
   }
 
   const answer =
