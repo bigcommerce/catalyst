@@ -47,6 +47,19 @@ git merge origin/<upstream>
 
 If the merge completes cleanly, skip to changeset cleanup. Otherwise, resolve conflicts.
 
+### `refusing to merge unrelated histories`
+
+This means the **clone is shallow**, not that the merge base was lost. A shallow clone has no common ancestor in it to find, so the failure looks alarming but says nothing about the branches. Two other symptoms point the same way: `git merge-base <upstream> <target>` exits non-zero with no output, and `git rev-list --max-parents=0 <branch>` reports *recent* commits as roots rather than the repo's first commit.
+
+Confirm and fix:
+
+```bash
+git rev-parse --is-shallow-repository   # "true" means shallow
+git fetch --unshallow origin
+```
+
+Then re-run the merge and confirm `git merge-base` now resolves. Do **not** reach for `--allow-unrelated-histories`; on a shallow clone it would fabricate a merge across two histories git cannot see the join of.
+
 ### Conflict resolution rules
 
 Keep the target branch's identity, its release-wiring overrides, and its integration surface; take the upstream's structure for everything else. Never let an upstream value overwrite one of these — in particular, a package-name regression would republish over the upstream's package.
