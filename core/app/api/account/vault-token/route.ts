@@ -11,19 +11,20 @@ export async function GET() {
   const session = await auth();
 
   if (!session?.user) {
-    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+    return NextResponse.json(
+      { error: 'unauthorized' },
+      { status: 401, headers: { 'Cache-Control': 'no-store' } },
+    );
   }
 
   try {
     const token = await getVaultAccessToken();
 
     return NextResponse.json(token, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
-      {
-        error: `failed to create vault access token: ${error instanceof Error ? error.message : String(error)}`,
-      },
-      { status: 500 },
+      { error: 'failed to create vault access token' },
+      { status: 500, headers: { 'Cache-Control': 'no-store' } },
     );
   }
 }

@@ -237,7 +237,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
    * @param {string} [channelId]
    * @returns {Promise<string>}
    */
-  async getCanonicalUrl(channelId?: string) {
+  async getCanonicalUrl(channelId?: string): Promise<string> {
     const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
 
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;

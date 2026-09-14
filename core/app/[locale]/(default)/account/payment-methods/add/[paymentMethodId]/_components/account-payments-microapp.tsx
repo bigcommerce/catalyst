@@ -102,6 +102,9 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
           crossOrigin="anonymous"
           integrity={integrity}
           key={src}
+          onError={() => {
+            toast.error(t('somethingWentWrong'));
+          }}
           onLoad={() => setScriptsReady((n) => n + 1)}
           src={src}
           strategy="afterInteractive"

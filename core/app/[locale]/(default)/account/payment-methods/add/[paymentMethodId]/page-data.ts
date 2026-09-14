@@ -5,6 +5,7 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { toAccountPaymentsMicroappCountries } from '~/data-transformers/account-payments-countries';
+import { getPathname } from '~/i18n/navigation-server';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const AddPaymentPageDataQuery = graphql(`
@@ -101,13 +102,18 @@ export async function getAddPaymentPageData({ paymentMethodId }: { paymentMethod
 
   const storefrontApiBaseUrl = await client.getCanonicalUrl(channelId);
 
+  const paymentMethodsUrl = await getPathname({
+    href: '/account/payment-methods',
+    locale: storeLocale,
+  });
+
   // vaultToken prop is intentionally omitted here
   // It's a secret delivered separately via GET /api/account/vault-token
   const storeContextData = {
     storeHash,
     paymentsUrl,
     // The URL of shopper's stored payment methods page
-    paymentMethodsUrl: '/account/payment-methods',
+    paymentMethodsUrl,
     storefrontApiBaseUrl,
     shopperId: customer.entityId.toString(),
     customerEmail: customer.email,
