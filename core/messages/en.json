@@ -241,7 +241,7 @@
     },
     "PaymentMethods": {
       "Add": {
-        "title": "Add a payment method",
+        "title": "Add payment method",
         "Errors": {
           "sessionExpired": "Your session has expired. Please log in again.",
           "somethingWentWrong": "Something went wrong. Please try again."
