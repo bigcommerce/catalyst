@@ -1011,6 +1011,17 @@ describe('cleanupCloudflareIncompatibilities', () => {
     expect(readCorePackageJson().dependencies).toMatchObject({ next: '^15.0.0' });
   });
 
+  it('prompts with copy that ties the removal to native hosting', async () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
+    writeCoreInstrumentationFile('export function register() {}\n');
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    const message = confirmMock.mock.calls[0]?.[0].message ?? '';
+
+    expect(message.toLowerCase()).toContain('native hosting');
+  });
+
   it('leaves the file and the dep alone when the user declines (TTY)', async () => {
     confirmMock.mockResolvedValueOnce(false);
 
