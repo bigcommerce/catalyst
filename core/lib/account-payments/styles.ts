@@ -1,8 +1,10 @@
-const getStyle = (name: string) =>
-  `hsl(${getComputedStyle(document.documentElement).getPropertyValue(name).trim()})`;
+const getRawStyle = (...names: string[]) => {
+  const styles = getComputedStyle(document.documentElement);
 
-const getRawStyle = (name: string) =>
-  getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return names.map((name) => styles.getPropertyValue(name).trim()).find(Boolean) ?? '';
+};
+
+const getStyle = (...names: string[]) => `hsl(${getRawStyle(...names)})`;
 
 const getComputedClassStyles = (className: string, properties: string[]) => {
   const probe = document.createElement('div');
@@ -31,25 +33,26 @@ export function buildMicroappStyles(): AppStyles {
   const formActionsGap = getComputedClassStyles('gap-1', ['gap']).gap;
   const formActionsMarginTop = getComputedClassStyles('mt-3', ['margin-top'])['margin-top'];
   const headingMarginBottom = getComputedClassStyles('mb-2', ['margin-bottom'])['margin-bottom'];
+  const buttonFontFamily = getRawStyle('--button-font-family', '--font-family-body');
 
   return {
     inputBase: {
-      backgroundColor: getStyle('--background'),
-      color: getStyle('--foreground'),
-      borderColor: getStyle('--contrast-100'),
+      backgroundColor: getStyle('--input-light-background', '--background'),
+      color: getStyle('--input-light-text', '--foreground'),
+      borderColor: getStyle('--input-light-border', '--contrast-100'),
       fontFamily: getRawStyle('--font-family-body'),
       fontSize: getRawStyle('--font-size-sm'),
       borderRadius: roundedLg,
     },
-    inputValidationError: { borderColor: getStyle('--error') },
+    inputValidationError: { borderColor: getStyle('--input-light-border-error', '--error') },
     inputValidationSuccess: { borderColor: getStyle('--contrast-100'), backgroundImage: 'none' },
     validationError: {
-      color: getStyle('--error'),
+      color: getStyle('--field-error', '--error'),
       fontFamily: getRawStyle('--font-family-body'),
       fontSize: getRawStyle('--font-size-xs'),
     },
     label: {
-      color: getStyle('--contrast-500'),
+      color: getStyle('--label-light-text', '--contrast-500'),
       fontFamily: getRawStyle('--font-family-mono'),
       fontSize: getRawStyle('--font-size-xs'),
       textTransform: 'uppercase',
@@ -61,20 +64,20 @@ export function buildMicroappStyles(): AppStyles {
       marginBottom: headingMarginBottom,
     },
     submitButton: {
-      backgroundColor: getStyle('--primary'),
-      borderColor: getStyle('--primary'),
-      color: getStyle('--foreground'),
+      backgroundColor: getStyle('--button-primary-background', '--primary'),
+      borderColor: getStyle('--button-primary-border', '--primary'),
+      color: getStyle('--button-primary-text', '--foreground'),
       borderRadius: roundedFull,
-      fontFamily: getRawStyle('--font-family-body'),
+      fontFamily: buttonFontFamily,
       fontWeight: semibold,
       fontSize: getRawStyle('--font-size-sm'),
     },
     cancelButton: {
-      backgroundColor: getStyle('--background'),
-      borderColor: getStyle('--contrast-200'),
-      color: getStyle('--foreground'),
+      backgroundColor: getStyle('--button-tertiary-background', '--background'),
+      borderColor: getStyle('--button-tertiary-border', '--contrast-200'),
+      color: getStyle('--button-tertiary-text', '--foreground'),
       borderRadius: roundedFull,
-      fontFamily: getRawStyle('--font-family-body'),
+      fontFamily: buttonFontFamily,
       fontWeight: semibold,
       fontSize: getRawStyle('--font-size-sm'),
     },
