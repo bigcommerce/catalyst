@@ -505,6 +505,9 @@ async function resolveChannelTarget(options: ChannelTargetOptions) {
     accessToken,
     apiHost,
     channelId: options.channelId,
+    // Read-only: these commands report on a channel, so the picker must not
+    // say "to update" — the shared default is written for `channels update`.
+    message: 'Select a channel.',
   });
 
   return {
