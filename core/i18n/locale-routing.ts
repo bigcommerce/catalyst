@@ -120,3 +120,24 @@ export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): s
 
   return localeRouting.prefixes[locale] ?? `/${locale}`;
 }
+
+/**
+ * Reverse of `getLocalePrefix`: which locale a pathname's leading segment belongs to. For
+ * resolving the locale of a request that isn't itself locale-prefixed (e.g. an API route) from
+ * a trusted source such as the `Referer` header, instead of trusting client-supplied input.
+ *
+ * @param {LocaleRouting} localeRouting - Locale routing from merchant configuration.
+ * @param {string} pathname - A pathname to resolve a locale from, e.g. from `Referer`.
+ * @returns {string} The locale whose prefix matches, else the locale at "/" (falling back to
+ *   the default locale) when no configured prefix matches.
+ */
+export function getLocaleFromPathname(localeRouting: LocaleRouting, pathname: string): string {
+  const [, firstSegment = ''] = pathname.split('/');
+  const prefix = `/${firstSegment}`;
+
+  const matchedEntry = Object.entries(localeRouting.prefixes).find(
+    ([, localePrefix]) => localePrefix === prefix,
+  );
+
+  return matchedEntry?.[0] ?? localeRouting.rootLocale ?? localeRouting.defaultLocale;
+}
