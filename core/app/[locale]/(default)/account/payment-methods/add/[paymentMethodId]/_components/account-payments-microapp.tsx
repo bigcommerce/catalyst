@@ -97,6 +97,7 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
 
   return (
     <>
+      <div id="bc-account-payments" />
       {manifest.scripts.map(({ src, integrity }) => (
         <Script
           crossOrigin="anonymous"
@@ -105,7 +106,7 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
           onError={() => {
             toast.error(t('somethingWentWrong'));
           }}
-          onLoad={() => setScriptsReady((n) => n + 1)}
+          onReady={() => setScriptsReady((n) => n + 1)}
           src={src}
           strategy="afterInteractive"
         />

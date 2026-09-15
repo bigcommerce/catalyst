@@ -19,11 +19,12 @@ const CreateVaultAccessTokenMutation = graphql(`
   }
 `);
 
-export async function getVaultAccessToken() {
+export async function getVaultAccessToken(channelId?: string) {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const { data } = await client.fetch({
     document: CreateVaultAccessTokenMutation,
     customerAccessToken,
+    channelId,
     fetchOptions: { cache: 'no-store' },
   });
   const result = data.customer.storedPaymentInstruments.createVaultAccessToken;

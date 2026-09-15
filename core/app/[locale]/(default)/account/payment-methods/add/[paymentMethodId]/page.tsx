@@ -35,8 +35,11 @@ export default async function AddPaymentMethod({ params }: Props) {
           {t('title')}
         </h1>
       </header>
-      <div id="bc-account-payments" />
-      <AccountPaymentsMicroapp manifest={manifest} storeContextData={storeContextData} />
+      <AccountPaymentsMicroapp
+        key={`${locale}-${paymentMethodId}`}
+        manifest={manifest}
+        storeContextData={storeContextData}
+      />
     </>
   );
 }
