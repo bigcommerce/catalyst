@@ -89,6 +89,9 @@ const getUpstreamOrigin = (): string | null => {
   return buildChannelOrigin(storeHash, channelId);
 };
 
+// Upstream answers a trailing slash with a 307 to the bare path, so it never gets one.
+const stripTrailingSlash = (pathname: string): string => pathname.replace(/\/+$/, '') || '/';
+
 export const buildUpstreamUrl = (requestUrl: URL): URL | null => {
   const upstreamOrigin = getUpstreamOrigin();
 
@@ -97,8 +100,9 @@ export const buildUpstreamUrl = (requestUrl: URL): URL | null => {
   }
 
   // Upstream verifies the signed authority against the channel’s storefront host, so the
-  // proxy can forward the signature unchanged.
-  const upstreamUrl = new URL(requestUrl.pathname, upstreamOrigin);
+  // proxy can forward the signature unchanged: upstream handles the rewrite, so validation
+  // does not fail.
+  const upstreamUrl = new URL(stripTrailingSlash(requestUrl.pathname), upstreamOrigin);
 
   upstreamUrl.search = requestUrl.search;
 
