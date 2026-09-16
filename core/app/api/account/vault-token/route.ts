@@ -1,4 +1,5 @@
 import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '~/auth';
@@ -52,6 +53,8 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(token, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
+    rethrow(error);
+
     if (error instanceof BigCommerceAuthError) {
       return NextResponse.json(
         { error: 'unauthorized' },
