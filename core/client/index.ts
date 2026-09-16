@@ -52,14 +52,6 @@ export const client = createClient({
     const requestHeaders: Record<string, string> = {};
     const locale = await getLocale();
 
-    try {
-      const { getCorrelationId } = await import('./correlation-id');
-
-      requestHeaders['X-Correlation-ID'] = getCorrelationId();
-    } catch {
-      // correlation-id imports React.cache which is unavailable during next.config.ts resolution
-    }
-
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
       const { headers } = await import('next/headers');
       const ipAddress = (await headers()).get('X-Forwarded-For');
@@ -68,6 +60,13 @@ export const client = createClient({
         requestHeaders['X-Forwarded-For'] = ipAddress;
         requestHeaders['True-Client-IP'] = ipAddress;
       }
+
+      // Only sent on uncacheable requests. The correlation ID is unique per request, and Next.js
+      // includes request headers in the Data Cache key, so sending it alongside
+      // `next: { revalidate }` makes every lookup miss and write a fresh entry.
+      const { getCorrelationId } = await import('./correlation-id');
+
+      requestHeaders['X-Correlation-ID'] = getCorrelationId();
     }
 
     if (locale) {

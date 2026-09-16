@@ -1,5 +1,33 @@
 # @bigcommerce/catalyst
 
+## 1.4.1
+
+### Patch Changes
+
+- [#3226](https://github.com/bigcommerce/catalyst/pull/3226) [`039f322`](https://github.com/bigcommerce/catalyst/commit/039f3223287daaeb03800b1b8380dbbe49c4d877) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Let `catalyst auth login` re-authenticate when the stored token has expired, instead of demanding an explicit `catalyst auth logout` first.
+
+  Every authenticated command answers a rejected token with "Your access token is invalid or has expired. Run `catalyst auth login` to re-authenticate." But `login` only checked whether credentials were _present_, not whether they still worked, so it replied "Already logged in to store X. Run `catalyst auth logout` first to re-authenticate." The two commands sent the user in a circle, and the only way out was to know to run `auth logout`.
+
+  `login` now verifies the credentials it finds before refusing. If they still work it reports the store and exits as before; if the API rejects them it says so and carries straight on to re-authentication.
+
+  A verification failure that isn't a rejection (API unreachable, 5xx) is treated as "couldn't tell" rather than "invalid": the credentials are kept and the command exits, since the device-code flow needs the same network that just failed and would only swap one error for another.
+
+  `catalyst auth login --store-hash <hash> --access-token <token>` also now does what it is documented to do. It was listed under "Login with existing credentials (skips interactive flow)", but that path never wrote the credentials anywhere — it reported "Already logged in" and exited, so nothing was stored and the next command was still unauthenticated. Passing both flags now verifies them and saves them to `.bigcommerce/project.json`, replacing whatever was there. Only the flags count: these options also read `CATALYST_STORE_HASH`/`CATALYST_ACCESS_TOKEN`, and an exported env var is ambient config that must not turn a plain `catalyst auth login` into a silent credential write. Rejected credentials are reported as rejected rather than silently ignored in favour of a browser login; unverifiable ones are stored with a warning.
+
+  Also adds `catalyst auth login --force` to skip the verification and re-authenticate (or store what was passed) outright.
+
+- [#3225](https://github.com/bigcommerce/catalyst/pull/3225) [`118456f`](https://github.com/bigcommerce/catalyst/commit/118456fe627bf2c288725b5bc037d1c6e76b5d42) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop `catalyst upgrade` from reverting the CLI-managed npm scripts, which turned `catalyst start` back into `next start`.
+
+  `catalyst create` points `build`, `start` and `deploy` at the CLI so they dispatch on project state (`catalyst start` falls through to `next start` for a project that isn't set up for Commerce Hosting, so the scripts are correct for self-hosted projects too). The upstream tree keeps its own `next`-based commands, so in every created project those lines are a permanent ours-vs-base difference — and `upgrade` had no handling for them, unlike the `@bigcommerce/catalyst` devDependency, which is safe only because it has no upstream counterpart.
+
+  That difference is harmless until core edits a neighbouring line. Core 1.11.0 added `"test": "vitest run"` directly below `"start"`, which put a genuine upstream insertion right next to the one line the CLI had rewritten. Neither merge engine can reconcile the two, so `package.json` came out conflicted with `catalyst start` on one side and `next start` plus the new `test` script on the other. Resolving toward the incoming side — the obvious choice, since you do want the new script — silently dropped `catalyst start`. `build` was exposed the same way, and `deploy` was exposed to any upstream script appended at the end of the block.
+
+  Both downloaded sides are now pinned to the commands the project already has for those three keys before the merge runs, so the merge sees no change there at all: the project's scripts survive untouched and additions around them still apply cleanly. Only keys the project has actually diverged from its base on are pinned — where it matches base there is no difference to conflict with, and leaving it alone lets a genuine upstream edit through. Whenever the two versions disagree about one of these scripts — core changed the command, introduced it, or dropped it — the upgrade reports it rather than hiding it behind the pin.
+
+- [#3223](https://github.com/bigcommerce/catalyst/pull/3223) [`f6db31b`](https://github.com/bigcommerce/catalyst/commit/f6db31b3b20b3b53f1e2eeec9a83ed438b21d283) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels info` no longer asks you to "Select the channel to update." Its channel picker inherited that copy from `channels update`, which implied a write the command never makes — `info` only reports a channel's storefront, canonical and checkout URLs. It now asks "Select a channel."; the update flows keep their own wording.
+
+- [#3208](https://github.com/bigcommerce/catalyst/pull/3208) [`6772c50`](https://github.com/bigcommerce/catalyst/commit/6772c507e1f11f6dc4cabfc71f50805c6e37bc0d) Thanks [@mfaris9](https://github.com/mfaris9)! - `catalyst upgrade` now removes native-hosting-incompatible `instrumentation.ts` that a merge reintroduces, instead of leaving it for the merchant to delete by hand.
+
 ## 1.4.0
 
 ### Minor Changes

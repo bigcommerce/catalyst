@@ -743,6 +743,17 @@ describe('channels checkout URLs', () => {
     );
   });
 
+  // `info` only reads, so it must not borrow `channels update`'s picker copy.
+  test('the info picker does not describe itself as an update', async () => {
+    mockSelect.mockResolvedValueOnce(2);
+
+    await run('info');
+
+    expect(mockSelect).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Select a channel.' }),
+    );
+  });
+
   test('update --checkout-url sets the checkout URL', async () => {
     let putBody: unknown;
     let putChannelId: string | undefined;
