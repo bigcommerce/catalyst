@@ -80,9 +80,12 @@ export async function getAddPaymentPageData({ paymentMethodId }: { paymentMethod
     throw new Error('No payment base url resolved for this session');
   }
 
-  const defaultCurrencyCode = data.site.currencies.edges?.find(({ node }) => node.isDefault)?.node
-    .code;
-  const currencyCode = preferredCurrencyCode ?? defaultCurrencyCode;
+  const currencyEdges = data.site.currencies.edges ?? [];
+  const defaultCurrencyCode = currencyEdges.find(({ node }) => node.isDefault)?.node.code;
+  const isPreferredCurrencySupported = currencyEdges.some(
+    ({ node }) => node.code === preferredCurrencyCode,
+  );
+  const currencyCode = isPreferredCurrencySupported ? preferredCurrencyCode : defaultCurrencyCode;
 
   if (!currencyCode) {
     throw new Error('No currency code resolved for this session');

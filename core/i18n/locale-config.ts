@@ -75,7 +75,7 @@ const isUsableLocaleNode = (localeNode: LocaleNode): boolean => {
   return path === '' || LocalePrefixSchema.safeParse(`/${path}`).success;
 };
 
-export const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
+const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
   const { data } = await client.fetch({
     document: LocaleSettingsQuery,
     // Best effort: `fetch` isn't patched in the proxy runtime, and the Data Cache doesn't dedupe
@@ -212,6 +212,40 @@ export const getLocaleRoutingForProxy = async (
 
     return null;
   }
+};
+
+/**
+ * Locale routing for callers that can't use `getLocaleRouting()`'s forwarded-header trust — an
+ * unproxied `/api` route, where nothing (no `withIntl`) verifies that header first, so trusting
+ * it would let a caller forge the routing config — but also shouldn't pay for a live fetch on
+ * every request. Shares the same KV cache `getLocaleRoutingForProxy` populates, so in steady
+ * state this is just a cache read, already warmed by ordinary page traffic; it only falls back
+ * to `fetchLocaleRouting()` (never the forwarded header) on a miss or expiry.
+ *
+ * @returns {Promise<LocaleRouting>} Throws if both the cache and a live fetch fail — unlike the
+ *   proxy, there's no stale-while-revalidate path here worth the complexity for this route's
+ *   traffic volume, so an expired cache just means one synchronous refetch.
+ */
+export const getCachedLocaleRouting = async (): Promise<LocaleRouting> => {
+  const localeConfigCache = await readLocaleConfigCache();
+
+  if (localeConfigCache && localeConfigCache.expiryTime >= Date.now()) {
+    return localeConfigCache.routing;
+  }
+
+  const routing = await fetchLocaleRouting();
+
+  try {
+    await kv.set(kvKey(LOCALE_CONFIG_KEY), {
+      routing,
+      expiryTime: Date.now() + LOCALE_CONFIG_TTL_MS,
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Unable to cache locale configuration', error);
+  }
+
+  return routing;
 };
 
 const parseJson = (value: string): unknown => {

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
-import { fetchLocaleRouting } from '~/i18n/locale-config';
+import { getCachedLocaleRouting } from '~/i18n/locale-config';
 import { getLocaleFromPathname } from '~/i18n/locale-routing';
 import { getVaultAccessToken } from '~/lib/account-payments/get-vault-access-token';
 
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const localeRouting = await fetchLocaleRouting();
+    const localeRouting = await getCachedLocaleRouting();
     const queryLocale = request.nextUrl.searchParams.get('locale');
     const refererPathname = getRefererPathname(request);
     const locale =
@@ -61,6 +61,9 @@ export async function GET(request: NextRequest) {
         { status: 401, headers: { 'Cache-Control': 'no-store' } },
       );
     }
+
+    // eslint-disable-next-line no-console
+    console.error(error);
 
     return NextResponse.json(
       { error: 'failed to create vault access token' },
