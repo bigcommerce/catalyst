@@ -70,14 +70,23 @@ describe('buildUpstreamUrl', () => {
     expect(upstreamUrl?.host).not.toBe(new URL(VANITY_URL).host);
   });
 
+  it.each(['/api/ucp/checkout_sessions', '/.well-known/ucp'])(
+    'forwards %o verbatim, since signatures cover the path',
+    (pathname) => {
+      expect(buildUpstreamUrl(new URL(`https://storefront.example.com${pathname}`))?.href).toBe(
+        `${CANONICAL_URL}${pathname}`,
+      );
+    },
+  );
+
   it.each([
-    '/api/ucp/checkout_sessions',
-    '/api/ucp/checkout_sessions/',
-    '/.well-known/ucp',
-    '/.well-known/ucp/',
-  ])('forwards %o verbatim, since signatures cover the path', (pathname) => {
+    ['/api/ucp/checkout_sessions/', '/api/ucp/checkout_sessions'],
+    ['/api/ucp/checkout_sessions//', '/api/ucp/checkout_sessions'],
+    ['/.well-known/ucp/', '/.well-known/ucp'],
+    ['/', '/'],
+  ])('strips the trailing slash from %o', (pathname, expected) => {
     expect(buildUpstreamUrl(new URL(`https://storefront.example.com${pathname}`))?.href).toBe(
-      `${CANONICAL_URL}${pathname}`,
+      `${CANONICAL_URL}${expected}`,
     );
   });
 
@@ -85,7 +94,7 @@ describe('buildUpstreamUrl', () => {
     expect(
       buildUpstreamUrl(new URL('https://storefront.example.com/api/ucp/products/?limit=5&page=2'))
         ?.href,
-    ).toBe(`${CANONICAL_URL}/api/ucp/products/?limit=5&page=2`);
+    ).toBe(`${CANONICAL_URL}/api/ucp/products?limit=5&page=2`);
   });
 
   it('preserves nested paths', () => {
