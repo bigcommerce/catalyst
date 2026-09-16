@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.12.0
+
+### Minor Changes
+
+- [#3215](https://github.com/bigcommerce/catalyst/pull/3215) [`12b4a73`](https://github.com/bigcommerce/catalyst/commit/12b4a73cde46633a0017563c471f31076c15ba99) Thanks [@davidchin](https://github.com/davidchin)! - Serve the UCP (agentic commerce) endpoints. Agents discover and call UCP on the storefront's public domain, but it is served by the BigCommerce platform rather than by Catalyst, so `/.well-known/ucp` and `/api/ucp/*` are now proxied through to BigCommerce for every HTTP method. Previously `/api/ucp/*` 404'd and `/.well-known/ucp` was locale-redirected.
+
+  Only the headers the [UCP REST transport spec](https://ucp.dev/2026-04-08/specification/checkout-rest/) defines are passed in either direction, so nothing outside the spec is exchanged with a separate origin. No new environment variable is required.
+
+  If you have customised `proxy.ts`, add `withUcpProxy` as the first argument to `composeProxies` and add `/api/ucp/:path*` to `config.matcher`.
+
+### Patch Changes
+
+- [#3221](https://github.com/bigcommerce/catalyst/pull/3221) [`09cb855`](https://github.com/bigcommerce/catalyst/commit/09cb85574e6f09cd4422034146b6ad4917af1fc9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop sending `X-Correlation-ID` on cacheable GraphQL requests, which was making every Next.js Data Cache lookup miss.
+
+  The correlation ID is a fresh `crypto.randomUUID()` per request, memoized for the duration of a render by `React.cache`. Next.js builds its Data Cache key from the fetch URL, method, body **and headers** (`generateCacheKey` in `next/dist/server/lib/incremental-cache`), so a header that changes on every request produces a unique key on every request. Fetches configured with `next: { revalidate }` could therefore never hit: each one missed, went out to the BigCommerce GraphQL API, and wrote a new entry that nothing would ever read again. On a product page that is ~12 queries per page view — the full uncached render cost, every time, plus unbounded growth in the data cache.
+
+  Next.js already strips `traceparent` and `tracestate` from the cache key for exactly this reason, but it can only do that for headers it knows about.
+
+  The correlation ID now follows the same rule as `X-Forwarded-For` and `True-Client-IP` in the same hook: it is attached only when `fetchOptions.cache` is `no-store` or `no-cache`. Those requests are uncacheable by construction, so there is no cache key to pollute, and they are the per-customer requests where a correlation ID is most useful for tracing. Cacheable requests now share a stable key and hit the Data Cache as intended.
+
 ## 1.11.1
 
 ### Patch Changes

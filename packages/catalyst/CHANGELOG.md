@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.4.1
+
+### Patch Changes
+
+- [#3223](https://github.com/bigcommerce/catalyst/pull/3223) [`f6db31b`](https://github.com/bigcommerce/catalyst/commit/f6db31b3b20b3b53f1e2eeec9a83ed438b21d283) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels info` no longer asks you to "Select the channel to update." Its channel picker inherited that copy from `channels update`, which implied a write the command never makes — `info` only reports a channel's storefront, canonical and checkout URLs. It now asks "Select a channel."; the update flows keep their own wording.
+
 ## 1.4.0
 
 ### Minor Changes

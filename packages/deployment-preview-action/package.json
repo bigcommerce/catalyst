@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/deployment-preview-action",
   "description": "GitHub Action that deploys Catalyst pull request previews to a shared native hosting project.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "license": "MIT",
   "repository": {
