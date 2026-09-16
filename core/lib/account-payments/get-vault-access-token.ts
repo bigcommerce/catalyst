@@ -27,6 +27,7 @@ export async function getVaultAccessToken(channelId?: string) {
     channelId,
     fetchOptions: { cache: 'no-store' },
   });
+  // Note: `Mutation.customer` is non-null, so no null-check is needed here.
   const result = data.customer.storedPaymentInstruments.createVaultAccessToken;
 
   if (!result) {

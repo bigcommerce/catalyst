@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
-import { getLocaleRouting } from '~/i18n/locale-config';
+import { fetchLocaleRouting } from '~/i18n/locale-config';
 import { getLocaleFromPathname } from '~/i18n/locale-routing';
 import { getVaultAccessToken } from '~/lib/account-payments/get-vault-access-token';
 
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const localeRouting = await getLocaleRouting();
+    const localeRouting = await fetchLocaleRouting();
     const queryLocale = request.nextUrl.searchParams.get('locale');
     const refererPathname = getRefererPathname(request);
     const locale =

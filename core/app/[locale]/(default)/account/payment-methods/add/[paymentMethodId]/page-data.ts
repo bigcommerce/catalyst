@@ -5,7 +5,7 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { toAccountPaymentsMicroappCountries } from '~/data-transformers/account-payments-countries';
-import { getPathname } from '~/i18n/navigation-server';
+import { getPathname, redirect } from '~/i18n/navigation-server';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const AddPaymentPageDataQuery = graphql(`
@@ -51,6 +51,12 @@ const AddPaymentPageDataQuery = graphql(`
 
 export async function getAddPaymentPageData({ paymentMethodId }: { paymentMethodId: string }) {
   const customerAccessToken = await getSessionCustomerAccessToken();
+
+  if (!customerAccessToken) {
+    const locale = await getLocale();
+
+    return redirect({ href: '/login', locale });
+  }
 
   const [{ data }, storeLocale, preferredCurrencyCode] = await Promise.all([
     client.fetch({

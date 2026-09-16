@@ -122,14 +122,13 @@ export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): s
 }
 
 /**
- * Reverse of `getLocalePrefix`: which locale a pathname's leading segment(s) belong to. For
- * resolving the locale of a request that isn't itself locale-prefixed (e.g. an API route) from
- * a trusted source such as the `Referer` header, instead of trusting client-supplied input.
+ * Reverse of `getLocalePrefix`: figures out which locale a URL path belongs to (e.g. for
+ * reading it from a trusted `Referer` header instead of trusting client-supplied input).
  *
- * Prefixes can span more than one segment (`LOCALE_PREFIX_PATTERN` in `~/i18n/locale-config`
- * permits e.g. `/en/us`), so this matches on a path-segment boundary rather than just the first
- * segment, and prefers the longest match in case one configured prefix is itself a segment
- * prefix of another (e.g. `/en` and `/en/us` both configured).
+ * Checks every locale, not just ones explicitly listed in `prefixes` — some locales fall back
+ * to using their own code as the prefix and would otherwise be missed. Skips the root locale
+ * (empty prefix would match everything). Matches on whole path segments and prefers the
+ * longest match, since a prefix can span more than one segment (e.g. `/en/us`).
  *
  * @param {LocaleRouting} localeRouting - Locale routing from merchant configuration.
  * @param {string} pathname - A pathname to resolve a locale from, e.g. from `Referer`.
@@ -137,7 +136,11 @@ export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): s
  *   the default locale) when no configured prefix matches.
  */
 export function getLocaleFromPathname(localeRouting: LocaleRouting, pathname: string): string {
-  const matchingPrefixes = Object.entries(localeRouting.prefixes).filter(
+  const candidates = localeRouting.locales
+    .map((locale): [string, string] => [locale, getLocalePrefix(localeRouting, locale)])
+    .filter(([, prefix]) => prefix !== '');
+
+  const matchingPrefixes = candidates.filter(
     ([, prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 

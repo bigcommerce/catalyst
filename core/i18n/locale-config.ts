@@ -75,7 +75,7 @@ const isUsableLocaleNode = (localeNode: LocaleNode): boolean => {
   return path === '' || LocalePrefixSchema.safeParse(`/${path}`).success;
 };
 
-const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
+export const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
   const { data } = await client.fetch({
     document: LocaleSettingsQuery,
     // Best effort: `fetch` isn't patched in the proxy runtime, and the Data Cache doesn't dedupe
