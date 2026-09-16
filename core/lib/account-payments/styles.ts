@@ -41,7 +41,7 @@ const getComputedClassStyles = (className: string, properties: string[]) => {
   return values;
 };
 
-export function buildMicroappStyles(): AppStyles {
+export function buildMicroappStyles(): AccountPaymentsAppStyles {
   const roundedLg = getComputedClassStyles('rounded-lg', ['border-radius'])['border-radius'];
   const roundedFull = getComputedClassStyles('rounded-full', ['border-radius'])['border-radius'];
   const semibold = getComputedClassStyles('font-semibold', ['font-weight'])['font-weight'];

@@ -1,23 +1,23 @@
 import type { CSSProperties } from 'react';
 
 declare global {
-  interface State {
+  interface AccountPaymentsState {
     code: string;
     name: string;
     value: string;
   }
 
-  interface Country {
+  interface AccountPaymentsCountry {
     code: string;
     label: string;
-    states?: State[];
+    states?: AccountPaymentsState[];
     value: string;
   }
 
   type PaymentProviderInitializationData = unknown;
 
   interface HeadlessStoreContextDataInterface {
-    countries: Country[];
+    countries: AccountPaymentsCountry[];
     paymentsUrl: string;
     storeHash: string;
     storeLocale: string;
@@ -31,7 +31,7 @@ declare global {
     storefrontApiBaseUrl: string;
   }
 
-  interface AppStyles {
+  interface AccountPaymentsAppStyles {
     inputBase?: CSSProperties;
     inputValidationError?: CSSProperties;
     inputValidationSuccess?: CSSProperties;
@@ -47,7 +47,7 @@ declare global {
 
   interface RenderAccountPaymentsArgs {
     storeContextData: HeadlessStoreContextDataInterface;
-    styles: AppStyles;
+    styles: AccountPaymentsAppStyles;
     errorHandler: (message: string) => void;
   }
 
