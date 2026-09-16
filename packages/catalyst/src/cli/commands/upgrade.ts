@@ -19,8 +19,10 @@ import { minVersion, satisfies, lt as semverLt, validRange, valid as validSemver
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { cleanupCloudflareIncompatibilities } from '../lib/commerce-hosting';
 import { detectLockfileManager, PackageManager } from '../lib/detect-package-manager';
 import { consola } from '../lib/logger';
+import { getProjectState } from '../lib/project-state';
 import { getTelemetry } from '../lib/telemetry';
 
 const CorePackageJson = z.object({
@@ -1040,6 +1042,33 @@ function printSummary({
   }
 }
 
+export async function reconcileNativeHosting(
+  catalystRoot: string,
+  result: MergeResult,
+): Promise<void> {
+  const state = getProjectState(catalystRoot);
+
+  if (!state.isLinked && !state.isTransformed) return;
+
+  const instrumentationRel = 'instrumentation.ts';
+  const instrumentationPath = join(catalystRoot, instrumentationRel);
+  const hadInstrumentation = await pathExists(instrumentationPath);
+
+  try {
+    await cleanupCloudflareIncompatibilities(catalystRoot);
+  } catch (err) {
+    consola.warn(
+      `Couldn't fully reconcile native-hosting files (${err instanceof Error ? err.message : String(err)}). Remove @vercel/otel from package.json by hand if the merge brought it back.`,
+    );
+  }
+
+  if (hadInstrumentation && !(await pathExists(instrumentationPath))) {
+    result.conflicted = result.conflicted.filter((rel) => rel !== instrumentationRel);
+    result.applied = result.applied.filter((rel) => rel !== instrumentationRel);
+    result.added = result.added.filter((rel) => rel !== instrumentationRel);
+  }
+}
+
 export const upgrade = new Command('upgrade')
   .configureHelp({ showGlobalOptions: true })
   .aliases([
@@ -1381,6 +1410,8 @@ to raise the GitHub API rate limit.`,
           );
         }
       }
+
+      await reconcileNativeHosting(catalystRoot, result);
 
       // ── 7. Stage the clean changes; mark conflicts as real unmerged entries ─
       // Staging is a convenience; the merge already landed on disk, so never let

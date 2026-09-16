@@ -1,14 +1,24 @@
 import { Command } from '@commander-js/extra-typings';
+import { confirm } from '@inquirer/prompts';
 import { execa } from 'execa';
 import { http, HttpResponse } from 'msw';
 import { execSync } from 'node:child_process';
 import { access, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { server } from '../../../tests/mocks/node';
 import { detectLockfileManager } from '../lib/detect-package-manager';
+
+vi.mock('@inquirer/prompts', () => ({
+  confirm: vi.fn(),
+  input: vi.fn(),
+  select: vi.fn(),
+  Separator: class FakeSeparator {
+    type = 'separator';
+  },
+}));
 
 // The tree engine runs many git subprocesses sequentially on Windows CI; give
 // every test in this file enough headroom (the fast ones finish in < 1 s).
@@ -23,12 +33,29 @@ import {
   migrateWorkspaceDeps,
   normalizeWorkspaceDeps,
   parseRef,
+  reconcileNativeHosting,
   resolveBaseRef,
   resolveProject,
   resolveStrategy,
   rewriteWorkspaceSpecifier,
   upgrade,
 } from './upgrade';
+
+const confirmMock = vi.mocked(confirm);
+
+function withTty(value: boolean): () => void {
+  const previous = Object.getOwnPropertyDescriptor(process.stdin, 'isTTY');
+
+  Object.defineProperty(process.stdin, 'isTTY', { value, configurable: true });
+
+  return () => {
+    if (previous) {
+      Object.defineProperty(process.stdin, 'isTTY', previous);
+    } else {
+      Reflect.deleteProperty(process.stdin, 'isTTY');
+    }
+  };
+}
 
 const createdDirs: string[] = [];
 
@@ -786,5 +813,113 @@ describe('detectLockfileManager', () => {
 
   test('returns null when there is no lockfile, so the caller can keep looking', async () => {
     expect(await detectLockfileManager(await mkTmp())).toBeNull();
+  });
+});
+
+describe('reconcileNativeHosting', () => {
+  let restoreTty: () => void;
+
+  beforeEach(() => {
+    confirmMock.mockReset();
+    restoreTty = withTty(true);
+  });
+
+  afterEach(() => {
+    restoreTty();
+  });
+
+  async function seedTransformedProject(withInstrumentation: boolean): Promise<string> {
+    const dir = await mkTmp();
+
+    await write(join(dir, 'middleware.ts'), 'export const middleware = () => {};\n');
+    await write(
+      join(dir, 'package.json'),
+      JSON.stringify(
+        {
+          name: 'my-store',
+          dependencies: {
+            '@opennextjs/cloudflare': '1.17.3',
+            '@vercel/otel': '^1.10.0',
+            next: '16.3.4',
+          },
+        },
+        null,
+        2,
+      ),
+    );
+
+    if (withInstrumentation) {
+      await write(
+        join(dir, 'instrumentation.ts'),
+        "import { registerOTel } from '@vercel/otel';\nexport function register() { registerOTel(); }\n",
+      );
+    }
+
+    return dir;
+  }
+
+  test('removes an instrumentation.ts the merge brought back and clears it from the conflict list', async () => {
+    confirmMock.mockResolvedValue(true);
+
+    const dir = await seedTransformedProject(true);
+    const result = { applied: [], added: [], deleted: [], conflicted: ['instrumentation.ts'] };
+
+    await reconcileNativeHosting(dir, result);
+
+    expect(await exists(join(dir, 'instrumentation.ts'))).toBe(false);
+    expect(result.conflicted).not.toContain('instrumentation.ts');
+    expect(await readFile(join(dir, 'package.json'), 'utf-8')).not.toContain('@vercel/otel');
+  });
+
+  test('still reconciles a linked project when the merge left package.json unparseable', async () => {
+    confirmMock.mockResolvedValue(true);
+
+    const dir = await mkTmp();
+
+    await write(join(dir, '.bigcommerce', 'project.json'), JSON.stringify({ projectUuid: 'p1' }));
+    await write(join(dir, 'middleware.ts'), 'export const middleware = () => {};\n');
+    await write(
+      join(dir, 'package.json'),
+      [
+        '{',
+        '  "name": "my-store",',
+        '  "dependencies": {',
+        '<<<<<<< ours',
+        '    "@opennextjs/cloudflare": "1.17.3",',
+        '    "@vercel/otel": "^1.10.0"',
+        '=======',
+        '    "@vercel/otel": "^2.0.0"',
+        '>>>>>>> theirs',
+        '  }',
+        '}',
+      ].join('\n'),
+    );
+    await write(
+      join(dir, 'instrumentation.ts'),
+      "import { registerOTel } from '@vercel/otel';\nexport function register() { registerOTel(); }\n",
+    );
+
+    const result = { applied: [], added: [], deleted: [], conflicted: ['instrumentation.ts'] };
+
+    await reconcileNativeHosting(dir, result);
+
+    expect(await exists(join(dir, 'instrumentation.ts'))).toBe(false);
+    expect(result.conflicted).not.toContain('instrumentation.ts');
+  });
+
+  test('leaves the project alone when it is not set up for native hosting', async () => {
+    confirmMock.mockResolvedValue(true);
+
+    const dir = await seedTransformedProject(true);
+
+    await write(join(dir, 'proxy.ts'), 'export const proxy = () => {};\n');
+
+    const result = { applied: [], added: [], deleted: [], conflicted: ['instrumentation.ts'] };
+
+    await reconcileNativeHosting(dir, result);
+
+    expect(await exists(join(dir, 'instrumentation.ts'))).toBe(true);
+    expect(result.conflicted).toContain('instrumentation.ts');
+    expect(confirmMock).not.toHaveBeenCalled();
   });
 });
