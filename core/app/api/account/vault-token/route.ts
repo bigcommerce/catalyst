@@ -23,8 +23,10 @@ function getRefererPathname(request: NextRequest) {
   }
 }
 
-// This route is used by the account payments microapp component to retrieve a vault access token for the current shopper session
-// to avoid exposing the token to the client-side code as it is a sensitive piece of information.
+// This route is used by the account payments microapp component to retrieve a vault access token
+// for the current shopper session. It keeps the token out of server-rendered page data, so it can't
+// leak into HTML or RSC payloads, and mint it only through this one authenticated, per-request endpoint
+// rather than embedding it anywhere upstream.
 export async function GET(request: NextRequest) {
   const session = await auth();
 
@@ -37,10 +39,13 @@ export async function GET(request: NextRequest) {
 
   try {
     const localeRouting = await getLocaleRouting();
+    const queryLocale = request.nextUrl.searchParams.get('locale');
     const refererPathname = getRefererPathname(request);
-    const locale = refererPathname
-      ? getLocaleFromPathname(localeRouting, refererPathname)
-      : (localeRouting.rootLocale ?? localeRouting.defaultLocale);
+    const locale =
+      (queryLocale && localeRouting.locales.includes(queryLocale) ? queryLocale : null) ??
+      (refererPathname ? getLocaleFromPathname(localeRouting, refererPathname) : null) ??
+      localeRouting.rootLocale ??
+      localeRouting.defaultLocale;
     const channelId = getChannelIdFromLocale(locale);
 
     const token = await getVaultAccessToken(channelId);

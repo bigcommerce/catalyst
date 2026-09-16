@@ -44,9 +44,12 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
   // Guards against calling `renderAccountPayments` more than once for the lifetime of this component instance
   const hasRenderedRef = useRef(false);
 
+  const { storeLocale } = storeContextData;
+
   useEffect(() => {
     async function fetchVaultToken() {
-      const res = await fetch('/api/account/vault-token');
+      // `locale` lets the route resolve the same channel this page's data was built for
+      const res = await fetch(`/api/account/vault-token?locale=${encodeURIComponent(storeLocale)}`);
 
       if (res.status === 401) {
         throw new VaultTokenUnauthorizedError();
@@ -72,7 +75,7 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
           : t('somethingWentWrong'),
       );
     });
-  }, [t]);
+  }, [t, storeLocale]);
 
   useEffect(() => {
     if (

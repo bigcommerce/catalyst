@@ -122,9 +122,14 @@ export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): s
 }
 
 /**
- * Reverse of `getLocalePrefix`: which locale a pathname's leading segment belongs to. For
+ * Reverse of `getLocalePrefix`: which locale a pathname's leading segment(s) belong to. For
  * resolving the locale of a request that isn't itself locale-prefixed (e.g. an API route) from
  * a trusted source such as the `Referer` header, instead of trusting client-supplied input.
+ *
+ * Prefixes can span more than one segment (`LOCALE_PREFIX_PATTERN` in `~/i18n/locale-config`
+ * permits e.g. `/en/us`), so this matches on a path-segment boundary rather than just the first
+ * segment, and prefers the longest match in case one configured prefix is itself a segment
+ * prefix of another (e.g. `/en` and `/en/us` both configured).
  *
  * @param {LocaleRouting} localeRouting - Locale routing from merchant configuration.
  * @param {string} pathname - A pathname to resolve a locale from, e.g. from `Referer`.
@@ -132,12 +137,11 @@ export function getLocalePrefix(localeRouting: LocaleRouting, locale: string): s
  *   the default locale) when no configured prefix matches.
  */
 export function getLocaleFromPathname(localeRouting: LocaleRouting, pathname: string): string {
-  const [, firstSegment = ''] = pathname.split('/');
-  const prefix = `/${firstSegment}`;
-
-  const matchedEntry = Object.entries(localeRouting.prefixes).find(
-    ([, localePrefix]) => localePrefix === prefix,
+  const matchingPrefixes = Object.entries(localeRouting.prefixes).filter(
+    ([, prefix]) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
 
-  return matchedEntry?.[0] ?? localeRouting.rootLocale ?? localeRouting.defaultLocale;
+  const [longestMatch] = matchingPrefixes.sort(([, a], [, b]) => b.length - a.length);
+
+  return longestMatch?.[0] ?? localeRouting.rootLocale ?? localeRouting.defaultLocale;
 }

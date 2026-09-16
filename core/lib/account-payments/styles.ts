@@ -1,10 +1,26 @@
+// Returns the value of the first set variable in the list (e.g. font stacks, font sizes),
+// unchanged. Falls back through the list in order; last one is the guaranteed default.
 const getRawStyle = (...names: string[]) => {
   const styles = getComputedStyle(document.documentElement);
 
   return names.map((name) => styles.getPropertyValue(name).trim()).find(Boolean) ?? '';
 };
 
-const getStyle = (...names: string[]) => `hsl(${getRawStyle(...names)})`;
+// Same fallback idea as `getRawStyle`, but for colors. The last name is always Catalyst's
+// plain base color (just raw numbers, needs `hsl(...)` to become a real color). Any earlier
+// name is a merchant's own color override, which is already a complete color if they set one
+// — so only the base fallback gets wrapped in `hsl(...)`; an override is returned as-is.
+const getStyle = (...names: string[]) => {
+  const styles = getComputedStyle(document.documentElement);
+  const overrideNames = names.slice(0, -1);
+  const baseTokenName = names.at(-1) ?? '';
+
+  const override = overrideNames.map((name) => styles.getPropertyValue(name).trim()).find(Boolean);
+
+  if (override) return override;
+
+  return `hsl(${styles.getPropertyValue(baseTokenName).trim()})`;
+};
 
 const getComputedClassStyles = (className: string, properties: string[]) => {
   const probe = document.createElement('div');
