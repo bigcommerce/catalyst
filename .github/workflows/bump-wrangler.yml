@@ -1,0 +1,72 @@
+name: Bump Wrangler
+
+on:
+  schedule:
+    # Mondays at 09:00 UTC, alongside the weekly Dependabot run.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-wrangler:
+    name: Bump Wrangler pin
+    runs-on: ubuntu-latest
+    # One rolling branch, so a run that overlaps another can't race it.
+    concurrency:
+      group: ${{ github.workflow }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: canary
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      # No install step: the script only needs Node and the npm registry.
+      - name: Bump the Wrangler pin
+        id: bump
+        run: node .github/scripts/bump-wrangler-version.mts
+
+      - name: Open or update the pull request
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: automation/bump-wrangler-version
+          PREVIOUS: ${{ steps.bump.outputs.previous }}
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          title="chore(cli): bump Wrangler to $VERSION"
+          release="https://github.com/cloudflare/workers-sdk/releases/tag/wrangler%40$VERSION"
+
+          # The branch is always rebuilt from the canary tip, so the diff stays a
+          # single commit and a superseded bump's changeset never lingers on it.
+          git switch -c "$BRANCH"
+          git add packages/catalyst/src/cli/commands/build.ts .changeset
+          git commit -m "$title"
+          git push --force origin "$BRANCH"
+
+          body=$(printf '%s\n\n%s\n\n%s\n' \
+            "Bumps the Wrangler version \`catalyst build\` builds with from \`$PREVIOUS\` to [\`$VERSION\`]($release)." \
+            "Opened by the weekly [Bump Wrangler](.github/workflows/bump-wrangler.yml) job. The pin is a string literal in the CLI source rather than a manifest entry, so Dependabot can't reach it. The job only tracks the pinned major — a new Wrangler major is reported in the job summary and adopted by hand." \
+            "GitHub doesn't run workflows on pushes made with \`GITHUB_TOKEN\`, so this PR opens without checks. Push an empty commit to run them.")
+
+          number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --title "$title" --body "$body"
+            echo "Updated PR #$number."
+          else
+            gh pr create --base canary --head "$BRANCH" --title "$title" --body "$body"
+          fi
