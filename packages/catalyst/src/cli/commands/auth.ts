@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { z } from 'zod';
 
 import { assertAuthorized, UnauthorizedError } from '../lib/auth-errors';
@@ -43,6 +43,36 @@ async function fetchStoreProfile(storeHash: string, accessToken: string, apiHost
   }
 
   return result.data.data;
+}
+
+// `login` verifies rather than just checking for stored credentials: every other
+// command answers a rejected token with "Run `catalyst auth login`", so refusing
+// because credentials are merely *present* loops the user back with no way out
+// but `auth logout`. `unverifiable` keeps that distinct from a real rejection —
+// we can't prove the token is bad, so we don't discard it.
+type CredentialStatus =
+  | { valid: true; storeName: string }
+  | { valid: false; reason: 'unauthorized' }
+  | { valid: false; reason: 'unverifiable'; message: string };
+
+async function checkCredentials(
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<CredentialStatus> {
+  try {
+    const { store_name: storeName } = await fetchStoreProfile(storeHash, accessToken, apiHost);
+
+    return { valid: true, storeName };
+  } catch (error) {
+    if (error instanceof UnauthorizedError) return { valid: false, reason: 'unauthorized' };
+
+    return {
+      valid: false,
+      reason: 'unverifiable',
+      message: error instanceof Error ? error.message : String(error),
+    };
+  }
 }
 
 const whoami = new Command('whoami')
@@ -119,7 +149,7 @@ Example:
 const login = new Command('login')
   .configureHelp({ showGlobalOptions: true })
   .description(
-    'Authenticate via browser using the OAuth device code flow. Falls back to an interactive store hash + access token prompt if the browser flow is unavailable. If already logged in, displays current credentials and suggests running `catalyst auth logout` to re-authenticate.',
+    'Authenticate via browser using the OAuth device code flow. Falls back to an interactive store hash + access token prompt if the browser flow is unavailable. Passing --store-hash and --access-token verifies and stores those credentials instead. If already logged in with credentials that still work, displays them and suggests `catalyst auth logout`; if the stored token has expired or been revoked, re-authenticates in place.',
   )
   .addHelpText(
     'after',
@@ -129,26 +159,97 @@ Examples:
   $ catalyst auth login
 
   # Login with existing credentials (skips interactive flow)
-  $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>`,
+  $ catalyst auth login --store-hash <STORE_HASH> --access-token <ACCESS_TOKEN>
+
+  # Re-authenticate without checking the stored credentials first
+  $ catalyst auth login --force`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
   .addOption(apiHostOption())
   .addOption(loginUrlOption())
-  .action(async (options) => {
+  .addOption(
+    new Option(
+      '--force',
+      'Skip the check on any credentials already stored and re-authenticate regardless.',
+    ),
+  )
+  .action(async (options, command) => {
     try {
       const config = getProjectConfig();
       const apiHost = resolveApiHost(options, config);
 
       const storeHash = options.storeHash ?? config.get('storeHash');
       const accessToken = options.accessToken ?? config.get('accessToken');
+      // Both flags typed on the command line. These options also read
+      // CATALYST_STORE_HASH/CATALYST_ACCESS_TOKEN, but an exported env var is
+      // ambient config and must not turn a plain `auth login` into a silent
+      // credential write — only an explicit pair of flags does.
+      const suppliedOnCli =
+        command.getOptionValueSource('storeHash') === 'cli' &&
+        command.getOptionValueSource('accessToken') === 'cli';
 
-      if (storeHash && accessToken) {
-        consola.info(`Already logged in to store ${storeHash}.`);
-        consola.info('Run `catalyst auth logout` first to re-authenticate.');
+      // Non-interactive login: the user named the credentials to use, so verify
+      // and persist them rather than reporting on them.
+      if (suppliedOnCli && storeHash && accessToken) {
+        if (!options.force) {
+          const status = await checkCredentials(storeHash, accessToken, apiHost);
+
+          // Opening a browser instead would hide what's wrong with what they passed.
+          if (!status.valid && status.reason === 'unauthorized') {
+            consola.error(`The credentials provided for store ${storeHash} were rejected.`);
+            consola.info(
+              'Check the store hash and access token, or run `catalyst auth login` without them to authenticate in the browser.',
+            );
+            process.exit(1);
+
+            return;
+          }
+
+          if (!status.valid) {
+            consola.warn(`Couldn't verify the credentials provided: ${status.message}`);
+          }
+        }
+
+        config.set('storeHash', storeHash);
+        config.set('accessToken', accessToken);
+
+        consola.success(`Logged in to store ${storeHash}.`);
         process.exit(0);
 
         return;
+      }
+
+      if (storeHash && accessToken && !options.force) {
+        const status = await checkCredentials(storeHash, accessToken, apiHost);
+
+        if (status.valid) {
+          consola.info(`Already logged in to ${status.storeName} (${storeHash}).`);
+          consola.info(
+            'Run `catalyst auth logout` first to re-authenticate, or `catalyst auth login --force` to skip this check.',
+          );
+          process.exit(0);
+
+          return;
+        }
+
+        // The device-code flow needs the same network that just failed, so
+        // trading working credentials for another error is a downgrade.
+        if (status.reason === 'unverifiable') {
+          consola.warn(
+            `Found credentials for store ${storeHash} but couldn't verify them: ${status.message}`,
+          );
+          consola.info(
+            'Keeping them. Re-run once the API is reachable, or `catalyst auth login --force` to re-authenticate regardless.',
+          );
+          process.exit(0);
+
+          return;
+        }
+
+        consola.warn(
+          `Stored credentials for store ${storeHash} are no longer valid — re-authenticating.`,
+        );
       }
 
       const credentials = await runInteractiveLogin(options.loginUrl, apiHost);

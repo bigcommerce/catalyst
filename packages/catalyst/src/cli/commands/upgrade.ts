@@ -19,8 +19,10 @@ import { minVersion, satisfies, lt as semverLt, validRange, valid as validSemver
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { cleanupCloudflareIncompatibilities } from '../lib/commerce-hosting';
 import { detectLockfileManager, PackageManager } from '../lib/detect-package-manager';
 import { consola } from '../lib/logger';
+import { getProjectState } from '../lib/project-state';
 import { getTelemetry } from '../lib/telemetry';
 
 const CorePackageJson = z.object({
@@ -304,6 +306,138 @@ export async function findStaleCli(
   const current = minVersion(range)?.version;
 
   return current !== undefined && semverLt(current, latest) ? { current, latest } : null;
+}
+
+// ── CLI-managed npm scripts ───────────────────────────────────────────────────
+// `catalyst create` points `build`/`start`/`deploy` at the CLI (see
+// setup-core-project.ts) so they dispatch on project state. The upstream tree
+// keeps its own `next`-based commands, so in every created project those lines
+// are a permanent ours-vs-base delta — and a delta that conflicts the moment
+// core edits a neighbouring line. Core 1.11.0 inserted `"test": "vitest run"`
+// directly below `"start"` and did exactly that; resolving the hunk toward
+// theirs (the obvious choice, since you do want the new `test` script) silently
+// reverted `catalyst start` to `next start`.
+//
+// So pin both downloaded sides to the commands the project already has for those
+// keys. The merge then sees no change there at all, ours survives untouched, and
+// additions around it still apply cleanly. Only keys where ours already differs
+// from base get pinned: where ours matches base there is no delta to conflict
+// with, and leaving that alone lets a genuine upstream edit through.
+const CLI_MANAGED_SCRIPTS = ['build', 'start', 'deploy'] as const;
+
+const ScriptsPackageJson = z.looseObject({
+  scripts: z.record(z.string(), z.string()).optional(),
+});
+
+// A CLI-managed script the two tags disagree about. Pinning hides that from the
+// merge, so it gets reported rather than lost silently. `null` on either side
+// means that tag didn't carry the script at all.
+export interface ManagedScriptFinding {
+  name: string;
+  base: string | null;
+  theirs: string | null;
+}
+
+const readScripts = (raw: string): Record<string, string | undefined> => {
+  try {
+    return ScriptsPackageJson.parse(JSON.parse(raw)).scripts ?? {};
+  } catch {
+    return {}; // conflict markers or hand-broken JSON — nothing to reconcile
+  }
+};
+
+// Locates the `"scripts"` object in raw package.json text. The alternation steps
+// over complete JSON strings, so a brace inside a command can't end the match
+// early.
+const SCRIPTS_BLOCK = /"scripts"\s*:\s*\{(?:[^{}"]|"(?:[^"\\]|\\.)*")*\}/;
+
+// Sets a script's command in raw package.json text, appending the entry when the
+// side doesn't have it yet (no upstream tag carries `deploy`). Deliberately
+// textual rather than a JSON round-trip, for the same reason as
+// rewriteWorkspaceSpecifier: re-stringifying would reformat the whole file and
+// desync the downloaded trees from the merchant's copy, turning a one-line script
+// change into a whole-file conflict.
+export const rewriteScriptCommand = (raw: string, name: string, command: string): string => {
+  const block = SCRIPTS_BLOCK.exec(raw);
+
+  if (!block) return raw;
+
+  const splice = (replacement: string) =>
+    raw.slice(0, block.index) + replacement + raw.slice(block.index + block[0].length);
+
+  // Function replacer so `$&` / `$1` inside a command can't interpolate.
+  const updated = block[0].replace(
+    new RegExp(`("${escapeRegExp(name)}"\\s*:\\s*)"(?:[^"\\\\]|\\\\.)*"`),
+    (_match, key: string) => `${key}${JSON.stringify(command)}`,
+  );
+
+  if (updated !== block[0]) return splice(updated);
+
+  // Absent — append, reusing the block's own indentation so the inserted line is
+  // byte-identical to the one `catalyst create` writes into the project.
+  const closeIdx = block[0].length - 1;
+  const head = block[0].slice(0, closeIdx).replace(/\s+$/, '');
+  const closeIndent = /\n([ \t]*)$/.exec(block[0].slice(0, closeIdx))?.[1] ?? '';
+  const entryIndent = /\n([ \t]*)"/.exec(block[0])?.[1] ?? `${closeIndent}  `;
+  const separator = head.endsWith('{') ? '' : ',';
+
+  return splice(
+    `${head}${separator}\n${entryIndent}${JSON.stringify(name)}: ${JSON.stringify(command)}\n${closeIndent}}`,
+  );
+};
+
+// Rewrites the downloaded base/theirs package.json so both sides carry the
+// project's own commands for the CLI-managed scripts.
+export async function normalizeManagedScripts(
+  ourPkgRaw: string,
+  baseDir: string,
+  theirsDir: string,
+): Promise<{ pinned: string[]; upstreamChanged: ManagedScriptFinding[] }> {
+  const basePath = join(baseDir, 'package.json');
+  const theirsPath = join(theirsDir, 'package.json');
+  const [originalBase, originalTheirs] = await Promise.all([
+    readFile(basePath, 'utf-8').catch(() => null),
+    readFile(theirsPath, 'utf-8').catch(() => null),
+  ]);
+
+  if (originalBase === null || originalTheirs === null) return { pinned: [], upstreamChanged: [] };
+
+  const ourScripts = readScripts(ourPkgRaw);
+  const baseScripts = readScripts(originalBase);
+  const theirsScripts = readScripts(originalTheirs);
+
+  const decisions = CLI_MANAGED_SCRIPTS.flatMap((name) => {
+    const ours = ourScripts[name];
+
+    return ours !== undefined && ours !== baseScripts[name] ? [{ name, ours }] : [];
+  });
+
+  // Report whenever the two tags disagree about the script, which covers core
+  // changing the command, introducing it, and dropping it. Pinning makes the
+  // merge blind to all three: an introduced command gets overwritten with the
+  // project's own, and a dropped one gets written back.
+  const upstreamChanged = decisions.flatMap<ManagedScriptFinding>(({ name }) => {
+    const base = baseScripts[name] ?? null;
+    const theirs = theirsScripts[name] ?? null;
+
+    return base !== theirs ? [{ name, base, theirs }] : [];
+  });
+
+  const baseRaw = decisions.reduce(
+    (acc, { name, ours }) => rewriteScriptCommand(acc, name, ours),
+    originalBase,
+  );
+  const theirsRaw = decisions.reduce(
+    (acc, { name, ours }) => rewriteScriptCommand(acc, name, ours),
+    originalTheirs,
+  );
+
+  await Promise.all([
+    baseRaw === originalBase ? null : writeFile(basePath, baseRaw),
+    theirsRaw === originalTheirs ? null : writeFile(theirsPath, theirsRaw),
+  ]);
+
+  return { pinned: decisions.map(({ name }) => name), upstreamChanged };
 }
 
 // ── per-file 3-way merge engine ───────────────────────────────────────────────
@@ -976,6 +1110,24 @@ function printWorkspaceFindings(findings: WorkspaceDepFinding[]): void {
   );
 }
 
+// Pinning the CLI-managed scripts keeps the merge off those lines, so an upstream
+// edit to one of them would otherwise vanish without a trace. Report it instead.
+function printManagedScriptFindings(findings: ManagedScriptFinding[]): void {
+  if (findings.length === 0) return;
+
+  const pad = Math.max(...findings.map((finding) => finding.name.length));
+  const show = (command: string | null) => command ?? '(absent)';
+  const rows = findings
+    .map(
+      (finding) => `  ${finding.name.padEnd(pad)}  ${show(finding.base)} → ${show(finding.theirs)}`,
+    )
+    .join('\n');
+
+  consola.warn(
+    `Core's own version of ${findings.length} npm script${findings.length === 1 ? '' : 's'} the CLI manages for you changed:\n${rows}\n\nYour project keeps its \`catalyst\`-backed command, which is almost always what you want — \`catalyst build\`/\`start\`/\`deploy\` wrap the equivalent \`next\` command. Apply the change by hand only if you have opted out of the CLI scripts.`,
+  );
+}
+
 interface Summary {
   result: MergeResult;
   relDir: string;
@@ -1037,6 +1189,33 @@ function printSummary({
     consola.info(
       `Your Catalyst CLI is behind (${staleCli.current} → ${staleCli.latest}). Update it with \`${packageManager} add -D ${CATALYST_CLI_PACKAGE}@${staleCli.latest}\`.`,
     );
+  }
+}
+
+export async function reconcileNativeHosting(
+  catalystRoot: string,
+  result: MergeResult,
+): Promise<void> {
+  const state = getProjectState(catalystRoot);
+
+  if (!state.isLinked && !state.isTransformed) return;
+
+  const instrumentationRel = 'instrumentation.ts';
+  const instrumentationPath = join(catalystRoot, instrumentationRel);
+  const hadInstrumentation = await pathExists(instrumentationPath);
+
+  try {
+    await cleanupCloudflareIncompatibilities(catalystRoot);
+  } catch (err) {
+    consola.warn(
+      `Couldn't fully reconcile native-hosting files (${err instanceof Error ? err.message : String(err)}). Remove @vercel/otel from package.json by hand if the merge brought it back.`,
+    );
+  }
+
+  if (hadInstrumentation && !(await pathExists(instrumentationPath))) {
+    result.conflicted = result.conflicted.filter((rel) => rel !== instrumentationRel);
+    result.applied = result.applied.filter((rel) => rel !== instrumentationRel);
+    result.added = result.added.filter((rel) => rel !== instrumentationRel);
   }
 }
 
@@ -1241,6 +1420,14 @@ to raise the GitHub API rate limit.`,
         targetVersions,
       );
 
+      // ── 3d. Keep the merge off the CLI-managed npm scripts ──────────────
+      // Also before the dry run, so the preview matches what will be applied.
+      const { upstreamChanged: managedScripts } = await normalizeManagedScripts(
+        project.rawContent,
+        baseDir,
+        theirsDir,
+      );
+
       // ── 4. Dry run: show the unified diff and stop ──────────────────────
       if (options.dryRun) {
         const diffSpinner = yoctoSpinner().start('Generating diff...');
@@ -1268,6 +1455,7 @@ to raise the GitHub API rate limit.`,
         consola.log(diff.stdout);
 
         printWorkspaceFindings(workspaceDeps);
+        printManagedScriptFindings(managedScripts);
 
         return;
       }
@@ -1349,6 +1537,8 @@ to raise the GitHub API rate limit.`,
         }
       }
 
+      printManagedScriptFindings(managedScripts);
+
       // ── 6b. Offer to migrate workspace-protocol Catalyst dependencies ────
       printWorkspaceFindings(workspaceDeps);
 
@@ -1381,6 +1571,8 @@ to raise the GitHub API rate limit.`,
           );
         }
       }
+
+      await reconcileNativeHosting(catalystRoot, result);
 
       // ── 7. Stage the clean changes; mark conflicts as real unmerged entries ─
       // Staging is a convenience; the merge already landed on disk, so never let

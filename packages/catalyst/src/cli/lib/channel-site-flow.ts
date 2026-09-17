@@ -58,6 +58,9 @@ export async function resolveChannel(options: {
   accessToken: string;
   apiHost: string;
   channelId?: number;
+  // Overrides the picker copy for callers that aren't about to write anything —
+  // `channels info` only reads, so "to update" would misdescribe it.
+  message?: string;
 }): Promise<{ id: number; name?: string }> {
   if (options.channelId !== undefined) {
     return { id: options.channelId };
@@ -85,7 +88,7 @@ export async function resolveChannel(options: {
   }
 
   const id = await select({
-    message: 'Select the channel to update.',
+    message: options.message ?? 'Select the channel to update.',
     choices: catalystChannels.map((c: Channel) => ({
       name: c.name,
       value: c.id,
