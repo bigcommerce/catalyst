@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.1
+
+### Patch Changes
+
+- [#3231](https://github.com/bigcommerce/catalyst/pull/3231) [`f25d98d`](https://github.com/bigcommerce/catalyst/commit/f25d98d746efe90bf87fe3dd3297aee09d054301) Thanks [@parthshahp](https://github.com/parthshahp)! - Preserve configured Auth.js session-token cookie attributes when converting the token to a browser-session cookie. This prevents integrations that use partitioned cookies from creating a second, unpartitioned session token that can survive logout.
+
 ## 1.12.0
 
 ### Minor Changes
