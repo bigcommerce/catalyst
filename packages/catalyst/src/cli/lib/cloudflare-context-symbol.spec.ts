@@ -1,4 +1,7 @@
 import { getCloudflareContext } from '@opennextjs/cloudflare';
+import { readFileSync } from 'fs';
+import { createRequire } from 'module';
+import { dirname, join } from 'path';
 import { afterEach, expect, test } from 'vitest';
 
 import { OPENNEXT_CLOUDFLARE_VERSION } from './commerce-hosting';
@@ -56,8 +59,21 @@ test('getCloudflareContext resolves the value synchronously, with no await', () 
   expect(result).toBe(sentinel);
 });
 
-test('the pinned OpenNext version this contract was verified against is unchanged', () => {
-  // A bump here is the trigger to re-verify the symbol key above against the
-  // new version's `dist/api/cloudflare-context.js`.
-  expect(OPENNEXT_CLOUDFLARE_VERSION).toBe('1.20.6');
+test('the contract above was verified against the version the CLI pins', () => {
+  // The tests above exercise whichever `@opennextjs/cloudflare` is installed
+  // here, so they only say something about OPENNEXT_CLOUDFLARE_VERSION while the
+  // two agree. Let them drift -- a lockfile bump that leaves the constant
+  // behind, or a constant bump that leaves the lockfile behind -- and they still
+  // pass, having verified a version no project is pinned to.
+  //
+  // Resolved via the package's entry point rather than a path into
+  // `node_modules`: `./package.json` is absent from its `exports`, and pnpm
+  // stores the real package outside the importer's tree.
+  const entry = createRequire(import.meta.url).resolve('@opennextjs/cloudflare');
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const installed = JSON.parse(
+    readFileSync(join(dirname(entry), '..', '..', 'package.json'), 'utf-8'),
+  ) as { version: string };
+
+  expect(installed.version).toBe(OPENNEXT_CLOUDFLARE_VERSION);
 });
