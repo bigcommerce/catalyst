@@ -9,6 +9,7 @@ export const graphql = initGraphQLTada<{
     Long: number;
     BigDecimal: number;
     UUID: string;
+    URL: string;
   };
   disableMasking: true;
 }>();

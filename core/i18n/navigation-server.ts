@@ -31,3 +31,11 @@ export async function permanentRedirect(
 
   return localePermanentRedirect(...args);
 }
+
+export async function getPathname(
+  ...args: Parameters<LocaleNavigation['getPathname']>
+): Promise<string> {
+  const { getPathname: localeGetPathname } = createLocaleNavigation(await getLocaleRouting());
+
+  return localeGetPathname(...args);
+}
