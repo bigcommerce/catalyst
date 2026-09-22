@@ -7,6 +7,7 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { ClientWalletButtons } from '~/components/wallet-buttons';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { blacklistedUSStates } from '~/lib/blacklisted-us-states';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
@@ -304,15 +305,6 @@ export default async function Cart({ params }: Props) {
     value: country.code,
     label: country.name,
   }));
-
-  // These US states share the same abbreviation (AE), which causes issues:
-  // 1. The shipping API uses abbreviations, so it can't distinguish between them
-  // 2. React select dropdowns require unique keys, causing duplicate key warnings
-  const blacklistedUSStates = new Set([
-    'Armed Forces Africa',
-    'Armed Forces Canada',
-    'Armed Forces Middle East',
-  ]);
 
   const statesOrProvinces = shippingCountries.map((country) => ({
     country: country.code,
