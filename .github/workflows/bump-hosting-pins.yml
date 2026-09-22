@@ -53,13 +53,72 @@ jobs:
       # `core` reads the Cloudflare context off a symbol key that is an internal
       # detail of the adapter; a release that changed it would leave every
       # native-hosted store silently on an in-process cache. This spec calls the
-      # real implementation, so running it here is what makes the bump safe — and
-      # it is the only place it gets checked, since GitHub won't run checks on a
-      # PR this job pushes.
+      # real implementation, so it is what proves the key still holds.
       - name: Verify the Cloudflare context contract
         if: steps.bump.outputs.updated == 'true'
         run: pnpm vitest run src/cli/lib/cloudflare-context-symbol.spec.ts
         working-directory: packages/catalyst
+
+      # Committed before the build runs, and pushed only once it passes. The
+      # verification below rewrites `core/` and the lockfile to stand up a
+      # native-hosting project, and none of that belongs in the bump.
+      - name: Commit the bump
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          TITLE: ${{ steps.bump.outputs.title }}
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # The branch is always rebuilt from the canary tip, so the diff stays a
+          # single commit and a superseded bump's changeset never lingers on it.
+          git switch -c automation/bump-hosting-pins
+          git add packages/catalyst/src/cli/lib/commerce-hosting.ts \
+            packages/catalyst/src/cli/commands/build.ts \
+            packages/catalyst/package.json pnpm-lock.yaml .changeset
+          git commit -m "$TITLE"
+
+      # The unit suites mock Wrangler and OpenNext, so they cannot tell whether
+      # the new pins actually build. This stands up a real native-hosting project
+      # against them and runs the true pipeline — `opennextjs-cloudflare build`
+      # followed by `wrangler deploy --dry-run`, which bundles and validates
+      # without deploying anything.
+      #
+      # It builds the CLI from this branch's source on purpose: installing the
+      # published `@bigcommerce/catalyst` would carry that release's pins and so
+      # verify nothing about the bump.
+      #
+      # This is the only place a generated bump is exercised end to end, since
+      # GitHub won't run checks on a PR pushed with `GITHUB_TOKEN`.
+      - name: Verify a real build against the new pins
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          ADAPTER_VERSION: ${{ steps.bump.outputs.adapter-version }}
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+
+          pnpm --filter "./packages/*" build
+
+          cd core
+
+          # `catalyst build` dispatches on project state: without middleware.ts
+          # and the adapter dependency it falls through to `next build` and never
+          # touches OpenNext or Wrangler. This is the transform `catalyst create`
+          # performs, applied to the upstream tree.
+          mv proxy.ts middleware.ts
+          perl -pi -e 's/export const proxy/export const middleware/' middleware.ts
+          perl -0pi -e "s/export const config = \{/export const config = {\n  runtime: 'experimental-edge',/" middleware.ts
+          pnpm add "@opennextjs/cloudflare@$ADAPTER_VERSION"
+
+          pnpm run generate
+          pnpm exec "$GITHUB_WORKSPACE/packages/catalyst/dist/cli.js" build
 
       - name: Open or update the pull request
         if: steps.bump.outputs.updated == 'true'
@@ -73,22 +132,12 @@ jobs:
         run: |
           set -euo pipefail
 
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-
-          # The branch is always rebuilt from the canary tip, so the diff stays a
-          # single commit and a superseded bump's changeset never lingers on it.
-          git switch -c "$BRANCH"
-          git add packages/catalyst/src/cli/lib/commerce-hosting.ts \
-            packages/catalyst/src/cli/commands/build.ts \
-            packages/catalyst/package.json pnpm-lock.yaml .changeset
-          git commit -m "$TITLE"
           git push --force origin "$BRANCH"
 
           body=$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
             "$SUMMARY" \
             "Opened by the weekly [Bump Hosting Pins](.github/workflows/bump-hosting-pins.yml) job. Both versions are string literals in the CLI source rather than manifest entries, so Dependabot can't reach either. They are maintained in one PR because \`@opennextjs/cloudflare\` declares which Wrangler it supports — Wrangler is pinned to the newest release that adapter allows, not the newest that exists." \
-            "This PR leaves the adapter at \`$ADAPTER_VERSION\` and Wrangler at \`$WRANGLER_VERSION\`. The job ran \`cloudflare-context-symbol.spec.ts\` against them before opening it, so the symbol key core depends on is known good. A release that moved the adapter's Next.js requirement, or that needs a Wrangler major this job doesn't track, holds both pins and reports why instead." \
+            "This PR leaves the adapter at \`$ADAPTER_VERSION\` and Wrangler at \`$WRANGLER_VERSION\`. Before opening it, the job ran \`cloudflare-context-symbol.spec.ts\` against them, then stood up a real native-hosting project and completed an \`opennextjs-cloudflare build\` plus \`wrangler deploy --dry-run\` — so these pins are known to build, not merely to typecheck. A release that moved the adapter's Next.js requirement, or that needs a Wrangler major this job doesn't track, holds both pins and reports why instead." \
             "GitHub doesn't run workflows on pushes made with \`GITHUB_TOKEN\`, so this PR opens without checks. Push an empty commit to run them.")
 
           number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
