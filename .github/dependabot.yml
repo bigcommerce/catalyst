@@ -15,6 +15,10 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
+      # Owned by the Bump Hosting Pins job, which moves this in lockstep with
+      # OPENNEXT_CLOUDFLARE_VERSION. A Dependabot bump would desync the two and
+      # fail the Cloudflare context contract test every week.
+      - dependency-name: '@opennextjs/cloudflare'
       # Disabling tailwind due to browser compatibility constraints.
       - dependency-name: 'tailwindcss'
         update-types: ['version-update:semver-major']

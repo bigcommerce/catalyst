@@ -330,9 +330,6 @@ importers:
       '@inquirer/prompts':
         specifier: ^7.5.3
         version: 7.5.3(@types/node@22.15.30)
-      '@opennextjs/cloudflare':
-        specifier: ^1.20.6
-        version: 1.20.6(encoding@0.1.13)(next@16.3.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.15.30)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(wrangler@4.128.0)
       '@segment/analytics-node':
         specifier: ^2.2.1
         version: 2.2.1(encoding@0.1.13)
@@ -394,6 +391,9 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
+      '@opennextjs/cloudflare':
+        specifier: 1.20.6
+        version: 1.20.6(encoding@0.1.13)(next@16.3.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.15.30)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(wrangler@4.128.0)
       '@types/adm-zip':
         specifier: ^0.5.7
         version: 0.5.7

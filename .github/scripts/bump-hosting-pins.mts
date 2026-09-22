@@ -100,21 +100,27 @@ export function selectWranglerVersion(
     : { status: "ok", version: newest.version };
 }
 
-// The pin only reaches an installed tree through this range, and the contract
-// test in `cloudflare-context-symbol.spec.ts` is only meaningful while the
-// installed adapter and the pin agree. Rewritten as text so the manifest's
-// formatting and key order survive. `peerDependenciesMeta` holds the same key
-// against an object, so requiring `": "` plus a caret keeps this to the range.
-const PEER_RANGE_PATTERN = /("@opennextjs\/cloudflare":\s*")\^[^"]*(")/;
+// The pin only reaches an installed tree through this devDependency, and the
+// contract test in `cloudflare-context-symbol.spec.ts` is only meaningful while
+// the installed adapter and the pin agree. It is deliberately exact rather than
+// a range: a caret would let a new 1.x release move the installed version on its
+// own and fail CI before anyone had chosen to adopt it.
+//
+// The manifest declares the same package as an optional peer too, with a
+// deliberately tolerant range, so this anchors on a version starting with a
+// digit — leaving both the caret range and the `peerDependenciesMeta` object
+// (which holds an object, not a string) untouched. Rewritten as text so the
+// manifest's formatting and key order survive.
+const DEV_PIN_PATTERN = /("@opennextjs\/cloudflare":\s*")\d[^"]*(")/;
 
-export function replacePeerRange(source: string, version: string): string {
-  if (!PEER_RANGE_PATTERN.test(source)) {
+export function replaceAdapterDevPin(source: string, version: string): string {
+  if (!DEV_PIN_PATTERN.test(source)) {
     throw new Error(
-      `Could not find a caret range for ${ADAPTER} in packages/catalyst/package.json.`,
+      `Could not find an exact ${ADAPTER} devDependency in packages/catalyst/package.json.`,
     );
   }
 
-  return source.replace(PEER_RANGE_PATTERN, `$1^${version}$2`);
+  return source.replace(DEV_PIN_PATTERN, `$1${version}$2`);
 }
 
 export interface Moves {
@@ -288,7 +294,7 @@ async function main(): Promise<void> {
     );
     writeFileSync(
       catalystManifestPath,
-      replacePeerRange(
+      replaceAdapterDevPin(
         readFileSync(catalystManifestPath, "utf-8"),
         moves.adapter.to,
       ),

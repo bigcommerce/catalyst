@@ -8,7 +8,7 @@ import { parseVersion, readPin } from "../lib/npm-pins.mts";
 import {
   buildChangeset,
   classifyNextRequirement,
-  replacePeerRange,
+  replaceAdapterDevPin,
   selectWranglerVersion,
 } from "../bump-hosting-pins.mts";
 
@@ -120,41 +120,55 @@ describe("selectWranglerVersion", () => {
   });
 });
 
-describe("replacePeerRange", () => {
-  it("rewrites the caret range", () => {
-    const manifest = JSON.stringify(
-      { peerDependencies: { "@opennextjs/cloudflare": "^1.17.3" } },
-      null,
-      2,
-    );
-
-    assert.match(
-      replacePeerRange(manifest, "1.21.0"),
-      /"@opennextjs\/cloudflare": "\^1\.21\.0"/,
-    );
-  });
-
-  it("leaves the peerDependenciesMeta entry for the same package alone", () => {
-    const manifest = JSON.stringify(
+describe("replaceAdapterDevPin", () => {
+  // Shaped like the real manifest: an exact devDependency next to a deliberately
+  // tolerant optional peer for the same package.
+  const manifest = () =>
+    JSON.stringify(
       {
+        devDependencies: {
+          "@opennextjs/cloudflare": "1.20.6",
+          vitest: "^3.2.4",
+        },
         peerDependencies: { "@opennextjs/cloudflare": "^1.17.3" },
-        peerDependenciesMeta: { "@opennextjs/cloudflare": { optional: true } },
+        peerDependenciesMeta: {
+          "@opennextjs/cloudflare": { optional: true },
+        },
       },
       null,
       2,
     );
-    const updated = JSON.parse(replacePeerRange(manifest, "1.21.0"));
 
-    assert.equal(updated.peerDependencies["@opennextjs/cloudflare"], "^1.21.0");
+  it("rewrites the exact devDependency pin", () => {
+    const updated = JSON.parse(replaceAdapterDevPin(manifest(), "1.21.0"));
+
+    assert.equal(updated.devDependencies["@opennextjs/cloudflare"], "1.21.0");
+  });
+
+  it("leaves the tolerant peer range alone", () => {
+    // The peer range is the consumer-facing declaration and is intentionally
+    // wider than the pin, so the automation must not drag it along.
+    const updated = JSON.parse(replaceAdapterDevPin(manifest(), "1.21.0"));
+
+    assert.equal(updated.peerDependencies["@opennextjs/cloudflare"], "^1.17.3");
+  });
+
+  it("leaves the peerDependenciesMeta entry alone", () => {
+    const updated = JSON.parse(replaceAdapterDevPin(manifest(), "1.21.0"));
+
     assert.deepEqual(updated.peerDependenciesMeta["@opennextjs/cloudflare"], {
       optional: true,
     });
   });
 
-  it("throws when there is no range to rewrite", () => {
+  it("throws when there is no exact pin to rewrite", () => {
     assert.throws(
-      () => replacePeerRange('{ "peerDependencies": {} }', "1.21.0"),
-      /Could not find a caret range/,
+      () =>
+        replaceAdapterDevPin(
+          '{ "peerDependencies": { "@opennextjs/cloudflare": "^1.17.3" } }',
+          "1.21.0",
+        ),
+      /Could not find an exact/,
     );
   });
 });
@@ -207,18 +221,15 @@ describe("the pins it maintains", () => {
     assert.notEqual(parseVersion(readPin(build, "WRANGLER_VERSION")), null);
   });
 
-  it("agree with the peer range the manifest declares", () => {
-    // The adapter pin is installed through this range, so a range that admits
-    // older releases would let the contract spec verify one the CLI never
-    // targets.
-    const manifest = read("packages/catalyst/package.json");
+  it("agree with the adapter the manifest installs", () => {
+    // The contract spec calls the real `getCloudflareContext()` against whatever
+    // is installed here, so it only says something about the pin while this
+    // devDependency matches it exactly.
+    const manifest = JSON.parse(read("packages/catalyst/package.json"));
 
     assert.equal(
-      replacePeerRange(
-        manifest,
-        readPin(hosting, "OPENNEXT_CLOUDFLARE_VERSION"),
-      ),
-      manifest,
+      manifest.devDependencies["@opennextjs/cloudflare"],
+      readPin(hosting, "OPENNEXT_CLOUDFLARE_VERSION"),
     );
   });
 });

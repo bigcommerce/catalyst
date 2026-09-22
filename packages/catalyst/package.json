@@ -51,6 +51,7 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@opennextjs/cloudflare": "1.20.6",
     "@types/adm-zip": "^0.5.7",
     "@types/cross-spawn": "^6.0.6",
     "@types/fs-extra": "^11.0.4",
@@ -67,7 +68,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "^1.20.6"
+    "@opennextjs/cloudflare": "^1.17.3"
   },
   "peerDependenciesMeta": {
     "@opennextjs/cloudflare": {
