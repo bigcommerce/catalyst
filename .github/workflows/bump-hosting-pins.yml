@@ -148,6 +148,11 @@ jobs:
       - name: Deploy a preview of the new pins
         id: preview
         if: steps.bump.outputs.updated == 'true' && steps.preview-config.outputs.configured == 'true'
+        # Non-blocking on purpose. A preview is evidence about a bump, not a
+        # precondition for proposing one, and a failure here is as likely to be
+        # the preview environment as the pins. The PR still opens and says what
+        # happened; the job is failed at the end so the run isn't silently green.
+        continue-on-error: true
         working-directory: core
         env:
           CATALYST_PROJECT_UUID: ${{ secrets.BUMP_PREVIEW_PROJECT_UUID }}
@@ -190,15 +195,24 @@ jobs:
           ADAPTER_VERSION: ${{ steps.bump.outputs.adapter-version }}
           WRANGLER_VERSION: ${{ steps.bump.outputs.wrangler-version }}
           PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          PREVIEW_OUTCOME: ${{ steps.preview.outcome }}
+          PREVIEW_CONFIGURED: ${{ steps.preview-config.outputs.configured }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           set -euo pipefail
 
           git push --force origin "$BRANCH"
 
+          built="The pins were still built and the Cloudflare context contract verified."
+
           if [ -n "${PREVIEW_URL:-}" ]; then
             preview="A preview of these pins is deployed at $PREVIEW_URL — click through it to confirm the worker serves, not just that it built. It shares one project, so a later bump replaces it."
+          elif [ "${PREVIEW_CONFIGURED:-}" != 'true' ]; then
+            preview="No preview was deployed: this repository has no \`BUMP_PREVIEW_PROJECT_UUID\` configured. $built"
+          elif [ "${PREVIEW_OUTCOME:-}" = 'success' ]; then
+            preview="The preview deployed, but its URL could not be read from the deploy output — find it in [the job run]($RUN_URL)."
           else
-            preview="No preview was deployed: this repository has no \`BUMP_PREVIEW_PROJECT_UUID\` configured. The pins were still built and the Cloudflare context contract verified."
+            preview="**The preview deploy failed** — see [the job run]($RUN_URL). $built So this may be the preview environment rather than a bad bump, but confirm the deploy path before merging."
           fi
 
           body=$(printf '%s\n\n%s\n\n%s\n\n%s\n\n%s\n' \
@@ -216,3 +230,11 @@ jobs:
           else
             gh pr create --base canary --head "$BRANCH" --title "$TITLE" --body "$body"
           fi
+
+      # The PR is open by now, so the bump is not lost. Failing here keeps the
+      # run's status honest about the preview not having deployed.
+      - name: Report a failed preview
+        if: steps.preview.outcome == 'failure'
+        run: |
+          echo '::error::The bump PR was opened, but the preview deploy failed. Check the deploy path before merging.'
+          exit 1
