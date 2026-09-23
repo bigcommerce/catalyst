@@ -15,9 +15,12 @@ export interface ProjectConfigSchema {
   env?: Record<string, string>;
 }
 
-export function getProjectConfig() {
+// `cwd` defaults to the process working directory — the project the user is
+// currently in. `catalyst create` passes the freshly-scaffolded project dir
+// explicitly, since that project isn't the cwd at the time it's seeded.
+export function getProjectConfig(cwd: string = process.cwd()) {
   return new Conf<ProjectConfigSchema>({
-    cwd: join(process.cwd(), '.bigcommerce'),
+    cwd: join(cwd, '.bigcommerce'),
     projectSuffix: '',
     configName: 'project',
     schema: {

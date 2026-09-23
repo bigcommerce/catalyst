@@ -1,0 +1,22 @@
+'use client';
+
+import { ComponentPropsWithoutRef, forwardRef } from 'react';
+
+import { LocaleNavigation, useLocaleNavigation } from './locale-routing-provider';
+
+type NavLinkProps = ComponentPropsWithoutRef<LocaleNavigation['Link']>;
+
+// Prefer `~/components/link`, which adds prefetching controls on top of this.
+export const Link = forwardRef<HTMLAnchorElement, NavLinkProps>((props, ref) => {
+  const { Link: NavLink } = useLocaleNavigation();
+
+  return <NavLink ref={ref} {...props} />;
+});
+
+Link.displayName = 'Link';
+
+export const usePathname = () => useLocaleNavigation().usePathname();
+
+// Delegates to next-intl deliberately: its `push`/`replace` wrappers keep the `NEXT_LOCALE` cookie
+// in sync, which is how an explicit locale choice survives `Accept-Language` detection.
+export const useRouter = () => useLocaleNavigation().useRouter();

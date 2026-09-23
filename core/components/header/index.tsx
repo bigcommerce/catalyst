@@ -9,7 +9,7 @@ import { graphql, readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
-import { routing } from '~/i18n/routing';
+import { getLocaleRouting } from '~/i18n/locale-config';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-header';
@@ -79,7 +79,9 @@ export const Header = async () => {
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
-  const locales = routing.locales.map((enabledLocales) => ({
+  const localeRouting = await getLocaleRouting();
+
+  const locales = localeRouting.locales.map((enabledLocales) => ({
     id: enabledLocales,
     label: enabledLocales.toLocaleUpperCase(),
   }));

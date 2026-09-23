@@ -57,3 +57,8 @@ build-config.json
 
 # Catalyst CLI config
 .bigcommerce
+
+# Deliberately NOT ignored: `bigcommerce.graphql` and `bigcommerce-graphql.d.ts`,
+# written by `npm run generate`. Commit them, so lint, typecheck and editor
+# tooling work without store credentials. See "GraphQL Schema and Types" in
+# README.md before adding them here.

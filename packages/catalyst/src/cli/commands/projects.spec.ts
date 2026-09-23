@@ -23,7 +23,7 @@ import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
 import { program } from '../program';
 
-import { link, project } from './project';
+import { link, projects } from './projects';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../../../tests/mocks/spinner'));
@@ -146,30 +146,31 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('project', () => {
+describe('projects', () => {
   test('has create, link, list, and delete subcommands', () => {
-    expect(project).toBeInstanceOf(Command);
-    expect(project.name()).toBe('project');
-    expect(project.description()).toBe('Manage your BigCommerce infrastructure project.');
+    expect(projects).toBeInstanceOf(Command);
+    expect(projects.name()).toBe('projects');
+    expect(projects.aliases()).toContain('project');
+    expect(projects.description()).toBe('Manage your BigCommerce infrastructure projects.');
 
-    const createCmd = project.commands.find((cmd) => cmd.name() === 'create');
+    const createCmd = projects.commands.find((cmd) => cmd.name() === 'create');
 
     expect(createCmd).toBeDefined();
     expect(createCmd?.description()).toContain('Create a new BigCommerce infrastructure project');
 
-    const linkCmd = project.commands.find((cmd) => cmd.name() === 'link');
+    const linkCmd = projects.commands.find((cmd) => cmd.name() === 'link');
 
     expect(linkCmd).toBeDefined();
     expect(linkCmd?.description()).toContain(
       'Link your local Catalyst project to a BigCommerce infrastructure project',
     );
 
-    const listCmd = project.commands.find((cmd) => cmd.name() === 'list');
+    const listCmd = projects.commands.find((cmd) => cmd.name() === 'list');
 
     expect(listCmd).toBeDefined();
     expect(listCmd?.description()).toContain('List BigCommerce infrastructure projects');
 
-    const deleteCmd = project.commands.find((cmd) => cmd.name() === 'delete');
+    const deleteCmd = projects.commands.find((cmd) => cmd.name() === 'delete');
 
     expect(deleteCmd).toBeDefined();
     expect(deleteCmd?.description()).toContain(
@@ -184,14 +185,14 @@ describe('project', () => {
   });
 });
 
-describe('project create', () => {
+describe('projects create', () => {
   test('prompts for name and creates project', async () => {
     inputMock.mockResolvedValue('My New Project');
 
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'create',
       '--store-hash',
       storeHash,
@@ -226,7 +227,7 @@ describe('project create', () => {
 
     inputMock.mockResolvedValueOnce('My New Project');
 
-    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
+    await program.parseAsync(['node', 'catalyst', 'projects', 'create']);
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
@@ -264,7 +265,7 @@ describe('project create', () => {
     confirmMock.mockResolvedValueOnce(true);
     inputMock.mockResolvedValueOnce(storeHash).mockResolvedValueOnce('My New Project');
 
-    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
+    await program.parseAsync(['node', 'catalyst', 'projects', 'create']);
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
@@ -295,13 +296,13 @@ describe('project create', () => {
     // Decline the manual-login fallback confirm() — aborts cleanly.
     confirmMock.mockResolvedValueOnce(false);
 
-    await program.parseAsync(['node', 'catalyst', 'project', 'create']);
+    await program.parseAsync(['node', 'catalyst', 'projects', 'create']);
 
     if (savedStoreHash !== undefined) process.env.CATALYST_STORE_HASH = savedStoreHash;
     if (savedAccessToken !== undefined) process.env.CATALYST_ACCESS_TOKEN = savedAccessToken;
 
     expect(consola.info).toHaveBeenCalledWith(
-      'Login aborted. Re-run `catalyst project create` when you have your credentials ready.',
+      'Login aborted. Re-run `catalyst projects create` when you have your credentials ready.',
     );
     expect(exitMock).toHaveBeenCalledWith(0);
     expect(config.get('projectUuid')).toBeUndefined();
@@ -320,7 +321,7 @@ describe('project create', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'create',
         '--store-hash',
         storeHash,
@@ -343,7 +344,7 @@ describe('project create', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'create',
         '--store-hash',
         storeHash,
@@ -356,12 +357,12 @@ describe('project create', () => {
   });
 });
 
-describe('project list', () => {
+describe('projects list', () => {
   test('fetches and displays projects', async () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'list',
       '--store-hash',
       storeHash,
@@ -386,13 +387,36 @@ describe('project list', () => {
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 
+  test('runs under the singular `project` alias', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'project',
+      'list',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+    expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
+
+    const output = vi
+      .mocked(consola.log)
+      .mock.calls.map(([msg]) => String(msg))
+      .join('\n');
+
+    expect(output).toContain('Project One (a23f5785-fd99-4a94-9fb3-945551623923)');
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
   test('marks the currently linked project with [linked]', async () => {
     config.set('projectUuid', projectUuid2);
 
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'list',
       '--store-hash',
       storeHash,
@@ -417,7 +441,7 @@ describe('project list', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'list',
       '--store-hash',
       storeHash,
@@ -437,7 +461,7 @@ describe('project list', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'list'])).rejects.toThrow(
+    await expect(program.parseAsync(['node', 'catalyst', 'projects', 'list'])).rejects.toThrow(
       'Missing credentials',
     );
 
@@ -462,7 +486,7 @@ describe('project list', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'list',
         '--store-hash',
         storeHash,
@@ -473,7 +497,7 @@ describe('project list', () => {
   });
 });
 
-describe('project link', () => {
+describe('projects link', () => {
   test('properly configured Command instance', () => {
     expect(link).toBeInstanceOf(Command);
     expect(link.name()).toBe('link');
@@ -494,7 +518,7 @@ describe('project link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'link',
       '--project-uuid',
       projectUuid1,
@@ -516,7 +540,7 @@ describe('project link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'link',
       '--store-hash',
       storeHash,
@@ -566,7 +590,7 @@ describe('project link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'link',
       '--store-hash',
       storeHash,
@@ -620,7 +644,7 @@ describe('project link', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--store-hash',
         storeHash,
@@ -667,7 +691,7 @@ describe('project link', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--store-hash',
         storeHash,
@@ -710,7 +734,7 @@ describe('project link', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'link',
       '--store-hash',
       storeHash,
@@ -744,7 +768,7 @@ describe('project link', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--store-hash',
         storeHash,
@@ -754,7 +778,7 @@ describe('project link', () => {
     ).rejects.toThrow('No infrastructure project linked');
 
     expect(consola.info).toHaveBeenCalledWith(
-      "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
+      "When you're ready to create a project, run `catalyst projects create` or re-run `catalyst projects link`.",
     );
     expect(exitMock).toHaveBeenCalledWith(0);
   });
@@ -770,7 +794,7 @@ describe('project link', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--store-hash',
         storeHash,
@@ -793,7 +817,7 @@ describe('project link', () => {
       await program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--project-uuid',
         projectUuid1,
@@ -814,7 +838,7 @@ describe('project link', () => {
       await program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--project-uuid',
         projectUuid1,
@@ -839,7 +863,7 @@ describe('project link', () => {
       await program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'link',
         '--project-uuid',
         projectUuid1,
@@ -851,7 +875,7 @@ describe('project link', () => {
   });
 
   test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'link'])).rejects.toThrow(
+    await expect(program.parseAsync(['node', 'catalyst', 'projects', 'link'])).rejects.toThrow(
       'Missing credentials',
     );
 
@@ -866,12 +890,12 @@ describe('project link', () => {
   });
 });
 
-describe('project delete', () => {
+describe('projects delete', () => {
   test('with --project-uuid and --force deletes without prompting', async () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--project-uuid',
       projectUuid1,
@@ -896,7 +920,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--project-uuid',
       projectUuid1,
@@ -938,7 +962,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--project-uuid',
       projectUuid1,
@@ -960,7 +984,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--store-hash',
       storeHash,
@@ -1000,7 +1024,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--store-hash',
       storeHash,
@@ -1039,7 +1063,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--store-hash',
       storeHash,
@@ -1064,7 +1088,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--store-hash',
       storeHash,
@@ -1084,7 +1108,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--project-uuid',
       projectUuid1,
@@ -1105,7 +1129,7 @@ describe('project delete', () => {
     await program.parseAsync([
       'node',
       'catalyst',
-      'project',
+      'projects',
       'delete',
       '--project-uuid',
       projectUuid1,
@@ -1125,7 +1149,7 @@ describe('project delete', () => {
     delete process.env.CATALYST_STORE_HASH;
     delete process.env.CATALYST_ACCESS_TOKEN;
 
-    await expect(program.parseAsync(['node', 'catalyst', 'project', 'delete'])).rejects.toThrow(
+    await expect(program.parseAsync(['node', 'catalyst', 'projects', 'delete'])).rejects.toThrow(
       'Missing credentials',
     );
 
@@ -1148,7 +1172,7 @@ describe('project delete', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'delete',
         '--project-uuid',
         projectUuid1,
@@ -1173,7 +1197,7 @@ describe('project delete', () => {
       program.parseAsync([
         'node',
         'catalyst',
-        'project',
+        'projects',
         'delete',
         '--project-uuid',
         projectUuid1,

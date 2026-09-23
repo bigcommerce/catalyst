@@ -5,7 +5,10 @@ import { join } from 'node:path';
 import { valid as validSemver } from 'semver';
 
 import { loadBuildEnv } from '../lib/build-env';
+import { reconcileOpenNextVersion } from '../lib/commerce-hosting';
+import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
+import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getProjectState } from '../lib/project-state';
@@ -13,7 +16,7 @@ import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-export const WRANGLER_VERSION = '4.90.0';
+export const WRANGLER_VERSION = '4.128.0';
 
 // npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
 // through a narrow character allowlist. This also guards the value before
@@ -41,8 +44,26 @@ export async function buildCatalystProject(
   assertRequiredBuildEnv();
 
   const coreDir = process.cwd();
+
+  // The build invokes the project's own adapter, so offer to move a stale pin
+  // before compiling against it. Reinstall when it moves.
+  const projectPackageManager = await detectProjectPackageManager(coreDir);
+
+  if (await reconcileOpenNextVersion(coreDir, projectPackageManager, { canUpgrade: true })) {
+    await installDependencies(coreDir, projectPackageManager);
+  }
+
   const openNextOutDir = join(coreDir, '.open-next');
   const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
+
+  consola.start('Generating GraphQL types...');
+
+  await execa('node', [join(coreDir, 'scripts', 'generate.cjs')], {
+    stdio: 'inherit',
+    cwd: coreDir,
+  });
+
+  consola.success('GraphQL types generated');
 
   const wranglerConfig = getWranglerConfig(projectUuid);
 
@@ -80,6 +101,18 @@ export async function buildCatalystProject(
       stdout: ['pipe', 'inherit'],
       cwd: coreDir,
     },
+  );
+
+  // Workers Assets serves `/_next/static/*` directly, bypassing the Next.js
+  // server that would normally set the immutable Cache-Control on it. Its
+  // default is `max-age=0, must-revalidate`, so browsers revalidate every
+  // hashed asset on every repeat view. `_headers` overrides that, and has to
+  // live inside the assets directory — written after the OpenNext build because
+  // that build regenerates the directory, and before the Wrangler dry-run so
+  // Wrangler validates it.
+  await copyFile(
+    join(getModuleCliPath(), 'templates', 'public_headers'),
+    join(openNextOutDir, 'assets', '_headers'),
   );
 
   await execa(
@@ -172,7 +205,7 @@ Examples:
 
     if (!projectUuid) {
       throw new Error(
-        'Project UUID is required. Please run `catalyst project create` or `catalyst project link` or this command again with --project-uuid <uuid>.',
+        'Project UUID is required. Please run `catalyst projects create` or `catalyst projects link` or this command again with --project-uuid <uuid>.',
       );
     }
 

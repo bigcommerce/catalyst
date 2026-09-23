@@ -144,7 +144,8 @@
       "Empty": {
         "title": "Sorry, no results for \"{term}\".",
         "subtitle": "Please try another search."
-      }
+      },
+      "semanticSearchPlaceholder": "Describe what you're looking for"
     },
     "FacetedSearch": {
       "filters": "Filters",
@@ -527,6 +528,7 @@
       "addToShoppingList": "Add to shopping list",
       "currentStock": "{quantity, number} in stock",
       "backorderQuantity": "{quantity, number} will be on backorder",
+      "maxPurchasableQuantity": "The maximum purchasable quantity is {quantity, number}. Please adjust and try again.",
       "loadingMoreImages": "Loading more images",
       "imagesLoaded": "{count, plural, =1 {1 more image loaded} other {# more images loaded}}",
       "playVideo": "Play video",

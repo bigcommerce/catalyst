@@ -19,7 +19,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 import { WishlistMutationError } from '~/components/wishlist/error';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { serverToast } from '~/lib/server-toast';
 
 const VariantIdFromSkuQuery = graphql(`
@@ -191,7 +191,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
   }
 
   if (!customerAccessToken) {
-    redirect({ href: getLoginRedirect(submission.value.menuItem.redirectTo), locale });
+    await redirect({ href: getLoginRedirect(submission.value.menuItem.redirectTo), locale });
 
     return;
   }
@@ -242,7 +242,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
 
     if (error instanceof BigCommerceGQLError) {
       if (error.message.includes('Please sign in')) {
-        redirect({ href: getLoginRedirect(submission.value.menuItem.redirectTo), locale });
+        await redirect({ href: getLoginRedirect(submission.value.menuItem.redirectTo), locale });
 
         return;
       }
@@ -293,7 +293,7 @@ export async function addToNewWishlist(
   }
 
   if (!customerAccessToken) {
-    redirect({ href: getLoginRedirect(redirectTo), locale });
+    await redirect({ href: getLoginRedirect(redirectTo), locale });
 
     return { lastResult: null };
   }

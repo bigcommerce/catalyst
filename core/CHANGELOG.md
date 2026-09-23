@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.12.1
+
+### Patch Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.12.1` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/7de083aeb2c7894320713b3fc5bf66796c3506b1/core/CHANGELOG.md#1121).
+
+## 1.12.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.12.0` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/aea76ffb0ec5219ec70c5c0798d0b2e15976bd5f/core/CHANGELOG.md#1120).
+
+## 1.11.1
+
+### Patch Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.11.1` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/2bd13b826cc258ee1ac2ad3fab2851d0d94eed10/core/CHANGELOG.md#1111).
+
+## 1.11.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.11.0` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/46ddb22fc9935530b9062dfd8a6a4c74f74956e7/core/CHANGELOG.md#1110).
+
 ## 1.10.0
 
 ### Minor Changes

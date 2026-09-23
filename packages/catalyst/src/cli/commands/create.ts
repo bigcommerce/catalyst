@@ -23,6 +23,7 @@ import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
 import { login, LoginAbortedError } from '../lib/login';
 import { hasProjectsAccess, type ProjectListItem } from '../lib/project';
+import { getProjectConfig } from '../lib/project-config';
 import { rewriteCorePackage } from '../lib/rewrite-core-package';
 import { setupCoreProject } from '../lib/setup-core-project';
 import { accessTokenOption, storeHashOption } from '../lib/shared-options';
@@ -332,12 +333,6 @@ Examples:
       envVars.BIGCOMMERCE_ACCESS_TOKEN = accessToken;
     }
 
-    // Pre-populate CATALYST_ACCESS_TOKEN so subsequent catalyst CLI commands
-    // (`catalyst deploy`, `catalyst project ...`, etc.) work without re-auth.
-    // CATALYST_STORE_HASH isn't written — the CLI falls back to BIGCOMMERCE_STORE_HASH
-    // (already in envVars from the channel init response) at startup.
-    if (accessToken) envVars.CATALYST_ACCESS_TOKEN = accessToken;
-
     // Resolve the Commerce Hosting project before extraction so credential checks
     // and prompts happen up-front. We defer the file mutations
     // (`setupCommerceHosting`) until after extraction.
@@ -384,6 +379,23 @@ Examples:
           storeHash,
           accessToken,
         });
+      }
+
+      // Persist the credentials we just authenticated with into the new
+      // project's `.bigcommerce/project.json` (gitignored). Every command
+      // resolves credentials from this file, so without it `catalyst deploy`
+      // and `catalyst projects create` would fail or re-prompt for login
+      // immediately after `create` already logged the user in.
+      //
+      // Ordered after `setupCommerceHosting`, which writes the same file to
+      // record `projectUuid`. Both merge into existing contents now, so the
+      // order no longer matters for correctness — kept so the credentials
+      // written here are the ones that land last.
+      if (storeHash && accessToken) {
+        const projectConfig = getProjectConfig(projectDir);
+
+        projectConfig.set('storeHash', storeHash);
+        projectConfig.set('accessToken', accessToken);
       }
 
       // Write env before install — matters for postinstall scripts that may

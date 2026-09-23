@@ -10,6 +10,7 @@ import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session
 import { loginWithB2B } from '~/b2b/client';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { getSessionTokenCookieOptions } from '~/lib/auth/session-token-cookie-options';
 import { clearCartId, setCartId } from '~/lib/cart';
 import { serverToast } from '~/lib/server-toast';
 
@@ -376,12 +377,7 @@ async function patchSessionTokenCookies() {
 
   cookieJar.getAll().forEach(({ name, value }) => {
     if (SESSION_TOKEN_NAME_RE.test(name) && value) {
-      cookieJar.set(name, value, {
-        httpOnly: true,
-        sameSite: 'lax' as const,
-        path: '/',
-        secure: name.startsWith('__Secure-'),
-      });
+      cookieJar.set(name, value, getSessionTokenCookieOptions(name, config));
     }
   });
 }

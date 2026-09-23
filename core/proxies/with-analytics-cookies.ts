@@ -9,16 +9,24 @@ import {
   setVisitorIdCookie,
 } from '~/lib/analytics/bigcommerce';
 import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
-import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
+import { getConsentDecision } from '~/lib/consent-manager/has-consent-for';
 
 import { ProxyFactory } from './compose-proxies';
 
 export const withAnalyticsCookies: ProxyFactory = (next) => {
   return async (request, event) => {
+    const consentDecision = await getConsentDecision('measurement', event);
+
+    if (consentDecision === 'unknown') {
+      // A transient consent-lookup failure must not be treated as withdrawal:
+      // deleting would erase the visitor identity and inflate visitor/visit counts.
+      return next(request, event);
+    }
+
     const existingVisitorId = await getVisitorIdCookie();
     const existingVisitId = await getVisitIdCookie();
 
-    if (!(await hasConsentFor('measurement'))) {
+    if (consentDecision === 'declined') {
       // No measurement consent: never set or refresh analytics cookies, and
       // remove any left over from before consent was withdrawn. Once the
       // shopper grants consent, the startVisit server action (triggered by the

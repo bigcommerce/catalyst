@@ -17,7 +17,7 @@ export interface ProjectState {
   hasOpenNextDep: boolean;
 
   // Derived signals — `isLinked` reflects intent (UUID registered via
-  // `catalyst project create` or commerce-hosting setup); `isTransformed`
+  // `catalyst projects create` or commerce-hosting setup); `isTransformed`
   // reflects on-disk readiness (middleware.ts swapped in, OpenNext dep
   // installed). A deploy needs both, but `catalyst build` only cares about
   // `isTransformed` so it can dispatch to OpenNext vs `next build`.

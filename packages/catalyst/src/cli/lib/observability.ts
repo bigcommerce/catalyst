@@ -13,6 +13,7 @@ const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 const logEntrySchema = z.object({
   timestamp: z.string().nullable().optional(),
+  entry_type: z.string().optional(),
   level: z.string().optional(),
   messages: z.array(z.unknown()).optional(),
   is_exception: z.boolean().optional(),
@@ -27,9 +28,29 @@ const logEntrySchema = z.object({
     .optional(),
 });
 
-// TODO(TRAC-934): any `meta.cursor_pagination` the backend still returns is ignored (zod strips unknown keys)
 const queryLogsSchema = z.object({
   data: z.array(logEntrySchema),
+  meta: z
+    .object({
+      cursor_pagination: z
+        .object({
+          // The REST proxy exposes page availability via links, while the
+          // gRPC response uses has_next_page/has_prev_page. Accept both while
+          // the API contract is transitioning.
+          has_next_page: z.boolean().optional(),
+          has_prev_page: z.boolean().optional(),
+          start_cursor: z.string().nullable().optional(),
+          end_cursor: z.string().nullable().optional(),
+          links: z
+            .object({
+              next: z.string().optional(),
+              previous: z.string().optional(),
+            })
+            .optional(),
+        })
+        .optional(),
+    })
+    .optional(),
 });
 
 export type LogEntry = z.infer<typeof logEntrySchema>;
@@ -38,11 +59,14 @@ export type QueryLogsResult = z.infer<typeof queryLogsSchema>;
 export interface QueryLogsParams {
   start: string;
   end: string;
+  entryType?: 'log' | 'request';
   method?: string;
   statusCode?: number;
   urlLike?: string;
   levelMin?: LogLevel;
   limit?: number;
+  after?: string;
+  before?: string;
 }
 
 const v3ErrorSchema = z.object({
@@ -181,12 +205,27 @@ function isRedundantExceptionName(name: string, message: string): boolean {
 const stringifyMessage = (message: unknown) =>
   typeof message === 'string' ? message : JSON.stringify(message);
 
+const joinMessages = (messages: LogEntry['messages']) =>
+  (messages ?? []).map(stringifyMessage).join(' ').replace(/\s+/g, ' ').trim();
+
+// Identifies Cloudflare's auto-generated per-request invocation row (as
+// opposed to real application output like console.* or exceptions).
+export function isRequestLogEntry(entry: LogEntry): boolean {
+  if (entry.entry_type != null) return entry.entry_type === 'request';
+
+  // Older API deployments don't send entry_type. Fall back to a heuristic:
+  // the auto-generated row's message is exactly "<method> <url>", duplicating
+  // the entry's request details.
+  const method = entry.request?.method;
+  const url = entry.request?.url;
+
+  if (!method || !url) return false;
+
+  return joinMessages(entry.messages) === `${method} ${url}`;
+}
+
 export function formatLogEntry(entry: LogEntry, format: LogLineFormat = 'default'): string {
-  const message = (entry.messages ?? [])
-    .map(stringifyMessage)
-    .join(' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const message = joinMessages(entry.messages);
 
   if (format === 'short') return message;
 
@@ -214,7 +253,17 @@ export function formatLogEntry(entry: LogEntry, format: LogLineFormat = 'default
     if (parts.length > 0) requestStr = ` ${parts.join(' ')}${status}`;
   }
 
-  return `[${entry.timestamp ?? UNKNOWN_TIME}] [${coloredLevel}]${requestStr}${exceptionStr} ${message}`;
+  // A request row carries no application output — its message only duplicates
+  // the request details — so print it as a bare request line, without a level
+  // bracket or message.
+  if (format === 'request' && isRequestLogEntry(entry)) {
+    return `[${entry.timestamp ?? UNKNOWN_TIME}]${requestStr}`;
+  }
+
+  // `requestStr` is empty outside the `request` format, so the level stays
+  // adjacent to the timestamp there and only slides after the request details
+  // when they are present.
+  return `[${entry.timestamp ?? UNKNOWN_TIME}]${requestStr} [${coloredLevel}]${exceptionStr} ${message}`;
 }
 
 export async function queryLogs(
@@ -229,11 +278,14 @@ export async function queryLogs(
   search.set('start', params.start);
   search.set('end', params.end);
 
+  if (params.entryType) search.set('entry_type', params.entryType);
   if (params.method) search.set('method', params.method);
   if (params.statusCode != null) search.set('status_code', String(params.statusCode));
   if (params.urlLike) search.set('url:like', params.urlLike); // colon param
   if (params.levelMin) search.set('level:min', params.levelMin); // colon param
   if (params.limit != null) search.set('limit', String(params.limit));
+  if (params.after) search.set('after', params.after);
+  if (params.before) search.set('before', params.before);
 
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/infrastructure/logs/${projectUuid}?${search.toString()}`,
@@ -256,7 +308,12 @@ export async function queryLogs(
   }
 
   if (response.status === 404) {
-    throw new UserActionableError('Project not found. Check the project UUID.');
+    // The gateway also 404s when the token belongs to a different store than
+    // the one in the URL, so a bad credential pairing looks identical to a
+    // missing project.
+    throw new UserActionableError(
+      'Project not found. Check the project UUID, and that --store-hash and --access-token belong to the store that owns the project.',
+    );
   }
 
   // 400 (bad UUID) and 422 (invalid window/filter) both carry the field-keyed

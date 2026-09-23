@@ -5,10 +5,10 @@
 
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
-import { defaultLocale } from '~/i18n/locales';
 
 export const GET = async () => {
-  const sitemapIndex = await client.fetchSitemapIndex(getChannelIdFromLocale(defaultLocale));
+  // Outside the proxy, so there is no request locale: a bare call resolves the default channel.
+  const sitemapIndex = await client.fetchSitemapIndex(getChannelIdFromLocale());
 
   return new Response(sitemapIndex, {
     headers: {

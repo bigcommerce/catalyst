@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "Désolé, aucun résultat pour « {term} ».",
                 "subtitle": "Veuillez modifier votre recherche."
-            }
+            },
+            "semanticSearchPlaceholder": "Décrivez ce que vous recherchez"
         },
         "FacetedSearch": {
             "filters": "Filtres",
@@ -524,6 +525,7 @@
             "additionalInformation": "Informations supplémentaires",
             "currentStock": "{quantity, number} en stock",
             "backorderQuantity": "{quantité, nombre} en attente de réapprovisionnement",
+            "maxPurchasableQuantity": "La quantité maximale pouvant être achetée est de {quantity, number}. Veuillez ajuster et réessayer.",
             "loadingMoreImages": "Chargement de plus d'images",
             "imagesLoaded": "{count, plural, =1 {1 image supplémentaire chargée} other {# images supplémentaires chargées}}",
             "playVideo": "Lancer la vidéo",
@@ -624,6 +626,9 @@
         "search": "Rechercher"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# more offer} other {# more offers}}"
+        },
         "Header": {
             "home": "Accueil",
             "toggleNavigation": "Basculer la navigation",

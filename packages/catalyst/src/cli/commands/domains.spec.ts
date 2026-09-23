@@ -19,7 +19,13 @@ import { consola } from '../lib/logger';
 import { mkTempDir } from '../lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
 
-import { domains, formatDomain, formatDomainStatus, waitForDomainVerification } from './domains';
+import {
+  domains,
+  formatDomain,
+  formatDomainStatus,
+  formatPointingRecords,
+  waitForDomainVerification,
+} from './domains';
 
 vi.mock('@inquirer/prompts', () => ({
   confirm: vi.fn(),
@@ -39,6 +45,11 @@ const storeHash = 'test-store';
 const accessToken = 'test-token';
 const apiHost = 'api.bigcommerce.com';
 const domain = 'www.example.com';
+// Mirrors the records the default handlers return for `domain`.
+const pointingRecords = {
+  a_record_value: '198.51.100.10',
+  cname_record_value: 'shared.hosting.bigcommerce.com',
+};
 
 function writeCredentials() {
   config.set('storeHash', storeHash);
@@ -203,6 +214,31 @@ describe('formatDomain', () => {
   });
 });
 
+describe('formatPointingRecords', () => {
+  test('renders both records the merchant can publish', () => {
+    const output = formatPointingRecords(pointingRecords);
+
+    expect(output).toContain('A      198.51.100.10');
+    expect(output).toContain('CNAME  shared.hosting.bigcommerce.com');
+    // Record types are padded so the values line up.
+    expect(output?.split('\n')).toHaveLength(2);
+  });
+
+  test('omits a record the API left null', () => {
+    const output = formatPointingRecords({ a_record_value: '198.51.100.10' });
+
+    expect(output).toContain('198.51.100.10');
+    expect(output).not.toContain('CNAME');
+  });
+
+  test('returns null when there is nothing to publish yet', () => {
+    expect(formatPointingRecords(null)).toBeNull();
+    expect(formatPointingRecords(undefined)).toBeNull();
+    expect(formatPointingRecords({})).toBeNull();
+    expect(formatPointingRecords({ a_record_value: '', cname_record_value: null })).toBeNull();
+  });
+});
+
 describe('domain API client', () => {
   test('creates a domain with the expected request body', async () => {
     let capturedBody: unknown;
@@ -219,6 +255,7 @@ describe('domain API client', () => {
                 domain,
                 project_uuid: projectUuid,
                 verification_status: 'pending',
+                pointing_records: pointingRecords,
               },
             },
             { status: 201 },
@@ -227,14 +264,41 @@ describe('domain API client', () => {
       ),
     );
 
+    // `createDomain` is the only client that keeps `pointing_records` — the
+    // endpoint is the only one that returns them.
     await expect(
       createDomain(domain, projectUuid, storeHash, accessToken, apiHost),
     ).resolves.toEqual({
       domain,
       project_uuid: projectUuid,
       verification_status: 'pending',
+      pointing_records: pointingRecords,
     });
     expect(capturedBody).toEqual({ domain });
+  });
+
+  test('tolerates a create response without the records', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () =>
+          HttpResponse.json(
+            {
+              data: {
+                domain,
+                project_uuid: projectUuid,
+                verification_status: 'pending',
+                pointing_records: null,
+              },
+            },
+            { status: 201 },
+          ),
+      ),
+    );
+
+    await expect(
+      createDomain(domain, projectUuid, storeHash, accessToken, apiHost),
+    ).resolves.toMatchObject({ domain, pointing_records: null });
   });
 
   test('surfaces disabled API responses', async () => {
@@ -630,6 +694,70 @@ describe('add command', () => {
     expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} added.`);
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining(domain));
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('pending'));
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prints the DNS records to publish along with the success message', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain], { from: 'user' });
+
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} added.`);
+    expect(consola.info).toHaveBeenCalledWith(
+      `Point ${domain} at this project with one of these DNS records:`,
+    );
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('A      198.51.100.10'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('CNAME  shared.hosting.bigcommerce.com'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining('only `domains add` returns them'),
+    );
+    expect(consola.info).toHaveBeenCalledWith(
+      `Run \`catalyst domains status ${domain}\` to check verification progress.`,
+    );
+  });
+
+  test('still prints the records after waiting for verification', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain, '--wait'], { from: 'user' });
+
+    // Polling re-fetches the domain resource, which no longer carries the
+    // records — they have to survive from the create response.
+    expect(consola.start).toHaveBeenCalledWith(`Waiting for ${domain} to verify...`);
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining('CNAME  shared.hosting.bigcommerce.com'),
+    );
+  });
+
+  test('skips the DNS guidance when the API has no records yet', async () => {
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains',
+        () =>
+          HttpResponse.json(
+            {
+              data: {
+                domain,
+                project_uuid: projectUuid,
+                verification_status: 'pending',
+                pointing_records: null,
+              },
+            },
+            { status: 201 },
+          ),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain], { from: 'user' });
+
+    expect(consola.success).toHaveBeenCalledWith(`Domain ${domain} added.`);
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('DNS records:'));
+    expect(consola.log).not.toHaveBeenCalledWith(expect.stringContaining('198.51.100.10'));
     expect(exitMock).toHaveBeenCalledWith(0);
   });
 

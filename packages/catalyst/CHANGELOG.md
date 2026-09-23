@@ -1,5 +1,186 @@
 # @bigcommerce/catalyst
 
+## 1.4.1
+
+### Patch Changes
+
+- [#3226](https://github.com/bigcommerce/catalyst/pull/3226) [`039f322`](https://github.com/bigcommerce/catalyst/commit/039f3223287daaeb03800b1b8380dbbe49c4d877) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Let `catalyst auth login` re-authenticate when the stored token has expired, instead of demanding an explicit `catalyst auth logout` first.
+
+  Every authenticated command answers a rejected token with "Your access token is invalid or has expired. Run `catalyst auth login` to re-authenticate." But `login` only checked whether credentials were _present_, not whether they still worked, so it replied "Already logged in to store X. Run `catalyst auth logout` first to re-authenticate." The two commands sent the user in a circle, and the only way out was to know to run `auth logout`.
+
+  `login` now verifies the credentials it finds before refusing. If they still work it reports the store and exits as before; if the API rejects them it says so and carries straight on to re-authentication.
+
+  A verification failure that isn't a rejection (API unreachable, 5xx) is treated as "couldn't tell" rather than "invalid": the credentials are kept and the command exits, since the device-code flow needs the same network that just failed and would only swap one error for another.
+
+  `catalyst auth login --store-hash <hash> --access-token <token>` also now does what it is documented to do. It was listed under "Login with existing credentials (skips interactive flow)", but that path never wrote the credentials anywhere — it reported "Already logged in" and exited, so nothing was stored and the next command was still unauthenticated. Passing both flags now verifies them and saves them to `.bigcommerce/project.json`, replacing whatever was there. Only the flags count: these options also read `CATALYST_STORE_HASH`/`CATALYST_ACCESS_TOKEN`, and an exported env var is ambient config that must not turn a plain `catalyst auth login` into a silent credential write. Rejected credentials are reported as rejected rather than silently ignored in favour of a browser login; unverifiable ones are stored with a warning.
+
+  Also adds `catalyst auth login --force` to skip the verification and re-authenticate (or store what was passed) outright.
+
+- [#3225](https://github.com/bigcommerce/catalyst/pull/3225) [`118456f`](https://github.com/bigcommerce/catalyst/commit/118456fe627bf2c288725b5bc037d1c6e76b5d42) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop `catalyst upgrade` from reverting the CLI-managed npm scripts, which turned `catalyst start` back into `next start`.
+
+  `catalyst create` points `build`, `start` and `deploy` at the CLI so they dispatch on project state (`catalyst start` falls through to `next start` for a project that isn't set up for Commerce Hosting, so the scripts are correct for self-hosted projects too). The upstream tree keeps its own `next`-based commands, so in every created project those lines are a permanent ours-vs-base difference — and `upgrade` had no handling for them, unlike the `@bigcommerce/catalyst` devDependency, which is safe only because it has no upstream counterpart.
+
+  That difference is harmless until core edits a neighbouring line. Core 1.11.0 added `"test": "vitest run"` directly below `"start"`, which put a genuine upstream insertion right next to the one line the CLI had rewritten. Neither merge engine can reconcile the two, so `package.json` came out conflicted with `catalyst start` on one side and `next start` plus the new `test` script on the other. Resolving toward the incoming side — the obvious choice, since you do want the new script — silently dropped `catalyst start`. `build` was exposed the same way, and `deploy` was exposed to any upstream script appended at the end of the block.
+
+  Both downloaded sides are now pinned to the commands the project already has for those three keys before the merge runs, so the merge sees no change there at all: the project's scripts survive untouched and additions around them still apply cleanly. Only keys the project has actually diverged from its base on are pinned — where it matches base there is no difference to conflict with, and leaving it alone lets a genuine upstream edit through. Whenever the two versions disagree about one of these scripts — core changed the command, introduced it, or dropped it — the upgrade reports it rather than hiding it behind the pin.
+
+- [#3223](https://github.com/bigcommerce/catalyst/pull/3223) [`f6db31b`](https://github.com/bigcommerce/catalyst/commit/f6db31b3b20b3b53f1e2eeec9a83ed438b21d283) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels info` no longer asks you to "Select the channel to update." Its channel picker inherited that copy from `channels update`, which implied a write the command never makes — `info` only reports a channel's storefront, canonical and checkout URLs. It now asks "Select a channel."; the update flows keep their own wording.
+
+- [#3208](https://github.com/bigcommerce/catalyst/pull/3208) [`6772c50`](https://github.com/bigcommerce/catalyst/commit/6772c507e1f11f6dc4cabfc71f50805c6e37bc0d) Thanks [@mfaris9](https://github.com/mfaris9)! - `catalyst upgrade` now removes native-hosting-incompatible `instrumentation.ts` that a merge reintroduces, instead of leaving it for the merchant to delete by hand.
+
+## 1.4.0
+
+### Minor Changes
+
+- [#3203](https://github.com/bigcommerce/catalyst/pull/3203) [`b68192a`](https://github.com/bigcommerce/catalyst/commit/b68192aac81e2f96e7e6dbc28800773bb1ba2f80) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade `@opennextjs/cloudflare` from 1.17.3 to 1.20.6, and the Wrangler version the build runs from 4.90.0 to 4.128.0.
+
+  A stray `@opennextjs/cloudflare` entry is also removed from the repo root, where it should never have been. The adapter stays a peer dependency of the CLI package, which is the correct declaration: the copy that matters has to live in the merchant's own project, both so the build can invoke the adapter's binary from there and because the generated `open-next.config.ts` imports it. Wrangler is not declared anywhere, since the build invokes a pinned version directly. Neither belongs in this repo's dependency graph.
+
+  `catalyst build` and `catalyst deploy` now offer to update a project's own `@opennextjs/cloudflare` pin when it has fallen behind the version the CLI targets, and reinstall so the worker is compiled against it. The check runs on the shared build path, immediately before the adapter is invoked. That pin lives in the project's `package.json`, so it previously stayed at whatever version the project was scaffolded with and adapter fixes were skipped with no indication at all.
+
+  The upgrade is offered only when it is safe to take. A project whose Next.js version the newer adapter does not support is told to run `catalyst upgrade` first, rather than being handed an unsupported dependency set. Nothing is changed under `catalyst deploy --prebuilt`, which skips the build and would upload a bundle the new adapter never compiled, nor in a non-interactive environment such as CI, where rewriting dependencies would break an install against a frozen lockfile — both report the exact command to run instead. A project already on, or ahead of, the target version is left alone silently.
+
+  The adapter's version range on the CLI is relaxed to `^1.17.3` and marked optional, and a stray `@opennextjs/cloudflare` entry is removed from the repo root. It was previously an exact pin, which meant projects still on the older adapter version could not install the upgraded CLI at all — the projects the upgrade prompt above is meant to reach — and projects hosted somewhere that never installs the adapter reported it as missing.
+
+  Node 20 is dropped from the supported `engines` range, which is now `^22.0.0 || ^24.0.0`. Every Wrangler release the adapter now accepts requires Node 22 or later. In practice `catalyst build` and `catalyst deploy` already could not work on Node 20, because the previously pinned `wrangler@4.90.0` also requires it; what does regress is `catalyst start`.
+
+  For stores already deployed on Commerce Hosting, the sharded tag cache Durable Object adds two columns to its table the first time it is accessed after the next deploy, backing the stale-while-revalidate `revalidateTag` support added upstream. The migration is automatic and no configuration change is needed.
+
+  Fixes picked up in the range include a security fix for encoded paths bypassing middleware matching or selecting partially-decoded cache entries, a fix for `/_next/static/*` returning 404 on past deployments when a metadata-only Worker version became the newest one, and R2 cache population over remote dev, which is not subject to the Cloudflare API rate limit of 1,200 requests per 5 minutes that failed builds for large catalogs.
+
+- [#3205](https://github.com/bigcommerce/catalyst/pull/3205) [`02aa913`](https://github.com/bigcommerce/catalyst/commit/02aa9134e6b2c9804f7472508bb95c402e89b6e4) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add channel checkout URL support to the CLI: `catalyst channels info` reports it, `catalyst channels update` gains `--checkout-url` and `--remove-checkout-url`, and `catalyst deploy` gains `--update-checkout-url`.
+
+  Checkout is hosted by BigCommerce and the redirect target is resolved server-side from channel config, so a storefront moved onto a Native Hosting domain keeps sending shoppers to whatever checkout domain the channel had before — with nothing in the CLI to inspect or change it.
+
+  `catalyst channels info` — or bare `catalyst channels`, which now defaults to it — prints the channel's storefront, canonical and checkout URLs, and calls out when the channel has no checkout URL of its own (in which case BigCommerce falls back to the _default_ channel's primary URL, which may be an unrelated domain).
+
+  `catalyst channels update` gains `--checkout-url` alongside `--hostname`, so both of a channel's URLs can be set in one command; passing a checkout flag on its own changes only the checkout URL and leaves the storefront URL alone. `--remove-checkout-url` reverts to the shared checkout domain and then reports where checkout actually landed, since the domain it falls back to belongs to the default channel and can't be known beforehand.
+
+  `catalyst deploy --update-checkout-url`, alongside the existing `--update-site-url`, lets a merchant setting up a custom domain configure both of a channel's URLs in one pass. It prompts for the checkout URL after a successful deploy, defaulting to the `checkout.` subdomain of the channel's storefront domain. Unlike the site URL this can't be derived from the deployment, since the checkout domain has to already point at BigCommerce with a certificate provisioned there. Passing both flags resolves the channel once rather than asking twice, and either flow failing leaves the deploy reported as successful, since the bundle is already live by that point.
+
+  All three surfaces warn when a channel's checkout domain doesn't share a main domain with its storefront. Pointing a channel's site URL at a new domain silently leaves checkout on the old one, and a cross-domain checkout is where shopper sessions and carts stop carrying over in browsers that restrict cross-domain cookies. `catalyst channels update` and `catalyst deploy --update-site-url` check for this right after they move the site URL, and `catalyst channels info` reports it too. The advice adapts to the storefront domain: on a custom domain it suggests the `checkout.<domain>` subdomain to point at BigCommerce, and on an auto-generated deployment hostname it explains that the shared checkout domain is the only option there and that a custom domain is the prerequisite for changing it. Two situations warn, with different copy: a channel that has never had a checkout URL of its own is inheriting the default channel's primary URL, which is where every channel starts; a channel whose own checkout URL no longer matches its storefront has most likely been left behind by a storefront URL change. The consequence is the same either way, so both warn — only the remedy differs. The check is advisory and never fails the command that ran it. Hostnames are compared by registrable domain using the public suffix list, matching what BigCommerce itself enforces: `store-x.example.store` and `store-x.c.example.store` share a domain and are accepted, while `example.co.uk` and `other.co.uk` do not.
+
+  When `catalyst channels info` finds a cross-domain checkout it offers to fix it on the spot rather than only reporting it. The channel is already selected and the site already fetched at that point, so it prompts right there — defaulting to the `checkout.` subdomain of the storefront domain — instead of making you re-run the work as `catalyst channels update --checkout-url`. The offer is withheld in the two cases where it wouldn't help: when the storefront sits on a BigCommerce-managed hosting zone, where no checkout URL can be issued a certificate and BigCommerce would reject every value, and in non-interactive runs, which print the `catalyst channels update` command to run instead so the command stays scriptable.
+
+  BigCommerce requires the checkout URL to share a main domain with the channel's storefront URL, so sessions carry between the two. That rule is enforced by the API rather than pre-checked locally — determining the registrable domain correctly requires the public suffix list — so the server's own explanation is surfaced verbatim on rejection. Note this also means a custom checkout URL is only possible on a custom storefront domain, and that the checkout domain must be pointed at BigCommerce with a certificate provisioned there, not added with `catalyst domains add`.
+
+### Patch Changes
+
+- [#3159](https://github.com/bigcommerce/catalyst/pull/3159) [`49a3432`](https://github.com/bigcommerce/catalyst/commit/49a34324925d65dad4e6b3e17d4d0b1d4132c978) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix `catalyst build`/`catalyst deploy` failing on native Windows during the OpenNext step. The generated `open-next.config.ts` hardcoded `node_modules/.bin/next build` as its `buildCommand`, which OpenNext runs through `execSync` (cmd.exe on Windows) — where the extensionless POSIX shim and forward-slash path fail to resolve. It now invokes `node ./node_modules/next/dist/bin/next build`, which works identically across sh and cmd.exe while still skipping the project's `generate` step.
+
+- [#3169](https://github.com/bigcommerce/catalyst/pull/3169) [`ed8fc56`](https://github.com/bigcommerce/catalyst/commit/ed8fc56f2f438775e3ce3a9fda1b01f14f586f97) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bind a `CATALYST_ROUTES_KV` Cloudflare KV namespace in the generated Wrangler config, so the routing cache used by `proxies/with-routes` has a shared store on BigCommerce Native Hosting instead of degrading to a per-invocation in-memory cache. The generated config points at a local-only placeholder namespace id used by `wrangler dev`/`catalyst start` and the `wrangler deploy --dry-run` bundling step; the real per-project namespace is bound at deploy time.
+
+- [#3213](https://github.com/bigcommerce/catalyst/pull/3213) [`cdee279`](https://github.com/bigcommerce/catalyst/commit/cdee279c12705ac0b2cde5377332a390c2ff1345) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop writing `CATALYST_ACCESS_TOKEN` into `.env.local` during `catalyst create`. The CLI never read it back — env files are not consulted when resolving credentials — so its only effect was to imply that they are, leading users to add `CATALYST_STORE_HASH` alongside it and then hit "Missing credentials" from `catalyst project list` and `catalyst deploy`. `.env.local` now carries `BIGCOMMERCE_*` build variables only, and CLI configuration lives in `.bigcommerce/project.json`, which scaffolding already writes. Existing projects are unaffected: the stale entry is harmless and is left in place.
+
+- [#3204](https://github.com/bigcommerce/catalyst/pull/3204) [`bb35f22`](https://github.com/bigcommerce/catalyst/commit/bb35f22d180f1d21e35caf12e50fd4aa0deec1e0) Thanks [@mfaris9](https://github.com/mfaris9)! - `catalyst build` and `catalyst deploy` now run GraphQL codegen (`generate`) automatically, so a fresh project no longer needs a manual `pnpm build` before its first deploy.
+
+## 1.3.0
+
+### Minor Changes
+
+- [#3156](https://github.com/bigcommerce/catalyst/pull/3156) [`9990a87`](https://github.com/bigcommerce/catalyst/commit/9990a872931d95b38fc8c66cd216ccb0be041bf3) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Print the DNS records to publish when `catalyst domains add` succeeds. The A and CNAME values that point the domain at the project are shown with the success message, along with which to publish and a note that they are only returned when the domain is added. The records survive `--wait`, and are omitted when the API has none to share yet.
+
+- [#3166](https://github.com/bigcommerce/catalyst/pull/3166) [`382bdf5`](https://github.com/bigcommerce/catalyst/commit/382bdf594bcc07425f6f82729659bfe9eaf9696c) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Standardize resource commands on plural names: `catalyst project` is now `catalyst projects`, and `catalyst channel` is now `catalyst channels`, matching the already-plural `domains` and `logs`. The singular form of every resource command remains as an alias — `project`, `channel`, `domain`, and `log` all still resolve — so existing scripts keep working. Telemetry continues to report the canonical plural name regardless of which form was typed.
+
+- [#3192](https://github.com/bigcommerce/catalyst/pull/3192) [`d263871`](https://github.com/bigcommerce/catalyst/commit/d263871a7aab465be3bffad05c77c5649ac9afaf) Thanks [@chanceaclark](https://github.com/chanceaclark)! - `catalyst upgrade` now keeps your `@bigcommerce/catalyst*` dependencies up to date.
+
+  Until now these versions never moved during an upgrade, so a project stayed pinned to whatever it was created with. The upgrade now brings them to the versions that shipped with the release you're upgrading to, handled like any other change: applied automatically, or flagged as a conflict if you'd pinned one on purpose.
+
+  If your project still references these packages with `workspace:^`, the upgrade offers to swap them for published versions so your package manager can keep them current from then on. Declining, running without a terminal, or using `--dry-run` changes nothing; `--yes` accepts.
+
+  Two new reminders round it out: run an install when the upgrade touched your `package.json`, and update `@bigcommerce/catalyst` itself when a newer version is out.
+
+### Patch Changes
+
+- [#3164](https://github.com/bigcommerce/catalyst/pull/3164) [`eef0c18`](https://github.com/bigcommerce/catalyst/commit/eef0c186544315c68f201ce9bdeccd563f4619aa) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Stop asking users to log in again after `catalyst create`. Credentials from the initial authentication are now written to the new project's `.bigcommerce/project.json` on every scaffold, not just `--hosting commerce`, so `catalyst deploy` no longer fails with "Missing credentials" and `catalyst project create` no longer re-prompts for login.
+
+- [#3167](https://github.com/bigcommerce/catalyst/pull/3167) [`2ec54df`](https://github.com/bigcommerce/catalyst/commit/2ec54df10b80ee3768fdfa2c611d707ff1e69fc6) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Print every request under `catalyst logs tail --format request`, including requests that emitted no log messages. Previously each line was tied to a log entry, so a request that logged nothing disappeared from the stream. The `request` format now reads `[timestamp] METHOD URL (status) [LEVEL] message`, moving the level after the request details in both `logs tail` and `logs query`. `catalyst logs tail --help` now documents each format and notes that `default` and `short` only show requests with a message body.
+
+- [#3193](https://github.com/bigcommerce/catalyst/pull/3193) [`391f96c`](https://github.com/bigcommerce/catalyst/commit/391f96c159ea482c1e09a519148ec1463d56ea39) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Replace the Durable Object revalidation queue with a self-fetch queue, so ISR revalidation can work on native hosting at all.
+
+  **This does not make anything faster, and changes no behavior today.** Catalyst currently ships no route with a revalidate window, so the queue is never invoked. From the built prerender manifest, every prerendered route is `initialRevalidateSeconds: false` and `dynamicRoutes` is empty. The `next: { revalidate }` options on the product and faceted-search queries are fetch-level data caching and do not feed this queue.
+
+  What this fixes is a trap rather than a slowdown: with the previous config, the first route to adopt ISR would have failed to revalidate _silently_, because the error thrown below is an `IgnorableError` (`logLevel = 0`, dropped by OpenNext's logger under the default threshold). Pages would have gone permanently stale with nothing in the logs.
+
+  OpenNext's `doQueue` routes revalidation through a Durable Object whose constructor reads `env.WORKER_SELF_REFERENCE` and throws without it:
+
+  ```js
+  this.service = env.WORKER_SELF_REFERENCE;
+  if (!this.service) throw new IgnorableError('No service binding for cache revalidation worker');
+  ```
+
+  **That binding cannot exist on native hosting.** A Cloudflare `service` binding resolves against account-level Workers, and a Catalyst deployment is a script inside a dispatch namespace, which is not addressable that way. Adding it was attempted and rejected at upload:
+
+  ```
+  400 Bad Request  code 10143
+  Service binding 'WORKER_SELF_REFERENCE' references Worker
+  '…' which was not found.
+  ```
+
+  The `dispatch_namespace` binding sometimes suggested as the alternative is worse: OpenNext calls `.fetch()` directly on the value while that binding exposes `.get(name)`, and `.get()` accepts _any_ script in the namespace — binding it into a tenant Worker would let any deployment invoke any other deployment's Worker.
+
+  ## What changed
+
+  Revalidation does not require a binding. It is a `HEAD` request to the page's own public URL carrying the build-time preview secret — exactly what the Durable Object issues once it holds the service handle. `queue` now uses a small self-contained queue that issues that request with a plain `fetch`, which leaves and re-enters through the dispatch router and arrives at the same Worker. `global_fetch_strictly_public` is already set, so the subrequest is not short-circuited internally.
+
+  It remains wrapped in `queueCache`, so concurrent stale hits for one path still collapse into a single revalidation.
+
+  **Trade-off:** the Durable Object's retry and max-concurrency handling is lost. A failed revalidation is retried on the next stale hit rather than by the queue itself, and revalidations are no longer capped at a concurrency limit.
+
+  The `NEXT_CACHE_DO_QUEUE` binding is intentionally left in place. OpenNext's worker template exports all three Durable Object classes unconditionally, so it still resolves and needs no Durable Object migration; it is simply inert.
+
+- [#3183](https://github.com/bigcommerce/catalyst/pull/3183) [`ce7d1b2`](https://github.com/bigcommerce/catalyst/commit/ce7d1b23ca2b352e9aad2d3f4b112513574156c2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Restore tag checking on regional cache hits, replacing a CDN cache purge that never worked.
+
+  `cachePurge` was declared in the generated `open-next.config.ts` but never had credentials on native hosting, so every purge attempt no-opped with `No cache zone ID or API token provided. Skipping cache purge.` The declaration alone was harmful: OpenNext's `isPurgeCacheEnabled()` only checks whether `cachePurge` is _declared_, not whether it works. Believing purge was handling invalidation, it disabled `shouldLazilyUpdateOnCacheHit` — documented as on by default for `'long-lived'` mode — and Catalyst additionally set `bypassTagCacheOnCacheHit: true`.
+
+  A regional (Cache API) hit was therefore neither purged, nor refreshed from R2, nor checked against the tag cache. Stale data was served for the full `max-age` window (the route's `revalidate`, or a 30-minute default), and `revalidateTag` calls landing in that window had no effect on it.
+
+  ## Purge and tag-checking are alternatives, and we had neither
+
+  `doShardedTagCache.writeTags()` always writes the revalidation time to its Durable Object shards and always clears the regional _tag_ cache. Only the CDN purge is gated behind `isPurgeCacheEnabled()`. So tag invalidation was already durable — purge exists solely to evict _incremental cache_ entries held in the Cache API, which is exactly the check `bypassTagCacheOnCacheHit` was skipping.
+
+  Either mechanism delivers correct invalidation: purge evicts the entries, or the tag cache is consulted on hits. Catalyst was configured for the first and got neither.
+
+  ## What changed
+  - Removed `bypassTagCacheOnCacheHit: true`, so the tag cache is consulted on a regional hit. The OpenNext docs require this option be paired with working purge: "make sure that the cache gets purged either by enabling the auto cache purging feature or manually."
+  - Removed `cachePurge: purgeCache({ type: 'durableObject' })`, restoring `shouldLazilyUpdateOnCacheHit` to its documented default so a hit also refreshes from R2 in the background.
+
+  The trade is an extra tag-cache read and R2 read on a cache hit, which is what those options were exchanging for correctness. Invalidation via `revalidateTag` now actually takes effect on regional cache hits.
+
+  ## Why purge was not simply fixed
+
+  Purge requires a Cloudflare API token bound into the Worker, and a Worker binding is readable by the merchant's own application code. Cloudflare purge is zone-scoped and native hosting places all tenants on one shared zone, so a token extracted from any tenant could purge every other tenant's cache. Scoping it to Cache Purge alone reduces the severity but does not remove it.
+
+  Instant invalidation via purge remains worth having — it is faster than tag-checking and avoids the extra reads. Restoring it needs a design that keeps the credential out of tenant Workers, such as routing purge through a platform-owned worker or an authenticated service endpoint with per-tenant authorization.
+
+  The `NEXT_CACHE_DO_PURGE` Durable Object binding is intentionally left in place. OpenNext's worker template exports all three DO classes unconditionally, so the binding still resolves and no Durable Object migration is required; it is simply inert until purge returns.
+
+- [#3184](https://github.com/bigcommerce/catalyst/pull/3184) [`5f7e630`](https://github.com/bigcommerce/catalyst/commit/5f7e6306761ab459224638bfd6fd7ede568b0079) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Ship the `_headers` file so hashed static assets get an immutable `Cache-Control`, instead of being revalidated on every repeat page view.
+
+  `packages/catalyst/templates/public_headers` has always specified the right policy for `/_next/static/*`, but nothing ever copied it into the build output — `build.ts` wrote only `open-next.config.ts` and `wrangler.jsonc`, and no `_headers` file existed anywhere in the repo.
+
+  Without it, Workers Assets serves those files with its own default. Measured on a deployed store, all 32 hashed assets on a product page returned:
+
+  ```
+  cache-control: public, max-age=0, must-revalidate
+  ```
+
+  `max-age=0, must-revalidate` on a **content-hashed** filename is wrong by construction: the hash _is_ the version, so a given URL can never return different bytes. The header forced browsers to issue a conditional request for all 32 assets on every repeat view (~75ms each, all answered `304 Not Modified`), including 4 render-blocking CSS files and 3 fonts. With the intended `public,max-age=31536000,immutable`, those requests disappear entirely.
+
+  The reason the header was missing at all is that `/_next/static/*` never reaches the Next.js server on Workers — Cloudflare's asset layer serves it directly, so Next's own immutable header never applies. `_headers` is the supported override, and OpenNext's `migrate` command generates a byte-identical `public/_headers` for exactly this reason, treating it as the app's responsibility.
+
+  ## What changed
+  - `build.ts` now copies `templates/public_headers` to `.open-next/assets/_headers`. It is written _after_ the OpenNext build, because that build regenerates the assets directory, and _before_ the Wrangler dry-run so Wrangler validates it. The existing recursive copy into `.bigcommerce/dist/assets` carries it into the uploaded bundle.
+  - Added a regression test asserting the copy happens. The original bug was not a wrong value but an absent one, with nothing asserting it — verified the new test fails when the copy is removed.
+
+- [#3178](https://github.com/bigcommerce/catalyst/pull/3178) [`a78f93c`](https://github.com/bigcommerce/catalyst/commit/a78f93cf72999de13fadd98cb144f1e1c5bc5bb1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop `catalyst deploy` from wiping stored deployment environment variables. Commerce Hosting setup rebuilt `.bigcommerce/project.json` from scratch, dropping anything it didn't write itself — the `env` block managed by `catalyst env`, the persisted `apiHost`, and stored credentials when setup ran without them. Because `deploy` re-runs setup whenever the project isn't fully transformed, a routine deploy could silently discard variables that are sent as secrets on every deploy, leaving the next one to ship without them. Setup now merges into the existing file.
+
+## 1.2.0
+
+### Minor Changes
+
+- [#3124](https://github.com/bigcommerce/catalyst/pull/3124) [`bb04eca`](https://github.com/bigcommerce/catalyst/commit/bb04ecab9e0e905efd04da10536083479f9e8ed3) Thanks [@parthshahp](https://github.com/parthshahp)! - Add pagination to `catalyst logs query`. Use `--limit <count>` (1–500) to cap the page size, `--after <cursor>` to page toward older entries, and `--before <cursor>` to page toward newer ones. When more entries are available, the CLI prints a ready-to-run command for the next page with the time window pinned to absolute timestamps.
+
 ## 1.1.1
 
 ### Patch Changes
