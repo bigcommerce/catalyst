@@ -194,6 +194,12 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   return true;
 };
 
+const NATIVE_HOSTING_ENV = {
+  type: 'plain_text',
+  key: 'CATALYST_HOSTING',
+  value: 'native',
+} as const;
+
 export const parseEnvironmentVariables = (secretOption?: string[]) => {
   return secretOption?.map((envVar) => {
     const { key, value } = parseEnvAssignment(envVar);
@@ -568,12 +574,11 @@ Example:
 
     // Merge persisted env vars (`catalyst env add`) with any inline `--secret`
     // flags. Inline flags win on conflict, letting users override a stored
-    // value for a single run. Send `undefined` when there's nothing to set so
-    // we preserve the prior payload shape.
+    // value for a single run.
     const flagSecrets = parseEnvironmentVariables(options.secret) ?? [];
     const persistedSecrets = toDeploymentSecrets(getStoredEnv(config));
     const mergedSecrets = mergeDeploymentSecrets(persistedSecrets, flagSecrets);
-    const environmentVariables = mergedSecrets.length > 0 ? mergedSecrets : undefined;
+    const environmentVariables = [...mergedSecrets, NATIVE_HOSTING_ENV];
 
     const { deployment_uuid: deploymentUuid } = await createDeployment(
       projectUuid,

@@ -100,6 +100,8 @@ export async function generateMetadata(): Promise<Metadata> {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
       store_hash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
+      channel_id: data.channel.entityId,
+      hosting: process.env.CATALYST_HOSTING ?? '',
     },
   };
 }
