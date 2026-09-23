@@ -49,6 +49,128 @@ export function sharesMainDomain(a: string, b: string): boolean {
 // name, and every character here comes out of the project name's budget.
 export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
 
+// Cloudflare will not issue a certificate for a name longer than this, from
+// the RFC 5280 limit on a certificate common name.
+const MAX_HOSTNAME_LENGTH = 64;
+
+// How long native hosting can take to get a certificate onto a freshly
+// provisioned checkout hostname. BigCommerce checks Cloudflare 60s after
+// creating the custom hostname and then retries 10 times at 30s, so six
+// minutes is the point past which it has given up rather than still working.
+const CHECKOUT_HOSTNAME_READY_TIMEOUT_MS = 6 * 60 * 1000;
+const CHECKOUT_HOSTNAME_POLL_INTERVAL_MS = 10 * 1000;
+
+// The checkout hostname native hosting provisions for a storefront on a managed
+// zone. Derived rather than fetched: ignition builds the same name from the same
+// prefix, so transporting it would only add a field that can disagree.
+//
+// Returns undefined when the result would exceed the certificate common-name
+// limit. Hostnames generated before ignition reserved room for the prefix can be
+// too long, and those projects have no checkout hostname to point at.
+export function managedCheckoutHostname(storefrontHostname: string): string | undefined {
+  const hostname = MANAGED_ZONE_CHECKOUT_PREFIX + normalizeHostname(storefrontHostname);
+
+  return hostname.length <= MAX_HOSTNAME_LENGTH ? hostname : undefined;
+}
+
+// Whether the hostname terminates TLS with a certificate a client will accept.
+//
+// Any HTTP response means the handshake succeeded, which is the thing that
+// matters; the status code is irrelevant, and checkout answers a bare GET with
+// a redirect to the storefront when there is no cart. A rejected certificate or
+// an unresolvable name throws, which is the signal we want.
+async function checkoutHostnameIsServing(hostname: string): Promise<boolean> {
+  try {
+    await fetch(`https://${hostname}/`, {
+      method: 'HEAD',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Waits for a freshly provisioned checkout hostname to serve a valid
+// certificate.
+//
+// Worth the wait because `PUT .../site/checkout-url` does no certificate
+// validation of its own: it accepts a hostname that shares a main domain with
+// the storefront whether or not anything answers there. Setting it early leaves
+// checkout resolving without a certificate, which is worse for a shopper than
+// the inherited checkout URL it replaced.
+export async function waitForCheckoutHostname(
+  hostname: string,
+  { timeoutMs = CHECKOUT_HOSTNAME_READY_TIMEOUT_MS, onWait }: CheckoutHostnameWaitOptions = {},
+): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  let waited = false;
+
+  for (;;) {
+    // Sequential by nature: each probe asks whether the certificate has
+    // issued yet, so there is nothing to parallelise.
+    // eslint-disable-next-line no-await-in-loop
+    if (await checkoutHostnameIsServing(hostname)) return true;
+
+    if (Date.now() + CHECKOUT_HOSTNAME_POLL_INTERVAL_MS >= deadline) return false;
+
+    if (!waited) {
+      waited = true;
+      onWait?.();
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, CHECKOUT_HOSTNAME_POLL_INTERVAL_MS));
+  }
+}
+
+export interface CheckoutHostnameWaitOptions {
+  timeoutMs?: number;
+  // Called once, before the first sleep, so a caller can explain the pause
+  // rather than appearing to hang for minutes.
+  onWait?: () => void;
+}
+
+// Resolves the checkout URL for a storefront on a managed hosting zone, waiting
+// for native hosting to finish issuing its certificate.
+//
+// Returns undefined when there is nothing safe to set, leaving the caller on
+// its existing path (a prompt, or no change) rather than writing a checkout URL
+// that would not work.
+export async function resolveProvisionedCheckoutUrl(
+  storefrontHostname: string,
+  { timeoutMs }: Pick<CheckoutHostnameWaitOptions, 'timeoutMs'> = {},
+): Promise<string | undefined> {
+  const hostname = managedCheckoutHostname(storefrontHostname);
+
+  if (!hostname) {
+    consola.warn(
+      `${storefrontHostname} is too long to take a checkout prefix, so it has no checkout ` +
+        'hostname. Checkout keeps its current URL.',
+    );
+
+    return undefined;
+  }
+
+  const ready = await waitForCheckoutHostname(hostname, {
+    timeoutMs,
+    onWait: () => consola.info(`Waiting for ${hostname} to finish provisioning its certificate...`),
+  });
+
+  if (!ready) {
+    consola.warn(
+      `${hostname} is not serving a certificate yet, so checkout keeps its current URL. ` +
+        'Re-run with `--update-checkout-url` once it is ready.',
+    );
+
+    return undefined;
+  }
+
+  return `https://${hostname}`;
+}
+
 // The checkout subdomain a merchant most likely wants:
 // `https://www.example.com` → `https://checkout.example.com`.
 //

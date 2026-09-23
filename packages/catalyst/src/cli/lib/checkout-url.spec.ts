@@ -4,7 +4,13 @@ import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vit
 import { server } from '../../../tests/mocks/node';
 
 import { type ChannelSiteDetails } from './channels';
-import { sharesMainDomain, suggestCheckoutUrl, warnOnCrossDomainCheckout } from './checkout-url';
+import {
+  managedCheckoutHostname,
+  resolveProvisionedCheckoutUrl,
+  sharesMainDomain,
+  suggestCheckoutUrl,
+  warnOnCrossDomainCheckout,
+} from './checkout-url';
 import { consola } from './logger';
 
 const storeHash = 'test-store';
@@ -386,6 +392,71 @@ describe('warnOnCrossDomainCheckout', () => {
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
     expect(consola.info).toHaveBeenCalledWith(
       expect.stringContaining('share a main domain with the storefront'),
+    );
+  });
+});
+
+describe('managedCheckoutHostname', () => {
+  test('prefixes the storefront hostname', () => {
+    expect(managedCheckoutHostname('catalyst.catalyst-sandbox.store')).toBe(
+      'c.catalyst.catalyst-sandbox.store',
+    );
+  });
+
+  // ignition derives the same name from the same prefix, so this has to agree
+  // with it rather than be transported over the API.
+  test('shares a main domain with its storefront', () => {
+    const storefront = 'catalyst.catalyst-sandbox.store';
+    const checkout = managedCheckoutHostname(storefront);
+
+    if (!checkout) throw new Error('expected a hostname');
+
+    expect(sharesMainDomain(storefront, checkout)).toBe(true);
+  });
+
+  // Hostnames generated before ignition reserved room for the prefix can be too
+  // long, and those projects have no checkout hostname to point at.
+  test('returns undefined when the result exceeds the certificate name limit', () => {
+    const atLimit = `${'a'.repeat(62 - '.catalyst-sandbox.store'.length)}.catalyst-sandbox.store`;
+
+    expect(managedCheckoutHostname(atLimit)).toBe(`c.${atLimit}`);
+    expect(managedCheckoutHostname(`a${atLimit}`)).toBeUndefined();
+  });
+});
+
+describe('resolveProvisionedCheckoutUrl', () => {
+  const storefront = 'catalyst.catalyst-sandbox.store';
+
+  test('returns the checkout URL once the hostname serves a certificate', async () => {
+    server.use(
+      http.head('https://c.catalyst.catalyst-sandbox.store/', () =>
+        HttpResponse.json(null, { status: 302 }),
+      ),
+    );
+
+    await expect(resolveProvisionedCheckoutUrl(storefront)).resolves.toBe(
+      'https://c.catalyst.catalyst-sandbox.store',
+    );
+  });
+
+  // Setting a checkout URL whose certificate has not issued leaves checkout
+  // resolving without one, which is worse for a shopper than the inherited URL
+  // it would replace. So give up rather than write it.
+  test('gives up rather than set a URL that is not serving yet', async () => {
+    server.use(http.head('https://c.catalyst.catalyst-sandbox.store/', () => HttpResponse.error()));
+
+    await expect(
+      resolveProvisionedCheckoutUrl(storefront, { timeoutMs: 0 }),
+    ).resolves.toBeUndefined();
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('not serving a certificate'));
+  });
+
+  test('gives up when the storefront hostname is too long to take a prefix', async () => {
+    const tooLong = `${'a'.repeat(63 - '.catalyst-sandbox.store'.length)}.catalyst-sandbox.store`;
+
+    await expect(resolveProvisionedCheckoutUrl(tooLong)).resolves.toBeUndefined();
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('too long to take a checkout prefix'),
     );
   });
 });

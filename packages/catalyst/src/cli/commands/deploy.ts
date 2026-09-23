@@ -11,6 +11,7 @@ import { assertAuthorized } from '../lib/auth-errors';
 import { loadBuildEnv } from '../lib/build-env';
 import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
+import { resolveProvisionedCheckoutUrl } from '../lib/checkout-url';
 import {
   cleanupCloudflareIncompatibilities,
   NoLinkedProjectError,
@@ -610,9 +611,13 @@ Example:
     // Carried over so both flags don't ask which channel twice.
     let resolvedChannelId: number | undefined;
 
+    // Set when --update-site-url ran, so the checkout flow below can derive the
+    // checkout hostname that pairs with whichever hostname was actually used.
+    let siteHostname: string | undefined;
+
     if (options.updateSiteUrl) {
       try {
-        ({ channelId: resolvedChannelId } = await runChannelSiteUrlFlow({
+        ({ channelId: resolvedChannelId, hostname: siteHostname } = await runChannelSiteUrlFlow({
           storeHash,
           accessToken,
           apiHost,
@@ -626,11 +631,16 @@ Example:
 
     if (options.updateCheckoutUrl) {
       try {
+        // Without a site URL update there is no hostname to derive from, so the
+        // flow prompts as before. `url` skips the prompt when we do know it.
+        const url = siteHostname ? await resolveProvisionedCheckoutUrl(siteHostname) : undefined;
+
         await runChannelCheckoutUrlFlow({
           storeHash,
           accessToken,
           apiHost,
           channelId: resolvedChannelId,
+          url,
         });
       } catch (error) {
         warnChannelFlowFailed('checkout URL', error);

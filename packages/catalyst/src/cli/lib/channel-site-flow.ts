@@ -135,6 +135,10 @@ async function resolveHostname(
 
 export interface ChannelSiteFlowResult {
   channelId: number;
+  // The hostname the site URL was set to. Returned so a caller running the
+  // checkout flow next can derive the matching checkout hostname instead of
+  // guessing which of the project's hostnames was chosen.
+  hostname: string;
 }
 
 export async function runChannelSiteUrlFlow(
@@ -191,5 +195,5 @@ export async function runChannelSiteUrlFlow(
   // Returned so a caller running several channel flows back to back — `channels
   // update --hostname --checkout-url`, or `deploy --update-site-url
   // --update-checkout-url` — reuses this channel instead of resolving it twice.
-  return { channelId: channel.id };
+  return { channelId: channel.id, hostname };
 }
