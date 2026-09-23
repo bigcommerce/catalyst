@@ -1,7 +1,9 @@
 import { BigCommerceAPIError } from './api-error';
 import { BigCommerceAuthError } from './gql-auth-error';
 import { BigCommerceGQLError } from './gql-error';
+import { InvalidStorefrontTokenError } from './invalid-storefront-token-error';
 import { parseGraphQLError } from './lib/error';
+import { looksLikeJwt } from './lib/storefront-token';
 import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
 import { normalizeQuery } from './utils/normalizeQuery';
@@ -169,6 +171,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     });
 
     if (!response.ok) {
+      if (response.status === 401 && !looksLikeJwt(this.config.storefrontToken)) {
+        throw new InvalidStorefrontTokenError(response.status);
+      }
+
       throw await BigCommerceAPIError.createFromResponse(response);
     }
 

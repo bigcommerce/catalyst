@@ -5,6 +5,7 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
+import { ClientWalletButtons } from '~/components/wallet-buttons';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
@@ -18,7 +19,13 @@ import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
 import { CheckoutPreconnect } from './_components/checkout-preconnect';
-import { getCart, getShippingCountries } from './page-data';
+import {
+  getCart,
+  getCurrencyData,
+  getPaymentWallets,
+  getPaymentWalletWithInitializationData,
+  getShippingCountries,
+} from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -37,6 +44,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: makeswiftMetadata?.description || undefined,
   };
 }
+
+const createWalletButtonsInitOptions = async (
+  walletButtons: string[],
+  cart: {
+    entityId: string;
+    currencyCode: string;
+    amount: {
+      value: number;
+    };
+  },
+) => {
+  const currencyData = await getCurrencyData(cart.currencyCode);
+
+  return Promise.all(
+    walletButtons.map(async (entityId) => {
+      const initData = await getPaymentWalletWithInitializationData(entityId, cart.entityId);
+      const methodId = entityId.split('.').join('');
+
+      return {
+        methodId,
+        containerId: `${methodId}-button`,
+        [methodId]: {
+          cartId: cart.entityId,
+          currency: {
+            code: currencyData?.code,
+            decimalPlaces: currencyData?.display.decimalPlaces,
+          },
+          amount: cart.amount.value,
+          ...initData,
+        },
+      };
+    }),
+  );
+};
 
 const getAnalyticsData = async (cartId: string) => {
   const data = await getCart({ cartId });
@@ -105,6 +146,23 @@ export default async function Cart({ params }: Props) {
 
   const taxIncluded = cart.isTaxIncluded;
 
+  const walletButtonsInitOptions = Streamable.from(async () => {
+    try {
+      const walletButtons = await getPaymentWallets({
+        filters: {
+          cartEntityId: cartId,
+        },
+      });
+
+      return await createWalletButtonsInitOptions(walletButtons, cart);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+
+      return [];
+    }
+  });
+
   const lineItems = [
     ...cart.lineItems.giftCertificates,
     ...cart.lineItems.physicalItems,
@@ -146,7 +204,8 @@ export default async function Cart({ params }: Props) {
         inventoryMessages = {
           quantityReadyToShipMessage:
             data.site.settings?.inventory?.showQuantityOnHand &&
-            !!item.stockPosition?.quantityOnHand
+            !!item.stockPosition?.quantityOnHand &&
+            !!item.stockPosition.quantityBackordered
               ? t('quantityReadyToShip', {
                   quantity: Number(item.stockPosition.quantityOnHand),
                 })
@@ -437,6 +496,12 @@ export default async function Cart({ params }: Props) {
           }}
           summaryTitle={t('CheckoutSummary.title')}
           title={t('title')}
+          walletButtons={
+            <ClientWalletButtons
+              graphQLEndpoint={process.env.TRAILING_SLASH !== 'false' ? 'graphql/' : 'graphql'}
+              walletButtonsInitOptions={walletButtonsInitOptions}
+            />
+          }
         />
       </CartAnalyticsProvider>
       <Slot label="Cart bottom content" snapshotId="cart-bottom-content" />

@@ -87,13 +87,38 @@ const eligibilityResponseSchema = z.object({
   }),
 });
 
+// `type` is a plain string, not an enum: the API documents
+// `primary | canonical | checkout`, but an unrecognised role shouldn't crash a
+// diagnostic read.
+const siteUrlSchema = z.object({
+  url: z.string(),
+  type: z.string(),
+});
+
+// `ssl_status` is documented `dedicated | shared` but comes back null on shared
+// SSL. The rest are optional because the narrower `PUT .../site` response omits
+// them.
 const channelSiteSchema = z.object({
   data: z.object({
     id: z.number(),
     url: z.string(),
     channel_id: z.number(),
+    ssl_status: z.string().nullable().optional(),
+    is_checkout_url_customized: z.boolean().optional(),
+    urls: z.array(siteUrlSchema).optional(),
   }),
 });
+
+// Tokens minted before `store_channel_settings`/`store_sites` joined
+// `DEVICE_OAUTH_SCOPES` 401/403 here, and re-login is the only recovery — so say
+// that rather than surfacing a bare status.
+function assertChannelSettingsAuthorized(response: Response, action: string): void {
+  if (response.status === 401 || response.status === 403) {
+    throw new UserActionableError(
+      `${action} (${response.status}). Re-run \`catalyst auth login\` to refresh your access token with the store_channel_settings and store_sites scopes.`,
+    );
+  }
+}
 
 export interface ChannelInit {
   storefrontToken: string;
@@ -236,11 +261,7 @@ export async function updateChannelSiteUrl(
     },
   );
 
-  if (response.status === 401 || response.status === 403) {
-    throw new UserActionableError(
-      `Failed to update channel site (${response.status}). Re-run \`catalyst auth login\` to refresh your access token with the store_channel_settings scope.`,
-    );
-  }
+  assertChannelSettingsAuthorized(response, 'Failed to update channel site');
 
   if (!response.ok) {
     throw await httpError(response, 'Failed to update channel site');
@@ -250,4 +271,106 @@ export async function updateChannelSiteUrl(
   const { data } = channelSiteSchema.parse(res);
 
   return { id: data.id, url: data.url, channelId: data.channel_id };
+}
+
+export interface ChannelSiteUrl {
+  url: string;
+  type: string;
+}
+
+export interface ChannelSiteDetails extends ChannelSite {
+  sslStatus: string | null;
+  // When false, BigCommerce falls back to the *default* channel's primary URL —
+  // not this channel's — which can silently put checkout on an unrelated domain.
+  isCheckoutUrlCustomized: boolean;
+  urls: ChannelSiteUrl[];
+}
+
+const toChannelSiteDetails = (
+  data: z.infer<typeof channelSiteSchema>['data'],
+): ChannelSiteDetails => ({
+  id: data.id,
+  url: data.url,
+  channelId: data.channel_id,
+  sslStatus: data.ssl_status ?? null,
+  isCheckoutUrlCustomized: data.is_checkout_url_customized ?? false,
+  urls: data.urls ?? [],
+});
+
+export function findChannelSiteUrl(site: ChannelSiteDetails, type: string): string | undefined {
+  return site.urls.find((entry) => entry.type === type)?.url;
+}
+
+export async function getChannelSite(
+  channelId: number,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<ChannelSiteDetails> {
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/channels/${channelId}/site`,
+    { method: 'GET', headers: authHeaders(accessToken) },
+  );
+
+  assertChannelSettingsAuthorized(response, 'Failed to fetch channel site');
+
+  if (!response.ok) {
+    throw await httpError(response, 'Failed to fetch channel site');
+  }
+
+  const res: unknown = await response.json();
+
+  return toChannelSiteDetails(channelSiteSchema.parse(res).data);
+}
+
+// Channel-scoped and hyphenated. The headless guide's `/sites/{site_id}/checkout_url`
+// is wrong; the OpenAPI spec and API reference both use this form.
+const checkoutUrlPath = (storeHash: string, apiHost: string, channelId: number) =>
+  `https://${apiHost}/stores/${storeHash}/v3/channels/${channelId}/site/checkout-url`;
+
+// BigCommerce requires the checkout URL to share a main domain with the
+// storefront and 422s otherwise. Not pre-validated here: the registrable domain
+// needs the public suffix list, and a wrong local check would block a valid
+// setup. `httpError` surfaces the API's own explanation instead.
+export async function updateChannelCheckoutUrl(
+  channelId: number,
+  checkoutUrl: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<ChannelSiteDetails> {
+  const response = await fetch(checkoutUrlPath(storeHash, apiHost, channelId), {
+    method: 'PUT',
+    headers: { ...authHeaders(accessToken), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url: checkoutUrl }),
+  });
+
+  assertChannelSettingsAuthorized(response, 'Failed to update channel checkout URL');
+
+  if (!response.ok) {
+    throw await httpError(response, 'Failed to update channel checkout URL');
+  }
+
+  const res: unknown = await response.json();
+
+  return toChannelSiteDetails(channelSiteSchema.parse(res).data);
+}
+
+// Drops the channel back to the shared checkout domain. No useful response body.
+export async function deleteChannelCheckoutUrl(
+  channelId: number,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+): Promise<void> {
+  const response = await fetch(checkoutUrlPath(storeHash, apiHost, channelId), {
+    method: 'DELETE',
+    headers: authHeaders(accessToken),
+  });
+
+  assertChannelSettingsAuthorized(response, 'Failed to remove channel checkout URL');
+
+  if (!response.ok) {
+    throw await httpError(response, 'Failed to remove channel checkout URL');
+  }
 }

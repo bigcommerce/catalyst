@@ -1,5 +1,5 @@
 import { confirm, input, select } from '@inquirer/prompts';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs';
 import { tmpdir } from 'os';
 import { join } from 'path';
 import { afterEach, beforeEach, describe, expect, it, type MockInstance, vi } from 'vitest';
@@ -7,10 +7,13 @@ import { z } from 'zod';
 
 import {
   cleanupCloudflareIncompatibilities,
+  OPENNEXT_CLOUDFLARE_VERSION,
   promptAndCreateCommerceHostingProject,
   promptForCommerceHostingProject,
+  reconcileOpenNextVersion,
   setupCommerceHosting,
 } from './commerce-hosting';
+import { consola } from './logger';
 import * as projectLib from './project';
 import { InfrastructureProjectValidationError } from './project';
 
@@ -562,7 +565,9 @@ describe('promptForCommerceHostingProject', () => {
 
 describe('setupCommerceHosting', () => {
   const packageJsonSchema = z.record(z.string(), z.unknown());
-  const projectJsonSchema = z.object({
+  // Loose: `z.object` strips unknown keys, which would quietly discard the very
+  // fields (`env`, `apiHost`) the preservation tests below assert on.
+  const projectJsonSchema = z.looseObject({
     projectUuid: z.string(),
     framework: z.string(),
     storeHash: z.string().optional(),
@@ -598,6 +603,14 @@ describe('setupCommerceHosting', () => {
   function readCorePackageJson() {
     return packageJsonSchema.parse(
       JSON.parse(readFileSync(join(projectDir, 'package.json'), 'utf-8')),
+    );
+  }
+
+  function writeProjectJson(contents: unknown) {
+    mkdirSync(join(projectDir, '.bigcommerce'), { recursive: true });
+    writeFileSync(
+      join(projectDir, '.bigcommerce', 'project.json'),
+      JSON.stringify(contents, null, 2),
     );
   }
 
@@ -751,6 +764,114 @@ describe('setupCommerceHosting', () => {
     expect(projectJson.accessToken).toBeUndefined();
   });
 
+  describe('preserving existing project.json contents', () => {
+    // `catalyst deploy` re-runs setup whenever the project isn't transformed,
+    // so this fires on projects that already hold real values. Stored env vars
+    // are sent as secrets on every deploy, so losing them means the next deploy
+    // ships a worker without its storefront credentials.
+    it('keeps stored deployment env vars', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        env: { BIGCOMMERCE_STOREFRONT_TOKEN: 'token', BIGCOMMERCE_CHANNEL_ID: '1' },
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        env: { BIGCOMMERCE_STOREFRONT_TOKEN: 'token', BIGCOMMERCE_CHANNEL_ID: '1' },
+      });
+    });
+
+    // `apiHost` is equally a casualty, and unknown keys are carried through so
+    // a future addition to the config doesn't have to remember to update this.
+    it('keeps apiHost and keys it does not know about', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        apiHost: 'api.integration.zone',
+        somethingAddedLater: 'value',
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      const projectJson = readProjectJson();
+
+      expect(projectJson.apiHost).toBe('api.integration.zone');
+      expect(projectJson.somethingAddedLater).toBe('value');
+    });
+
+    // Re-linking without credentials must not clear credentials the project
+    // already had: `projects link` calls this with whatever it happens to hold.
+    it('keeps stored credentials when none are supplied', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+    });
+
+    it('overwrites stored credentials when new ones are supplied', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson({
+        projectUuid: 'old-uuid',
+        framework: 'catalyst',
+        storeHash: 'stored-hash',
+        accessToken: 'stored-token',
+      });
+
+      await setupCommerceHosting({
+        projectDir,
+        projectUuid: 'uuid-xyz',
+        storeHash: 'new-hash',
+        accessToken: 'new-token',
+      });
+
+      expect(readProjectJson()).toEqual({
+        projectUuid: 'uuid-xyz',
+        framework: 'catalyst',
+        storeHash: 'new-hash',
+        accessToken: 'new-token',
+      });
+    });
+
+    // Setup writes everything needed for a working project, so a corrupt file
+    // should be replaced rather than block the user from setting up at all.
+    it('starts fresh when the existing file is not valid JSON', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      mkdirSync(join(projectDir, '.bigcommerce'), { recursive: true });
+      writeFileSync(join(projectDir, '.bigcommerce', 'project.json'), '{ not json');
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({ projectUuid: 'uuid-xyz', framework: 'catalyst' });
+    });
+
+    it('starts fresh when the existing file holds a non-object', async () => {
+      writeCorePackageJson({ scripts: { dev: 'next dev' } });
+      writeProjectJson(['not', 'an', 'object']);
+
+      await setupCommerceHosting({ projectDir, projectUuid: 'uuid-xyz' });
+
+      expect(readProjectJson()).toEqual({ projectUuid: 'uuid-xyz', framework: 'catalyst' });
+    });
+  });
+
   it('throws when package.json is missing', async () => {
     await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
   });
@@ -890,6 +1011,17 @@ describe('cleanupCloudflareIncompatibilities', () => {
     expect(readCorePackageJson().dependencies).toMatchObject({ next: '^15.0.0' });
   });
 
+  it('prompts with copy that ties the removal to native hosting', async () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
+    writeCoreInstrumentationFile('export function register() {}\n');
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    const message = confirmMock.mock.calls[0]?.[0].message ?? '';
+
+    expect(message.toLowerCase()).toContain('native hosting');
+  });
+
   it('leaves the file and the dep alone when the user declines (TTY)', async () => {
     confirmMock.mockResolvedValueOnce(false);
 
@@ -935,5 +1067,167 @@ describe('cleanupCloudflareIncompatibilities', () => {
     await cleanupCloudflareIncompatibilities(projectDir);
 
     expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(false);
+  });
+});
+
+describe('reconcileOpenNextVersion', () => {
+  let dir: string;
+  let warnSpy: MockInstance;
+  let infoSpy: MockInstance;
+
+  const OK = { canUpgrade: true };
+
+  beforeEach(() => {
+    dir = mkdtempSync(join(tmpdir(), 'catalyst-opennext-drift-'));
+    warnSpy = vi.spyOn(consola, 'warn').mockImplementation(() => undefined);
+    infoSpy = vi.spyOn(consola, 'info').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    rmSync(dir, { recursive: true, force: true });
+    warnSpy.mockRestore();
+    infoSpy.mockRestore();
+  });
+
+  const writePkg = (contents: unknown) =>
+    writeFileSync(join(dir, 'package.json'), JSON.stringify(contents, null, 2));
+
+  const readPin = () => {
+    const parsed: unknown = JSON.parse(readFileSync(join(dir, 'package.json'), 'utf-8'));
+
+    return z
+      .looseObject({ dependencies: z.record(z.string(), z.string()).optional() })
+      .parse(parsed).dependencies?.['@opennextjs/cloudflare'];
+  };
+
+  // A compatible Next version, so the peer gate is not what is under test.
+  const compatibleNext = { next: '~16.3.4' };
+
+  describe('cases it must stay out of', () => {
+    it('does nothing when the project has no package.json', async () => {
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the project does not depend on the adapter', async () => {
+      writePkg({ dependencies: compatibleNext });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the range already admits the target', async () => {
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '^1.17.3' } });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+    });
+
+    it('does nothing when the project is pinned ahead of the CLI', async () => {
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '1.99.0' } });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.99.0');
+    });
+
+    it('does nothing for a specifier semver cannot parse', async () => {
+      writePkg({
+        dependencies: { ...compatibleNext, '@opennextjs/cloudflare': 'github:owner/repo#abc' },
+      });
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when the project is behind', () => {
+    const behind = () =>
+      writePkg({ dependencies: { ...compatibleNext, '@opennextjs/cloudflare': '1.17.3' } });
+
+    it('bumps the pin and reports a change when the user accepts', async () => {
+      behind();
+      confirmMock.mockResolvedValueOnce(true);
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(true);
+      } finally {
+        restoreTty();
+      }
+
+      expect(readPin()).toBe(OPENNEXT_CLOUDFLARE_VERSION);
+    });
+
+    it('leaves the pin alone and reports no change when the user declines', async () => {
+      behind();
+      confirmMock.mockResolvedValueOnce(false);
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(readPin()).toBe('1.17.3');
+      expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('pnpm add'));
+    });
+
+    it('never prompts or mutates in a non-interactive environment', async () => {
+      // pnpm treats the lockfile as frozen in CI, so the install that has to
+      // follow a rewrite would fail the deploy outright.
+      behind();
+
+      expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('non-interactive'));
+    });
+
+    it('warns without mutating when the build output cannot be rebuilt', async () => {
+      behind();
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', { canUpgrade: false })).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('--prebuilt'));
+    });
+
+    it('refuses the upgrade when the project Next version is too old for it', async () => {
+      // Bumping here would leave an unsupported dependency set.
+      writePkg({ dependencies: { next: '~16.1.5', '@opennextjs/cloudflare': '1.17.3' } });
+
+      const restoreTty = withInteractiveTty();
+
+      try {
+        expect(await reconcileOpenNextVersion(dir, 'pnpm', OK)).toBe(false);
+      } finally {
+        restoreTty();
+      }
+
+      expect(confirmMock).not.toHaveBeenCalled();
+      expect(readPin()).toBe('1.17.3');
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('catalyst upgrade'));
+    });
+
+    it('names the project package manager in the manual fallback', async () => {
+      behind();
+
+      await reconcileOpenNextVersion(dir, 'npm', OK);
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining(`npm add @opennextjs/cloudflare@${OPENNEXT_CLOUDFLARE_VERSION}`),
+      );
+    });
   });
 });

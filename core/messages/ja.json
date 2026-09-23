@@ -144,7 +144,8 @@
             "Empty": {
                 "title": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
                 "subtitle": "別の検索をお試しください。"
-            }
+            },
+            "semanticSearchPlaceholder": "お探しの内容をご記入ください"
         },
         "FacetedSearch": {
             "filters": "フィルター",
@@ -524,6 +525,7 @@
             "additionalInformation": "追加情報",
             "currentStock": "{quantity, number} 個の在庫あり",
             "backorderQuantity": "{quantity, number} はバックオーダーになります",
+            "maxPurchasableQuantity": "購入可能な最大数量は{quantity, number}です。調整して、もう一度お試しください。",
             "loadingMoreImages": "さらに画像を読み込んでいます",
             "imagesLoaded": "{count, plural, =1 {1 枚の画像が読み込まれました} other {#枚の画像が読み込まれました}}",
             "playVideo": "動画を再生",
@@ -624,6 +626,9 @@
         "search": "検索"
     },
     "Components": {
+        "ProductCard": {
+            "moreOffers": "+{count, plural, =1 {# } other {#件の追加オファー、 }}件の追加オファー}"
+        },
         "Header": {
             "home": "ホーム",
             "toggleNavigation": "トグルナビゲーション",

@@ -45,9 +45,15 @@ const registryVersionSchema = z.object({ version: z.string() });
 // Resolve the published npm version for a workspace dependency. The extracted
 // tag tree still carries `workspace:^` (core is private, so changesets' publish-
 // time rewrite never touches the committed tree) — so we resolve the real
-// version at extraction time from the npm registry. The two workspace deps
-// (`@bigcommerce/catalyst-client`, `@bigcommerce/eslint-config-catalyst`) are
-// published in lockstep with core, so `latest` is the compatible version.
+// version at extraction time from the npm registry.
+//
+// NOTE: `latest` answers for today, not for `ref`. These packages version
+// independently of core (the changesets config has no `linked`/`fixed` group),
+// so scaffolding from an older `--gh-ref` can splice in a newer version than
+// that tag shipped. Harmless while they stay in step, wrong at the first major
+// bump. `catalyst upgrade` reads the versions out of the tag's own
+// `packages/*/package.json`; this path can't yet, because `extractCatalyst`
+// filters the tarball down to `core/`. Tracked as a follow-up.
 const resolvePublishedVersion = async (pkgName: string): Promise<string> => {
   const response = await fetch(`https://registry.npmjs.org/${pkgName}/latest`);
 

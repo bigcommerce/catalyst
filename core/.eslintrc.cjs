@@ -45,7 +45,8 @@ const config = {
           {
             name: 'next/navigation',
             importNames: ['redirect', 'permanentRedirect', 'useRouter', 'usePathname'],
-            message: 'Please import from `~/i18n/routing` instead.',
+            message:
+              'Please import `useRouter`/`usePathname` from `~/i18n/routing`, and `redirect`/`permanentRedirect` from `~/i18n/navigation-server`, so that merchant-configured locale subfolders are applied.',
           },
           {
             name: '@playwright/test',

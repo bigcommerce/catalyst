@@ -26,7 +26,7 @@ import {
 } from '../lib/shared-options';
 import { getTelemetry } from '../lib/telemetry';
 
-// `catalyst project link` runs from the project root, which is what
+// `catalyst projects link` runs from the project root, which is what
 // `setupCommerceHosting` and `installDependencies` expect.
 async function offerCommerceHostingSetup(
   projectUuid: string,
@@ -75,7 +75,7 @@ const list = new Command('list')
     'after',
     `
 Example:
-  $ catalyst project list`,
+  $ catalyst projects list`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -89,11 +89,11 @@ Example:
 
     consola.start('Fetching projects...');
 
-    const projects = await fetchProjects(storeHash, accessToken, apiHost);
+    const storeProjects = await fetchProjects(storeHash, accessToken, apiHost);
 
     consola.success('Projects fetched.');
 
-    if (projects.length === 0) {
+    if (storeProjects.length === 0) {
       consola.info('No projects found.');
       process.exit(0);
 
@@ -102,7 +102,7 @@ Example:
 
     const linkedProjectUuid = config.get('projectUuid');
 
-    const projectList = projects.map((p) => {
+    const projectList = storeProjects.map((p) => {
       const marker = p.uuid === linkedProjectUuid ? ` ${colorize('green', '[linked]')}` : '';
       const hostnames =
         p.deployment_hostnames.length === 0
@@ -130,7 +130,7 @@ const create = new Command('create')
     'after',
     `
 Example:
-  $ catalyst project create`,
+  $ catalyst projects create`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -161,7 +161,7 @@ Example:
       } catch (error) {
         if (error instanceof LoginAbortedError) {
           consola.info(
-            'Login aborted. Re-run `catalyst project create` when you have your credentials ready.',
+            'Login aborted. Re-run `catalyst projects create` when you have your credentials ready.',
           );
           process.exit(0);
 
@@ -199,10 +199,10 @@ export const link = new Command('link')
     `
 Examples:
   # Link interactively (prompts to select or create)
-  $ catalyst project link
+  $ catalyst projects link
 
   # Link using a project UUID directly
-  $ catalyst project link --project-uuid <UUID>`,
+  $ catalyst projects link --project-uuid <UUID>`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -250,7 +250,7 @@ Examples:
     } catch (error) {
       if (error instanceof NoLinkedProjectError) {
         consola.info(
-          "When you're ready to create a project, run `catalyst project create` or re-run `catalyst project link`.",
+          "When you're ready to create a project, run `catalyst projects create` or re-run `catalyst projects link`.",
         );
         process.exit(0);
 
@@ -277,13 +277,13 @@ const del = new Command('delete')
     `
 Examples:
   # Select a project to delete interactively
-  $ catalyst project delete
+  $ catalyst projects delete
 
   # Delete a specific project (still prompts for confirmation)
-  $ catalyst project delete --project-uuid <UUID>
+  $ catalyst projects delete --project-uuid <UUID>
 
   # Skip the confirmation prompt
-  $ catalyst project delete --project-uuid <UUID> --force`,
+  $ catalyst projects delete --project-uuid <UUID> --force`,
   )
   .addOption(storeHashOption())
   .addOption(accessTokenOption())
@@ -303,11 +303,11 @@ Examples:
     if (!targetUuid) {
       consola.start('Fetching projects...');
 
-      const projects = await fetchProjects(storeHash, accessToken, apiHost);
+      const storeProjects = await fetchProjects(storeHash, accessToken, apiHost);
 
       consola.success('Projects fetched.');
 
-      if (projects.length === 0) {
+      if (storeProjects.length === 0) {
         consola.info('No projects found.');
         process.exit(0);
 
@@ -319,7 +319,7 @@ Examples:
       const selected = await select({
         message: 'Select a project to delete (Press <enter> to select).',
         choices: [
-          ...projects.map((p) => ({
+          ...storeProjects.map((p) => ({
             name:
               p.uuid === linkedProjectUuid ? `${p.name} ${colorize('green', '[linked]')}` : p.name,
             value: p.uuid,
@@ -336,7 +336,7 @@ Examples:
         return;
       }
 
-      const matched = projects.find((p) => p.uuid === selected);
+      const matched = storeProjects.find((p) => p.uuid === selected);
 
       if (!matched) {
         throw new Error(`Selected project ${String(selected)} not found in fetched list.`);
@@ -376,9 +376,12 @@ Examples:
     process.exit(0);
   });
 
-export const project = new Command('project')
+// Resource commands are plural; the singular form stays as an alias so existing
+// scripts and muscle memory keep working.
+export const projects = new Command('projects')
+  .alias('project')
   .configureHelp({ showGlobalOptions: true })
-  .description('Manage your BigCommerce infrastructure project.')
+  .description('Manage your BigCommerce infrastructure projects.')
   .addCommand(create)
   .addCommand(list)
   .addCommand(link)

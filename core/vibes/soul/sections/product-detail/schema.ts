@@ -54,6 +54,8 @@ type DateField = {
   type: 'date';
   defaultValue?: string;
   pattern?: string;
+  minDate?: string;
+  maxDate?: string;
 } & FormField;
 
 type SwatchRadioFieldOption =

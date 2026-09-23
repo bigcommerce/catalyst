@@ -9,7 +9,7 @@ import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-detail
 import { ExistingResultType } from '~/client/util';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { pickPricesForTaxDisplay } from '~/lib/tax-pricing';
 import { isMobileUser } from '~/lib/user-agent';
 
@@ -47,7 +47,7 @@ async function getWishlist(
   const result = await getCustomerWishlist(entityId, searchParamsParsed);
 
   if (!result) {
-    return redirect({ href: '/account/wishlists/', locale });
+    return await redirect({ href: '/account/wishlists/', locale });
   }
 
   return wishlistDetailsTransformer(result.wishlist, t, pt, formatter, result.taxDisplay);

@@ -7,7 +7,7 @@ import {
   getFeaturedProducts,
   getNewestProducts,
 } from '~/client/queries/get-products';
-import { routing } from '~/i18n/routing';
+import { getLocaleRouting } from '~/i18n/locale-config';
 
 export const GET = async (
   request: NextRequest,
@@ -15,9 +15,11 @@ export const GET = async (
 ) => {
   const { group } = await params;
   const searchParams = request.nextUrl.searchParams;
-  const locale = searchParams.get('locale') ?? routing.defaultLocale;
+  const { locales, defaultLocale } = await getLocaleRouting();
 
-  if (!hasLocale(routing.locales, locale)) {
+  const locale = searchParams.get('locale') ?? defaultLocale;
+
+  if (!hasLocale(locales, locale)) {
     return NextResponse.json(
       { status: 'error', error: 'Invalid locale parameter' },
       { status: 400 },

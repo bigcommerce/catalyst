@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { GiftCertificatesSection } from '@/vibes/soul/sections/gift-certificates-section';
-import { redirect } from '~/i18n/routing';
+import { redirect } from '~/i18n/navigation-server';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { getMakeswiftPageMetadata } from '~/lib/makeswift';
 import { getMetadataAlternates } from '~/lib/seo/canonical';
@@ -37,7 +37,7 @@ export default async function GiftCertificates(props: Props) {
   const data = await getGiftCertificatesData(currencyCode);
 
   if (!data.giftCertificatesEnabled) {
-    return redirect({ href: '/', locale });
+    return await redirect({ href: '/', locale });
   }
 
   const exampleBalance = format.number(25.0, {

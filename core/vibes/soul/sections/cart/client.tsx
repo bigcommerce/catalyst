@@ -7,6 +7,7 @@ import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
 import {
   ComponentPropsWithoutRef,
   FormEvent,
+  ReactNode,
   startTransition,
   useActionState,
   useEffect,
@@ -170,6 +171,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
+  walletButtons?: ReactNode;
   couponCode?: CouponCode;
   giftCertificate?: GiftCertificate;
   shipping?: Shipping;
@@ -212,6 +214,7 @@ type PendingLineItemIntent = { intent: 'update'; quantity: number } | { intent: 
 export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
+  walletButtons,
   couponCode,
   giftCertificate,
   decrementLineItemLabel,
@@ -554,6 +557,16 @@ export function CartClient<LineItem extends CartLineItem>({
               <AddCartToQuoteButton cartId={cart.id} />
             )}
           </div>
+          {walletButtons ? (
+            <div className="relative mt-4">
+              {isCartMutationPending && (
+                <div className="absolute inset-0 z-10 cursor-not-allowed" />
+              )}
+              <div className={isCartMutationPending ? 'pointer-events-none opacity-50' : undefined}>
+                {walletButtons}
+              </div>
+            </div>
+          ) : null}
         </div>
       }
       sidebarPosition="after"

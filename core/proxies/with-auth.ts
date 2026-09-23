@@ -6,7 +6,9 @@ import { type ProxyFactory } from './compose-proxies';
 
 // Path matcher for any routes that require authentication
 const protectedPathPattern = new URLPattern({ pathname: `{/:locale}?/(account)/*` });
-const SESSION_TOKEN_COOKIE_RE = /^(__Secure-)?authjs\.session-token(\.\d+)?=/;
+// [^;] after = excludes deletion directives (empty value → = is immediately followed by ;),
+// so their Expires=past/max-age=0 is preserved and the browser actually removes the cookie.
+const SESSION_TOKEN_COOKIE_RE = /^(__Secure-)?authjs\.session-token(\.\d+)?=[^;]/;
 
 function redirectToLogin(url: string) {
   return NextResponse.redirect(new URL('/login', url), { status: 302 });

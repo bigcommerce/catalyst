@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
 
 import { expect, test } from '~/tests/fixtures';
+import { consentCookie } from '~/tests/lib/consent';
 import { getFormatter } from '~/tests/lib/formatter';
 import { getTranslations } from '~/tests/lib/i18n';
 import { TAGS } from '~/tests/tags';
@@ -123,8 +124,13 @@ test('Displays product price correctly for an alternate currency', async ({
   page,
   catalog,
   currency,
+  context,
 }) => {
   const format = getFormatter();
+
+  // The currency preference only persists with functionality consent.
+  await context.addCookies([consentCookie(['functionality'])]);
+
   const product = await catalog.getDefaultOrCreateSimpleProduct();
   const defaultCurrency = await currency.getDefaultCurrency();
   const alternateCurrency = (await currency.getEnabledCurrencies()).find(

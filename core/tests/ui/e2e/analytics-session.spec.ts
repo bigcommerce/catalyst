@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
-import { testEnv } from '~/tests/environment';
 import { expect, test } from '~/tests/fixtures';
+import { consentCookie } from '~/tests/lib/consent';
 
 const CookieSchema = z.object({
   name: z.string(),
@@ -9,18 +9,8 @@ const CookieSchema = z.object({
   expires: z.number().optional(),
 });
 
-// The consent cookie uses c15t's compact format; only granted categories are present.
-const acceptedConsentCookie = () => ({
-  name: 'c15t-consent',
-  value: `i.t:${Date.now()},c.necessary:1,c.functionality:1,c.marketing:1,c.measurement:1`,
-  url: testEnv.PLAYWRIGHT_TEST_BASE_URL,
-});
-
-const declinedConsentCookie = () => ({
-  name: 'c15t-consent',
-  value: `i.t:${Date.now()},c.necessary:1`,
-  url: testEnv.PLAYWRIGHT_TEST_BASE_URL,
-});
+const acceptedConsentCookie = () => consentCookie(['functionality', 'marketing', 'measurement']);
+const declinedConsentCookie = () => consentCookie();
 
 test.describe('Analytics cookies proxy', () => {
   test('sets visitorId and visitId cookies on first visit with measurement consent', async ({

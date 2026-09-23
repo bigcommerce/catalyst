@@ -55,6 +55,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.clearAllMocks();
+  vi.unstubAllEnvs();
   textHistory.length = 0;
 
   // Clean up config between tests
@@ -144,7 +145,7 @@ describe('login', () => {
     expect(config.get('accessToken')).toBe('mock-access-token');
   });
 
-  test('exits early when already logged in', async () => {
+  test('exits early when already logged in with credentials that still work', async () => {
     const config = getProjectConfig();
 
     config.set('storeHash', 'existing-store');
@@ -152,11 +153,223 @@ describe('login', () => {
 
     await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
 
-    expect(consola.info).toHaveBeenCalledWith('Already logged in to store existing-store.');
+    expect(consola.info).toHaveBeenCalledWith('Already logged in to Test Store (existing-store).');
     expect(consola.info).toHaveBeenCalledWith(
-      'Run `catalyst auth logout` first to re-authenticate.',
+      'Run `catalyst auth logout` first to re-authenticate, or `catalyst auth login --force` to skip this check.',
     );
     expect(exitMock).toHaveBeenCalledWith(0);
+
+    // Untouched — the stored credentials were fine.
+    expect(config.get('accessToken')).toBe('existing-token');
+  });
+
+  test('re-authenticates in place when the stored token has expired', async () => {
+    const config = getProjectConfig();
+
+    config.set('storeHash', 'expired-store');
+    config.set('accessToken', 'expired-token');
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/settings/store/profile',
+        () => new HttpResponse(null, { status: 401, statusText: 'Unauthorized' }),
+      ),
+    );
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      'Stored credentials for store expired-store are no longer valid — re-authenticating.',
+    );
+    // No logout required — the device flow ran and replaced them.
+    expect(consola.info).not.toHaveBeenCalledWith(
+      expect.stringContaining('Run `catalyst auth logout` first'),
+    );
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store mock-store-hash.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+    expect(config.get('storeHash')).toBe('mock-store-hash');
+    expect(config.get('accessToken')).toBe('mock-access-token');
+  });
+
+  test('keeps unverifiable credentials instead of discarding them', async () => {
+    const config = getProjectConfig();
+
+    config.set('storeHash', 'existing-store');
+    config.set('accessToken', 'existing-token');
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/settings/store/profile',
+        () => new HttpResponse(null, { status: 500, statusText: 'Internal Server Error' }),
+      ),
+    );
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining("couldn't verify them: 500 Internal Server Error"),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+    expect(config.get('accessToken')).toBe('existing-token');
+  });
+
+  test('re-authenticates without a check under --force', async () => {
+    const config = getProjectConfig();
+
+    config.set('storeHash', 'existing-store');
+    config.set('accessToken', 'existing-token');
+
+    // Would report "already logged in" if --force consulted the API at all.
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login', '--force']);
+
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('Already logged in to'));
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store mock-store-hash.');
+    expect(config.get('accessToken')).toBe('mock-access-token');
+  });
+
+  test('reports rejected credentials passed on the command line', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/settings/store/profile',
+        () => new HttpResponse(null, { status: 401, statusText: 'Unauthorized' }),
+      ),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'auth',
+      'login',
+      '--store-hash',
+      'typo-store',
+      '--access-token',
+      'typo-token',
+    ]);
+
+    expect(consola.error).toHaveBeenCalledWith(
+      'The credentials provided for store typo-store were rejected.',
+    );
+    expect(consola.success).not.toHaveBeenCalled();
+    expect(exitMock).toHaveBeenCalledWith(1);
+
+    const config = getProjectConfig();
+
+    expect(config.get('accessToken')).toBeUndefined();
+  });
+
+  test('verifies and stores credentials passed on the command line', async () => {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'auth',
+      'login',
+      '--store-hash',
+      'flag-store',
+      '--access-token',
+      'flag-token',
+    ]);
+
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store flag-store.');
+    expect(exitMock).toHaveBeenCalledWith(0);
+
+    const config = getProjectConfig();
+
+    expect(config.get('storeHash')).toBe('flag-store');
+    expect(config.get('accessToken')).toBe('flag-token');
+  });
+
+  test('replaces stored credentials with ones passed on the command line', async () => {
+    const config = getProjectConfig();
+
+    config.set('storeHash', 'existing-store');
+    config.set('accessToken', 'existing-token');
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'auth',
+      'login',
+      '--store-hash',
+      'flag-store',
+      '--access-token',
+      'flag-token',
+    ]);
+
+    // No "already logged in" refusal — the user named the credentials to use.
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('Already logged in to'));
+    expect(config.get('storeHash')).toBe('flag-store');
+    expect(config.get('accessToken')).toBe('flag-token');
+  });
+
+  test('treats env-var credentials as config, not as a non-interactive login', async () => {
+    vi.stubEnv('CATALYST_STORE_HASH', 'env-store');
+    vi.stubEnv('CATALYST_ACCESS_TOKEN', 'env-token');
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login']);
+
+    // An exported env var must not silently write credentials to the project.
+    expect(consola.success).not.toHaveBeenCalled();
+    expect(consola.info).toHaveBeenCalledWith('Already logged in to Test Store (env-store).');
+
+    const config = getProjectConfig();
+
+    expect(config.get('storeHash')).toBeUndefined();
+  });
+
+  test('--force still re-authenticates when env-var credentials are present', async () => {
+    vi.stubEnv('CATALYST_STORE_HASH', 'env-store');
+    vi.stubEnv('CATALYST_ACCESS_TOKEN', 'env-token');
+
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login', '--force']);
+
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store mock-store-hash.');
+
+    const config = getProjectConfig();
+
+    expect(config.get('storeHash')).toBe('mock-store-hash');
+  });
+
+  test('does not take the non-interactive path on a single flag', async () => {
+    const config = getProjectConfig();
+
+    config.set('storeHash', 'existing-store');
+    config.set('accessToken', 'existing-token');
+
+    // Only one half given, so this is not "log in with these" — the flag just
+    // overrides that field for the check.
+    await program.parseAsync(['node', 'catalyst', 'auth', 'login', '--store-hash', 'flag-store']);
+
+    expect(consola.success).not.toHaveBeenCalled();
+    expect(config.get('storeHash')).toBe('existing-store');
+  });
+
+  test('stores unverifiable command-line credentials with a warning', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/settings/store/profile',
+        () => new HttpResponse(null, { status: 503, statusText: 'Service Unavailable' }),
+      ),
+    );
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'auth',
+      'login',
+      '--store-hash',
+      'flag-store',
+      '--access-token',
+      'flag-token',
+    ]);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      "Couldn't verify the credentials provided: 503 Service Unavailable",
+    );
+    expect(consola.success).toHaveBeenCalledWith('Logged in to store flag-store.');
+
+    const config = getProjectConfig();
+
+    expect(config.get('accessToken')).toBe('flag-token');
   });
 
   test('prompts to fall back to manual login when device code request fails', async () => {
