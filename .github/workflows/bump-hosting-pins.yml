@@ -120,6 +120,66 @@ jobs:
           pnpm run generate
           pnpm exec "$GITHUB_WORKSPACE/packages/catalyst/dist/cli.js" build
 
+      # A build proves the pins compile and bundle; it does not prove the worker
+      # deploys and serves. Deploying what was just built closes that gap.
+      #
+      # The merchant-facing preview system can't be reused for this. Its action
+      # handles only `pull_request` and `issue_comment` — it skips anything else
+      # outright — and neither event fires for a PR pushed with `GITHUB_TOKEN`.
+      # So the deploy happens here, in the run that has the bundle.
+      #
+      # Skipped rather than failed when no preview project is configured, so the
+      # job keeps working before anyone sets one up.
+      - name: Check for a preview project
+        id: preview-config
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          PREVIEW_PROJECT_UUID: ${{ secrets.BUMP_PREVIEW_PROJECT_UUID }}
+        run: |
+          if [ -n "${PREVIEW_PROJECT_UUID:-}" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::BUMP_PREVIEW_PROJECT_UUID is not set, so no preview was deployed. The pins were still built and the context contract verified.'
+          fi
+
+      # Deploys into a project of its own, never the one `native-hosting.yml`
+      # publishes canary to — a weekly bump must not displace that storefront.
+      - name: Deploy a preview of the new pins
+        id: preview
+        if: steps.bump.outputs.updated == 'true' && steps.preview-config.outputs.configured == 'true'
+        working-directory: core
+        env:
+          CATALYST_PROJECT_UUID: ${{ secrets.BUMP_PREVIEW_PROJECT_UUID }}
+          CATALYST_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          CATALYST_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
+          STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          PREVIEW_AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+
+          # `--prebuilt` uploads the bundle the step above produced, so what gets
+          # deployed is exactly what was verified rather than a fresh rebuild.
+          # Secrets go through the environment rather than inline interpolation.
+          pnpm exec "$GITHUB_WORKSPACE/packages/catalyst/dist/cli.js" deploy --prebuilt \
+            --secret "BIGCOMMERCE_STORE_HASH=$STORE_HASH" \
+            --secret "BIGCOMMERCE_STOREFRONT_TOKEN=$STOREFRONT_TOKEN" \
+            --secret "BIGCOMMERCE_CHANNEL_ID=$CHANNEL_ID" \
+            --secret "AUTH_SECRET=$PREVIEW_AUTH_SECRET" \
+            | tee deploy.log
+
+          # The CLI prints "View your deployment at: https://<host>" through
+          # consola, which may colorize it, so strip escapes before matching.
+          # perl rather than sed: \e is not portable in BSD sed.
+          url=$(perl -pe 's/\e\[[0-9;]*m//g' deploy.log | grep -oE 'https://[A-Za-z0-9.-]+' | tail -1 || true)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$url" ]; then
+            echo "::notice::Preview deployed to $url"
+          fi
+
       - name: Open or update the pull request
         if: steps.bump.outputs.updated == 'true'
         env:
@@ -129,13 +189,21 @@ jobs:
           SUMMARY: ${{ steps.bump.outputs.summary }}
           ADAPTER_VERSION: ${{ steps.bump.outputs.adapter-version }}
           WRANGLER_VERSION: ${{ steps.bump.outputs.wrangler-version }}
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
         run: |
           set -euo pipefail
 
           git push --force origin "$BRANCH"
 
-          body=$(printf '%s\n\n%s\n\n%s\n\n%s\n' \
+          if [ -n "${PREVIEW_URL:-}" ]; then
+            preview="A preview of these pins is deployed at $PREVIEW_URL — click through it to confirm the worker serves, not just that it built. It shares one project, so a later bump replaces it."
+          else
+            preview="No preview was deployed: this repository has no \`BUMP_PREVIEW_PROJECT_UUID\` configured. The pins were still built and the Cloudflare context contract verified."
+          fi
+
+          body=$(printf '%s\n\n%s\n\n%s\n\n%s\n\n%s\n' \
             "$SUMMARY" \
+            "$preview" \
             "Opened by the weekly [Bump Hosting Pins](.github/workflows/bump-hosting-pins.yml) job. Both versions are string literals in the CLI source rather than manifest entries, so Dependabot can't reach either. They are maintained in one PR because \`@opennextjs/cloudflare\` declares which Wrangler it supports — Wrangler is pinned to the newest release that adapter allows, not the newest that exists." \
             "This PR leaves the adapter at \`$ADAPTER_VERSION\` and Wrangler at \`$WRANGLER_VERSION\`. Before opening it, the job ran \`cloudflare-context-symbol.spec.ts\` against them, then stood up a real native-hosting project and completed an \`opennextjs-cloudflare build\` plus \`wrangler deploy --dry-run\` — so these pins are known to build, not merely to typecheck. A release that moved the adapter's Next.js requirement, or that needs a Wrangler major this job doesn't track, holds both pins and reports why instead." \
             "GitHub doesn't run workflows on pushes made with \`GITHUB_TOKEN\`, so this PR opens without checks. Push an empty commit to run them.")
