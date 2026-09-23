@@ -158,6 +158,25 @@ describe('suggestCheckoutUrl', () => {
   test('returns undefined for an unparseable storefront URL', () => {
     expect(suggestCheckoutUrl('not a url')).toBeUndefined();
   });
+
+  // Native hosting provisions `c.<project>.<zone>`, so suggesting
+  // `checkout.<project>.<zone>` would name a hostname nobody will create.
+  test('suggests the prefix native hosting provisions on a managed zone', () => {
+    expect(
+      suggestCheckoutUrl('https://catalyst.catalyst-sandbox.store', { managedZone: true }),
+    ).toBe('https://c.catalyst.catalyst-sandbox.store');
+  });
+
+  // The shape the whole native-hosting checkout design rests on: two levels
+  // deep still shares a registrable domain with its storefront.
+  test('keeps the managed-zone suggestion inside the same main domain', () => {
+    const storefront = 'https://catalyst.catalyst-sandbox.store';
+    const suggestion = suggestCheckoutUrl(storefront, { managedZone: true });
+
+    if (!suggestion) throw new Error('expected a suggestion');
+
+    expect(sharesMainDomain(new URL(storefront).hostname, new URL(suggestion).hostname)).toBe(true);
+  });
 });
 
 describe('warnOnCrossDomainCheckout', () => {
@@ -314,16 +333,32 @@ describe('warnOnCrossDomainCheckout', () => {
     expect(managed.storefrontOnManagedZone).toBe(true);
   });
 
-  test('explains the constraint when the storefront is on the managed hosting zone', async () => {
+  test('names the unprovisioned checkout hostname on the managed hosting zone', async () => {
     projectsWithZone();
 
-    await warnOnCrossDomainCheckout(crossDomainSite, context);
+    const report = await warnOnCrossDomainCheckout(crossDomainSite, context);
 
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
     expect(consola.info).toHaveBeenCalledWith(
       expect.stringContaining('auto-generated deployment hostname'),
     );
-    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('catalyst domains add'));
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining("c.catalyst.catalyst-sandbox.store) isn't provisioned yet"),
+    );
+    expect(report.suggestion).toBe('https://c.catalyst.catalyst-sandbox.store');
+  });
+
+  // Regression: we used to tell merchants a checkout subdomain could never be
+  // issued a certificate, and sent them to buy a custom domain they don't need.
+  test('no longer claims a managed-zone checkout subdomain is impossible', async () => {
+    projectsWithZone();
+
+    await warnOnCrossDomainCheckout(crossDomainSite, context);
+
+    const messages = vi.mocked(consola.info).mock.calls.flat().join('\n');
+
+    expect(messages).not.toContain('catalyst domains add');
+    expect(messages).not.toContain('cannot be issued a certificate');
   });
 
   test('still warns generically when the store has no deployment hostnames yet', async () => {

@@ -44,6 +44,11 @@ export function sharesMainDomain(a: string, b: string): boolean {
   return first !== null && first === getDomain(normalizeHostname(b));
 }
 
+// Prefix for the checkout hostname on a BigCommerce-managed hosting zone.
+// Deliberately short: Cloudflare enforces a 64-character certificate common
+// name, and every character here comes out of the project name's budget.
+export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
+
 // The checkout subdomain a merchant most likely wants:
 // `https://www.example.com` → `https://checkout.example.com`.
 //
@@ -52,14 +57,23 @@ export function sharesMainDomain(a: string, b: string): boolean {
 // the host as-is can never produce a bare public suffix and always satisfies
 // the same-main-domain rule. Pre-fills an editable prompt, so a bad URL just
 // means no suggestion.
-export function suggestCheckoutUrl(storefrontUrl: string): string | undefined {
+//
+// `managedZone` switches to the shorter prefix native hosting actually
+// provisions. A managed hostname is already `<project>.<zone>` with no `www.`,
+// so suggesting `checkout.` there would name a hostname nobody will create.
+export function suggestCheckoutUrl(
+  storefrontUrl: string,
+  { managedZone = false }: { managedZone?: boolean } = {},
+): string | undefined {
   const host = hostnameOf(storefrontUrl);
 
   if (!host) return undefined;
 
-  const base = normalizeHostname(host).replace(/^www\./, '');
+  const normalized = normalizeHostname(host);
 
-  return `https://checkout.${base}`;
+  if (managedZone) return `https://${MANAGED_ZONE_CHECKOUT_PREFIX}${normalized}`;
+
+  return `https://checkout.${normalized.replace(/^www\./, '')}`;
 }
 
 // Validates only the unambiguous parts: parses as a URL, uses https. A bare
@@ -88,9 +102,9 @@ export function normalizeCheckoutUrl(value: string): string {
 
 // Whether a hostname sits on a BigCommerce-managed hosting zone — the
 // auto-generated `<project>.<zone>` address a deployment gets before a custom
-// domain is attached. That's what governs checkout: a checkout subdomain there
-// would be two levels deep and can't be issued a certificate, so no custom
-// checkout URL is possible at all.
+// domain is attached. That's what governs the advice we give: a checkout
+// hostname there is provisioned by native hosting, not by the merchant, so
+// telling them to point DNS they don't control at BigCommerce would be wrong.
 //
 // The zone is derived from the store's own `deployment_hostnames` rather than
 // hardcoded, so it survives a zone change.
@@ -127,8 +141,9 @@ export interface CheckoutDomainReport {
   // True only when both hostnames were readable and don't share a registrable
   // domain. A missing or unreadable checkout URL is not "cross domain".
   crossDomain: boolean;
-  // On a managed zone, no custom checkout URL can be issued a certificate.
-  // Undefined means unknown — callers must not treat that as false.
+  // On a managed zone the checkout hostname is provisioned by native hosting
+  // rather than the merchant, so the remedy differs. Undefined means unknown —
+  // callers must not treat that as false.
   storefrontOnManagedZone?: boolean;
   suggestion?: string;
 }
@@ -183,7 +198,15 @@ export async function warnOnCrossDomainCheckout(
   );
 
   const storefrontOnManagedZone = await isManagedHostingHostname(storefrontHost, context);
-  const report = { crossDomain: true, storefrontOnManagedZone, suggestion };
+  // Only now do we know which prefix to suggest, and the early return above
+  // deliberately skips the lookup that tells us.
+  const report = {
+    crossDomain: true,
+    storefrontOnManagedZone,
+    suggestion: storefrontOnManagedZone
+      ? suggestCheckoutUrl(storefrontUrl, { managedZone: true })
+      : suggestion,
+  };
 
   if (storefrontOnManagedZone === false) {
     consola.info(
@@ -196,10 +219,12 @@ export async function warnOnCrossDomainCheckout(
   }
 
   if (storefrontOnManagedZone === true) {
+    // TODO(LTRAC-1961): once native hosting provisions the checkout hostname,
+    // this becomes "waiting on provisioning" rather than "not available yet".
     consola.info(
-      `${storefrontHost} is an auto-generated deployment hostname, and a checkout subdomain of ` +
-        'one cannot be issued a certificate — so no checkout URL can be set for this channel ' +
-        'until its storefront is on a custom domain. Add one with `catalyst domains add`.',
+      `${storefrontHost} is an auto-generated deployment hostname. Its checkout hostname ` +
+        `(${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHost}) isn't provisioned yet, so a ` +
+        "same-domain checkout URL can't be set for this channel yet.",
     );
 
     return report;
