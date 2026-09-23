@@ -558,8 +558,10 @@ Examples:
     // The channel and site are already in hand, so offer to fix it rather than
     // making the user re-run `channels update --checkout-url`.
     //
-    // Not offered on a managed zone, where BigCommerce would reject every value
-    // (the diagnostic explains why), nor without a TTY, so the command stays
+    // Not offered on a managed zone, where the checkout hostname isn't
+    // provisioned yet: BigCommerce would *accept* the value (it shares a main
+    // domain) and leave checkout resolving without a certificate, which is
+    // worse than leaving it alone. Nor without a TTY, so the command stays
     // scriptable — matching the guards in `commerce-hosting`.
     if (report.crossDomain && report.storefrontOnManagedZone !== true) {
       const suggested = report.suggestion ?? '<domain>';
