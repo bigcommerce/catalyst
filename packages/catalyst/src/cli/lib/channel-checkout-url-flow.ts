@@ -1,4 +1,4 @@
-import { input } from '@inquirer/prompts';
+import { confirm, input } from '@inquirer/prompts';
 
 import { resolveChannel } from './channel-site-flow';
 import {
@@ -8,13 +8,17 @@ import {
   updateChannelCheckoutUrl,
 } from './channels';
 import {
+  isCrossDomainCheckout,
   isManagedHostingHostname,
+  MANAGED_ZONE_CHECKOUT_PREFIX,
   managedCheckoutHostname,
   normalizeCheckoutUrl,
   suggestCheckoutUrl,
   waitForCheckoutHostname,
+  warnOnCrossDomainCheckout,
 } from './checkout-url';
 import { consola } from './logger';
+import { type getProjectConfig } from './project-config';
 
 export interface ChannelCheckoutUrlFlowOptions {
   storeHash: string;
@@ -191,6 +195,74 @@ async function setManagedCheckoutUrl(options: ManagedCheckoutUrlOptions): Promis
       "checkout falls back to the default channel's. Re-run with `--update-checkout-url` to " +
       'try again.',
   );
+
+  return true;
+}
+
+export interface ManagedCheckoutOfferOptions {
+  storeHash: string;
+  accessToken: string;
+  apiHost: string;
+  channelId: number;
+  // The storefront hostname the channel's primary URL is on.
+  storefrontHostname: string;
+  config: ReturnType<typeof getProjectConfig>;
+  // Skip the offer for a channel whose owner already declined it. Off for an
+  // explicit command, which asks regardless.
+  respectOptOut: boolean;
+}
+
+// Offers to move a managed-zone storefront's checkout onto its `c.` hostname,
+// when checkout is on another domain. A decline is saved per channel. Resolves
+// whether the offer was made, so an explicit command can fall back to the
+// cross-domain warning when it wasn't.
+//
+// A custom checkout URL on another domain was the merchant's choice, so it's
+// never offered for replacement. Off the managed zone there is no `c.`
+// hostname to offer; that storefront's checkout is the merchant's to set up.
+export async function offerManagedCheckoutUrl(
+  options: ManagedCheckoutOfferOptions,
+): Promise<boolean> {
+  const { storeHash, accessToken, apiHost, channelId, storefrontHostname, config } = options;
+  const declined = config.get('declinedCheckoutUrlChannels') ?? [];
+
+  if (!isManagedHostingHostname(storefrontHostname)) return false;
+  if (options.respectOptOut && declined.includes(channelId)) return false;
+
+  const site = await getChannelSite(channelId, storeHash, accessToken, apiHost);
+
+  if (site.isCheckoutUrlCustomized || !isCrossDomainCheckout(site)) return false;
+
+  const shouldMove = await confirm({
+    message:
+      `Checkout is on ${findChannelSiteUrl(site, 'checkout') ?? 'another domain'}. Move it to ` +
+      `https://${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHostname} so shoppers stay on this ` +
+      'domain through payment?',
+    default: true,
+  });
+
+  if (!shouldMove) {
+    if (!declined.includes(channelId)) {
+      config.set('declinedCheckoutUrlChannels', [...declined, channelId]);
+    }
+
+    warnOnCrossDomainCheckout(site);
+    consola.info(
+      `Won't ask again after deploys for channel ${channelId}. To set it later, run ` +
+        `\`catalyst channels update --channel-id ${channelId} --checkout-url ` +
+        `https://${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHostname}\`.`,
+    );
+
+    return true;
+  }
+
+  await runChannelCheckoutUrlFlow({
+    storeHash,
+    accessToken,
+    apiHost,
+    channelId,
+    storefrontHostname,
+  });
 
   return true;
 }

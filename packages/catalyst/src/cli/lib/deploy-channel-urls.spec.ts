@@ -35,9 +35,13 @@ let config: ReturnType<typeof getProjectConfig>;
 // A channel still on its canonical storefront URL and the default channel's
 // checkout, as a fresh one is. Writing the site URL moves the primary, so the
 // reads after it see the new one.
-const freshChannel = () => {
+const freshChannel = ({
+  primary: startingPrimary = 'https://store-abc-2.mybigcommerce.com',
+  checkout = 'https://store-abc-1.mybigcommerce.com',
+  customized = false,
+}: { primary?: string; checkout?: string; customized?: boolean } = {}) => {
   const writes: { site?: unknown; checkout?: unknown } = {};
-  let primary = 'https://store-abc-2.mybigcommerce.com';
+  let primary = startingPrimary;
 
   server.use(
     http.get(sitePath, () =>
@@ -47,10 +51,10 @@ const freshChannel = () => {
           url: primary,
           channel_id: 2,
           ssl_status: null,
-          is_checkout_url_customized: false,
+          is_checkout_url_customized: customized,
           urls: [
             { url: primary, type: 'primary' },
-            { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            { url: checkout, type: 'checkout' },
           ],
         },
       }),
@@ -135,9 +139,7 @@ describe('offerChannelUrlUpdates', () => {
     expect(confirmMock).not.toHaveBeenCalled();
   });
 
-  // Declining the checkout URL isn't saved: the site URL prompt that leads to
-  // it won't come back, so the warning is the last word.
-  test('warns instead of moving checkout when that is declined', async () => {
+  test('warns and saves the decline when moving checkout is declined', async () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
@@ -148,6 +150,40 @@ describe('offerChannelUrlUpdates', () => {
     expect(writes.checkout).toBeUndefined();
     expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
     expect(config.get('declinedSiteUrlChannels')).toBeUndefined();
+    expect(config.get('declinedCheckoutUrlChannels')).toEqual([2]);
+
+    // The next deploy finds the site already pointed here and stays quiet.
+    vi.clearAllMocks();
+    await run();
+
+    expect(confirmMock).not.toHaveBeenCalled();
+  });
+
+  // Checked on its own, so a checkout left behind is offered even when the site
+  // URL was set some other way or on an earlier deploy.
+  test('offers checkout when the site already points at the project', async () => {
+    const writes = freshChannel({ primary: `https://${storefront}` });
+
+    confirmMock.mockResolvedValueOnce(true);
+
+    await run();
+
+    expect(confirmMock).toHaveBeenCalledTimes(1);
+    expect(writes.site).toBeUndefined();
+    expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
+  });
+
+  // A custom checkout URL on another domain was the merchant's choice.
+  test('leaves a custom checkout URL on another domain alone', async () => {
+    freshChannel({
+      primary: `https://${storefront}`,
+      checkout: 'https://checkout.example.com',
+      customized: true,
+    });
+
+    await run();
+
+    expect(confirmMock).not.toHaveBeenCalled();
   });
 
   test('does not offer when the channel already points at the project', async () => {

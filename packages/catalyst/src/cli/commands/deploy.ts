@@ -388,9 +388,9 @@ export const deploy = new Command('deploy')
 Environment variables saved with \`catalyst env add\` are sent automatically on every deploy.
 Use \`--secret\` to set or override a variable for a single run.
 
-Without \`--update-site-url\` or \`--update-checkout-url\`, an interactive deploy offers once
-per channel to point the channel's site URL at the deployment, then to move its checkout
-onto the same domain. Declining is saved in .bigcommerce/project.json.
+Without \`--update-site-url\` or \`--update-checkout-url\`, an interactive deploy offers to
+point the channel's site URL at the deployment and to move its checkout onto the same domain.
+Each is checked on every deploy; declining either is saved in .bigcommerce/project.json.
 
 Example:
   $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,

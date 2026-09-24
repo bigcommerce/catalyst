@@ -1,14 +1,9 @@
 import { confirm } from '@inquirer/prompts';
 
-import { runChannelCheckoutUrlFlow } from './channel-checkout-url-flow';
+import { offerManagedCheckoutUrl } from './channel-checkout-url-flow';
 import { runChannelSiteUrlFlow } from './channel-site-flow';
 import { findChannelSiteUrl, getChannelSite } from './channels';
-import {
-  isCrossDomainCheckout,
-  isManagedHostingHostname,
-  MANAGED_ZONE_CHECKOUT_PREFIX,
-  warnOnCrossDomainCheckout,
-} from './checkout-url';
+import { isManagedHostingHostname } from './checkout-url';
 import { type DeploymentSecret } from './env-config';
 import { consola } from './logger';
 import { fetchProjects } from './project';
@@ -41,21 +36,16 @@ export function deployedChannelId(secrets: DeploymentSecret[]): number | undefin
 }
 
 // After an interactive deploy, offers to point the deployed channel at the new
-// hostname, then to move checkout onto the same domain.
-//
-// Asked once per channel: declining the site URL is saved in project.json.
-// Declining the checkout URL isn't, because the site URL prompt that leads to
-// it won't come back either; the merchant is warned instead.
+// hostname, and to move its checkout onto the same domain. The two are checked
+// separately on every deploy, so a checkout left behind is offered even when
+// the site URL was set some other way, or earlier. Declining either is saved
+// per channel in project.json, and that offer isn't made again.
 export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): Promise<void> {
   const { storeHash, accessToken, apiHost, projectUuid, config, channelId } = options;
 
-  // No channel means nothing to key the opt-out on, and scripted deploys keep
+  // No channel means nothing to key the opt-outs on, and scripted deploys keep
   // the flag-only behaviour.
   if (!process.stdin.isTTY || channelId === undefined) return;
-
-  const declined = config.get('declinedSiteUrlChannels') ?? [];
-
-  if (declined.includes(channelId)) return;
 
   const [site, projects] = await Promise.all([
     getChannelSite(channelId, storeHash, accessToken, apiHost),
@@ -65,8 +55,36 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     projects.find((project) => project.uuid === projectUuid)?.deployment_hostnames ?? [];
   const storefrontUrl = (findChannelSiteUrl(site, 'primary') ?? site.url).replace(/\/$/, '');
 
-  // Already pointed at this project; nothing to offer.
-  if (deploymentHostnames.some((deployed) => storefrontUrl === `https://${deployed}`)) return;
+  let storefrontHostname = deploymentHostnames.find(
+    (deployed) => storefrontUrl === `https://${deployed}`,
+  );
+
+  storefrontHostname ??= await offerSiteUrl({ ...options, channelId }, storefrontUrl);
+
+  // Not pointed at this project, so a checkout hostname under it wouldn't
+  // share the storefront's domain.
+  if (storefrontHostname === undefined) return;
+
+  await offerManagedCheckoutUrl({
+    storeHash,
+    accessToken,
+    apiHost,
+    channelId,
+    storefrontHostname,
+    config,
+    respectOptOut: true,
+  });
+}
+
+// Resolves the hostname the site URL was set to, or undefined when it wasn't.
+async function offerSiteUrl(
+  options: DeployChannelUrlOptions & { channelId: number },
+  storefrontUrl: string,
+): Promise<string | undefined> {
+  const { storeHash, accessToken, apiHost, projectUuid, config, channelId } = options;
+  const declined = config.get('declinedSiteUrlChannels') ?? [];
+
+  if (declined.includes(channelId)) return undefined;
 
   const shouldUpdate = await confirm({
     message: `Channel ${channelId}'s site URL is ${storefrontUrl}. Point it at this deployment?`,
@@ -80,7 +98,7 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
         `\`catalyst channels update --channel-id ${channelId}\`.`,
     );
 
-    return;
+    return undefined;
   }
 
   const { hostname } = await runChannelSiteUrlFlow({
@@ -93,40 +111,10 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     // one.
     channelId,
     hostname: options.deploymentHostname,
-    diagnoseCheckout: false,
+    // The checkout offer that follows covers the managed zone; elsewhere the
+    // diagnostic explains how to set up a checkout domain.
+    diagnoseCheckout: !isManagedHostingHostname(options.deploymentHostname ?? ''),
   });
 
-  const updated = await getChannelSite(channelId, storeHash, accessToken, apiHost);
-
-  if (!isCrossDomainCheckout(updated)) return;
-
-  // Off the managed zone, the checkout hostname is the merchant's to set up;
-  // the diagnostic explains how.
-  if (!isManagedHostingHostname(hostname)) {
-    warnOnCrossDomainCheckout(updated);
-
-    return;
-  }
-
-  const shouldMatchCheckout = await confirm({
-    message:
-      `Checkout is still on ${findChannelSiteUrl(updated, 'checkout') ?? 'another domain'}. ` +
-      `Move it to https://${MANAGED_ZONE_CHECKOUT_PREFIX}${hostname} so shoppers stay on this ` +
-      'domain through payment?',
-    default: true,
-  });
-
-  if (!shouldMatchCheckout) {
-    warnOnCrossDomainCheckout(updated);
-
-    return;
-  }
-
-  await runChannelCheckoutUrlFlow({
-    storeHash,
-    accessToken,
-    apiHost,
-    channelId,
-    storefrontHostname: hostname,
-  });
+  return hostname;
 }

@@ -3,7 +3,10 @@ import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
 
-import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
+import {
+  offerManagedCheckoutUrl,
+  runChannelCheckoutUrlFlow,
+} from '../lib/channel-checkout-url-flow';
 import { resolveChannel, runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   channelPlatformLabel,
@@ -166,17 +169,22 @@ Examples:
     // asked to change.
     const touchesCheckout = options.checkoutUrl !== undefined || options.removeCheckoutUrl === true;
     const updatesSiteUrl = options.hostname !== undefined || !touchesCheckout;
+    // A site URL update deletes the channel's checkout URL, so offer the
+    // managed-zone one straight after, when nothing was said about checkout.
+    const offersCheckout = updatesSiteUrl && !touchesCheckout && process.stdin.isTTY;
     let channelId = options.channelId;
+    let siteHostname: string | undefined;
 
     if (updatesSiteUrl) {
       try {
-        ({ channelId } = await runChannelSiteUrlFlow({
+        ({ channelId, hostname: siteHostname } = await runChannelSiteUrlFlow({
           storeHash,
           accessToken,
           apiHost,
           projectUuid: options.projectUuid ?? config.get('projectUuid'),
           channelId: options.channelId,
           hostname: options.hostname,
+          diagnoseCheckout: !offersCheckout,
         }));
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
@@ -190,6 +198,24 @@ Examples:
         }
 
         throw error;
+      }
+    }
+
+    if (offersCheckout && channelId !== undefined && siteHostname !== undefined) {
+      const offered = await offerManagedCheckoutUrl({
+        storeHash,
+        accessToken,
+        apiHost,
+        channelId,
+        storefrontHostname: siteHostname,
+        config,
+        // Asked for explicitly, so a decline after an earlier deploy doesn't
+        // silence it here.
+        respectOptOut: false,
+      });
+
+      if (!offered) {
+        warnOnCrossDomainCheckout(await getChannelSite(channelId, storeHash, accessToken, apiHost));
       }
     }
 

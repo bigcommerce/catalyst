@@ -1100,3 +1100,97 @@ describe('channels checkout URLs', () => {
     });
   });
 });
+
+// A site URL update deletes the channel's checkout URL, so on the managed zone
+// `channels update` offers the `c.` one straight after.
+describe('channels update checkout offer', () => {
+  const sitePath = 'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site';
+  const checkoutPath = `${sitePath}/checkout-url`;
+  const storefront = 'project-one.catalyst-sandbox.store';
+
+  const run = () =>
+    program.parseAsync([
+      'node',
+      'catalyst',
+      'channels',
+      'update',
+      '--channel-id',
+      '2',
+      '--hostname',
+      storefront,
+      '--project-uuid',
+      linkedProjectUuid,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+    ]);
+
+  const site = (primary: string) =>
+    HttpResponse.json({
+      data: {
+        id: 1,
+        url: primary,
+        channel_id: 2,
+        ssl_status: null,
+        is_checkout_url_customized: false,
+        urls: [
+          { url: primary, type: 'primary' },
+          { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+        ],
+      },
+    });
+
+  // The first read is the pre-write check, so it sees the old primary.
+  const channelMovingToManagedZone = () => {
+    const writes: { checkout?: unknown } = {};
+
+    server.use(
+      http.get(sitePath, () => site('https://store-abc-2.mybigcommerce.com'), { once: true }),
+      http.get(sitePath, () => site(`https://${storefront}`)),
+      http.put(checkoutPath, async ({ request }) => {
+        writes.checkout = await request.json();
+
+        return HttpResponse.json({ data: { id: 1, url: `https://${storefront}`, channel_id: 2 } });
+      }),
+      http.head(`https://c.${storefront}/`, () => HttpResponse.json(null, { status: 302 })),
+    );
+
+    return writes;
+  };
+
+  beforeEach(() => {
+    Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
+    config.delete('declinedCheckoutUrlChannels');
+  });
+
+  test('offers the managed-zone checkout URL after updating the site URL', async () => {
+    const writes = channelMovingToManagedZone();
+
+    mockConfirm.mockResolvedValueOnce(true);
+
+    await run();
+
+    expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
+  });
+
+  // Asked for explicitly, so an earlier decline after a deploy doesn't silence
+  // it; declining here is saved so deploys stay quiet.
+  test('asks despite an earlier decline, and saves a new one', async () => {
+    const writes = channelMovingToManagedZone();
+
+    config.set('declinedCheckoutUrlChannels', [2]);
+    mockConfirm.mockResolvedValueOnce(false);
+
+    await run();
+
+    expect(mockConfirm).toHaveBeenCalledTimes(1);
+    expect(writes.checkout).toBeUndefined();
+    expect(config.get('declinedCheckoutUrlChannels')).toEqual([2]);
+    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining("default channel's domain"));
+  });
+});

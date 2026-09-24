@@ -16,6 +16,9 @@ export interface ProjectConfigSchema {
   // Channels whose owner declined, after a deploy, to point the channel's site
   // URL at the deployment. `catalyst deploy` doesn't offer again for these.
   declinedSiteUrlChannels?: number[];
+  // Channels whose owner declined moving checkout onto the storefront's `c.`
+  // hostname. `catalyst deploy` doesn't offer again for these.
+  declinedCheckoutUrlChannels?: number[];
 }
 
 // `cwd` defaults to the process working directory — the project the user is
@@ -42,6 +45,10 @@ export function getProjectConfig(cwd: string = process.cwd()) {
         default: {},
       },
       declinedSiteUrlChannels: {
+        type: 'array',
+        items: { type: 'number' },
+      },
+      declinedCheckoutUrlChannels: {
         type: 'array',
         items: { type: 'number' },
       },
