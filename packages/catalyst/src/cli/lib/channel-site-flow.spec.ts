@@ -322,6 +322,20 @@ describe('runChannelSiteUrlFlow', () => {
   // old domain, so the flow re-fetches the site and runs the diagnostic.
   test('warns when the updated site URL leaves checkout on another domain', async () => {
     server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site',
+        () =>
+          HttpResponse.json({
+            data: {
+              id: 1,
+              url: 'https://store-abc-2.mybigcommerce.com',
+              channel_id: 2,
+              is_checkout_url_customized: false,
+              urls: [{ url: 'https://store-abc-2.mybigcommerce.com', type: 'primary' }],
+            },
+          }),
+        { once: true },
+      ),
       http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
         HttpResponse.json({
           data: {
@@ -355,6 +369,48 @@ describe('runChannelSiteUrlFlow', () => {
 
   // The write already succeeded by this point, so a failing diagnostic must not
   // surface as a failed update.
+  // sites-service deletes the checkout URL on every site URL update, even to
+  // the same URL, so a re-deploy must not re-send an unchanged one.
+  test('skips the write when the site URL is already set', async () => {
+    let putCalled = false;
+
+    server.use(
+      http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://project-one.catalyst-sandbox.store',
+            channel_id: 2,
+            is_checkout_url_customized: true,
+            urls: [
+              { url: 'https://project-one.catalyst-sandbox.store/', type: 'primary' },
+              { url: 'https://c.project-one.catalyst-sandbox.store', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+      http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () => {
+        putCalled = true;
+
+        return HttpResponse.json({ data: {} });
+      }),
+    );
+
+    await expect(
+      runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname: 'project-one.catalyst-sandbox.store',
+      }),
+    ).resolves.toEqual({ channelId: 2, hostname: 'project-one.catalyst-sandbox.store' });
+
+    expect(putCalled).toBe(false);
+    expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('site URL is already'));
+  });
+
   test('still reports success when the follow-up diagnostic fetch fails', async () => {
     server.use(
       http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
