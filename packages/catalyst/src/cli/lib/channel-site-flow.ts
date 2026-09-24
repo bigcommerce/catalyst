@@ -172,15 +172,10 @@ export async function runChannelSiteUrlFlow(
       options.apiHost,
     );
 
-    const report = await warnOnCrossDomainCheckout(site, {
-      storeHash: options.storeHash,
-      accessToken: options.accessToken,
-      apiHost: options.apiHost,
-    });
+    const report = warnOnCrossDomainCheckout(site);
 
     // Can run mid-deploy, so it prints a command rather than prompting. Skipped
-    // on a managed zone until the checkout hostname is provisioned — suggesting
-    // one now would set a URL that resolves without a certificate.
+    // on a managed zone, where the diagnostic already printed the command.
     if (report.crossDomain && report.storefrontOnManagedZone !== true) {
       consola.info('Set a checkout URL for this channel with:');
       consola.log(
