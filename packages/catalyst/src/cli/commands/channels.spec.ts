@@ -1053,8 +1053,8 @@ describe('channels checkout URLs', () => {
       );
     });
 
-    // Offering here would walk the user into a guaranteed 422, since a checkout
-    // subdomain on the managed zone can't be issued a certificate.
+    // The diagnostic prints the exact command instead; the prompt would
+    // default to the wrong prefix.
     test('does not offer when the storefront is on the managed hosting zone', async () => {
       withManagedZone();
       server.use(
