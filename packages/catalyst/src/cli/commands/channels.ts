@@ -212,6 +212,7 @@ Examples:
         // Asked for explicitly, so a decline after an earlier deploy doesn't
         // silence it here.
         respectOptOut: false,
+        defaultAnswer: true,
       });
 
       if (!offered) {

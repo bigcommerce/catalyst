@@ -1176,6 +1176,8 @@ describe('channels update checkout offer', () => {
     await run();
 
     expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
+    // The site URL change was asked for, so Enter accepts the follow-up.
+    expect(mockConfirm).toHaveBeenCalledWith(expect.objectContaining({ default: true }));
   });
 
   // Asked for explicitly, so an earlier decline after a deploy doesn't silence

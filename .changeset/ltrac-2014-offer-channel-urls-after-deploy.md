@@ -9,7 +9,7 @@ Without `--update-site-url` or `--update-checkout-url`, a deploy used to leave t
 1. **Site URL.** If the channel doesn't point at the project, it asks whether to point it at the deployment, and sets it to the hostname the deploy just went live on. Neither the channel nor the hostname is asked for; the hostname picker only appears if the deploy didn't report one.
 2. **Checkout URL.** If the channel's storefront is on an auto-generated hostname and checkout is on another domain, it asks whether to move checkout to `https://c.<project>.<zone>`, and does so the way `--update-checkout-url` does. This is checked on its own, so it's offered even when the site URL was set earlier or some other way. A custom checkout URL the merchant set on another domain is left alone.
 
-Declining either is saved per channel in `.bigcommerce/project.json` (`declinedSiteUrlChannels`, `declinedCheckoutUrlChannels`), and that offer isn't made again after deploys. Declining checkout also prints the cross-domain checkout warning and the command that sets it.
+Both questions default to No, so pressing Enter never changes a live channel. Declining either is saved per channel in `.bigcommerce/project.json` (`declinedSiteUrlChannels`, `declinedCheckoutUrlChannels`), and that offer isn't made again after deploys. Declining checkout also prints the cross-domain checkout warning and the command that sets it.
 
 `catalyst channels update` makes the same checkout offer after it updates a site URL, since that update deletes the channel's checkout URL. As an explicit command it asks even after an earlier decline. It falls back to the cross-domain warning when there's nothing to offer.
 

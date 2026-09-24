@@ -120,6 +120,9 @@ describe('offerChannelUrlUpdates', () => {
     expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
     // Neither the channel nor the hostname is asked for; the deploy knows both.
     expect(selectMock).not.toHaveBeenCalled();
+    // Unasked-for after a deploy, so Enter leaves both URLs alone.
+    expect(confirmMock).toHaveBeenNthCalledWith(1, expect.objectContaining({ default: false }));
+    expect(confirmMock).toHaveBeenNthCalledWith(2, expect.objectContaining({ default: false }));
   });
 
   // Declining is remembered for the channel so later deploys stay quiet.

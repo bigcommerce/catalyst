@@ -210,6 +210,8 @@ export interface ManagedCheckoutOfferOptions {
   // Skip the offer for a channel whose owner already declined it. Off for an
   // explicit command, which asks regardless.
   respectOptOut: boolean;
+  // What Enter answers. No after a deploy, where the offer wasn't asked for.
+  defaultAnswer: boolean;
 }
 
 // Offers to move a managed-zone storefront's checkout onto its `c.` hostname,
@@ -238,7 +240,7 @@ export async function offerManagedCheckoutUrl(
       `Checkout is on ${findChannelSiteUrl(site, 'checkout') ?? 'another domain'}. Move it to ` +
       `https://${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHostname} so shoppers stay on this ` +
       'domain through payment?',
-    default: true,
+    default: options.defaultAnswer,
   });
 
   if (!shouldMove) {

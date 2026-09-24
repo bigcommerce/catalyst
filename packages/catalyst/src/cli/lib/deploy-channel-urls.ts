@@ -73,6 +73,7 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     storefrontHostname,
     config,
     respectOptOut: true,
+    defaultAnswer: false,
   });
 }
 
@@ -88,7 +89,8 @@ async function offerSiteUrl(
 
   const shouldUpdate = await confirm({
     message: `Channel ${channelId}'s site URL is ${storefrontUrl}. Point it at this deployment?`,
-    default: true,
+    // Unasked-for after a deploy, so Enter mustn't change a live channel.
+    default: false,
   });
 
   if (!shouldUpdate) {
