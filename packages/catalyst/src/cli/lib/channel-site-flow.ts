@@ -3,6 +3,7 @@ import { select } from '@inquirer/prompts';
 import {
   type Channel,
   fetchAvailableChannels,
+  findChannelSiteUrl,
   getChannelSite,
   updateChannelSiteUrl,
 } from './channels';
@@ -148,18 +149,36 @@ export async function runChannelSiteUrlFlow(
   const channel = await resolveChannel(options);
   const hostname = await resolveHostname(project, options);
   const siteUrl = hostname.startsWith('https://') ? hostname : `https://${hostname}`;
+  const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
-  await updateChannelSiteUrl(
+  // Skip a write that changes nothing: sites-service deletes the channel's
+  // checkout URL on every site URL update, even to the same URL, and releases
+  // its hostname. A re-deploy would otherwise drop and re-provision a `c.`
+  // checkout hostname, leaving checkout without a certificate meanwhile.
+  // Best-effort: if the read fails, write as before.
+  const current = await getChannelSite(
     channel.id,
-    siteUrl,
     options.storeHash,
     options.accessToken,
     options.apiHost,
-  );
+  ).catch(() => undefined);
 
-  const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
+  if (
+    current &&
+    (findChannelSiteUrl(current, 'primary') ?? current.url).replace(/\/$/, '') === siteUrl
+  ) {
+    consola.info(`Channel ${channelLabel} site URL is already ${siteUrl}.`);
+  } else {
+    await updateChannelSiteUrl(
+      channel.id,
+      siteUrl,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
+    );
 
-  consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+    consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+  }
 
   // Moving the site URL is when checkout is most likely left behind. The PUT
   // response above carries no `urls`, hence the re-fetch. Soft-failed: the write
