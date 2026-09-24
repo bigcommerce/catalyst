@@ -1093,8 +1093,23 @@ describe('--update-site-url', () => {
           data: { id: 1, url: 'https://project-one.catalyst-sandbox.store', channel_id: 2 },
         }),
       ),
-      // The provisioned checkout hostname answering at all means its
-      // certificate is live, which is what the readiness check looks for.
+      // A channel still on the inherited checkout, so the flow writes.
+      http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://project-one.catalyst-sandbox.store',
+            channel_id: 2,
+            ssl_status: null,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://project-one.catalyst-sandbox.store', type: 'primary' },
+              { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+      // Answering at all means the certificate issued after the write.
       http.head('https://c.project-one.catalyst-sandbox.store/', () =>
         HttpResponse.json(null, { status: 302 }),
       ),
@@ -1122,7 +1137,7 @@ describe('--update-site-url', () => {
     // Two selects total: channel + hostname. A third would mean the checkout
     // flow re-prompted for the channel.
     expect(vi.mocked(select)).toHaveBeenCalledTimes(2);
-    // No prompt: the hostname native hosting provisioned is not a guess.
+    // No prompt: on a managed zone the checkout hostname follows from the storefront.
     expect(vi.mocked(input)).not.toHaveBeenCalled();
   });
 

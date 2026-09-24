@@ -1,11 +1,14 @@
+import { http, HttpResponse } from 'msw';
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { server } from '../../../tests/mocks/node';
 
 import { type ChannelSiteDetails } from './channels';
 import {
   managedCheckoutHostname,
-  resolveProvisionedCheckoutUrl,
   sharesMainDomain,
   suggestCheckoutUrl,
+  waitForCheckoutHostname,
   warnOnCrossDomainCheckout,
 } from './checkout-url';
 import { consola } from './logger';
@@ -352,39 +355,51 @@ describe('managedCheckoutHostname', () => {
   });
 });
 
-describe('resolveProvisionedCheckoutUrl', () => {
-  const storefront = 'catalyst.catalyst-sandbox.store';
+describe('waitForCheckoutHostname', () => {
+  const hostname = 'c.catalyst.catalyst-sandbox.store';
+  const probe = `https://${hostname}/`;
 
-  test('returns the checkout URL once the hostname serves a certificate', async () => {
+  // Any response means the TLS handshake succeeded; checkout answers a bare
+  // request with a redirect.
+  test('resolves true once the hostname serves', async () => {
+    server.use(http.head(probe, () => HttpResponse.json(null, { status: 302 })));
+
+    await expect(waitForCheckoutHostname(hostname)).resolves.toBe(true);
+  });
+
+  test('resolves false when the hostname never serves', async () => {
+    server.use(http.head(probe, () => HttpResponse.error()));
+
+    await expect(waitForCheckoutHostname(hostname, { timeoutMs: 0 })).resolves.toBe(false);
+  });
+
+  test('explains the pause once, then retries', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout'] });
+
+    let probes = 0;
+
     server.use(
-      http.head('https://c.catalyst.catalyst-sandbox.store/', () =>
-        HttpResponse.json(null, { status: 302 }),
-      ),
+      http.head(probe, () => {
+        probes += 1;
+
+        return probes === 1 ? HttpResponse.error() : HttpResponse.json(null, { status: 302 });
+      }),
     );
 
-    await expect(resolveProvisionedCheckoutUrl(storefront)).resolves.toBe(
-      'https://c.catalyst.catalyst-sandbox.store',
-    );
-  });
+    const onWait = vi.fn();
+    const ready = waitForCheckoutHostname(hostname, { timeoutMs: 60_000, onWait });
 
-  // Setting a checkout URL whose certificate has not issued leaves checkout
-  // resolving without one, which is worse for a shopper than the inherited URL
-  // it would replace. So give up rather than write it.
-  test('gives up rather than set a URL that is not serving yet', async () => {
-    server.use(http.head('https://c.catalyst.catalyst-sandbox.store/', () => HttpResponse.error()));
+    while (onWait.mock.calls.length === 0) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setImmediate(resolve));
+    }
 
-    await expect(
-      resolveProvisionedCheckoutUrl(storefront, { timeoutMs: 0 }),
-    ).resolves.toBeUndefined();
-    expect(consola.warn).toHaveBeenCalledWith(expect.stringContaining('not serving a certificate'));
-  });
+    await vi.advanceTimersByTimeAsync(10_000);
 
-  test('gives up when the storefront hostname is too long to take a prefix', async () => {
-    const tooLong = `${'a'.repeat(63 - '.catalyst-sandbox.store'.length)}.catalyst-sandbox.store`;
+    await expect(ready).resolves.toBe(true);
+    expect(onWait).toHaveBeenCalledTimes(1);
+    expect(probes).toBe(2);
 
-    await expect(resolveProvisionedCheckoutUrl(tooLong)).resolves.toBeUndefined();
-    expect(consola.warn).toHaveBeenCalledWith(
-      expect.stringContaining('too long to take a checkout prefix'),
-    );
+    vi.useRealTimers();
   });
 });
