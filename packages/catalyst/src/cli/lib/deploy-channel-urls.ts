@@ -88,9 +88,11 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     accessToken,
     apiHost,
     projectUuid,
-    // The channel the build targets; asking again would only invite a mismatch.
+    // Both are known: the channel the build targets and the hostname the deploy
+    // went live on. The hostname picker only shows if the deploy didn't report
+    // one.
     channelId,
-    preferHostname: options.deploymentHostname,
+    hostname: options.deploymentHostname,
     diagnoseCheckout: false,
   });
 

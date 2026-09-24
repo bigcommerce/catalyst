@@ -77,7 +77,7 @@ const freshChannel = () => {
   return writes;
 };
 
-const run = (overrides: { channelId?: number } = { channelId: 2 }) =>
+const run = (overrides: Partial<Parameters<typeof offerChannelUrlUpdates>[0]> = { channelId: 2 }) =>
   offerChannelUrlUpdates({
     storeHash,
     accessToken,
@@ -87,9 +87,6 @@ const run = (overrides: { channelId?: number } = { channelId: 2 }) =>
     deploymentHostname: storefront,
     ...overrides,
   });
-
-// The channel is the deployed one, so the hostname is the only pick.
-const pickHostname = () => selectMock.mockResolvedValueOnce(storefront);
 
 beforeAll(() => {
   consola.mockTypes(() => vi.fn());
@@ -112,17 +109,13 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(true);
-    pickHostname();
 
     await run();
 
     expect(writes.site).toEqual({ url: `https://${storefront}` });
     expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
-    // Only the hostname is asked for; the channel is the one deployed to.
-    expect(selectMock).toHaveBeenCalledTimes(1);
-    expect(selectMock).toHaveBeenCalledWith(
-      expect.objectContaining({ message: 'Select the hostname to point the channel at.' }),
-    );
+    // Neither the channel nor the hostname is asked for; the deploy knows both.
+    expect(selectMock).not.toHaveBeenCalled();
   });
 
   // Declining is remembered for the channel so later deploys stay quiet.
@@ -148,7 +141,6 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
-    pickHostname();
 
     await run();
 
@@ -186,15 +178,27 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true);
-    selectMock.mockResolvedValueOnce('vanity.project-one.example.com');
 
-    await run();
+    await run({ channelId: 2, deploymentHostname: 'vanity.project-one.example.com' });
 
     expect(confirmMock).toHaveBeenCalledTimes(1);
     expect(writes.checkout).toBeUndefined();
     expect(consola.info).toHaveBeenCalledWith(
       expect.stringContaining('checkout.vanity.project-one.example.com at BigCommerce'),
     );
+  });
+
+  // The deploy normally reports its hostname; only without one is it asked for.
+  test('asks for the hostname when the deploy did not report one', async () => {
+    const writes = freshChannel();
+
+    confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    selectMock.mockResolvedValueOnce(storefront);
+
+    await run({ channelId: 2, deploymentHostname: undefined });
+
+    expect(selectMock).toHaveBeenCalledTimes(1);
+    expect(writes.site).toEqual({ url: `https://${storefront}` });
   });
 
   test('stays quiet without a TTY or a known channel', async () => {
