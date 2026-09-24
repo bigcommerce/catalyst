@@ -214,19 +214,15 @@ describe('deployedChannelId', () => {
     vi.unstubAllEnvs();
   });
 
-  test('reads the build env first, then a stored secret', () => {
+  // Matches what the storefront serves: OpenNext applies the worker's bindings
+  // first and only fills unset keys from the baked env files.
+  test('prefers a deployment secret over the env files', () => {
     vi.stubEnv('BIGCOMMERCE_CHANNEL_ID', '7');
-
-    expect(deployedChannelId([{ type: 'secret', key: 'BIGCOMMERCE_CHANNEL_ID', value: '9' }])).toBe(
-      7,
-    );
-
-    vi.unstubAllEnvs();
-    delete process.env.BIGCOMMERCE_CHANNEL_ID;
 
     expect(deployedChannelId([{ type: 'secret', key: 'BIGCOMMERCE_CHANNEL_ID', value: '9' }])).toBe(
       9,
     );
+    expect(deployedChannelId([])).toBe(7);
   });
 
   test('ignores a missing or malformed value', () => {

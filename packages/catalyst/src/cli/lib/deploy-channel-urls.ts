@@ -26,13 +26,15 @@ export interface DeployChannelUrlOptions {
   channelId?: number;
 }
 
-// The channel a deployment serves: the build reads `BIGCOMMERCE_CHANNEL_ID`
-// from the env files, and a stored secret carries it when the build was skipped
-// with `--prebuilt`.
+// The channel a deployment serves. A deployment secret (project.json `env` or
+// `--secret`) wins: at runtime OpenNext copies the worker's bindings onto
+// `process.env` first and only fills unset keys from the env files baked in at
+// build time. The env files are the fallback, and aren't loaded at all with
+// `--prebuilt`.
 export function deployedChannelId(secrets: DeploymentSecret[]): number | undefined {
   const raw =
-    process.env.BIGCOMMERCE_CHANNEL_ID ??
-    secrets.find((secret) => secret.key === 'BIGCOMMERCE_CHANNEL_ID')?.value;
+    secrets.find((secret) => secret.key === 'BIGCOMMERCE_CHANNEL_ID')?.value ??
+    process.env.BIGCOMMERCE_CHANNEL_ID;
   const id = Number(raw);
 
   return Number.isInteger(id) && id > 0 ? id : undefined;
