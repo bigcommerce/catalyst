@@ -81,17 +81,18 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     return;
   }
 
-  const { channelId: updatedChannelId, hostname } = await runChannelSiteUrlFlow({
+  const { hostname } = await runChannelSiteUrlFlow({
     storeHash,
     accessToken,
     apiHost,
     projectUuid,
-    defaultChannelId: channelId,
+    // The channel the build targets; asking again would only invite a mismatch.
+    channelId,
     preferHostname: options.deploymentHostname,
     diagnoseCheckout: false,
   });
 
-  const updated = await getChannelSite(updatedChannelId, storeHash, accessToken, apiHost);
+  const updated = await getChannelSite(channelId, storeHash, accessToken, apiHost);
 
   if (!isCrossDomainCheckout(updated)) return;
 
@@ -121,7 +122,7 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
     storeHash,
     accessToken,
     apiHost,
-    channelId: updatedChannelId,
+    channelId,
     storefrontHostname: hostname,
   });
 }

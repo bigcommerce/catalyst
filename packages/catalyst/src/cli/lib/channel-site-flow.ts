@@ -28,8 +28,6 @@ export interface ChannelSiteFlowOptions {
   // `catalyst deploy --update-site-url` to default to the freshly-deployed
   // hostname.
   preferHostname?: string;
-  // Pre-selected in the channel prompt.
-  defaultChannelId?: number;
   // Warn afterwards when checkout is left on another domain. Off for a caller
   // that offers to fix it next, so the warning isn't printed before the offer.
   diagnoseCheckout?: boolean;
@@ -63,9 +61,6 @@ export async function resolveChannel(options: {
   accessToken: string;
   apiHost: string;
   channelId?: number;
-  // Pre-selected in the picker, e.g. the channel `catalyst deploy` just
-  // deployed to.
-  defaultChannelId?: number;
   // Overrides the picker copy for callers that aren't about to write anything —
   // `channels info` only reads, so "to update" would misdescribe it.
   message?: string;
@@ -97,7 +92,6 @@ export async function resolveChannel(options: {
 
   const id = await select({
     message: options.message ?? 'Select the channel to update.',
-    default: options.defaultChannelId,
     choices: catalystChannels.map((c: Channel) => ({
       name: c.name,
       value: c.id,

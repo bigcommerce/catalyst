@@ -88,9 +88,8 @@ const run = (overrides: { channelId?: number } = { channelId: 2 }) =>
     ...overrides,
   });
 
-// The picker order in runChannelSiteUrlFlow: channel, then hostname.
-const pickChannelAndHostname = () =>
-  selectMock.mockResolvedValueOnce(2).mockResolvedValueOnce(storefront);
+// The channel is the deployed one, so the hostname is the only pick.
+const pickHostname = () => selectMock.mockResolvedValueOnce(storefront);
 
 beforeAll(() => {
   consola.mockTypes(() => vi.fn());
@@ -113,14 +112,17 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(true);
-    pickChannelAndHostname();
+    pickHostname();
 
     await run();
 
     expect(writes.site).toEqual({ url: `https://${storefront}` });
     expect(writes.checkout).toEqual({ url: `https://c.${storefront}` });
-    // The deployed channel is pre-selected, not assumed.
-    expect(selectMock).toHaveBeenCalledWith(expect.objectContaining({ default: 2 }));
+    // Only the hostname is asked for; the channel is the one deployed to.
+    expect(selectMock).toHaveBeenCalledTimes(1);
+    expect(selectMock).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Select the hostname to point the channel at.' }),
+    );
   });
 
   // Declining is remembered for the channel so later deploys stay quiet.
@@ -146,7 +148,7 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
-    pickChannelAndHostname();
+    pickHostname();
 
     await run();
 
@@ -184,7 +186,7 @@ describe('offerChannelUrlUpdates', () => {
     const writes = freshChannel();
 
     confirmMock.mockResolvedValueOnce(true);
-    selectMock.mockResolvedValueOnce(2).mockResolvedValueOnce('vanity.project-one.example.com');
+    selectMock.mockResolvedValueOnce('vanity.project-one.example.com');
 
     await run();
 
