@@ -18,6 +18,7 @@ import {
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
+import { deployedChannelId, offerChannelUrlUpdates } from '../lib/deploy-channel-urls';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import {
@@ -387,6 +388,10 @@ export const deploy = new Command('deploy')
 Environment variables saved with \`catalyst env add\` are sent automatically on every deploy.
 Use \`--secret\` to set or override a variable for a single run.
 
+Without \`--update-site-url\` or \`--update-checkout-url\`, an interactive deploy offers once
+per channel to point the channel's site URL at the deployment, then to move its checkout
+onto the same domain. Declining is saved in .bigcommerce/project.json.
+
 Example:
   $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,
   )
@@ -639,6 +644,24 @@ Example:
         });
       } catch (error) {
         warnChannelFlowFailed('checkout URL', error);
+      }
+    }
+
+    // Neither flag: offer both, once per channel. Explicit flags mean the
+    // caller already decided.
+    if (!options.updateSiteUrl && !options.updateCheckoutUrl) {
+      try {
+        await offerChannelUrlUpdates({
+          storeHash,
+          accessToken,
+          apiHost,
+          projectUuid,
+          config,
+          deploymentHostname,
+          channelId: deployedChannelId(mergedSecrets),
+        });
+      } catch (error) {
+        warnChannelFlowFailed('URLs', error);
       }
     }
   });

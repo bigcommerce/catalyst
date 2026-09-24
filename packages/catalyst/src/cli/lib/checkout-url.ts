@@ -194,6 +194,17 @@ export function isManagedHostingHostname(hostname: string): boolean {
   return NATIVE_HOSTING_ZONES.some((zone) => isSubdomainOf(host, zone));
 }
 
+// Whether a channel's checkout sits on a different main domain from its
+// storefront. The same test `warnOnCrossDomainCheckout` applies, without the
+// output, for a caller deciding whether to offer a fix.
+export function isCrossDomainCheckout(site: ChannelSiteDetails): boolean {
+  const storefrontHost = hostnameOf(findChannelSiteUrl(site, 'primary') ?? site.url);
+  const checkoutUrl = findChannelSiteUrl(site, 'checkout');
+  const checkoutHost = checkoutUrl ? hostnameOf(checkoutUrl) : undefined;
+
+  return Boolean(storefrontHost && checkoutHost && !sharesMainDomain(storefrontHost, checkoutHost));
+}
+
 export interface CheckoutDomainReport {
   // True only when both hostnames were readable and don't share a registrable
   // domain. A missing or unreadable checkout URL is not "cross domain".
