@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.13.0
+
+### Minor Changes
+
+- [#3239](https://github.com/bigcommerce/catalyst/pull/3239) [`00c2f48`](https://github.com/bigcommerce/catalyst/commit/00c2f486582f1cf055edce1d432a7a46c7bfbaef) Thanks [@mfaris9](https://github.com/mfaris9)! - Add `hosting` and `channel_id` meta tags so Support can confirm a storefront is served by native hosting and which channel it belongs to. `hosting` renders the `CATALYST_HOSTING` env var, which `catalyst deploy` sets to `native`.
+
+### Patch Changes
+
+- [#3244](https://github.com/bigcommerce/catalyst/pull/3244) [`b341810`](https://github.com/bigcommerce/catalyst/commit/b341810c43504b5c814be61223c299838d1c1b57) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - Keep a separate cart for each channel so a cart created on one channel is not shown or checked out on another.
+
 ## 1.12.1
 
 ### Patch Changes
