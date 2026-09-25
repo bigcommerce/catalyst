@@ -8,6 +8,7 @@ import {
   updateChannelCheckoutUrl,
 } from './channels';
 import {
+  hostnameOf,
   isCrossDomainCheckout,
   isManagedHostingHostname,
   MANAGED_ZONE_CHECKOUT_PREFIX,
@@ -91,6 +92,26 @@ export async function runChannelCheckoutUrlFlow(
         }.`,
       );
     }
+  }
+
+  // Called without the hostname, e.g. `deploy --update-checkout-url` alone, a
+  // managed-zone storefront still has nothing to ask. An explicit URL is
+  // written as given.
+  const storefrontHostname = hostnameOf(storefrontUrl);
+
+  if (
+    options.url === undefined &&
+    options.storefrontHostname === undefined &&
+    storefrontHostname !== undefined &&
+    (await setManagedCheckoutUrl({
+      ...options,
+      channelId: channel.id,
+      label,
+      storefrontHostname,
+      timeoutMs: options.certificateTimeoutMs,
+    }))
+  ) {
+    return;
   }
 
   const answer =

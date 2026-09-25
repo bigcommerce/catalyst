@@ -233,6 +233,32 @@ describe('runChannelCheckoutUrlFlow on a managed hosting zone', () => {
     );
   });
 
+  // `deploy --update-checkout-url` alone doesn't pass the hostname.
+  test('derives the checkout hostname from the channel when not given one', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false, 'https://store-abc-1.mybigcommerce.com'),
+      http.head(probe, () => HttpResponse.json(null, { status: 302 })),
+    );
+
+    await run({ storefrontHostname: undefined });
+
+    expect(writes.put).toEqual({ url: checkoutUrl });
+    expect(inputMock).not.toHaveBeenCalled();
+  });
+
+  test('writes an explicit URL as given', async () => {
+    const writes = trackWrites();
+
+    server.use(siteWith(false));
+
+    await run({ storefrontHostname: undefined, url: 'checkout.example.com' });
+
+    expect(writes.put).toEqual({ url: 'https://checkout.example.com' });
+    expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('serving checkout'));
+  });
+
   test('explains the wait while the certificate issues', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout'] });
 

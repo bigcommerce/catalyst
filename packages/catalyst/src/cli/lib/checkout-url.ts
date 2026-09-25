@@ -8,7 +8,7 @@ const normalizeHostname = (hostname: string) => hostname.toLowerCase().replace(/
 
 const isSubdomainOf = (hostname: string, parent: string) => hostname.endsWith(`.${parent}`);
 
-function hostnameOf(url: string): string | undefined {
+export function hostnameOf(url: string): string | undefined {
   try {
     return new URL(url).hostname;
   } catch {
