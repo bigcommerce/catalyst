@@ -556,12 +556,8 @@ Examples:
     const report = warnOnCrossDomainCheckout(site);
 
     // The channel and site are already in hand, so offer to fix it rather than
-    // making the user re-run `channels update --checkout-url`.
-    //
-    // Not offered on a managed zone, where the diagnostic already printed the
-    // exact command and the prompt would default to the wrong prefix. Nor
-    // without a TTY, so the command stays scriptable — matching the guards in
-    // `commerce-hosting`.
+    // making the user re-run `channels update --checkout-url`. Not on a managed
+    // zone, where the diagnostic printed the command, nor without a TTY.
     if (report.crossDomain && report.storefrontOnManagedZone !== true) {
       const suggested = report.suggestion ?? '<domain>';
 
