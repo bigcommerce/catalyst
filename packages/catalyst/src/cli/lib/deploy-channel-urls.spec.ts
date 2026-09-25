@@ -101,9 +101,12 @@ beforeEach(() => {
   dir = mkdtempSync(join(tmpdir(), 'deploy-channel-urls-'));
   config = getProjectConfig(dir);
   Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+  // Our own CI sets it, and it silences the offers.
+  vi.stubEnv('CI', '');
 });
 
 afterEach(() => {
+  vi.unstubAllEnvs();
   Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
   rmSync(dir, { recursive: true, force: true });
 });
@@ -238,6 +241,16 @@ describe('offerChannelUrlUpdates', () => {
 
     expect(selectMock).toHaveBeenCalledTimes(1);
     expect(writes.site).toEqual({ url: `https://${storefront}` });
+  });
+
+  // Some CI setups allocate a pseudo-terminal; a prompt there would hang the job.
+  test('stays quiet in CI even with a TTY', async () => {
+    freshChannel();
+    vi.stubEnv('CI', 'true');
+
+    await run();
+
+    expect(confirmMock).not.toHaveBeenCalled();
   });
 
   test('stays quiet without a TTY or a known channel', async () => {

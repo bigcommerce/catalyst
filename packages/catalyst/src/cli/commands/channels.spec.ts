@@ -1161,9 +1161,12 @@ describe('channels update checkout offer', () => {
 
   beforeEach(() => {
     Object.defineProperty(process.stdin, 'isTTY', { value: true, configurable: true });
+    // Our own CI sets it, and it silences the offer.
+    vi.stubEnv('CI', '');
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     Object.defineProperty(process.stdin, 'isTTY', { value: false, configurable: true });
     config.delete('declinedCheckoutUrlChannels');
   });

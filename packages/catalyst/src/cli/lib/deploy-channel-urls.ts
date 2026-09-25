@@ -1,5 +1,6 @@
 import { confirm } from '@inquirer/prompts';
 
+import { canPrompt } from './can-prompt';
 import { offerManagedCheckoutUrl } from './channel-checkout-url-flow';
 import { runChannelSiteUrlFlow } from './channel-site-flow';
 import { findChannelSiteUrl, getChannelSite } from './channels';
@@ -45,7 +46,7 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
 
   // No channel means nothing to key the opt-outs on, and scripted deploys keep
   // the flag-only behaviour.
-  if (!process.stdin.isTTY || channelId === undefined) return;
+  if (!canPrompt() || channelId === undefined) return;
 
   const [site, projects] = await Promise.all([
     getChannelSite(channelId, storeHash, accessToken, apiHost),

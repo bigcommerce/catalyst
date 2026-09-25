@@ -3,6 +3,7 @@ import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
 
+import { canPrompt } from '../lib/can-prompt';
 import {
   offerManagedCheckoutUrl,
   runChannelCheckoutUrlFlow,
@@ -171,7 +172,7 @@ Examples:
     const updatesSiteUrl = options.hostname !== undefined || !touchesCheckout;
     // A site URL update deletes the channel's checkout URL, so offer the
     // managed-zone one straight after, when nothing was said about checkout.
-    const offersCheckout = updatesSiteUrl && !touchesCheckout && process.stdin.isTTY;
+    const offersCheckout = updatesSiteUrl && !touchesCheckout && canPrompt();
     let channelId = options.channelId;
     let siteHostname: string | undefined;
 

@@ -13,4 +13,4 @@ Both questions default to No, so pressing Enter never changes a live channel. De
 
 `catalyst channels update` makes the same checkout offer after it updates a site URL, since that update deletes the channel's checkout URL. As an explicit command it asks even after an earlier decline. It falls back to the cross-domain warning when there's nothing to offer.
 
-Scripted runs without a TTY, and deploys or updates that pass a checkout flag, behave as before.
+Runs without a TTY or with `CI` set, and deploys or updates that pass a checkout flag, behave as before, so CI pipelines never wait on a prompt.
