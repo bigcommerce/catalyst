@@ -22,11 +22,8 @@ export interface DeployChannelUrlOptions {
   channelId?: number;
 }
 
-// The channel a deployment serves. A deployment secret (project.json `env` or
-// `--secret`) wins: at runtime OpenNext copies the worker's bindings onto
-// `process.env` first and only fills unset keys from the env files baked in at
-// build time. The env files are the fallback, and aren't loaded at all with
-// `--prebuilt`.
+// The channel a deployment serves. Deployment secrets win, as in OpenNext's
+// runtime; env files are the fallback (not loaded with `--prebuilt`).
 export function deployedChannelId(secrets: DeploymentSecret[]): number | undefined {
   const raw =
     secrets.find((secret) => secret.key === 'BIGCOMMERCE_CHANNEL_ID')?.value ??
@@ -36,16 +33,13 @@ export function deployedChannelId(secrets: DeploymentSecret[]): number | undefin
   return Number.isInteger(id) && id > 0 ? id : undefined;
 }
 
-// After an interactive deploy, offers to point the deployed channel at the new
-// hostname, and to move its checkout onto the same domain. The two are checked
-// separately on every deploy, so a checkout left behind is offered even when
-// the site URL was set some other way, or earlier. Declining either is saved
-// per channel in project.json, and that offer isn't made again.
+// After an interactive deploy, offers to point the channel at the deployment
+// and to move its checkout onto the same domain. Each is checked on every
+// deploy; a decline is saved per channel.
 export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): Promise<void> {
   const { storeHash, accessToken, apiHost, projectUuid, config, channelId } = options;
 
-  // No channel means nothing to key the opt-outs on, and scripted deploys keep
-  // the flag-only behaviour.
+  // No channel means nothing to key the opt-outs on.
   if (!canPrompt() || channelId === undefined) return;
 
   const [site, projects] = await Promise.all([
@@ -62,8 +56,7 @@ export async function offerChannelUrlUpdates(options: DeployChannelUrlOptions): 
 
   storefrontHostname ??= await offerSiteUrl({ ...options, channelId }, storefrontUrl);
 
-  // Not pointed at this project, so a checkout hostname under it wouldn't
-  // share the storefront's domain.
+  // Not on this project, so a `c.` hostname under it wouldn't match.
   if (storefrontHostname === undefined) return;
 
   await offerManagedCheckoutUrl({
@@ -109,13 +102,10 @@ async function offerSiteUrl(
     accessToken,
     apiHost,
     projectUuid,
-    // Both are known: the channel the build targets and the hostname the deploy
-    // went live on. The hostname picker only shows if the deploy didn't report
-    // one.
+    // The deploy knows both; the hostname picker only shows if it reported none.
     channelId,
     hostname: options.deploymentHostname,
-    // The checkout offer that follows covers the managed zone; elsewhere the
-    // diagnostic explains how to set up a checkout domain.
+    // On the managed zone the checkout offer follows; elsewhere, warn instead.
     diagnoseCheckout: !isManagedHostingHostname(options.deploymentHostname ?? ''),
   });
 

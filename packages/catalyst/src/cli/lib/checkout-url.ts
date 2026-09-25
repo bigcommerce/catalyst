@@ -39,35 +39,24 @@ export function sharesMainDomain(a: string, b: string): boolean {
 // Cloudflare's 64-character certificate name limit.
 export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
 
-// Cloudflare will not issue a certificate for a name longer than this, from
-// the RFC 5280 limit on a certificate common name.
+// Longest name Cloudflare will issue a certificate for (RFC 5280).
 const MAX_HOSTNAME_LENGTH = 64;
 
-// How long BigCommerce can take to get a certificate onto a freshly provisioned
-// checkout hostname. It checks Cloudflare 60s after creating the custom
-// hostname and then retries 10 times at 30s, so six minutes is the point past
-// which it has given up rather than still working.
+// BigCommerce stops trying to issue the certificate after about six minutes
+// (a 60s delay, then 10 retries at 30s).
 const CHECKOUT_HOSTNAME_READY_TIMEOUT_MS = 6 * 60 * 1000;
 const CHECKOUT_HOSTNAME_POLL_INTERVAL_MS = 10 * 1000;
 
-// The checkout hostname for a storefront on a managed zone. Nothing needs to
-// exist beforehand: setting it as the checkout URL is what provisions it.
-//
-// Returns undefined when the result would exceed the certificate common-name
-// limit. Hostnames generated before ignition reserved room for the prefix can be
-// too long, and those projects have no checkout hostname to point at.
+// The checkout hostname for a managed-zone storefront, or undefined when it
+// would exceed the certificate name limit (older, longer hostnames).
 export function managedCheckoutHostname(storefrontHostname: string): string | undefined {
   const hostname = MANAGED_ZONE_CHECKOUT_PREFIX + normalizeHostname(storefrontHostname);
 
   return hostname.length <= MAX_HOSTNAME_LENGTH ? hostname : undefined;
 }
 
-// Whether the hostname terminates TLS with a certificate a client will accept.
-//
-// Any HTTP response means the handshake succeeded, which is the thing that
-// matters; the status code is irrelevant, and checkout answers a bare GET with
-// a redirect to the storefront when there is no cart. A rejected certificate or
-// an unresolvable name throws, which is the signal we want.
+// Whether the hostname serves a certificate a client accepts. Any HTTP
+// response means the handshake worked; a bad certificate or name throws.
 async function checkoutHostnameIsServing(hostname: string): Promise<boolean> {
   try {
     await fetch(`https://${hostname}/`, {
@@ -82,8 +71,7 @@ async function checkoutHostnameIsServing(hostname: string): Promise<boolean> {
   }
 }
 
-// Waits for a freshly provisioned checkout hostname to serve a valid
-// certificate. Until it does, checkout on that hostname fails for shoppers.
+// Waits for a newly provisioned checkout hostname's certificate.
 export async function waitForCheckoutHostname(
   hostname: string,
   { timeoutMs = CHECKOUT_HOSTNAME_READY_TIMEOUT_MS, onWait }: CheckoutHostnameWaitOptions = {},
@@ -92,8 +80,7 @@ export async function waitForCheckoutHostname(
   let waited = false;
 
   for (;;) {
-    // Sequential by nature: each probe asks whether the certificate has
-    // issued yet, so there is nothing to parallelise.
+    // One probe at a time: each asks whether the certificate has issued yet.
     // eslint-disable-next-line no-await-in-loop
     if (await checkoutHostnameIsServing(hostname)) return true;
 
@@ -111,8 +98,7 @@ export async function waitForCheckoutHostname(
 
 export interface CheckoutHostnameWaitOptions {
   timeoutMs?: number;
-  // Called once, before the first sleep, so a caller can explain the pause
-  // rather than appearing to hang for minutes.
+  // Called once, before the first wait, so the caller can explain the pause.
   onWait?: () => void;
 }
 
@@ -184,9 +170,8 @@ export function isManagedHostingHostname(hostname: string): boolean {
   return NATIVE_HOSTING_ZONES.some((zone) => isSubdomainOf(host, zone));
 }
 
-// Whether a channel's checkout sits on a different main domain from its
-// storefront. The same test `warnOnCrossDomainCheckout` applies, without the
-// output, for a caller deciding whether to offer a fix.
+// Whether checkout is on a different main domain from the storefront: the
+// test `warnOnCrossDomainCheckout` makes, without the output.
 export function isCrossDomainCheckout(site: ChannelSiteDetails): boolean {
   const storefrontHost = hostnameOf(findChannelSiteUrl(site, 'primary') ?? site.url);
   const checkoutUrl = findChannelSiteUrl(site, 'checkout');

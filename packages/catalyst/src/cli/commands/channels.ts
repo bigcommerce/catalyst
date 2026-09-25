@@ -170,8 +170,7 @@ Examples:
     // asked to change.
     const touchesCheckout = options.checkoutUrl !== undefined || options.removeCheckoutUrl === true;
     const updatesSiteUrl = options.hostname !== undefined || !touchesCheckout;
-    // A site URL update deletes the channel's checkout URL, so offer the
-    // managed-zone one straight after, when nothing was said about checkout.
+    // A site URL update deletes the checkout URL, so offer the managed-zone one next.
     const offersCheckout = updatesSiteUrl && !touchesCheckout && canPrompt();
     let channelId = options.channelId;
     let siteHostname: string | undefined;
@@ -210,8 +209,7 @@ Examples:
         channelId,
         storefrontHostname: siteHostname,
         config,
-        // Asked for explicitly, so a decline after an earlier deploy doesn't
-        // silence it here.
+        // Explicit command, so an earlier decline doesn't silence it.
         respectOptOut: false,
         defaultAnswer: true,
       });

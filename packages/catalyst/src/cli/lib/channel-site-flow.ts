@@ -29,8 +29,7 @@ export interface ChannelSiteFlowOptions {
   // `catalyst deploy --update-site-url` to default to the freshly-deployed
   // hostname.
   preferHostname?: string;
-  // Warn afterwards when checkout is left on another domain. Off for a caller
-  // that offers to fix it next, so the warning isn't printed before the offer.
+  // Warn if checkout is left on another domain. Off when the caller offers a fix next.
   diagnoseCheckout?: boolean;
 }
 
@@ -139,9 +138,7 @@ async function resolveHostname(
 
 export interface ChannelSiteFlowResult {
   channelId: number;
-  // The hostname the site URL was set to. Returned so a caller running the
-  // checkout flow next can derive the matching checkout hostname instead of
-  // guessing which of the project's hostnames was chosen.
+  // The hostname the site URL was set to, so a checkout step can pair with it.
   hostname: string;
 }
 
@@ -154,11 +151,9 @@ export async function runChannelSiteUrlFlow(
   const siteUrl = hostname.startsWith('https://') ? hostname : `https://${hostname}`;
   const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
-  // Skip a write that changes nothing: sites-service deletes the channel's
-  // checkout URL on every site URL update, even to the same URL, and releases
-  // its hostname. A re-deploy would otherwise drop and re-provision a `c.`
-  // checkout hostname, leaving checkout without a certificate meanwhile.
-  // Best-effort: if the read fails, write as before.
+  // Skip an unchanged site URL: sites-service deletes the checkout URL on every
+  // site URL update, so re-sending it would drop the `c.` hostname. Best-effort:
+  // if the read fails, write anyway.
   const current = await getChannelSite(
     channel.id,
     options.storeHash,

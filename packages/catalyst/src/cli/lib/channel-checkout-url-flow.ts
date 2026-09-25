@@ -32,11 +32,9 @@ export interface ChannelCheckoutUrlFlowOptions {
   // the flow neither re-prompts nor re-reads.
   channelName?: string;
   storefrontUrl?: string;
-  // The hostname the storefront was just pointed at. On a managed hosting zone
-  // the checkout hostname follows from it, so the prompt is skipped.
+  // On a managed zone the checkout hostname follows from this, so no prompt.
   storefrontHostname?: string;
-  // How long to wait for that hostname's certificate. Defaults to the point
-  // BigCommerce gives up issuing it.
+  // Defaults to when BigCommerce stops trying to issue the certificate.
   certificateTimeoutMs?: number;
 }
 
@@ -125,16 +123,10 @@ interface ManagedCheckoutUrlOptions {
   timeoutMs?: number;
 }
 
-// Points a channel whose storefront is on a managed hosting zone at its `c.`
-// checkout hostname.
-//
-// The write comes first because it is what provisions the hostname: BigCommerce
-// registers it and issues its certificate in response. Checkout fails there
-// until the certificate issues, usually within a couple of minutes, so if it
-// never does the write is undone rather than leaving checkout broken.
-//
-// Resolves false when the storefront isn't on a managed zone, so the caller
-// prompts instead.
+// Points a managed-zone storefront's channel at its `c.` checkout hostname.
+// Writes first, since the write is what provisions the hostname, then waits
+// for the certificate and undoes the write if none issues. Resolves false off
+// the managed zone, so the caller prompts instead.
 async function setManagedCheckoutUrl(options: ManagedCheckoutUrlOptions): Promise<boolean> {
   const { storeHash, accessToken, apiHost, channelId, label, storefrontHostname } = options;
 
@@ -156,8 +148,7 @@ async function setManagedCheckoutUrl(options: ManagedCheckoutUrlOptions): Promis
   const site = await getChannelSite(channelId, storeHash, accessToken, apiHost);
 
   if (site.isCheckoutUrlCustomized) {
-    // A re-run finds it already set; writing it again would ask BigCommerce to
-    // register a hostname it already holds.
+    // Already set: writing it again would hit `canonical-in-use`.
     const alreadySet = site.urls.some(
       (entry) => entry.type === 'checkout' && entry.url.replace(/\/$/, '') === checkoutUrl,
     );
@@ -207,21 +198,15 @@ export interface ManagedCheckoutOfferOptions {
   // The storefront hostname the channel's primary URL is on.
   storefrontHostname: string;
   config: ReturnType<typeof getProjectConfig>;
-  // Skip the offer for a channel whose owner already declined it. Off for an
-  // explicit command, which asks regardless.
+  // Honour a saved decline. Off for explicit commands.
   respectOptOut: boolean;
   // What Enter answers. No after a deploy, where the offer wasn't asked for.
   defaultAnswer: boolean;
 }
 
-// Offers to move a managed-zone storefront's checkout onto its `c.` hostname,
-// when checkout is on another domain. A decline is saved per channel. Resolves
-// whether the offer was made, so an explicit command can fall back to the
-// cross-domain warning when it wasn't.
-//
-// A custom checkout URL on another domain was the merchant's choice, so it's
-// never offered for replacement. Off the managed zone there is no `c.`
-// hostname to offer; that storefront's checkout is the merchant's to set up.
+// Offers to move a managed-zone storefront's checkout onto its `c.` hostname.
+// Never replaces a merchant's own custom checkout URL. Resolves whether it
+// asked, so an explicit command can fall back to the cross-domain warning.
 export async function offerManagedCheckoutUrl(
   options: ManagedCheckoutOfferOptions,
 ): Promise<boolean> {

@@ -615,8 +615,7 @@ Example:
     // Carried over so both flags don't ask which channel twice.
     let resolvedChannelId: number | undefined;
 
-    // Set when --update-site-url ran, so the checkout flow below can use the
-    // checkout hostname that pairs with whichever hostname was actually used.
+    // Set by --update-site-url, so checkout pairs with the hostname actually used.
     let siteHostname: string | undefined;
 
     if (options.updateSiteUrl) {
@@ -647,8 +646,7 @@ Example:
       }
     }
 
-    // Neither flag: offer both, once per channel. Explicit flags mean the
-    // caller already decided.
+    // Neither flag: offer both. Explicit flags mean the caller already decided.
     if (!options.updateSiteUrl && !options.updateCheckoutUrl) {
       try {
         await offerChannelUrlUpdates({
