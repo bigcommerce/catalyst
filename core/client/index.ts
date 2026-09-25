@@ -1,6 +1,6 @@
 import { BigCommerceAuthError, createClient } from '@bigcommerce/catalyst-client';
 
-import { getChannelIdFromLocale } from '../channels.config';
+import { getCurrentChannelId } from '../lib/channel';
 import { backendUserAgent } from '../user-agent';
 
 // next/headers, next/navigation, and next-intl/server are imported dynamically
@@ -12,7 +12,8 @@ import { backendUserAgent } from '../user-agent';
 //
 // During config resolution, the dynamic import of next-intl/server succeeds but
 // getLocale() throws ("not supported in Client Components") — the try/catch
-// below absorbs this gracefully, and getChannelId falls back to defaultChannelId.
+// below absorbs this gracefully. The channel itself is resolved by
+// getCurrentChannelId(), which falls back to the default channel.
 
 const getLocale = async () => {
   try {
@@ -41,12 +42,7 @@ export const client = createClient({
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
-  getChannelId: async (defaultChannelId: string) => {
-    const locale = await getLocale();
-
-    // We use the default channelId as a fallback, but it is not ideal in some scenarios.
-    return getChannelIdFromLocale(locale) ?? defaultChannelId;
-  },
+  getChannelId: (defaultChannelId: string) => getCurrentChannelId(defaultChannelId),
   beforeRequest: async (fetchOptions) => {
     // We can't serialize a `Headers` object within this method so we have to opt into using a plain object
     const requestHeaders: Record<string, string> = {};
