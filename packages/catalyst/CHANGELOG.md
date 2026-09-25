@@ -1,5 +1,15 @@
 # @bigcommerce/catalyst
 
+## 1.5.0
+
+### Minor Changes
+
+- [#3239](https://github.com/bigcommerce/catalyst/pull/3239) [`00c2f48`](https://github.com/bigcommerce/catalyst/commit/00c2f486582f1cf055edce1d432a7a46c7bfbaef) Thanks [@mfaris9](https://github.com/mfaris9)! - `catalyst deploy` now sends `CATALYST_HOSTING=native` as a plain-text deployment variable so the storefront can identify itself as native hosted.
+
+### Patch Changes
+
+- [#3245](https://github.com/bigcommerce/catalyst/pull/3245) [`bd061a2`](https://github.com/bigcommerce/catalyst/commit/bd061a25360373e12d7fd18e724f26228d2bf8d2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix `catalyst build` and `catalyst deploy` failing on pnpm 12 with `ERR_PNPM_IGNORED_BUILDS`. pnpm 12 stops `pnpm dlx` when a package has build scripts that haven't been approved, and Wrangler depends on `esbuild` and `workerd`, which both have one. The Wrangler dry-run now passes `--allow-build` for those two packages. Older pnpm versions accept the same flags.
+
 ## 1.4.1
 
 ### Patch Changes
