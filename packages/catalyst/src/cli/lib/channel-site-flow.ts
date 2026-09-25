@@ -198,8 +198,8 @@ export async function runChannelSiteUrlFlow(
 
     const report = warnOnCrossDomainCheckout(site);
 
-    // Can run mid-deploy, so it prints a command rather than prompting. Skipped
-    // on a managed zone, where the diagnostic already printed the command.
+    // Can run mid-deploy, so it prints a command rather than prompting. Not on a
+    // managed zone, where the diagnostic already printed one.
     if (report.crossDomain && report.storefrontOnManagedZone !== true) {
       consola.info('Set a checkout URL for this channel with:');
       consola.log(
