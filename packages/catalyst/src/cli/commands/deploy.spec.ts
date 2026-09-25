@@ -665,6 +665,7 @@ describe('persisted env vars', () => {
         { type: 'secret', key: 'PERSISTED_ONLY', value: 'keep' },
         { type: 'secret', key: 'SHARED', value: 'override' },
         { type: 'secret', key: 'FLAG_ONLY', value: 'flag' },
+        { type: 'plain_text', key: 'CATALYST_HOSTING', value: 'native' },
       ]),
     );
     // The shared key is sent once, with the inline flag value winning.
@@ -673,7 +674,7 @@ describe('persisted env vars', () => {
     config.delete('env');
   });
 
-  test('omits environment_variables when nothing is stored or passed', async () => {
+  test('sends only the CATALYST_HOSTING marker when nothing is stored or passed', async () => {
     const config = getProjectConfig();
 
     config.set('projectUuid', projectUuid);
@@ -697,7 +698,9 @@ describe('persisted env vars', () => {
 
     await program.parseAsync(['node', 'catalyst', 'deploy', '--api-host', apiHost, '--prebuilt']);
 
-    expect(body?.environment_variables).toBeUndefined();
+    expect(body?.environment_variables).toEqual([
+      { type: 'plain_text', key: 'CATALYST_HOSTING', value: 'native' },
+    ]);
   });
 });
 
