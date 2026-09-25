@@ -1,7 +1,16 @@
+import { http, HttpResponse } from 'msw';
 import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
+import { server } from '../../../tests/mocks/node';
+
 import { type ChannelSiteDetails } from './channels';
-import { sharesMainDomain, suggestCheckoutUrl, warnOnCrossDomainCheckout } from './checkout-url';
+import {
+  managedCheckoutHostname,
+  sharesMainDomain,
+  suggestCheckoutUrl,
+  waitForCheckoutHostname,
+  warnOnCrossDomainCheckout,
+} from './checkout-url';
 import { consola } from './logger';
 
 const site = (urls: Array<{ url: string; type: string }>): ChannelSiteDetails => ({
@@ -315,5 +324,82 @@ describe('warnOnCrossDomainCheckout', () => {
 
     expect(messages).not.toContain('catalyst domains add');
     expect(messages).not.toContain('cannot be issued a certificate');
+  });
+});
+
+describe('managedCheckoutHostname', () => {
+  test('prefixes the storefront hostname', () => {
+    expect(managedCheckoutHostname('catalyst.catalyst-sandbox.store')).toBe(
+      'c.catalyst.catalyst-sandbox.store',
+    );
+  });
+
+  // ignition derives the same name from the same prefix, so this has to agree
+  // with it rather than be transported over the API.
+  test('shares a main domain with its storefront', () => {
+    const storefront = 'catalyst.catalyst-sandbox.store';
+    const checkout = managedCheckoutHostname(storefront);
+
+    if (!checkout) throw new Error('expected a hostname');
+
+    expect(sharesMainDomain(storefront, checkout)).toBe(true);
+  });
+
+  // Hostnames generated before ignition reserved room for the prefix can be too
+  // long, and those projects have no checkout hostname to point at.
+  test('returns undefined when the result exceeds the certificate name limit', () => {
+    const atLimit = `${'a'.repeat(62 - '.catalyst-sandbox.store'.length)}.catalyst-sandbox.store`;
+
+    expect(managedCheckoutHostname(atLimit)).toBe(`c.${atLimit}`);
+    expect(managedCheckoutHostname(`a${atLimit}`)).toBeUndefined();
+  });
+});
+
+describe('waitForCheckoutHostname', () => {
+  const hostname = 'c.catalyst.catalyst-sandbox.store';
+  const probe = `https://${hostname}/`;
+
+  // Any response means the TLS handshake succeeded; checkout answers a bare
+  // request with a redirect.
+  test('resolves true once the hostname serves', async () => {
+    server.use(http.head(probe, () => HttpResponse.json(null, { status: 302 })));
+
+    await expect(waitForCheckoutHostname(hostname)).resolves.toBe(true);
+  });
+
+  test('resolves false when the hostname never serves', async () => {
+    server.use(http.head(probe, () => HttpResponse.error()));
+
+    await expect(waitForCheckoutHostname(hostname, { timeoutMs: 0 })).resolves.toBe(false);
+  });
+
+  test('explains the pause once, then retries', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout'] });
+
+    let probes = 0;
+
+    server.use(
+      http.head(probe, () => {
+        probes += 1;
+
+        return probes === 1 ? HttpResponse.error() : HttpResponse.json(null, { status: 302 });
+      }),
+    );
+
+    const onWait = vi.fn();
+    const ready = waitForCheckoutHostname(hostname, { timeoutMs: 60_000, onWait });
+
+    while (onWait.mock.calls.length === 0) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    await vi.advanceTimersByTimeAsync(10_000);
+
+    await expect(ready).resolves.toBe(true);
+    expect(onWait).toHaveBeenCalledTimes(1);
+    expect(probes).toBe(2);
+
+    vi.useRealTimers();
   });
 });
