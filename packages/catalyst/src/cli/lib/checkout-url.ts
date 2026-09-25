@@ -35,9 +35,8 @@ export function sharesMainDomain(a: string, b: string): boolean {
   return first !== null && first === getDomain(normalizeHostname(b));
 }
 
-// Prefix for the checkout hostname on a BigCommerce-managed hosting zone.
-// Deliberately short: Cloudflare enforces a 64-character certificate common
-// name, and every character here comes out of the project name's budget.
+// Checkout hostname prefix on a managed zone. Short because it counts against
+// Cloudflare's 64-character certificate name limit.
 export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
 
 // The checkout subdomain a merchant most likely wants:
@@ -49,9 +48,7 @@ export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
 // the same-main-domain rule. Pre-fills an editable prompt, so a bad URL just
 // means no suggestion.
 //
-// `managedZone` switches to the shorter prefix native hosting actually
-// provisions. A managed hostname is already `<project>.<zone>` with no `www.`,
-// so suggesting `checkout.` there would name a hostname nobody will create.
+// `managedZone` suggests the `c.` hostname native hosting uses instead.
 export function suggestCheckoutUrl(
   storefrontUrl: string,
   { managedZone = false }: { managedZone?: boolean } = {},
@@ -91,14 +88,9 @@ export function normalizeCheckoutUrl(value: string): string {
   return parsed.origin;
 }
 
-// The zones native hosting generates storefront hostnames under. Mirrors
-// ignition's `reservedBaseDomainSuffixes`, which is how ignition itself tells a
-// generated hostname from a merchant's domain; bcserver keys certificate
-// provisioning off the same suffixes.
-//
-// Not derivable from a project's `deployment_hostnames`: merchant domains added
-// with `catalyst domains add` appear there too, so their parents would pass as
-// zones.
+// Zones native hosting generates hostnames under; mirrors ignition's
+// `reservedBaseDomainSuffixes`. Not derived from `deployment_hostnames`, which
+// also lists merchant domains.
 const NATIVE_HOSTING_ZONES = [
   'catalyst-sandbox.store',
   'catalyst-sandbox-dev.store',
@@ -107,10 +99,8 @@ const NATIVE_HOSTING_ZONES = [
   'ignition-demo.store',
 ];
 
-// Whether a hostname is one native hosting generated — the `<project>.<zone>`
-// address a deployment gets before a custom domain is attached. Its checkout
-// hostname is provisioned by BigCommerce, not by the merchant, so telling them
-// to point DNS they don't control at BigCommerce would be wrong.
+// Whether native hosting generated the hostname, as opposed to it being the
+// merchant's own domain.
 export function isManagedHostingHostname(hostname: string): boolean {
   const host = normalizeHostname(hostname);
 
@@ -121,9 +111,7 @@ export interface CheckoutDomainReport {
   // True only when both hostnames were readable and don't share a registrable
   // domain. A missing or unreadable checkout URL is not "cross domain".
   crossDomain: boolean;
-  // On a managed zone the checkout hostname is provisioned by BigCommerce
-  // rather than the merchant, so the remedy differs. Undefined when the
-  // checkout isn't cross-domain.
+  // Undefined when checkout isn't cross-domain.
   storefrontOnManagedZone?: boolean;
   suggestion?: string;
 }
@@ -175,7 +163,6 @@ export function warnOnCrossDomainCheckout(site: ChannelSiteDetails): CheckoutDom
   );
 
   const storefrontOnManagedZone = isManagedHostingHostname(storefrontHost);
-  // The prefix only matters once there's something to fix.
   const report = {
     crossDomain: true,
     storefrontOnManagedZone,
@@ -185,8 +172,7 @@ export function warnOnCrossDomainCheckout(site: ChannelSiteDetails): CheckoutDom
   };
 
   if (storefrontOnManagedZone) {
-    // Setting the checkout URL is what provisions the hostname: BigCommerce
-    // registers it and issues its certificate in response to the write.
+    // Setting the checkout URL is what provisions this hostname.
     consola.info(
       `${storefrontHost} is an auto-generated deployment hostname, so its checkout hostname is ` +
         `${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHost}. BigCommerce provisions it when it's ` +
