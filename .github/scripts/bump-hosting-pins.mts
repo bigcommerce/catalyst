@@ -175,10 +175,17 @@ const catalystManifestPath = resolve(
   "packages/catalyst/package.json",
 );
 
+// A hold needs a human, so it must not read as "nothing to do". `updated` stays
+// false because there is no PR to open, and `blocked` is the separate signal the
+// workflow fails the run on: a green scheduled run whose summary nobody reads
+// would let a stalled pin sit indefinitely, which is the situation this job
+// exists to prevent.
 const hold = (notice: string, level: "WARNING" | "NOTE" = "WARNING") => {
   console.warn(notice);
   addSummary(`> [!${level}]\n> ${notice}`);
   setOutput("updated", "false");
+  setOutput("blocked", "true");
+  setOutput("blocked-reason", notice);
 };
 
 async function main(): Promise<void> {

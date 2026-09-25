@@ -153,7 +153,13 @@ const appendToEnvFile = (variable: string, contents: string) => {
 };
 
 export const setOutput = (key: string, value: string) =>
-  appendToEnvFile("GITHUB_OUTPUT", `${key}=${value}\n`);
+  // A newline would break the `key=value` file format and could let a value
+  // forge another output. Every value here is single-line by construction, so
+  // collapse defensively rather than reach for the heredoc form.
+  appendToEnvFile(
+    "GITHUB_OUTPUT",
+    `${key}=${value.replace(/\s*\n\s*/g, " ")}\n`,
+  );
 
 export const addSummary = (markdown: string) =>
   appendToEnvFile("GITHUB_STEP_SUMMARY", `${markdown}\n`);

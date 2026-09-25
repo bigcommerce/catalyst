@@ -23,6 +23,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: canary
+          # This job installs and executes third-party code: dependency
+          # lifecycle scripts, an OpenNext build, and -- the sharp edge -- an
+          # adapter release picked off npm that nobody has reviewed yet. None of
+          # that should run while a push-capable credential sits in
+          # `.git/config`, so the token is injected at the single step that
+          # needs it instead.
+          persist-credentials: false
 
       - uses: pnpm/action-setup@v3
 
@@ -201,7 +208,10 @@ jobs:
         run: |
           set -euo pipefail
 
-          git push --force origin "$BRANCH"
+          # The checkout left no credential behind, so supply one here only.
+          git push --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" \
+            "HEAD:$BRANCH"
 
           built="The pins were still built and the Cloudflare context contract verified."
 
@@ -237,4 +247,15 @@ jobs:
         if: steps.preview.outcome == 'failure'
         run: |
           echo '::error::The bump PR was opened, but the preview deploy failed. Check the deploy path before merging.'
+          exit 1
+
+      # A hold needs a human. Failing the run puts it in the Actions list and
+      # triggers GitHub's scheduled-failure notification, instead of leaving a
+      # green run whose summary nobody reads while the pins quietly stop moving.
+      - name: Report a blocked bump
+        if: steps.bump.outputs.blocked == 'true'
+        env:
+          REASON: ${{ steps.bump.outputs.blocked-reason }}
+        run: |
+          echo "::error::$REASON"
           exit 1
