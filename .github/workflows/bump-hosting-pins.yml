@@ -1,0 +1,261 @@
+name: Bump Hosting Pins
+
+on:
+  schedule:
+    # Mondays at 09:00 UTC, alongside the weekly Dependabot run.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump-hosting-pins:
+    name: Bump hosting pins
+    runs-on: ubuntu-latest
+    # One rolling branch, so a run that overlaps another can't race it.
+    concurrency:
+      group: ${{ github.workflow }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: canary
+          # This job installs and executes third-party code: dependency
+          # lifecycle scripts, an OpenNext build, and -- the sharp edge -- an
+          # adapter release picked off npm that nobody has reviewed yet. None of
+          # that should run while a push-capable credential sits in
+          # `.git/config`, so the token is injected at the single step that
+          # needs it instead.
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      # `semver` is needed to read the adapter's Wrangler peer range.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Both pins move together or not at all: the adapter declares which
+      # Wrangler it supports, so bumping either in isolation is how they drift.
+      - name: Bump the hosting pins
+        id: bump
+        run: node .github/scripts/bump-hosting-pins.mts
+
+      # The adapter pin reaches an installed tree only through the peer range the
+      # script just rewrote, so resolve it before anything asserts against it.
+      - name: Resolve the new adapter
+        if: steps.bump.outputs.updated == 'true'
+        run: |
+          pnpm install --lockfile-only
+          pnpm install --frozen-lockfile
+
+      # `core` reads the Cloudflare context off a symbol key that is an internal
+      # detail of the adapter; a release that changed it would leave every
+      # native-hosted store silently on an in-process cache. This spec calls the
+      # real implementation, so it is what proves the key still holds.
+      - name: Verify the Cloudflare context contract
+        if: steps.bump.outputs.updated == 'true'
+        run: pnpm vitest run src/cli/lib/cloudflare-context-symbol.spec.ts
+        working-directory: packages/catalyst
+
+      # Committed before the build runs, and pushed only once it passes. The
+      # verification below rewrites `core/` and the lockfile to stand up a
+      # native-hosting project, and none of that belongs in the bump.
+      - name: Commit the bump
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          TITLE: ${{ steps.bump.outputs.title }}
+        run: |
+          set -euo pipefail
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          # The branch is always rebuilt from the canary tip, so the diff stays a
+          # single commit and a superseded bump's changeset never lingers on it.
+          git switch -c automation/bump-hosting-pins
+          git add packages/catalyst/src/cli/lib/commerce-hosting.ts \
+            packages/catalyst/src/cli/commands/build.ts \
+            packages/catalyst/package.json pnpm-lock.yaml .changeset
+          git commit -m "$TITLE"
+
+      # The unit suites mock Wrangler and OpenNext, so they cannot tell whether
+      # the new pins actually build. This stands up a real native-hosting project
+      # against them and runs the true pipeline — `opennextjs-cloudflare build`
+      # followed by `wrangler deploy --dry-run`, which bundles and validates
+      # without deploying anything.
+      #
+      # It builds the CLI from this branch's source on purpose: installing the
+      # published `@bigcommerce/catalyst` would carry that release's pins and so
+      # verify nothing about the bump.
+      #
+      # This is the only place a generated bump is exercised end to end, since
+      # GitHub won't run checks on a PR pushed with `GITHUB_TOKEN`.
+      - name: Verify a real build against the new pins
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          ADAPTER_VERSION: ${{ steps.bump.outputs.adapter-version }}
+          CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+          BIGCOMMERCE_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+
+          pnpm --filter "./packages/*" build
+
+          cd core
+
+          # `catalyst build` dispatches on project state: without middleware.ts
+          # and the adapter dependency it falls through to `next build` and never
+          # touches OpenNext or Wrangler. This is the transform `catalyst create`
+          # performs, applied to the upstream tree.
+          mv proxy.ts middleware.ts
+          perl -pi -e 's/export const proxy/export const middleware/' middleware.ts
+          perl -0pi -e "s/export const config = \{/export const config = {\n  runtime: 'experimental-edge',/" middleware.ts
+          pnpm add "@opennextjs/cloudflare@$ADAPTER_VERSION"
+
+          pnpm run generate
+          pnpm exec "$GITHUB_WORKSPACE/packages/catalyst/dist/cli.js" build
+
+      # A build proves the pins compile and bundle; it does not prove the worker
+      # deploys and serves. Deploying what was just built closes that gap.
+      #
+      # The merchant-facing preview system can't be reused for this. Its action
+      # handles only `pull_request` and `issue_comment` — it skips anything else
+      # outright — and neither event fires for a PR pushed with `GITHUB_TOKEN`.
+      # So the deploy happens here, in the run that has the bundle.
+      #
+      # Skipped rather than failed when no preview project is configured, so the
+      # job keeps working before anyone sets one up.
+      - name: Check for a preview project
+        id: preview-config
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          PREVIEW_PROJECT_UUID: ${{ secrets.BUMP_PREVIEW_PROJECT_UUID }}
+        run: |
+          if [ -n "${PREVIEW_PROJECT_UUID:-}" ]; then
+            echo 'configured=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'configured=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::BUMP_PREVIEW_PROJECT_UUID is not set, so no preview was deployed. The pins were still built and the context contract verified.'
+          fi
+
+      # Deploys into a project of its own, never the one `native-hosting.yml`
+      # publishes canary to — a weekly bump must not displace that storefront.
+      - name: Deploy a preview of the new pins
+        id: preview
+        if: steps.bump.outputs.updated == 'true' && steps.preview-config.outputs.configured == 'true'
+        # Non-blocking on purpose. A preview is evidence about a bump, not a
+        # precondition for proposing one, and a failure here is as likely to be
+        # the preview environment as the pins. The PR still opens and says what
+        # happened; the job is failed at the end so the run isn't silently green.
+        continue-on-error: true
+        working-directory: core
+        env:
+          CATALYST_PROJECT_UUID: ${{ secrets.BUMP_PREVIEW_PROJECT_UUID }}
+          CATALYST_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          CATALYST_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
+          STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
+          STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
+          CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
+          PREVIEW_AUTH_SECRET: ${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+        run: |
+          set -euo pipefail
+
+          # `--prebuilt` uploads the bundle the step above produced, so what gets
+          # deployed is exactly what was verified rather than a fresh rebuild.
+          # Secrets go through the environment rather than inline interpolation.
+          pnpm exec "$GITHUB_WORKSPACE/packages/catalyst/dist/cli.js" deploy --prebuilt \
+            --secret "BIGCOMMERCE_STORE_HASH=$STORE_HASH" \
+            --secret "BIGCOMMERCE_STOREFRONT_TOKEN=$STOREFRONT_TOKEN" \
+            --secret "BIGCOMMERCE_CHANNEL_ID=$CHANNEL_ID" \
+            --secret "AUTH_SECRET=$PREVIEW_AUTH_SECRET" \
+            | tee deploy.log
+
+          # The CLI prints "View your deployment at: https://<host>" through
+          # consola, which may colorize it, so strip escapes before matching.
+          # perl rather than sed: \e is not portable in BSD sed.
+          url=$(perl -pe 's/\e\[[0-9;]*m//g' deploy.log | grep -oE 'https://[A-Za-z0-9.-]+' | tail -1 || true)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$url" ]; then
+            echo "::notice::Preview deployed to $url"
+          fi
+
+      - name: Open or update the pull request
+        if: steps.bump.outputs.updated == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: automation/bump-hosting-pins
+          TITLE: ${{ steps.bump.outputs.title }}
+          SUMMARY: ${{ steps.bump.outputs.summary }}
+          ADAPTER_VERSION: ${{ steps.bump.outputs.adapter-version }}
+          WRANGLER_VERSION: ${{ steps.bump.outputs.wrangler-version }}
+          PREVIEW_URL: ${{ steps.preview.outputs.url }}
+          PREVIEW_OUTCOME: ${{ steps.preview.outcome }}
+          PREVIEW_CONFIGURED: ${{ steps.preview-config.outputs.configured }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          # The checkout left no credential behind, so supply one here only.
+          git push --force \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}" \
+            "HEAD:$BRANCH"
+
+          built="The pins were still built and the Cloudflare context contract verified."
+
+          if [ -n "${PREVIEW_URL:-}" ]; then
+            preview="A preview of these pins is deployed at $PREVIEW_URL — click through it to confirm the worker serves, not just that it built. It shares one project, so a later bump replaces it."
+          elif [ "${PREVIEW_CONFIGURED:-}" != 'true' ]; then
+            preview="No preview was deployed: this repository has no \`BUMP_PREVIEW_PROJECT_UUID\` configured. $built"
+          elif [ "${PREVIEW_OUTCOME:-}" = 'success' ]; then
+            preview="The preview deployed, but its URL could not be read from the deploy output — find it in [the job run]($RUN_URL)."
+          else
+            preview="**The preview deploy failed** — see [the job run]($RUN_URL). $built So this may be the preview environment rather than a bad bump, but confirm the deploy path before merging."
+          fi
+
+          body=$(printf '%s\n\n%s\n\n%s\n\n%s\n\n%s\n' \
+            "$SUMMARY" \
+            "$preview" \
+            "Opened by the weekly [Bump Hosting Pins](.github/workflows/bump-hosting-pins.yml) job. Both versions are string literals in the CLI source rather than manifest entries, so Dependabot can't reach either. They are maintained in one PR because \`@opennextjs/cloudflare\` declares which Wrangler it supports — Wrangler is pinned to the newest release that adapter allows, not the newest that exists." \
+            "This PR leaves the adapter at \`$ADAPTER_VERSION\` and Wrangler at \`$WRANGLER_VERSION\`. Before opening it, the job ran \`cloudflare-context-symbol.spec.ts\` against them, then stood up a real native-hosting project and completed an \`opennextjs-cloudflare build\` plus \`wrangler deploy --dry-run\` — so these pins are known to build, not merely to typecheck. A release that moved the adapter's Next.js requirement, or that needs a Wrangler major this job doesn't track, holds both pins and reports why instead." \
+            "GitHub doesn't run workflows on pushes made with \`GITHUB_TOKEN\`, so this PR opens without checks. Push an empty commit to run them.")
+
+          number=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --title "$TITLE" --body "$body"
+            echo "Updated PR #$number."
+          else
+            gh pr create --base canary --head "$BRANCH" --title "$TITLE" --body "$body"
+          fi
+
+      # The PR is open by now, so the bump is not lost. Failing here keeps the
+      # run's status honest about the preview not having deployed.
+      - name: Report a failed preview
+        if: steps.preview.outcome == 'failure'
+        run: |
+          echo '::error::The bump PR was opened, but the preview deploy failed. Check the deploy path before merging.'
+          exit 1
+
+      # A hold needs a human. Failing the run puts it in the Actions list and
+      # triggers GitHub's scheduled-failure notification, instead of leaving a
+      # green run whose summary nobody reads while the pins quietly stop moving.
+      - name: Report a blocked bump
+        if: steps.bump.outputs.blocked == 'true'
+        env:
+          REASON: ${{ steps.bump.outputs.blocked-reason }}
+        run: |
+          echo "::error::$REASON"
+          exit 1
