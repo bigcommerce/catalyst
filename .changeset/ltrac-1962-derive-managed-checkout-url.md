@@ -2,4 +2,10 @@
 "@bigcommerce/catalyst": patch
 ---
 
-`catalyst deploy --update-site-url --update-checkout-url` now sets the checkout URL of a storefront on an auto-generated hostname to `https://c.<project>.<zone>` without prompting, then waits for its certificate, which usually takes a minute or two. If no certificate is issued within six minutes, the checkout URL is removed again so checkout keeps working on the default domain. An existing custom checkout URL is left alone, and re-running with an unchanged site URL no longer resets the channel's checkout URL.
+Put checkout on the same domain as a native-hosted storefront. For a storefront on an auto-generated hostname, the checkout URL is `https://c.<project>.<zone>`:
+
+- `catalyst deploy --update-site-url --update-checkout-url` sets it without prompting.
+- An interactive `catalyst deploy` without those flags offers to point the channel at the deployment and to move its checkout there. Both questions default to No, and declining is remembered per channel in `.bigcommerce/project.json`.
+- `catalyst channels update` offers it after changing a site URL.
+
+After setting it, the CLI waits for the certificate, which usually takes a minute or two. If none is issued within six minutes, the checkout URL is removed so checkout keeps working on the default domain. An existing custom checkout URL is left alone, and re-running with an unchanged site URL no longer resets the checkout URL. Nothing is asked without a terminal or in CI.
