@@ -9,11 +9,15 @@ import { decodeJwt } from 'jose';
 import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
 
 import { signIn } from '~/auth';
+import { getChannelIdFromLocale } from '~/channels.config';
 import { getCartId } from '~/lib/cart';
 
-export async function GET(_: Request, { params }: { params: Promise<{ token: string }> }) {
-  const { token } = await params;
-  const cartId = await getCartId();
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ locale: string; token: string }> },
+) {
+  const { locale, token } = await params;
+  const cartId = await getCartId(getChannelIdFromLocale(locale));
 
   try {
     // decode token without checking signature to get redirect path

@@ -4,14 +4,24 @@ import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { z } from 'zod';
 
-import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session';
+import {
+  anonymousSignIn,
+  clearAnonymousSession,
+  getAnonymousSession,
+} from '~/auth/anonymous-session';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { getSessionTokenCookieOptions } from '~/lib/auth/session-token-cookie-options';
 import { clearCartId, setCartId } from '~/lib/cart';
+import { cartIdForLogout, cartsAfterLogin } from '~/lib/cart/channel-cart';
+import { getCurrentChannelId } from '~/lib/channel';
 import { serverToast } from '~/lib/server-toast';
+
+// The logout route knows the channel, but the Auth.js sign-out event does not receive it.
+const logoutChannelId = new AsyncLocalStorage<string | undefined>();
 
 const LoginMutation = graphql(`
   mutation LoginMutation($email: String!, $password: String!, $cartEntityId: String) {
@@ -68,13 +78,14 @@ const cartIdSchema = z
   .string()
   .uuid()
   .or(z.literal('undefined')) // auth.js seems to pass the cart id as a string literal 'undefined' when not set.
-  .optional()
-  .transform((val) => (val === 'undefined' ? undefined : val));
+  .nullish()
+  .transform((val) => (val == null || val === 'undefined' ? undefined : val));
 
 const PasswordCredentials = z.object({
   email: z.string().email(),
   password: z.string().min(1),
   cartId: cartIdSchema,
+  channelId: z.string().min(1).optional(),
 });
 
 const JwtCredentials = z.object({
@@ -82,9 +93,12 @@ const JwtCredentials = z.object({
   cartId: cartIdSchema,
 });
 
+const cartIdsSchema = z.record(z.string().min(1), z.string().uuid()).nullable();
+
 const SessionUpdate = z.object({
   user: z.object({
     cartId: cartIdSchema,
+    cartIds: cartIdsSchema.optional(),
   }),
 });
 
@@ -98,14 +112,37 @@ async function handleLoginCart(guestCartId?: string, loginResultCartId?: string)
   if (loginResultCartId && guestCartId && loginResultCartId !== guestCartId) {
     await serverToast.info(t('cartCombined'), { position: 'top-center' });
   }
+}
 
-  if (loginResultCartId) {
-    await setCartId(loginResultCartId);
-  }
+/**
+ * Copies the guest cart map onto the customer. `clearAnonymousSession` runs next and would drop
+ * any write made here. The cart BigCommerce returns replaces only `channelId`.
+ *
+ * @param {string} [channelId] - Channel the shopper is logging in on.
+ * @param {string} [loginResultCartId] - Cart id returned by the login mutation.
+ * @returns {Promise<object>} Cart fields for the customer session.
+ */
+async function cartForLoggedInUser(channelId: string | undefined, loginResultCartId?: string) {
+  const anonymousSession = await getAnonymousSession();
+
+  return cartsAfterLogin(
+    {
+      cartId: anonymousSession?.user?.cartId,
+      cartIds: anonymousSession?.user?.cartIds,
+    },
+    channelId,
+    loginResultCartId,
+  );
 }
 
 async function loginWithPassword(credentials: unknown): Promise<User | null> {
-  const { email, password, cartId } = PasswordCredentials.parse(credentials);
+  const {
+    email,
+    password,
+    cartId,
+    channelId: providedChannelId,
+  } = PasswordCredentials.parse(credentials);
+  const channelId = providedChannelId ?? (await getCurrentChannelId());
 
   const response = await client.fetch({
     document: LoginMutation,
@@ -125,6 +162,8 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
     return null;
   }
 
+  const cart = await cartForLoggedInUser(channelId, result.cart?.entityId);
+
   await handleLoginCart(cartId, result.cart?.entityId);
   await clearAnonymousSession();
 
@@ -133,7 +172,8 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
     lastName: result.customer.lastName,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
-    cartId: result.cart?.entityId,
+    cartId: cart.cartId,
+    cartIds: cart.cartIds,
   };
 }
 
@@ -162,6 +202,8 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     return null;
   }
 
+  const cart = await cartForLoggedInUser(channelId, result.cart?.entityId);
+
   await handleLoginCart(cartId, result.cart?.entityId);
   await clearAnonymousSession();
 
@@ -171,7 +213,8 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
-    cartId: result.cart?.entityId,
+    cartId: cart.cartId,
+    cartIds: cart.cartIds,
   };
 }
 
@@ -213,6 +256,16 @@ const config = {
 
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.cartIds !== undefined) {
+        token.user = {
+          ...token.user,
+          cartId: user.cartId ?? null,
+          cartIds: user.cartIds,
+        };
+      }
+
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.firstName !== undefined) {
         token.user = {
           ...token.user,
@@ -236,6 +289,10 @@ const config = {
           token.user = {
             ...token.user,
             cartId: parsedSession.data.user.cartId,
+            // Absent `cartIds` must not wipe a map already stored in the token.
+            ...(parsedSession.data.user.cartIds !== undefined
+              ? { cartIds: parsedSession.data.user.cartIds }
+              : {}),
           };
         }
       }
@@ -251,6 +308,10 @@ const config = {
         session.user.cartId = token.user.cartId;
       }
 
+      if (token.user?.cartIds !== undefined) {
+        session.user.cartIds = token.user.cartIds;
+      }
+
       if (token.user?.firstName !== undefined) {
         session.user.firstName = token.user.firstName;
       }
@@ -264,9 +325,13 @@ const config = {
   },
   events: {
     async signOut(message) {
-      const cartEntityId = 'token' in message ? message.token?.user?.cartId : null;
-      const customerAccessToken =
-        'token' in message ? message.token?.user?.customerAccessToken : null;
+      const user = 'token' in message ? message.token?.user : undefined;
+      const channelId = logoutChannelId.getStore() ?? (await getCurrentChannelId());
+      const cartEntityId = cartIdForLogout(
+        { cartId: user?.cartId, cartIds: user?.cartIds },
+        channelId,
+      );
+      const customerAccessToken = user?.customerAccessToken;
 
       if (customerAccessToken) {
         try {
@@ -287,12 +352,12 @@ const config = {
 
           // If persistent cart is disabled, we can restore the cart back to the anonymous session.
           if (logoutResponse.data.logout.cartUnassignResult.cart) {
-            await setCartId(logoutResponse.data.logout.cartUnassignResult.cart.entityId);
+            await setCartId(logoutResponse.data.logout.cartUnassignResult.cart.entityId, channelId);
 
             return;
           }
 
-          await clearCartId();
+          await clearCartId(channelId);
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -307,6 +372,7 @@ const config = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
         cartId: { type: 'text' },
+        channelId: { type: 'text' },
       },
       authorize: loginWithPassword,
     }),
@@ -340,11 +406,23 @@ const {
   handlers,
   auth,
   signIn: authSignIn,
-  signOut,
+  signOut: authSignOut,
   unstable_update: authUpdateSession,
 } = NextAuth(config);
 
-export { handlers, auth, signOut };
+export { handlers, auth };
+
+type SignOutOptions = NonNullable<Parameters<typeof authSignOut>[0]> & {
+  /** Channel the shopper is leaving. Logout sends that channel's cart to BigCommerce. */
+  channelId?: string;
+};
+
+export const signOut = async (options?: SignOutOptions) => {
+  const { channelId, ...authOptions } = options ?? {};
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return logoutChannelId.run(channelId, () => authSignOut(authOptions));
+};
 
 export const signIn = async (...args: Parameters<typeof authSignIn>) => {
   try {
