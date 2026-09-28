@@ -3,6 +3,7 @@ import { select } from '@inquirer/prompts';
 import {
   type Channel,
   fetchAvailableChannels,
+  findChannelSiteUrl,
   getChannelSite,
   updateChannelSiteUrl,
 } from './channels';
@@ -28,6 +29,8 @@ export interface ChannelSiteFlowOptions {
   // `catalyst deploy --update-site-url` to default to the freshly-deployed
   // hostname.
   preferHostname?: string;
+  // Warn if checkout is left on another domain. Off when the caller offers a fix next.
+  diagnoseCheckout?: boolean;
 }
 
 async function resolveProject(options: ChannelSiteFlowOptions): Promise<ProjectListItem> {
@@ -135,6 +138,8 @@ async function resolveHostname(
 
 export interface ChannelSiteFlowResult {
   channelId: number;
+  // The hostname the site URL was set to, so a checkout step can pair with it.
+  hostname: string;
 }
 
 export async function runChannelSiteUrlFlow(
@@ -144,22 +149,40 @@ export async function runChannelSiteUrlFlow(
   const channel = await resolveChannel(options);
   const hostname = await resolveHostname(project, options);
   const siteUrl = hostname.startsWith('https://') ? hostname : `https://${hostname}`;
+  const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
 
-  await updateChannelSiteUrl(
+  // Skip an unchanged site URL: sites-service deletes the checkout URL on every
+  // site URL update, so re-sending it would drop the `c.` hostname. Best-effort:
+  // if the read fails, write anyway.
+  const current = await getChannelSite(
     channel.id,
-    siteUrl,
     options.storeHash,
     options.accessToken,
     options.apiHost,
-  );
+  ).catch(() => undefined);
 
-  const channelLabel = channel.name ? `"${channel.name}" (${channel.id})` : String(channel.id);
+  if (
+    current &&
+    (findChannelSiteUrl(current, 'primary') ?? current.url).replace(/\/$/, '') === siteUrl
+  ) {
+    consola.info(`Channel ${channelLabel} site URL is already ${siteUrl}.`);
+  } else {
+    await updateChannelSiteUrl(
+      channel.id,
+      siteUrl,
+      options.storeHash,
+      options.accessToken,
+      options.apiHost,
+    );
 
-  consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+    consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+  }
 
   // Moving the site URL is when checkout is most likely left behind. The PUT
   // response above carries no `urls`, hence the re-fetch. Soft-failed: the write
   // already succeeded, so a failed diagnostic mustn't look like a failed write.
+  if (options.diagnoseCheckout === false) return { channelId: channel.id, hostname };
+
   try {
     const site = await getChannelSite(
       channel.id,
@@ -186,5 +209,5 @@ export async function runChannelSiteUrlFlow(
   // Returned so a caller running several channel flows back to back — `channels
   // update --hostname --checkout-url`, or `deploy --update-site-url
   // --update-checkout-url` — reuses this channel instead of resolving it twice.
-  return { channelId: channel.id };
+  return { channelId: channel.id, hostname };
 }
