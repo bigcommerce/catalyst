@@ -32,8 +32,7 @@ const TARGET_VERSION = '1.7.0';
 const TARGET_REF = `@bigcommerce/catalyst-core@${TARGET_VERSION}`;
 const MAKESWIFT_BASE_REF = '@bigcommerce/catalyst-makeswift@1.2.0';
 const MAKESWIFT_TARGET_REF = '@bigcommerce/catalyst-makeswift@1.3.0';
-// Windows runners take up to ~2 min per test even with a warm cache.
-const TIMEOUT = process.platform === 'win32' ? 240_000 : 120_000;
+const TIMEOUT = 120_000;
 
 const createdDirs: string[] = [];
 let originalCwd: string;

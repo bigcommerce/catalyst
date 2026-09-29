@@ -83,69 +83,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
-      # Set via system config, since turbo's strict env mode strips GIT_* env vars from tests.
-      # A directory target gives each git process its own file.
-      - name: Configure git tracing
+      # TEMP defaults to the C: OS disk, which is slow on Windows runners; the D: work
+      # drive makes the git-heavy upgrade specs ~4x faster.
+      - name: Put temp files on the work drive
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          mkdir -p "$RUNNER_TEMP/git-trace2"
-          git config --system trace2.eventTarget "$RUNNER_TEMP/git-trace2"
-          git config --show-origin --get-regexp '^core\.' || true
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
 
-      # TEMP experiment: git add/write-tree/commit average ~5s each here vs 0.3s on macOS,
-      # consistent with fsync cost on every loose object write.
-      - name: Disable git fsync
-        if: runner.os == 'Windows'
-        run: git config --system core.fsync none
-
-      - name: Show Defender and temp dir state
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          Get-MpComputerStatus | Format-List AMRunningMode, RealTimeProtectionEnabled, OnAccessProtectionEnabled, BehaviorMonitorEnabled
-          Get-MpPreference | Format-List DisableRealtimeMonitoring, ExclusionPath, ExclusionProcess
-          "TEMP=$env:TEMP  long=$((Get-Item $env:TEMP).FullName)  RUNNER_TEMP=$env:RUNNER_TEMP"
-
-      # TEMP experiment: put the specs' temp dirs on the D: work drive under a long path.
       - name: Run Tests
         run: pnpm run test
-        env:
-          TEMP: ${{ runner.os == 'Windows' && runner.temp || '' }}
-          TMP: ${{ runner.os == 'Windows' && runner.temp || '' }}
-
-      - name: Summarize git trace
-        if: always() && runner.os == 'Windows'
-        shell: bash
-        run: |
-          node -e '
-            const fs = require("fs");
-            const path = require("path");
-            const lines = fs.readdirSync(process.argv[1])
-              .flatMap((f) => fs.readFileSync(path.join(process.argv[1], f), "utf8").split("\n"))
-              .filter(Boolean);
-            const argv = new Map();
-            const roots = new Map();
-            const byCmd = new Map();
-            let total = 0;
-            for (const line of lines) {
-              const e = JSON.parse(line);
-              if (e.event === "start") argv.set(e.sid, e.argv.slice(1).find((a) => !a.startsWith("-") && !a.includes("=")) ?? "?");
-              if (e.event === "def_repo" && e.worktree) {
-                const root = e.worktree.split(/[\\/]/).slice(0, 3).join("/");
-                roots.set(root, (roots.get(root) ?? 0) + 1);
-              }
-              if (e.event === "exit" && argv.has(e.sid)) {
-                const cmd = argv.get(e.sid);
-                const s = byCmd.get(cmd) ?? { n: 0, t: 0, max: 0 };
-                s.n++; s.t += e.t_abs; s.max = Math.max(s.max, e.t_abs);
-                byCmd.set(cmd, s);
-                total += e.t_abs;
-              }
-            }
-            console.log("worktree roots:", Object.fromEntries(roots));
-            console.log(`git processes: ${[...byCmd.values()].reduce((a, s) => a + s.n, 0)}, total in-process time: ${total.toFixed(1)}s`);
-            console.table([...byCmd].sort((a, b) => b[1].t - a[1].t).slice(0, 25)
-              .map(([cmd, s]) => ({ cmd, n: s.n, total_s: +s.t.toFixed(1), avg_s: +(s.t / s.n).toFixed(3), max_s: +s.max.toFixed(2) })));
-          ' "$RUNNER_TEMP/git-trace2"

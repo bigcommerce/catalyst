@@ -39,12 +39,7 @@ const SUPPORTS_TREE = (() => {
   }
 })();
 
-const ALL_ENGINES: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
-
-// Each of these tests takes ~1 min on Windows, so it only runs the default (tree)
-// engine there; per-file is still covered on the other platforms.
-const engines: Array<'per-file' | 'tree'> =
-  process.platform === 'win32' && SUPPORTS_TREE ? ['tree'] : ALL_ENGINES;
+const engines: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
 
 const exists = (p: string) =>
   access(p)
@@ -149,9 +144,8 @@ async function initGitProject(dir: string): Promise<void> {
   await execa('git', ['commit', '-qm', 'base'], { cwd: dir });
 }
 
-// 120s per test to allow cold-cache downloads on first run. Windows runners already
-// take up to ~2 min warm, so they get double.
-const TIMEOUT = process.platform === 'win32' ? 240_000 : 120_000;
+// 120s per test to allow cold-cache downloads on first run.
+const TIMEOUT = 120_000;
 
 describe.each(engines)('integration (engine: %s)', (engine) => {
   const runMerge = (baseDir: string, theirsDir: string, oursDir: string, emptyFile: string) =>
