@@ -67,6 +67,12 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      # Real-time scanning of every temp file the upgrade specs create makes them ~15x slower.
+      - name: Exclude test paths from Defender
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE, $env:USERPROFILE
+
       - name: Checkout code
         uses: actions/checkout@v4
         with:
