@@ -67,12 +67,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      # Real-time scanning of every temp file the upgrade specs create makes them ~15x slower.
-      - name: Exclude test paths from Defender
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: Add-MpPreference -ExclusionPath $env:GITHUB_WORKSPACE, $env:USERPROFILE
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -91,3 +85,31 @@ jobs:
 
       - name: Run Tests
         run: pnpm run test
+        env:
+          # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
+          GIT_TRACE2_EVENT: ${{ runner.os == 'Windows' && format('{0}/git-trace2.jsonl', runner.temp) || '' }}
+
+      - name: Summarize git trace
+        if: always() && runner.os == 'Windows'
+        shell: bash
+        run: |
+          node -e '
+            const lines = require("fs").readFileSync(process.argv[1], "utf8").split("\n").filter(Boolean);
+            const argv = new Map();
+            const byCmd = new Map();
+            let total = 0;
+            for (const line of lines) {
+              const e = JSON.parse(line);
+              if (e.event === "start") argv.set(e.sid, e.argv.slice(1).find((a) => !a.startsWith("-") && !a.includes("=")) ?? "?");
+              if (e.event === "exit" && argv.has(e.sid)) {
+                const cmd = argv.get(e.sid);
+                const s = byCmd.get(cmd) ?? { n: 0, t: 0, max: 0 };
+                s.n++; s.t += e.t_abs; s.max = Math.max(s.max, e.t_abs);
+                byCmd.set(cmd, s);
+                total += e.t_abs;
+              }
+            }
+            console.log(`git processes: ${[...byCmd.values()].reduce((a, s) => a + s.n, 0)}, total in-process time: ${total.toFixed(1)}s`);
+            console.table([...byCmd].sort((a, b) => b[1].t - a[1].t).slice(0, 25)
+              .map(([cmd, s]) => ({ cmd, n: s.n, total_s: +s.t.toFixed(1), avg_s: +(s.t / s.n).toFixed(3), max_s: +s.max.toFixed(2) })));
+          ' "$RUNNER_TEMP/git-trace2.jsonl"
