@@ -3,7 +3,7 @@ import type Conf from 'conf';
 import { ProjectConfigSchema } from './project-config';
 
 // A single deployment environment variable as the infrastructure API expects
-// it. We only persist/send `secret` vars today (see ProjectConfigSchema.env).
+// it. Merchant-supplied vars are always `secret` (see ProjectConfigSchema.env).
 export interface DeploymentSecret {
   type: 'secret';
   key: string;

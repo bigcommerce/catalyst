@@ -3,21 +3,12 @@ import { getDomain } from 'tldts';
 import { type ChannelSiteDetails, findChannelSiteUrl } from './channels';
 import { UserActionableError } from './errors';
 import { consola } from './logger';
-import { fetchProjects } from './project';
-
-export interface CheckoutDomainContext {
-  storeHash: string;
-  accessToken: string;
-  apiHost: string;
-}
 
 const normalizeHostname = (hostname: string) => hostname.toLowerCase().replace(/\.$/, '');
 
-const parentDomain = (hostname: string) => hostname.split('.').slice(1).join('.');
-
 const isSubdomainOf = (hostname: string, parent: string) => hostname.endsWith(`.${parent}`);
 
-function hostnameOf(url: string): string | undefined {
+export function hostnameOf(url: string): string | undefined {
   try {
     return new URL(url).hostname;
   } catch {
@@ -44,6 +35,73 @@ export function sharesMainDomain(a: string, b: string): boolean {
   return first !== null && first === getDomain(normalizeHostname(b));
 }
 
+// Checkout hostname prefix on a managed zone. Short because it counts against
+// Cloudflare's 64-character certificate name limit.
+export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
+
+// Longest name Cloudflare will issue a certificate for (RFC 5280).
+const MAX_HOSTNAME_LENGTH = 64;
+
+// BigCommerce stops trying to issue the certificate after about six minutes
+// (a 60s delay, then 10 retries at 30s).
+const CHECKOUT_HOSTNAME_READY_TIMEOUT_MS = 6 * 60 * 1000;
+const CHECKOUT_HOSTNAME_POLL_INTERVAL_MS = 10 * 1000;
+
+// The checkout hostname for a managed-zone storefront, or undefined when it
+// would exceed the certificate name limit (older, longer hostnames).
+export function managedCheckoutHostname(storefrontHostname: string): string | undefined {
+  const hostname = MANAGED_ZONE_CHECKOUT_PREFIX + normalizeHostname(storefrontHostname);
+
+  return hostname.length <= MAX_HOSTNAME_LENGTH ? hostname : undefined;
+}
+
+// Whether the hostname serves a certificate a client accepts. Any HTTP
+// response means the handshake worked; a bad certificate or name throws.
+async function checkoutHostnameIsServing(hostname: string): Promise<boolean> {
+  try {
+    await fetch(`https://${hostname}/`, {
+      method: 'HEAD',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Waits for a newly provisioned checkout hostname's certificate.
+export async function waitForCheckoutHostname(
+  hostname: string,
+  { timeoutMs = CHECKOUT_HOSTNAME_READY_TIMEOUT_MS, onWait }: CheckoutHostnameWaitOptions = {},
+): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  let waited = false;
+
+  for (;;) {
+    // One probe at a time: each asks whether the certificate has issued yet.
+    // eslint-disable-next-line no-await-in-loop
+    if (await checkoutHostnameIsServing(hostname)) return true;
+
+    if (Date.now() + CHECKOUT_HOSTNAME_POLL_INTERVAL_MS >= deadline) return false;
+
+    if (!waited) {
+      waited = true;
+      onWait?.();
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, CHECKOUT_HOSTNAME_POLL_INTERVAL_MS));
+  }
+}
+
+export interface CheckoutHostnameWaitOptions {
+  timeoutMs?: number;
+  // Called once, before the first wait, so the caller can explain the pause.
+  onWait?: () => void;
+}
+
 // The checkout subdomain a merchant most likely wants:
 // `https://www.example.com` → `https://checkout.example.com`.
 //
@@ -52,14 +110,21 @@ export function sharesMainDomain(a: string, b: string): boolean {
 // the host as-is can never produce a bare public suffix and always satisfies
 // the same-main-domain rule. Pre-fills an editable prompt, so a bad URL just
 // means no suggestion.
-export function suggestCheckoutUrl(storefrontUrl: string): string | undefined {
+//
+// `managedZone` suggests the `c.` hostname native hosting uses instead.
+export function suggestCheckoutUrl(
+  storefrontUrl: string,
+  { managedZone = false }: { managedZone?: boolean } = {},
+): string | undefined {
   const host = hostnameOf(storefrontUrl);
 
   if (!host) return undefined;
 
-  const base = normalizeHostname(host).replace(/^www\./, '');
+  const normalized = normalizeHostname(host);
 
-  return `https://checkout.${base}`;
+  if (managedZone) return `https://${MANAGED_ZONE_CHECKOUT_PREFIX}${normalized}`;
+
+  return `https://checkout.${normalized.replace(/^www\./, '')}`;
 }
 
 // Validates only the unambiguous parts: parses as a URL, uses https. A bare
@@ -86,49 +151,40 @@ export function normalizeCheckoutUrl(value: string): string {
   return parsed.origin;
 }
 
-// Whether a hostname sits on a BigCommerce-managed hosting zone — the
-// auto-generated `<project>.<zone>` address a deployment gets before a custom
-// domain is attached. That's what governs checkout: a checkout subdomain there
-// would be two levels deep and can't be issued a certificate, so no custom
-// checkout URL is possible at all.
-//
-// The zone is derived from the store's own `deployment_hostnames` rather than
-// hardcoded, so it survives a zone change.
-//
-// Deliberately not "is this registered as a custom domain on the linked
-// project?" — an auto-generated hostname can appear in a project's domain list,
-// and a real vanity domain often belongs to another project, so that test is
-// wrong in both directions.
-//
-// Best-effort: failure resolves to `undefined` so the caller degrades to
-// generic advice rather than losing the warning.
-async function isManagedHostingHostname(
-  hostname: string,
-  context: CheckoutDomainContext,
-): Promise<boolean | undefined> {
-  try {
-    const projects = await fetchProjects(context.storeHash, context.accessToken, context.apiHost);
-    const zones = projects
-      .flatMap((project) => project.deployment_hostnames)
-      .map((deploymentHostname) => parentDomain(normalizeHostname(deploymentHostname)))
-      .filter((zone) => zone.includes('.'));
+// Zones native hosting generates hostnames under; mirrors ignition's
+// `reservedBaseDomainSuffixes`. Not derived from `deployment_hostnames`, which
+// also lists merchant domains.
+const NATIVE_HOSTING_ZONES = [
+  'catalyst-sandbox.store',
+  'catalyst-sandbox-dev.store',
+  'catalyst-sandbox-staging.store',
+  'catalyst-sandbox-integration.store',
+  'ignition-demo.store',
+];
 
-    if (zones.length === 0) return undefined;
+// Whether native hosting generated the hostname, as opposed to it being the
+// merchant's own domain.
+export function isManagedHostingHostname(hostname: string): boolean {
+  const host = normalizeHostname(hostname);
 
-    const host = normalizeHostname(hostname);
+  return NATIVE_HOSTING_ZONES.some((zone) => isSubdomainOf(host, zone));
+}
 
-    return zones.some((zone) => host === zone || isSubdomainOf(host, zone));
-  } catch {
-    return undefined;
-  }
+// Whether checkout is on a different main domain from the storefront: the
+// test `warnOnCrossDomainCheckout` makes, without the output.
+export function isCrossDomainCheckout(site: ChannelSiteDetails): boolean {
+  const storefrontHost = hostnameOf(findChannelSiteUrl(site, 'primary') ?? site.url);
+  const checkoutUrl = findChannelSiteUrl(site, 'checkout');
+  const checkoutHost = checkoutUrl ? hostnameOf(checkoutUrl) : undefined;
+
+  return Boolean(storefrontHost && checkoutHost && !sharesMainDomain(storefrontHost, checkoutHost));
 }
 
 export interface CheckoutDomainReport {
   // True only when both hostnames were readable and don't share a registrable
   // domain. A missing or unreadable checkout URL is not "cross domain".
   crossDomain: boolean;
-  // On a managed zone, no custom checkout URL can be issued a certificate.
-  // Undefined means unknown — callers must not treat that as false.
+  // Undefined when checkout isn't cross-domain.
   storefrontOnManagedZone?: boolean;
   suggestion?: string;
 }
@@ -143,10 +199,7 @@ export interface CheckoutDomainReport {
 // mid-deploy and prints a command instead.
 //
 // Never throws: a diagnostic must not fail the command that called it.
-export async function warnOnCrossDomainCheckout(
-  site: ChannelSiteDetails,
-  context: CheckoutDomainContext,
-): Promise<CheckoutDomainReport> {
+export function warnOnCrossDomainCheckout(site: ChannelSiteDetails): CheckoutDomainReport {
   const storefrontUrl = findChannelSiteUrl(site, 'primary') ?? site.url;
   const storefrontHost = hostnameOf(storefrontUrl);
   const checkoutUrl = findChannelSiteUrl(site, 'checkout');
@@ -182,32 +235,33 @@ export async function warnOnCrossDomainCheckout(
       'cross-domain cookies.',
   );
 
-  const storefrontOnManagedZone = await isManagedHostingHostname(storefrontHost, context);
-  const report = { crossDomain: true, storefrontOnManagedZone, suggestion };
+  const storefrontOnManagedZone = isManagedHostingHostname(storefrontHost);
+  const report = {
+    crossDomain: true,
+    storefrontOnManagedZone,
+    suggestion: storefrontOnManagedZone
+      ? suggestCheckoutUrl(storefrontUrl, { managedZone: true })
+      : suggestion,
+  };
 
-  if (storefrontOnManagedZone === false) {
+  if (storefrontOnManagedZone) {
+    // Setting the checkout URL is what provisions this hostname.
     consola.info(
-      `To put checkout on this channel's own domain, point ` +
-        `${suggestion?.replace('https://', '') ?? 'your checkout subdomain'} at BigCommerce and ` +
-        'provision a certificate for it there.',
+      `${storefrontHost} is an auto-generated deployment hostname, so its checkout hostname is ` +
+        `${MANAGED_ZONE_CHECKOUT_PREFIX}${storefrontHost}. BigCommerce provisions it when it's ` +
+        'set as the checkout URL, and its certificate takes a few minutes to issue. Set it with:',
     );
-
-    return report;
-  }
-
-  if (storefrontOnManagedZone === true) {
-    consola.info(
-      `${storefrontHost} is an auto-generated deployment hostname, and a checkout subdomain of ` +
-        'one cannot be issued a certificate — so no checkout URL can be set for this channel ' +
-        'until its storefront is on a custom domain. Add one with `catalyst domains add`.',
+    consola.log(
+      `  catalyst channels update --channel-id ${site.channelId} --checkout-url ${report.suggestion ?? '<domain>'}`,
     );
 
     return report;
   }
 
   consola.info(
-    'BigCommerce requires the checkout URL to share a main domain with the storefront. Set one ' +
-      'with `catalyst channels update --checkout-url <domain>` once it points at BigCommerce.',
+    `To put checkout on this channel's own domain, point ` +
+      `${suggestion?.replace('https://', '') ?? 'your checkout subdomain'} at BigCommerce and ` +
+      'provision a certificate for it there.',
   );
 
   return report;

@@ -18,6 +18,7 @@ import {
   selectOrCreateInfrastructureProject,
   setupCommerceHosting,
 } from '../lib/commerce-hosting';
+import { deployedChannelId, offerChannelUrlUpdates } from '../lib/deploy-channel-urls';
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import {
@@ -193,6 +194,12 @@ export const uploadBundleZip = async (uploadUrl: string) => {
 
   return true;
 };
+
+const NATIVE_HOSTING_ENV = {
+  type: 'plain_text',
+  key: 'CATALYST_HOSTING',
+  value: 'native',
+} as const;
 
 export const parseEnvironmentVariables = (secretOption?: string[]) => {
   return secretOption?.map((envVar) => {
@@ -381,6 +388,10 @@ export const deploy = new Command('deploy')
 Environment variables saved with \`catalyst env add\` are sent automatically on every deploy.
 Use \`--secret\` to set or override a variable for a single run.
 
+Without \`--update-site-url\` or \`--update-checkout-url\`, an interactive deploy offers to
+point the channel's site URL at the deployment and to move its checkout onto the same domain.
+Each is checked on every deploy; declining either is saved in .bigcommerce/project.json.
+
 Example:
   $ catalyst deploy --secret BIGCOMMERCE_STORE_HASH=<YOUR_STORE_HASH> --secret BIGCOMMERCE_STOREFRONT_TOKEN=<YOUR_STOREFRONT_TOKEN>`,
   )
@@ -568,12 +579,11 @@ Example:
 
     // Merge persisted env vars (`catalyst env add`) with any inline `--secret`
     // flags. Inline flags win on conflict, letting users override a stored
-    // value for a single run. Send `undefined` when there's nothing to set so
-    // we preserve the prior payload shape.
+    // value for a single run.
     const flagSecrets = parseEnvironmentVariables(options.secret) ?? [];
     const persistedSecrets = toDeploymentSecrets(getStoredEnv(config));
     const mergedSecrets = mergeDeploymentSecrets(persistedSecrets, flagSecrets);
-    const environmentVariables = mergedSecrets.length > 0 ? mergedSecrets : undefined;
+    const environmentVariables = [...mergedSecrets, NATIVE_HOSTING_ENV];
 
     const { deployment_uuid: deploymentUuid } = await createDeployment(
       projectUuid,
@@ -605,9 +615,12 @@ Example:
     // Carried over so both flags don't ask which channel twice.
     let resolvedChannelId: number | undefined;
 
+    // Set by --update-site-url, so checkout pairs with the hostname actually used.
+    let siteHostname: string | undefined;
+
     if (options.updateSiteUrl) {
       try {
-        ({ channelId: resolvedChannelId } = await runChannelSiteUrlFlow({
+        ({ channelId: resolvedChannelId, hostname: siteHostname } = await runChannelSiteUrlFlow({
           storeHash,
           accessToken,
           apiHost,
@@ -626,9 +639,27 @@ Example:
           accessToken,
           apiHost,
           channelId: resolvedChannelId,
+          storefrontHostname: siteHostname,
         });
       } catch (error) {
         warnChannelFlowFailed('checkout URL', error);
+      }
+    }
+
+    // Neither flag: offer both. Explicit flags mean the caller already decided.
+    if (!options.updateSiteUrl && !options.updateCheckoutUrl) {
+      try {
+        await offerChannelUrlUpdates({
+          storeHash,
+          accessToken,
+          apiHost,
+          projectUuid,
+          config,
+          deploymentHostname,
+          channelId: deployedChannelId(mergedSecrets),
+        });
+      } catch (error) {
+        warnChannelFlowFailed('URLs', error);
       }
     }
   });
