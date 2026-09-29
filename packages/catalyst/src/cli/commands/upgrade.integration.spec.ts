@@ -39,7 +39,12 @@ const SUPPORTS_TREE = (() => {
   }
 })();
 
-const engines: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
+const ALL_ENGINES: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
+
+// Each of these tests takes ~1 min on Windows, so it only runs the default (tree)
+// engine there; per-file is still covered on the other platforms.
+const engines: Array<'per-file' | 'tree'> =
+  process.platform === 'win32' && SUPPORTS_TREE ? ['tree'] : ALL_ENGINES;
 
 const exists = (p: string) =>
   access(p)
