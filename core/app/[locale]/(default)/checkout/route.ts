@@ -54,9 +54,10 @@ const CheckoutRedirectMutation = graphql(`
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const cartId = req.nextUrl.searchParams.get('cartId') ?? (await getCartId());
-  const customerAccessToken = await getSessionCustomerAccessToken();
   const channelId = getChannelIdFromLocale(locale);
+  // `?cartId=` still bypasses the session. The session cart is limited to this channel.
+  const cartId = req.nextUrl.searchParams.get('cartId') ?? (await getCartId(channelId));
+  const customerAccessToken = await getSessionCustomerAccessToken();
   const t = await getTranslations('Cart.Errors');
 
   if (!cartId) {

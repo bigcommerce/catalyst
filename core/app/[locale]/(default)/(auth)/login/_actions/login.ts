@@ -8,6 +8,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
 import { signIn } from '~/auth';
+import { getChannelIdFromLocale } from '~/channels.config';
 import { redirect } from '~/i18n/navigation-server';
 import { getCartId } from '~/lib/cart';
 
@@ -31,6 +32,7 @@ export const login = async (
       email: submission.value.email,
       password: submission.value.password,
       cartId,
+      channelId: getChannelIdFromLocale(locale),
       redirect: false,
     });
   } catch (error) {

@@ -134,6 +134,18 @@ test('uses the pinned default Wrangler version when the flag is absent', async (
   );
 });
 
+test('allows the esbuild and workerd build scripts in the wrangler dlx', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'pnpm',
+    expect.arrayContaining(['dlx', '--allow-build=esbuild', '--allow-build=workerd']),
+    expect.anything(),
+  );
+});
+
 test('threads --wrangler-version into the wrangler invocation', async () => {
   vi.mocked(getProjectState).mockReturnValue(transformedState);
 
