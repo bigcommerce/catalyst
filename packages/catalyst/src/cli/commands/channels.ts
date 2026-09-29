@@ -3,7 +3,11 @@ import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
 
-import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
+import { canPrompt } from '../lib/can-prompt';
+import {
+  offerManagedCheckoutUrl,
+  runChannelCheckoutUrlFlow,
+} from '../lib/channel-checkout-url-flow';
 import { resolveChannel, runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   channelPlatformLabel,
@@ -166,17 +170,21 @@ Examples:
     // asked to change.
     const touchesCheckout = options.checkoutUrl !== undefined || options.removeCheckoutUrl === true;
     const updatesSiteUrl = options.hostname !== undefined || !touchesCheckout;
+    // A site URL update deletes the checkout URL, so offer the managed-zone one next.
+    const offersCheckout = updatesSiteUrl && !touchesCheckout && canPrompt();
     let channelId = options.channelId;
+    let siteHostname: string | undefined;
 
     if (updatesSiteUrl) {
       try {
-        ({ channelId } = await runChannelSiteUrlFlow({
+        ({ channelId, hostname: siteHostname } = await runChannelSiteUrlFlow({
           storeHash,
           accessToken,
           apiHost,
           projectUuid: options.projectUuid ?? config.get('projectUuid'),
           channelId: options.channelId,
           hostname: options.hostname,
+          diagnoseCheckout: !offersCheckout,
         }));
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
@@ -190,6 +198,24 @@ Examples:
         }
 
         throw error;
+      }
+    }
+
+    if (offersCheckout && channelId !== undefined && siteHostname !== undefined) {
+      const offered = await offerManagedCheckoutUrl({
+        storeHash,
+        accessToken,
+        apiHost,
+        channelId,
+        storefrontHostname: siteHostname,
+        config,
+        // Explicit command, so an earlier decline doesn't silence it.
+        respectOptOut: false,
+        defaultAnswer: true,
+      });
+
+      if (!offered) {
+        warnOnCrossDomainCheckout(await getChannelSite(channelId, storeHash, accessToken, apiHost));
       }
     }
 

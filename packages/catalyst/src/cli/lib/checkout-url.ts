@@ -8,7 +8,7 @@ const normalizeHostname = (hostname: string) => hostname.toLowerCase().replace(/
 
 const isSubdomainOf = (hostname: string, parent: string) => hostname.endsWith(`.${parent}`);
 
-function hostnameOf(url: string): string | undefined {
+export function hostnameOf(url: string): string | undefined {
   try {
     return new URL(url).hostname;
   } catch {
@@ -38,6 +38,69 @@ export function sharesMainDomain(a: string, b: string): boolean {
 // Checkout hostname prefix on a managed zone. Short because it counts against
 // Cloudflare's 64-character certificate name limit.
 export const MANAGED_ZONE_CHECKOUT_PREFIX = 'c.';
+
+// Longest name Cloudflare will issue a certificate for (RFC 5280).
+const MAX_HOSTNAME_LENGTH = 64;
+
+// BigCommerce stops trying to issue the certificate after about six minutes
+// (a 60s delay, then 10 retries at 30s).
+const CHECKOUT_HOSTNAME_READY_TIMEOUT_MS = 6 * 60 * 1000;
+const CHECKOUT_HOSTNAME_POLL_INTERVAL_MS = 10 * 1000;
+
+// The checkout hostname for a managed-zone storefront, or undefined when it
+// would exceed the certificate name limit (older, longer hostnames).
+export function managedCheckoutHostname(storefrontHostname: string): string | undefined {
+  const hostname = MANAGED_ZONE_CHECKOUT_PREFIX + normalizeHostname(storefrontHostname);
+
+  return hostname.length <= MAX_HOSTNAME_LENGTH ? hostname : undefined;
+}
+
+// Whether the hostname serves a certificate a client accepts. Any HTTP
+// response means the handshake worked; a bad certificate or name throws.
+async function checkoutHostnameIsServing(hostname: string): Promise<boolean> {
+  try {
+    await fetch(`https://${hostname}/`, {
+      method: 'HEAD',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Waits for a newly provisioned checkout hostname's certificate.
+export async function waitForCheckoutHostname(
+  hostname: string,
+  { timeoutMs = CHECKOUT_HOSTNAME_READY_TIMEOUT_MS, onWait }: CheckoutHostnameWaitOptions = {},
+): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  let waited = false;
+
+  for (;;) {
+    // One probe at a time: each asks whether the certificate has issued yet.
+    // eslint-disable-next-line no-await-in-loop
+    if (await checkoutHostnameIsServing(hostname)) return true;
+
+    if (Date.now() + CHECKOUT_HOSTNAME_POLL_INTERVAL_MS >= deadline) return false;
+
+    if (!waited) {
+      waited = true;
+      onWait?.();
+    }
+
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, CHECKOUT_HOSTNAME_POLL_INTERVAL_MS));
+  }
+}
+
+export interface CheckoutHostnameWaitOptions {
+  timeoutMs?: number;
+  // Called once, before the first wait, so the caller can explain the pause.
+  onWait?: () => void;
+}
 
 // The checkout subdomain a merchant most likely wants:
 // `https://www.example.com` → `https://checkout.example.com`.
@@ -105,6 +168,16 @@ export function isManagedHostingHostname(hostname: string): boolean {
   const host = normalizeHostname(hostname);
 
   return NATIVE_HOSTING_ZONES.some((zone) => isSubdomainOf(host, zone));
+}
+
+// Whether checkout is on a different main domain from the storefront: the
+// test `warnOnCrossDomainCheckout` makes, without the output.
+export function isCrossDomainCheckout(site: ChannelSiteDetails): boolean {
+  const storefrontHost = hostnameOf(findChannelSiteUrl(site, 'primary') ?? site.url);
+  const checkoutUrl = findChannelSiteUrl(site, 'checkout');
+  const checkoutHost = checkoutUrl ? hostnameOf(checkoutUrl) : undefined;
+
+  return Boolean(storefrontHost && checkoutHost && !sharesMainDomain(storefrontHost, checkoutHost));
 }
 
 export interface CheckoutDomainReport {

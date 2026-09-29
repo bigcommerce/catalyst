@@ -1081,9 +1081,11 @@ describe('--update-site-url', () => {
   });
 
   // Running both flows must not ask which channel twice — the checkout flow
-  // reuses the channel the site-URL flow already resolved.
-  test('reuses the resolved channel when both update flags are passed', async () => {
+  // reuses the channel the site-URL flow already resolved. And with the site
+  // hostname in hand the checkout URL is derived rather than prompted for.
+  test('derives the checkout URL from the site hostname when both flags are passed', async () => {
     let checkoutChannelId: string | undefined;
+    let checkoutBody: unknown;
 
     server.use(
       http.put('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
@@ -1091,10 +1093,31 @@ describe('--update-site-url', () => {
           data: { id: 1, url: 'https://project-one.catalyst-sandbox.store', channel_id: 2 },
         }),
       ),
+      // A channel still on the inherited checkout, so the flow writes.
+      http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+        HttpResponse.json({
+          data: {
+            id: 1,
+            url: 'https://project-one.catalyst-sandbox.store',
+            channel_id: 2,
+            ssl_status: null,
+            is_checkout_url_customized: false,
+            urls: [
+              { url: 'https://project-one.catalyst-sandbox.store', type: 'primary' },
+              { url: 'https://store-abc-1.mybigcommerce.com', type: 'checkout' },
+            ],
+          },
+        }),
+      ),
+      // Answering at all means the certificate issued after the write.
+      http.head('https://c.project-one.catalyst-sandbox.store/', () =>
+        HttpResponse.json(null, { status: 302 }),
+      ),
       http.put(
         'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
-        ({ params }) => {
+        async ({ params, request }) => {
           checkoutChannelId = String(params.channelId);
+          checkoutBody = await request.json();
 
           return HttpResponse.json({
             data: { id: 1, url: 'https://example.com', channel_id: 2 },
@@ -1106,14 +1129,16 @@ describe('--update-site-url', () => {
     vi.mocked(select)
       .mockResolvedValueOnce(2) // channel, asked once by the site-URL flow
       .mockResolvedValueOnce('project-one.catalyst-sandbox.store'); // hostname
-    vi.mocked(input).mockResolvedValueOnce('https://checkout.example.com');
 
     await program.parseAsync(deployArgs(['--update-site-url', '--update-checkout-url']));
 
     expect(checkoutChannelId).toBe('2');
+    expect(checkoutBody).toEqual({ url: 'https://c.project-one.catalyst-sandbox.store' });
     // Two selects total: channel + hostname. A third would mean the checkout
     // flow re-prompted for the channel.
     expect(vi.mocked(select)).toHaveBeenCalledTimes(2);
+    // No prompt: on a managed zone the checkout hostname follows from the storefront.
+    expect(vi.mocked(input)).not.toHaveBeenCalled();
   });
 
   test('does not call the checkout URL API when the flag is omitted', async () => {
