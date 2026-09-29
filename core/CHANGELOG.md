@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.12.2
+
+### Patch Changes
+
+- [#3246](https://github.com/bigcommerce/catalyst/pull/3246) [`f75acc2`](https://github.com/bigcommerce/catalyst/commit/f75acc28f16df041806bbdc3733964c22b9c3042) Thanks [@mfaris9](https://github.com/mfaris9)! - Always render the `hosting` meta tag: `native` on native hosting, `vercel` on Vercel, `other` everywhere else. Previously it was omitted off native hosting.
+
+- [#3239](https://github.com/bigcommerce/catalyst/pull/3239) [`00c2f48`](https://github.com/bigcommerce/catalyst/commit/00c2f486582f1cf055edce1d432a7a46c7bfbaef) Thanks [@mfaris9](https://github.com/mfaris9)! - Add `hosting` and `channel_id` meta tags so Support can confirm a storefront is served by native hosting and which channel it belongs to. `hosting` renders the `CATALYST_HOSTING` env var, which `catalyst deploy` sets to `native`.
+
+- [#3244](https://github.com/bigcommerce/catalyst/pull/3244) [`b341810`](https://github.com/bigcommerce/catalyst/commit/b341810c43504b5c814be61223c299838d1c1b57) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - Keep a separate cart for each channel so a cart created on one channel is not shown or checked out on another.
+
 ## 1.12.1
 
 ### Patch Changes
