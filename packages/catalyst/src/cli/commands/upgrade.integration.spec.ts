@@ -149,8 +149,9 @@ async function initGitProject(dir: string): Promise<void> {
   await execa('git', ['commit', '-qm', 'base'], { cwd: dir });
 }
 
-// 120s per test to allow cold-cache downloads on first run.
-const TIMEOUT = 120_000;
+// 120s per test to allow cold-cache downloads on first run. Windows runners already
+// take up to ~2 min warm, so they get double.
+const TIMEOUT = process.platform === 'win32' ? 240_000 : 120_000;
 
 describe.each(engines)('integration (engine: %s)', (engine) => {
   const runMerge = (baseDir: string, theirsDir: string, oursDir: string, emptyFile: string) =>

@@ -83,18 +83,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
+      # A directory target gives each git process its own file; concurrent appends to one file drop events.
+      - name: Create git trace dir
+        if: runner.os == 'Windows'
+        shell: bash
+        run: mkdir -p "$RUNNER_TEMP/git-trace2"
+
       - name: Run Tests
         run: pnpm run test
         env:
-          # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
-          GIT_TRACE2_EVENT: ${{ runner.os == 'Windows' && format('{0}/git-trace2.jsonl', runner.temp) || '' }}
+          GIT_TRACE2_EVENT: ${{ runner.os == 'Windows' && format('{0}/git-trace2', runner.temp) || '' }}
 
       - name: Summarize git trace
         if: always() && runner.os == 'Windows'
         shell: bash
         run: |
           node -e '
-            const lines = require("fs").readFileSync(process.argv[1], "utf8").split("\n").filter(Boolean);
+            const fs = require("fs");
+            const path = require("path");
+            const lines = fs.readdirSync(process.argv[1])
+              .flatMap((f) => fs.readFileSync(path.join(process.argv[1], f), "utf8").split("\n"))
+              .filter(Boolean);
             const argv = new Map();
             const byCmd = new Map();
             let total = 0;
@@ -112,4 +122,4 @@ jobs:
             console.log(`git processes: ${[...byCmd.values()].reduce((a, s) => a + s.n, 0)}, total in-process time: ${total.toFixed(1)}s`);
             console.table([...byCmd].sort((a, b) => b[1].t - a[1].t).slice(0, 25)
               .map(([cmd, s]) => ({ cmd, n: s.n, total_s: +s.t.toFixed(1), avg_s: +(s.t / s.n).toFixed(3), max_s: +s.max.toFixed(2) })));
-          ' "$RUNNER_TEMP/git-trace2.jsonl"
+          ' "$RUNNER_TEMP/git-trace2"
