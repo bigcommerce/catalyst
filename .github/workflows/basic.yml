@@ -84,17 +84,24 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
+      # Set via system config, since turbo's strict env mode strips GIT_* env vars from tests.
       # A directory target gives each git process its own file.
-      - name: Create git trace dir
+      - name: Configure git tracing
         if: runner.os == 'Windows'
         shell: bash
-        run: mkdir -p "$RUNNER_TEMP/git-trace2"
+        run: |
+          mkdir -p "$RUNNER_TEMP/git-trace2"
+          git config --system trace2.eventTarget "$RUNNER_TEMP/git-trace2"
+          git config --show-origin --get-regexp '^core\.' || true
 
-      # Loose env mode, or turbo strips GIT_TRACE2_EVENT from the test task.
+      # TEMP experiment: git add/write-tree/commit average ~5s each here vs 0.3s on macOS,
+      # consistent with fsync cost on every loose object write.
+      - name: Disable git fsync
+        if: runner.os == 'Windows'
+        run: git config --system core.fsync none
+
       - name: Run Tests
-        run: pnpm run test ${{ runner.os == 'Windows' && '--env-mode=loose' || '' }}
-        env:
-          GIT_TRACE2_EVENT: ${{ runner.os == 'Windows' && format('{0}/git-trace2', runner.temp) || '' }}
+        run: pnpm run test
 
       - name: Summarize git trace
         if: always() && runner.os == 'Windows'
