@@ -84,14 +84,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # TEMP: profile git on Windows, where the upgrade specs are ~15x slower. Remove before merge.
-      # A directory target gives each git process its own file; concurrent appends to one file drop events.
+      # A directory target gives each git process its own file.
       - name: Create git trace dir
         if: runner.os == 'Windows'
         shell: bash
         run: mkdir -p "$RUNNER_TEMP/git-trace2"
 
+      # Loose env mode, or turbo strips GIT_TRACE2_EVENT from the test task.
       - name: Run Tests
-        run: pnpm run test
+        run: pnpm run test ${{ runner.os == 'Windows' && '--env-mode=loose' || '' }}
         env:
           GIT_TRACE2_EVENT: ${{ runner.os == 'Windows' && format('{0}/git-trace2', runner.temp) || '' }}
 
