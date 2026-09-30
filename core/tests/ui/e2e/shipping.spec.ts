@@ -16,6 +16,8 @@ async function addProductAndGoToCart(page: Page, catalog: CatalogFixture) {
 
   await page.goto('/cart');
   await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
+  // The shipping form toggles client-side, so wait for hydration before interacting.
+  await page.waitForLoadState('networkidle');
 }
 
 async function fillOutShippingForm(page: Page) {
@@ -65,34 +67,17 @@ test('Add shipping estimates', async ({ page, catalog }) => {
 
   await addProductAndGoToCart(page, catalog);
 
-  await page.waitForLoadState('networkidle');
-
   await page.getByRole('button', { name: t('add'), exact: true }).click();
 
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('viewShippingOptions') }).click();
-
-  try {
-    await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
-  }
+  await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
 
   const selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('addShipping') }).click();
-  await page.waitForLoadState('networkidle');
-
-  try {
-    await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
-  } catch {
-    await page.reload();
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
-  }
+  await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
 });
 
 test('Update shipping estimates', async ({ page, catalog }) => {
@@ -100,36 +85,17 @@ test('Update shipping estimates', async ({ page, catalog }) => {
 
   await addProductAndGoToCart(page, catalog);
 
-  await page.waitForLoadState('networkidle');
-
   await page.getByRole('button', { name: t('add'), exact: true }).click();
 
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('viewShippingOptions') }).click();
-
-  try {
-    await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
-  }
+  await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
 
   let selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('addShipping') }).click();
-  await page.waitForLoadState('networkidle');
-
-  try {
-    await expect(page.getByText(t('change'))).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByText(t('change'))).toBeVisible();
-  }
+  await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
 
   await page.getByText(t('change')).click();
   await page.getByRole('button', { name: t('editAddress') }).click();
@@ -137,20 +103,11 @@ test('Update shipping estimates', async ({ page, catalog }) => {
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('updatedShippingOptions') }).click();
-
-  try {
-    await expect(page.getByRole('button', { name: t('updatedShippingOptions') })).toBeHidden();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByRole('button', { name: t('updatedShippingOptions') })).toBeHidden();
-  }
+  await expect(page.getByRole('button', { name: t('updatedShippingOptions') })).toBeHidden();
 
   if (await page.getByLabel(t('shippingOptions')).isVisible()) {
     selectedOption = await selectRandomShippingOption(page);
     await page.getByRole('button', { name: t('updateShipping') }).click();
-    await page.waitForLoadState('networkidle');
   }
 
   await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
@@ -164,8 +121,6 @@ test('Updating cart quantity with a shipping estimate opens the shipping options
 
   await addProductAndGoToCart(page, catalog);
 
-  await page.waitForLoadState('networkidle');
-
   await page.getByRole('button', { name: t('CheckoutSummary.Shipping.add'), exact: true }).click();
 
   await fillOutShippingForm(page);
@@ -173,59 +128,21 @@ test('Updating cart quantity with a shipping estimate opens the shipping options
   await page
     .getByRole('button', { name: t('CheckoutSummary.Shipping.viewShippingOptions') })
     .click();
-
-  try {
-    await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
-  }
+  await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
 
   let selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('CheckoutSummary.Shipping.addShipping') }).click();
-  await page.waitForLoadState('networkidle');
-
-  try {
-    await expect(
-      page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
-    ).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await expect(
-      page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
-    ).toBeVisible();
-  }
+  await expect(
+    page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
+  ).toBeVisible();
 
   await page.getByLabel(t('increment')).click();
-  await page.waitForLoadState('networkidle');
-
-  try {
-    await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-    await page.waitForLoadState('networkidle');
-    await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
-  }
+  await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
 
   selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('CheckoutSummary.Shipping.addShipping') }).click();
-
-  try {
-    await expect(
-      page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
-    ).toBeVisible();
-  } catch {
-    // TODO: Remove try/catch when root cause of next state issue is found/resolved [CATALYST-1685]
-    await page.reload();
-  }
-
-  await page.waitForLoadState('networkidle');
   await expect(
     page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
   ).toBeVisible();

@@ -499,7 +499,19 @@ export function CartClient<LineItem extends CartLineItem>({
                 </div>
               ))}
 
-              {shipping && <ShippingForm {...shipping} />}
+              {shipping && (
+                // ShippingForm seeds its state from props once, so remount it whenever the
+                // server's shipping state changes (address, quote, quantity changes).
+                <ShippingForm
+                  key={JSON.stringify([
+                    shipping.address,
+                    shipping.shippingOptions,
+                    shipping.shippingOption?.value,
+                    shipping.showShippingForm,
+                  ])}
+                  {...shipping}
+                />
+              )}
             </div>
             {couponCode && (
               <CouponCodeForm
