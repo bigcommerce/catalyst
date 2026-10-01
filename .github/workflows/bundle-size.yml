@@ -3,11 +3,25 @@ name: Bundle Size
 # a live build of the base branch (canary or integrations/makeswift).
 #
 # build-pr and build-baseline run in parallel, each uploading a JSON artifact.
-# compare downloads both artifacts, runs the comparison, and posts the PR comment.
+# compare downloads both artifacts, runs the comparison, writes the job summary,
+# and fails if the PR is over budget (commenting only in that case). The
+# `bundle-size-ok` label acknowledges an intended increase.
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+    paths:
+      - core/**
+      - packages/client/**
+      - package.json
+      - pnpm-lock.yaml
+      - .github/workflows/bundle-size.yml
+      - .github/scripts/bundle-size.mts
+      - .github/scripts/post-bundle-comment.js
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -23,6 +37,12 @@ env:
 jobs:
   build-pr:
     name: Build & Measure PR Bundle
+    # Release and sync PRs move by design; label events only re-run for the bypass label.
+    if: >-
+      !startsWith(github.head_ref, 'changeset-release/') &&
+      !startsWith(github.head_ref, 'sync-integrations-') &&
+      (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) ||
+      github.event.label.name == 'bundle-size-ok')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -57,6 +77,11 @@ jobs:
 
   build-baseline:
     name: Build & Measure Baseline Bundle
+    if: >-
+      !startsWith(github.head_ref, 'changeset-release/') &&
+      !startsWith(github.head_ref, 'sync-integrations-') &&
+      (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) ||
+      github.event.label.name == 'bundle-size-ok')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -131,13 +156,22 @@ jobs:
           path: /tmp
           merge-multiple: true
 
-      - run: node .github/scripts/bundle-size.mts compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
+      - id: compare
+        run: node .github/scripts/bundle-size.mts compare --baseline /tmp/bundle-baseline.json --current /tmp/bundle-current.json > /tmp/bundle-report.md
         working-directory: pr
 
       - run: cat /tmp/bundle-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/github-script@v7
+        env:
+          OVER_BUDGET: ${{ steps.compare.outputs.over_budget }}
         with:
           script: |
             const postComment = require('./pr/.github/scripts/post-bundle-comment.js')
-            await postComment({ github, context })
+            await postComment({ github, context, overBudget: process.env.OVER_BUDGET === 'true' })
+
+      - name: Enforce bundle size budget
+        if: steps.compare.outputs.over_budget == 'true' && !contains(github.event.pull_request.labels.*.name, 'bundle-size-ok')
+        run: |
+          echo "::error::Bundle size is over budget. See the PR comment, or add the bundle-size-ok label if the increase is intended."
+          exit 1
