@@ -21,7 +21,6 @@ module.exports = async ({ github, context, provider = 'unknown', reportPath = '/
 
   const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
   const marker = `<!-- unlighthouse-${provider}-report -->`;
-  const body = marker + '\n' + fs.readFileSync(reportPath, 'utf-8') + `\n[Full Unlighthouse report →](${runUrl})\n`;
 
   const { data: comments } = await github.rest.issues.listComments({
     owner: context.repo.owner,
@@ -34,6 +33,11 @@ module.exports = async ({ github, context, provider = 'unknown', reportPath = '/
   // Only open a new comment for failures, but keep an existing one current so
   // it shows when the regression is fixed.
   if (!failed && !existing) return;
+
+  const report = failed
+    ? fs.readFileSync(reportPath, 'utf-8')
+    : '## Unlighthouse Comparison\n\n✅ Resolved: the latest run found no regressions.\n';
+  const body = marker + '\n' + report + `\n[Full Unlighthouse report →](${runUrl})\n`;
 
   if (existing) {
     await github.rest.issues.updateComment({

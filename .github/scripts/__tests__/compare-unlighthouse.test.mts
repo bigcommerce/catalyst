@@ -45,8 +45,16 @@ const BASE = makeCiResult();
 // Route-level checks
 // ---------------------------------------------------------------------------
 
+interface RouteFixture {
+  path: string;
+  performance?: number;
+  accessibility?: number | null;
+  seo?: number;
+  'best-practices'?: number;
+}
+
 function withRoutes(
-  routes: { path: string; accessibility?: number | null; seo?: number; 'best-practices'?: number }[],
+  routes: RouteFixture[],
   overrides: Parameters<typeof makeCiResult>[0] = {},
 ): CiResult {
   return {
@@ -54,7 +62,7 @@ function withRoutes(
     routes: routes.map((route) => ({
       path: route.path,
       categories: {
-        performance: { score: 0.8 },
+        performance: { score: route.performance ?? 0.8 },
         accessibility: { score: route.accessibility === undefined ? 0.95 : route.accessibility },
         'best-practices': { score: route['best-practices'] ?? 1 },
         seo: { score: route.seo ?? 1 },
@@ -67,11 +75,10 @@ const ROUTES = withRoutes([{ path: '/' }, { path: '/cart/' }]);
 
 describe('failed', () => {
   it('is false when every route matches', () => {
-    const result = compareResults(ROUTES, ROUTES, ROUTES, ROUTES);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES);
 
-    assert.equal(result.failed, false);
-    assert.deepEqual(result.warnings, []);
-    assert.ok(result.markdown.includes('No regressions found.'));
+    assert.equal(failed, false);
+    assert.ok(markdown.includes('No regressions found.'));
   });
 
   it('is true when accessibility drops on a matched route', () => {
@@ -79,11 +86,19 @@ describe('failed', () => {
     const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
 
     assert.equal(failed, true);
-    assert.ok(markdown.includes('### ❌ Accessibility regressions'));
+    assert.ok(markdown.includes('### ❌ Accessibility and SEO regressions'));
     assert.ok(markdown.includes('| `/cart/` | Desktop | Accessibility | 95 | 91 |'));
   });
 
-  it('ignores accessibility improvements', () => {
+  it('is true when SEO drops on a matched route', () => {
+    const preview = withRoutes([{ path: '/', seo: 0.92 }, { path: '/cart/' }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('| `/` | Mobile | SEO | 100 | 92 |'));
+  });
+
+  it('ignores improvements', () => {
     const preview = withRoutes([{ path: '/', accessibility: 0.99 }, { path: '/cart/' }]);
 
     assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
@@ -99,31 +114,10 @@ describe('failed', () => {
     const preview = withRoutes([{ path: '/' }, { path: '/cart/' }], {
       score: 0.5,
       accessibility: 0.5,
+      performance: 0.2,
     });
 
     assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
-  });
-
-  it('warns without failing when a route is missing from one side', () => {
-    const preview = withRoutes([{ path: '/' }]);
-    const { failed, warnings, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
-
-    assert.equal(failed, false);
-    assert.deepEqual(warnings, ["/cart/ (mobile) wasn't compared: failed on preview"]);
-    assert.ok(markdown.includes('### ⚠️ Routes not compared'));
-    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on preview |'));
-  });
-
-  it('warns about expected routes missing from both sides', () => {
-    const { failed, warnings } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES, {
-      expectedRoutes: ['/', '/cart/', '/login/'],
-    });
-
-    assert.equal(failed, false);
-    assert.deepEqual(warnings, [
-      "/login/ (desktop) wasn't compared: failed on both",
-      "/login/ (mobile) wasn't compared: failed on both",
-    ]);
   });
 
   it('is true when fewer than half the expected routes are compared', () => {
@@ -149,47 +143,100 @@ describe('failed', () => {
   });
 });
 
-describe('warnings', () => {
-  it('warns without failing when SEO drops on a matched route', () => {
-    const preview = withRoutes([{ path: '/', seo: 0.88 }, { path: '/cart/' }]);
-    const { failed, warnings, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
+describe('performance', () => {
+  const PROD = withRoutes([
+    { path: '/a/', performance: 0.9 },
+    { path: '/b/', performance: 0.9 },
+    { path: '/c/', performance: 0.9 },
+  ]);
 
-    assert.equal(failed, false);
-    assert.deepEqual(warnings, ['SEO dropped on / (mobile): 100 → 88']);
-    assert.ok(markdown.includes('### ⚠️ SEO and best practices drops'));
+  it('is true when the median route drops by the threshold on both devices', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.7 },
+      { path: '/b/', performance: 0.75 },
+      { path: '/c/', performance: 0.9 },
+    ]);
+    const { failed, markdown } = compareResults(PROD, PROD, preview, preview);
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('### ❌ Performance regression'));
+    assert.ok(markdown.includes('lost 15 points on desktop and 15 on mobile'));
   });
 
-  it('warns when best practices drops on a matched route', () => {
-    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
-    const { warnings } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+  it('ignores a single slow route', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.3 },
+      { path: '/b/', performance: 0.88 },
+      { path: '/c/', performance: 0.9 },
+    ]);
 
-    assert.deepEqual(warnings, ['Best Practices dropped on /cart/ (desktop): 100 → 95']);
+    assert.equal(compareResults(PROD, PROD, preview, preview).failed, false);
   });
 
-  it('warns when performance drops by the threshold', () => {
-    const prod = withRoutes([{ path: '/' }], { performance: 0.9 });
-    const preview = withRoutes([{ path: '/' }], { performance: 0.8 });
-    const { failed, warnings } = compareResults(prod, prod, preview, prod);
+  it('ignores a drop on only one device', () => {
+    const slow = withRoutes([
+      { path: '/a/', performance: 0.5 },
+      { path: '/b/', performance: 0.5 },
+      { path: '/c/', performance: 0.5 },
+    ]);
 
-    assert.equal(failed, false);
-    assert.deepEqual(warnings, ['Performance on desktop dropped by 10+ points']);
+    assert.equal(compareResults(PROD, PROD, slow, PROD).failed, false);
   });
 
-  it('does not warn when performance drops by less than the threshold', () => {
-    const prod = withRoutes([{ path: '/' }], { performance: 0.9 });
-    const preview = withRoutes([{ path: '/' }], { performance: 0.81 });
+  it('respects a custom threshold', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.85 },
+      { path: '/b/', performance: 0.85 },
+      { path: '/c/', performance: 0.85 },
+    ]);
 
-    assert.deepEqual(compareResults(prod, prod, preview, prod).warnings, []);
-  });
-
-  it('respects a custom performance threshold', () => {
-    const prod = withRoutes([{ path: '/' }], { performance: 0.9 });
-    const preview = withRoutes([{ path: '/' }], { performance: 0.85 });
-
-    assert.deepEqual(
-      compareResults(prod, prod, preview, prod, { performanceThreshold: 5 }).warnings,
-      ['Performance on desktop dropped by 5+ points'],
+    assert.equal(compareResults(PROD, PROD, preview, preview).failed, false);
+    assert.equal(
+      compareResults(PROD, PROD, preview, preview, { performanceThreshold: 5 }).failed,
+      true,
     );
+  });
+
+  it('reports the median change in the details', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.88 },
+      { path: '/b/', performance: 0.92 },
+      { path: '/c/', performance: 0.9 },
+    ]);
+    const { markdown } = compareResults(PROD, PROD, preview, PROD);
+
+    assert.ok(markdown.includes('| 0 | 0 |'));
+  });
+});
+
+describe('details', () => {
+  it('lists routes that could not be compared without failing', () => {
+    const routes = withRoutes([{ path: '/' }, { path: '/cart/' }, { path: '/blog/' }]);
+    const preview = withRoutes([{ path: '/' }, { path: '/blog/' }]);
+    const { failed, markdown } = compareResults(routes, routes, routes, preview, {
+      expectedRoutes: ['/', '/cart/', '/blog/', '/login/'],
+    });
+
+    assert.equal(failed, false);
+    assert.ok(markdown.includes('### Routes not compared'));
+    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on preview |'));
+    assert.ok(markdown.includes('| `/login/` | Desktop | failed on both |'));
+  });
+
+  it('lists best practices drops without failing', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+
+    assert.equal(failed, false);
+    assert.ok(markdown.includes('### Best practices drops'));
+    assert.ok(markdown.includes('| `/cart/` | Desktop | Best Practices | 100 | 95 |'));
+  });
+
+  it('keeps everything except failures inside the collapsed section', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
+    const { markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+
+    assert.ok(markdown.indexOf('<details>') < markdown.indexOf('### Best practices drops'));
   });
 });
 

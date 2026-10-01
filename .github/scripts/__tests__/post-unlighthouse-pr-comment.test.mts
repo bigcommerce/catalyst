@@ -181,6 +181,11 @@ describe('comment update', () => {
 
     assert.equal(calls.update.length, 1);
     assert.equal(calls.create.length, 0);
+
+    const body = (calls.update[0] as { body: string }).body;
+
+    assert.ok(body.includes('Resolved: the latest run found no regressions.'));
+    assert.ok(!body.includes('Some results.'));
   });
 
   it('creates a new comment when existing comments do not contain the marker', async () => {

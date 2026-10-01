@@ -75,13 +75,13 @@ const COL_HEADER =
 const COL_SEP =
   "|:-|:------------|:------------|:----------------|:---------------|";
 
-// Accessibility audits are DOM-based and score identically on matched routes
-// run to run, so any drop is treated as a real regression.
-const GATED_CATEGORIES = ["accessibility"];
+// Accessibility and SEO audits read the rendered DOM and score identically on
+// matched routes run to run, so any drop is a real regression.
+const GATED_CATEGORIES = ["accessibility", "seo"];
 
-// SEO and best practices have flaky audits (e.g. meta-description timing), so
-// drops only warn.
-const WARNED_CATEGORIES = ["seo", "best-practices"];
+// Best practices hasn't been stable long enough to gate on, so it's only
+// reported in the details.
+const REPORTED_CATEGORIES = ["best-practices"];
 
 interface RouteDrop {
   device: string;
@@ -92,7 +92,8 @@ interface RouteDrop {
 }
 
 interface CompareOptions {
-  // Minimum drop, in points, in the overall performance score to warn about.
+  // Median per-route performance drop, in points, that fails the check when
+  // both devices reach it. A cold page skews one route, not the median.
   performanceThreshold?: number;
   // Routes both sides were asked to scan. Defaults to every route either side
   // reported.
@@ -218,17 +219,54 @@ function dropsTable(drops: RouteDrop[]): string[] {
   ];
 }
 
+// Median of per-route performance drops, in points, across matched routes.
+function medianPerformanceDrop(
+  production: CiResult,
+  preview: CiResult,
+): number | null {
+  const productionRoutes = new Map(
+    (production.routes ?? []).map((route) => [route.path, route]),
+  );
+  const drops: number[] = [];
+
+  for (const route of preview.routes ?? []) {
+    const before = productionRoutes.get(route.path)?.categories.performance?.score;
+    const after = route.categories.performance?.score;
+
+    if (typeof before !== "number" || typeof after !== "number") continue;
+
+    drops.push(Math.round((before - after) * 100));
+  }
+
+  if (!drops.length) return null;
+
+  drops.sort((x, y) => x - y);
+
+  const middle = Math.floor(drops.length / 2);
+
+  return drops.length % 2
+    ? (drops[middle] ?? 0)
+    : ((drops[middle - 1] ?? 0) + (drops[middle] ?? 0)) / 2;
+}
+
+function formatChange(drop: number | null): string {
+  if (drop === null) return "n/a";
+  if (drop === 0) return "0";
+
+  return drop > 0 ? `−${drop}` : `+${-drop}`;
+}
+
 function compareResults(
   productionDesktop: CiResult,
   productionMobile: CiResult,
   previewDesktop: CiResult,
   previewMobile: CiResult,
   {
-    performanceThreshold = 10,
+    performanceThreshold = 15,
     expectedRoutes,
     provider,
   }: CompareOptions = {},
-): { markdown: string; failed: boolean; warnings: string[] } {
+): { markdown: string; failed: boolean } {
   const scanProblems = [
     ...validateScan(productionDesktop, "Production desktop", 1),
     ...validateScan(productionMobile, "Production mobile", 1),
@@ -281,55 +319,37 @@ function compareResults(
     ),
   ];
 
-  const warningDrops = [
+  const reportedDrops = [
     ...findRouteDrops(
       productionDesktop,
       previewDesktop,
       "Desktop",
-      WARNED_CATEGORIES,
+      REPORTED_CATEGORIES,
     ),
     ...findRouteDrops(
       productionMobile,
       previewMobile,
       "Mobile",
-      WARNED_CATEGORIES,
+      REPORTED_CATEGORIES,
     ),
   ];
 
-  const performanceDrops = (
-    [
-      ["Desktop", productionDesktop, previewDesktop],
-      ["Mobile", productionMobile, previewMobile],
-    ] as const
-  ).filter(
-    ([, production, preview]) =>
-      Math.round(
-        ((production.summary.categories.performance?.score ?? 0) -
-          (preview.summary.categories.performance?.score ?? 0)) *
-          100,
-      ) >= performanceThreshold,
+  const desktopPerformanceDrop = medianPerformanceDrop(
+    productionDesktop,
+    previewDesktop,
+  );
+  const mobilePerformanceDrop = medianPerformanceDrop(
+    productionMobile,
+    previewMobile,
   );
 
-  const failed = scanProblems.length > 0 || regressions.length > 0;
-  const hasIssues =
-    failed ||
-    warningDrops.length > 0 ||
-    performanceDrops.length > 0 ||
-    uncompared.length > 0;
-  const annotations = [
-    ...uncompared.map(
-      (route) =>
-        `${route.path} (${route.device.toLowerCase()}) wasn't compared: ${route.reason}`,
-    ),
-    ...warningDrops.map(
-      (drop) =>
-        `${CATEGORY_LABELS[drop.category] ?? drop.category} dropped on ${drop.path} (${drop.device.toLowerCase()}): ${score(drop.production)} → ${score(drop.preview)}`,
-    ),
-    ...performanceDrops.map(
-      ([device]) =>
-        `Performance on ${device.toLowerCase()} dropped by ${performanceThreshold}+ points`,
-    ),
-  ];
+  // Requiring both devices keeps one slow runner from failing the check.
+  const performanceRegressed =
+    (desktopPerformanceDrop ?? 0) >= performanceThreshold &&
+    (mobilePerformanceDrop ?? 0) >= performanceThreshold;
+
+  const failed =
+    scanProblems.length > 0 || regressions.length > 0 || performanceRegressed;
 
   const lines: string[] = [];
 
@@ -343,7 +363,7 @@ function compareResults(
   );
   lines.push("");
 
-  if (!hasIssues) {
+  if (!failed) {
     lines.push("✅ No regressions found.");
     lines.push("");
   }
@@ -359,29 +379,51 @@ function compareResults(
   }
 
   if (regressions.length) {
-    lines.push("### ❌ Accessibility regressions");
+    lines.push("### ❌ Accessibility and SEO regressions");
     lines.push(
-      "_Accessibility scores are stable between runs, so these fail the check. Open the full report to see which audits failed. If canary fixed this route since you branched, rebase onto canary._",
+      "_These scores are stable between runs, so a drop fails the check. Open the full report to see which audits failed. If canary fixed this route since you branched, rebase onto canary._",
     );
     lines.push("");
     lines.push(...dropsTable(regressions));
     lines.push("");
   }
 
-  if (warningDrops.length) {
-    lines.push("### ⚠️ SEO and best practices drops");
+  if (performanceRegressed) {
+    lines.push("### ❌ Performance regression");
     lines.push(
-      "_Some of these audits are flaky, so drops don't fail the check. Worth a look if a route you changed shows up here._",
+      `_The median route lost ${desktopPerformanceDrop} points on desktop and ${mobilePerformanceDrop} on mobile. One slow page can't move the median, so this usually means something slowed down every page._`,
     );
     lines.push("");
-    lines.push(...dropsTable(warningDrops));
+  }
+
+  lines.push("<details>");
+  lines.push("<summary>Details</summary>");
+  lines.push("");
+
+  lines.push("### Performance");
+  lines.push(
+    `_Median per-route change, preview vs production. Fails at a drop of ${performanceThreshold} points on both devices._`,
+  );
+  lines.push("");
+  lines.push("| Desktop | Mobile |");
+  lines.push("|:--------|:-------|");
+  lines.push(
+    `| ${formatChange(desktopPerformanceDrop)} | ${formatChange(mobilePerformanceDrop)} |`,
+  );
+  lines.push("");
+
+  if (reportedDrops.length) {
+    lines.push("### Best practices drops");
+    lines.push("_Not gated yet, so these don't fail the check._");
+    lines.push("");
+    lines.push(...dropsTable(reportedDrops));
     lines.push("");
   }
 
   if (uncompared.length) {
-    lines.push("### ⚠️ Routes not compared");
+    lines.push("### Routes not compared");
     lines.push(
-      "_Lighthouse couldn't load these pages on one or both deployments, which usually happens on shared runners. They don't fail the check unless too few routes are left to compare._",
+      "_Lighthouse couldn't load these pages on one or both deployments, which usually happens on shared runners. They don't fail the check unless fewer than half the routes are left to compare._",
     );
     lines.push("");
     lines.push("| Route | Device | Reason |");
@@ -394,17 +436,6 @@ function compareResults(
     lines.push("");
   }
 
-  if (performanceDrops.length) {
-    lines.push("### ⚠️ Performance drop");
-    lines.push(
-      `_Performance on ${performanceDrops.map(([device]) => device.toLowerCase()).join(" and ")} dropped by ${performanceThreshold}+ points. Lab scores from a cold preview are noisy, so confirm before acting on it._`,
-    );
-    lines.push("");
-  }
-
-  lines.push("<details>");
-  lines.push("<summary>All scores</summary>");
-  lines.push("");
 
   lines.push("### Summary Score");
   lines.push(
@@ -472,7 +503,7 @@ function compareResults(
   lines.push("</details>");
   lines.push("");
 
-  return { markdown: lines.join("\n"), failed, warnings: annotations };
+  return { markdown: lines.join("\n"), failed };
 }
 
 export { compareResults, validateScan };
@@ -517,13 +548,13 @@ if (isMain) {
   const productionDesktop = loadCiResult(resolve(productionDesktopPath));
   const productionMobile = loadCiResult(resolve(productionMobilePath));
 
-  const { markdown, failed, warnings } = compareResults(
+  const { markdown, failed } = compareResults(
     productionDesktop,
     productionMobile,
     previewDesktop,
     previewMobile,
     {
-      performanceThreshold: Number(values["performance-threshold"] ?? "10"),
+      performanceThreshold: Number(values["performance-threshold"] ?? "15"),
       expectedRoutes: values["expected-routes"]
         ? (JSON.parse(values["expected-routes"]) as string[])
         : undefined,
@@ -546,9 +577,5 @@ if (isMain) {
   if (metaOutputPath) {
     writeFileSync(metaOutputPath, `${JSON.stringify({ failed }, null, 2)}\n`);
     console.error(`Meta output written to ${metaOutputPath}`);
-  }
-
-  for (const warning of warnings) {
-    console.log(`::warning title=Unlighthouse::${warning}`);
   }
 }

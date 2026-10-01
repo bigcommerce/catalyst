@@ -67,6 +67,8 @@ export default {
       "inspector-issues",
       // reCAPTCHA rejects Vercel preview origins, so this fails on every preview regardless of the change.
       "errors-in-console",
+      // Next.js streams metadata into <body> when it resolves late, and this audit only checks <head>.
+      "meta-description",
     ],
   },
 } satisfies UserConfig;
