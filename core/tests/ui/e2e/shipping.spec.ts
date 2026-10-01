@@ -105,9 +105,20 @@ test('Update shipping estimates', async ({ page, catalog }) => {
   await page.getByRole('button', { name: t('updatedShippingOptions') }).click();
   await expect(page.getByRole('button', { name: t('updatedShippingOptions') })).toBeHidden();
 
-  if (await page.getByLabel(t('shippingOptions')).isVisible()) {
+  const shippingOptions = page.getByLabel(t('shippingOptions'));
+  const shippingSummary = page.getByText(`${selectedOption}${t('change')}`);
+
+  await expect(shippingOptions.or(shippingSummary).first()).toBeVisible();
+
+  if (await shippingOptions.isVisible()) {
     selectedOption = await selectRandomShippingOption(page);
-    await page.getByRole('button', { name: t('updateShipping') }).click();
+
+    // The form says "Update shipping" only while an option is still selected. BigCommerce drops it
+    // when it doesn't apply to the new address.
+    await page
+      .getByRole('button', { name: t('updateShipping'), exact: true })
+      .or(page.getByRole('button', { name: t('addShipping'), exact: true }))
+      .click();
   }
 
   await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
