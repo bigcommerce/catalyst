@@ -69,6 +69,8 @@ export default {
       "errors-in-console",
       // Next.js streams metadata into <body> when it resolves late, and this audit only checks <head>.
       "meta-description",
+      // Production deployments point canonical at the configured domain and hreflang at the deployment's own URL.
+      "canonical",
     ],
   },
 } satisfies UserConfig;

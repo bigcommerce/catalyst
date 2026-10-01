@@ -8,16 +8,42 @@ import { resolve } from "node:path";
 
 interface CiRoute {
   path: string;
+  score?: number;
   categories: Record<string, { score: number | null } | undefined>;
+  metrics?: Record<string, { numericValue?: number } | undefined>;
 }
 
+// Unlighthouse 0.19 copies the last route's `score` and `displayValue` into the
+// summary; the real means are `averageScore` and `averageNumericValue`.
 interface CiResult {
   summary: {
     score: number;
-    categories: Record<string, { score: number }>;
-    metrics: Record<string, { displayValue: string }>;
+    categories: Record<string, { score: number; averageScore?: number }>;
+    metrics: Record<
+      string,
+      { displayValue: string; averageNumericValue?: number }
+    >;
   };
   routes?: CiRoute[];
+}
+
+function averageScore(result: CiResult, id: string): number {
+  const category = result.summary.categories[id];
+
+  return category?.averageScore ?? category?.score ?? 0;
+}
+
+function averageMetric(result: CiResult, id: string): string {
+  const metric = result.summary.metrics[id];
+  const value = metric?.averageNumericValue;
+
+  if (typeof value !== "number") return metric?.displayValue ?? "—";
+  if (id === "cumulative-layout-shift") return value.toFixed(3);
+  if (id === "total-blocking-time" || id === "max-potential-fid") {
+    return `${Math.round(value)} ms`;
+  }
+
+  return `${(value / 1000).toFixed(1)} s`;
 }
 
 function loadCiResult(filePath: string): CiResult {
@@ -254,6 +280,71 @@ function formatChange(drop: number | null): string {
   return drop > 0 ? `−${drop}` : `+${-drop}`;
 }
 
+function mean(values: number[]): number | undefined {
+  return values.length
+    ? values.reduce((total, value) => total + value, 0) / values.length
+    : undefined;
+}
+
+// Recomputes each summary over the routes both scans reported, so a route that
+// failed to load on one side doesn't skew the comparison.
+function restrictToSharedRoutes(
+  baseline: CiResult,
+  deployment: CiResult,
+): [CiResult, CiResult] {
+  if (!baseline.routes?.length || !deployment.routes?.length) {
+    return [baseline, deployment];
+  }
+
+  const deploymentPaths = new Set(deployment.routes.map((route) => route.path));
+  const sharedPaths = new Set(
+    baseline.routes
+      .map((route) => route.path)
+      .filter((path) => deploymentPaths.has(path)),
+  );
+
+  const summarize = (result: CiResult): CiResult => {
+    const routes = (result.routes ?? []).filter((route) =>
+      sharedPaths.has(route.path),
+    );
+    const numbers = (values: (number | null | undefined)[]) =>
+      values.filter((value): value is number => typeof value === "number");
+
+    return {
+      ...result,
+      summary: {
+        score:
+          mean(numbers(routes.map((route) => route.score))) ??
+          result.summary.score,
+        categories: Object.fromEntries(
+          CATEGORY_ORDER.map((id) => [
+            id,
+            {
+              score: result.summary.categories[id]?.score ?? 0,
+              averageScore: mean(
+                numbers(routes.map((route) => route.categories[id]?.score)),
+              ),
+            },
+          ]),
+        ),
+        metrics: Object.fromEntries(
+          METRIC_ORDER.map((id) => [
+            id,
+            {
+              displayValue: result.summary.metrics[id]?.displayValue ?? "—",
+              averageNumericValue: mean(
+                numbers(routes.map((route) => route.metrics?.[id]?.numericValue)),
+              ),
+            },
+          ]),
+        ),
+      },
+    };
+  };
+
+  return [summarize(baseline), summarize(deployment)];
+}
+
 function compareResults(
   baselineDesktop: CiResult,
   baselineMobile: CiResult,
@@ -413,9 +504,14 @@ function compareResults(
   }
 
 
+  const [baselineDesktopShared, deploymentDesktopShared] =
+    restrictToSharedRoutes(baselineDesktop, deploymentDesktop);
+  const [baselineMobileShared, deploymentMobileShared] =
+    restrictToSharedRoutes(baselineMobile, deploymentMobile);
+
   lines.push("### Summary Score");
   lines.push(
-    "_Aggregate score across all categories as reported by Unlighthouse._",
+    "_Averages across the routes both scans reported, so a route that failed on one side doesn't skew them._",
   );
   lines.push("");
   lines.push(COL_HEADER);
@@ -423,10 +519,10 @@ function compareResults(
   lines.push(
     row(
       "Score",
-      score(baselineDesktop.summary.score),
-      score(baselineMobile.summary.score),
-      score(deploymentDesktop.summary.score),
-      score(deploymentMobile.summary.score),
+      score(baselineDesktopShared.summary.score),
+      score(baselineMobileShared.summary.score),
+      score(deploymentDesktopShared.summary.score),
+      score(deploymentMobileShared.summary.score),
     ),
   );
   lines.push("");
@@ -444,10 +540,10 @@ function compareResults(
     lines.push(
       row(
         CATEGORY_LABELS[id] ?? id,
-        score(baselineDesktop.summary.categories[id]?.score ?? 0),
-        score(baselineMobile.summary.categories[id]?.score ?? 0),
-        score(deploymentDesktop.summary.categories[id]?.score ?? 0),
-        score(deploymentMobile.summary.categories[id]?.score ?? 0),
+        score(averageScore(baselineDesktopShared, id)),
+        score(averageScore(baselineMobileShared, id)),
+        score(averageScore(deploymentDesktopShared, id)),
+        score(averageScore(deploymentMobileShared, id)),
       ),
     );
   }
@@ -467,10 +563,10 @@ function compareResults(
     lines.push(
       row(
         METRIC_LABELS[id] ?? id,
-        baselineDesktop.summary.metrics[id]?.displayValue ?? "—",
-        baselineMobile.summary.metrics[id]?.displayValue ?? "—",
-        deploymentDesktop.summary.metrics[id]?.displayValue ?? "—",
-        deploymentMobile.summary.metrics[id]?.displayValue ?? "—",
+        averageMetric(baselineDesktopShared, id),
+        averageMetric(baselineMobileShared, id),
+        averageMetric(deploymentDesktopShared, id),
+        averageMetric(deploymentMobileShared, id),
       ),
     );
   }

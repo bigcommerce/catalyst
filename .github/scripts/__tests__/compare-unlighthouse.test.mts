@@ -313,7 +313,7 @@ describe('Summary Score section', () => {
 
     assert.ok(
       markdown.includes(
-        'Aggregate score across all categories as reported by Unlighthouse.',
+        "Averages across the routes both scans reported, so a route that failed on one side doesn't skew them.",
       ),
     );
   });
@@ -387,6 +387,47 @@ describe('Category Scores section', () => {
 // ---------------------------------------------------------------------------
 // Core Web Vitals section
 // ---------------------------------------------------------------------------
+
+describe('summary averages', () => {
+  it('averages only routes both scans reported', () => {
+    const baseline = withRoutes([
+      { path: '/', accessibility: 0.9 },
+      { path: '/cart/', accessibility: 0.9 },
+      { path: '/login/', accessibility: 1 },
+    ]);
+    const deployment = withRoutes([
+      { path: '/', accessibility: 0.9 },
+      { path: '/cart/', accessibility: 0.9 },
+    ]);
+    const { markdown } = compareResults(baseline, baseline, deployment, deployment);
+
+    assert.ok(markdown.includes('| Accessibility | 90 | 90 | 90 | 90 |'));
+  });
+
+  it('prefers averageScore over the last route score', () => {
+    const ci = makeCiResult();
+    ci.summary.categories.accessibility = { score: 1, averageScore: 0.96 };
+    const { markdown } = compareResults(ci, ci, ci, ci);
+
+    assert.ok(markdown.includes('| Accessibility | 96 | 96 | 96 | 96 |'));
+  });
+
+  it('formats averageNumericValue instead of the last route displayValue', () => {
+    const ci = makeCiResult({
+      metrics: {
+        ...DEFAULT_METRICS,
+        'largest-contentful-paint': { displayValue: '9.9 s', averageNumericValue: 3456 },
+        'total-blocking-time': { displayValue: '999 ms', averageNumericValue: 12.6 },
+        'cumulative-layout-shift': { displayValue: '0.5', averageNumericValue: 0.01234 },
+      },
+    });
+    const { markdown } = compareResults(ci, ci, ci, ci);
+
+    assert.ok(markdown.includes('| LCP | 3.5 s | 3.5 s | 3.5 s | 3.5 s |'));
+    assert.ok(markdown.includes('| TBT | 13 ms | 13 ms | 13 ms | 13 ms |'));
+    assert.ok(markdown.includes('| CLS | 0.012 | 0.012 | 0.012 | 0.012 |'));
+  });
+});
 
 describe('Core Web Vitals section', () => {
   it('contains the Core Web Vitals heading', () => {
