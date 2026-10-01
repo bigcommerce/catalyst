@@ -35,11 +35,12 @@ test('Blog can be filtered by tags', async ({ page, blog }) => {
   await page.goto(`${path}?tag=${tag}`);
   await expect(page.getByRole('heading', { name })).toBeVisible();
 
+  // Streamed content sits in a hidden copy until React reveals it, so match visible text only.
   const breadcrumbs = page.getByLabel('breadcrumb');
 
-  await expect(breadcrumbs.getByText(t('home'))).toBeVisible();
-  await expect(breadcrumbs.getByText(name)).toBeVisible();
-  await expect(breadcrumbs.getByText(tag)).toBeVisible();
+  await expect(breadcrumbs.getByText(t('home')).filter({ visible: true })).toBeVisible();
+  await expect(breadcrumbs.getByText(name).filter({ visible: true })).toBeVisible();
+  await expect(breadcrumbs.getByText(tag).filter({ visible: true })).toBeVisible();
   await expect(page.getByRole('link', { name: post.title })).toBeVisible();
 });
 
@@ -63,19 +64,20 @@ test('Blog post page displays content, breadcrumbs, tags, and author info', asyn
   await page.goto(post.path);
   await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
 
+  // Streamed content sits in a hidden copy until React reveals it, so match visible text only.
   const breadcrumbs = page.getByLabel('breadcrumb');
 
-  await expect(breadcrumbs.getByText(t('home'))).toBeVisible();
-  await expect(breadcrumbs.getByText(name)).toBeVisible();
-  await expect(breadcrumbs.getByText(post.title)).toBeVisible();
+  await expect(breadcrumbs.getByText(t('home')).filter({ visible: true })).toBeVisible();
+  await expect(breadcrumbs.getByText(name).filter({ visible: true })).toBeVisible();
+  await expect(breadcrumbs.getByText(post.title).filter({ visible: true })).toBeVisible();
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  await expect(page.getByText(post.author!)).toBeVisible();
+  await expect(page.getByText(post.author!).filter({ visible: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Tag 1' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Tag 2' })).toBeVisible();
-  await expect(page.getByText('Test header element')).toBeVisible();
-  await expect(page.getByText('Test paragraph element')).toBeVisible();
-  await expect(page.getByText('Test div element')).toBeVisible();
+  await expect(page.getByText('Test header element').filter({ visible: true })).toBeVisible();
+  await expect(page.getByText('Test paragraph element').filter({ visible: true })).toBeVisible();
+  await expect(page.getByText('Test div element').filter({ visible: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Test link element' })).toHaveAttribute(
     'href',
     'https://example.com',

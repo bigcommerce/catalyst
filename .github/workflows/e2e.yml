@@ -24,28 +24,53 @@ env:
   DEFAULT_COMPLEX_PRODUCT_ID: ${{ vars.DEFAULT_COMPLEX_PRODUCT_ID }}
 
 jobs:
+  playwright-version:
+    name: Resolve Playwright version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: pnpm-lock.yaml
+          sparse-checkout-cone-mode: false
+
+      # The container image must match the locked @playwright/test version.
+      - name: Read @playwright/test version from the lockfile
+        id: version
+        run: |
+          version=$(grep -m1 -oE "^  '@playwright/test@[0-9.]+'" pnpm-lock.yaml | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
   e2e-tests:
     name: E2E Functional Tests (${{ matrix.name }})
 
+    needs: playwright-version
+
     runs-on: ubuntu-latest
+
+    # Browsers and their system libraries come preinstalled. Installing WebKit's ~125 MB of apt
+    # dependencies on the runner was taking 30+ minutes on a slow Ubuntu mirror.
+    container:
+      image: mcr.microsoft.com/playwright:v${{ needs.playwright-version.outputs.version }}-noble
+      options: --user 1001
 
     strategy:
       matrix:
         include:
           - name: default
-            browsers: chromium webkit
             test-filter: tests/ui/e2e
             trailing-slash: true
             locale-var: TESTS_LOCALE
             artifact-name: playwright-report
           - name: TRAILING_SLASH=false
-            browsers: chromium
             test-filter: tests/ui/e2e --grep @no-trailing-slash
             trailing-slash: false
             locale-var: TESTS_LOCALE
             artifact-name: playwright-report-no-trailing
           - name: alternate locale
-            browsers: chromium
             test-filter: tests/ui/e2e --grep @alternate-locale
             trailing-slash: true
             locale-var: TESTS_ALTERNATE_LOCALE
@@ -71,10 +96,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install --with-deps ${{ matrix.browsers }}
-        working-directory: ./core
 
       - name: Build catalyst
         run: pnpm build
