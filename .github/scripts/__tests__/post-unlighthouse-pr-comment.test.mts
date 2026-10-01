@@ -87,7 +87,7 @@ beforeEach(() => {
   reportPath = join(tmpDir, 'report.md');
   metaPath = join(tmpDir, 'meta.json');
   writeFileSync(reportPath, '## Unlighthouse Performance Comparison\n\nSome results.');
-  writeFileSync(metaPath, JSON.stringify({ hasChanges: true }));
+  writeFileSync(metaPath, JSON.stringify({ failed: true }));
 });
 
 // ---------------------------------------------------------------------------
@@ -95,8 +95,8 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('early exits', () => {
-  it('does nothing when hasChanges is false', async () => {
-    writeFileSync(metaPath, JSON.stringify({ hasChanges: false }));
+  it('does nothing when the check passed and there is no existing comment', async () => {
+    writeFileSync(metaPath, JSON.stringify({ failed: false }));
     const { github, calls } = makeGithub();
     await postComment({ github, context: makeContext(), reportPath, metaPath });
 
@@ -170,6 +170,17 @@ describe('comment update', () => {
     assert.equal(calls.update.length, 1);
     assert.equal(calls.create.length, 0);
     assert.equal((calls.update[0] as { comment_id: number }).comment_id, 55);
+  });
+
+  it('updates an existing comment when the check passed', async () => {
+    writeFileSync(metaPath, JSON.stringify({ failed: false }));
+    const marker = '<!-- unlighthouse-vercel-report -->';
+    const existing = { id: 55, body: `${marker}\nOld content` };
+    const { github, calls } = makeGithub({ comments: [existing] });
+    await postComment({ github, context: makeContext(), provider: 'vercel', reportPath, metaPath });
+
+    assert.equal(calls.update.length, 1);
+    assert.equal(calls.create.length, 0);
   });
 
   it('creates a new comment when existing comments do not contain the marker', async () => {

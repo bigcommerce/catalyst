@@ -193,6 +193,13 @@ jobs:
               metaPath: '/tmp/unlighthouse-meta.json',
             })
 
+      - name: Fail on regressions
+        run: |
+          if [[ "$(jq -r .failed /tmp/unlighthouse-meta.json)" == "true" ]]; then
+            echo "::error::Unlighthouse found regressions or incomplete scans. See the job summary."
+            exit 1
+          fi
+
   unlighthouse-report:
     name: Unlighthouse Report (${{ needs.detect-provider.outputs.provider }}) — ${{ needs.detect-provider.outputs.branch-label }}
     needs: [detect-provider, unlighthouse-audit-production]
@@ -221,10 +228,12 @@ jobs:
             --desktop /tmp/unlighthouse-artifacts/unlighthouse-production-desktop-report/ci-result.json \
             --mobile  /tmp/unlighthouse-artifacts/unlighthouse-production-mobile-report/ci-result.json \
             --branch  "${{ needs.detect-provider.outputs.branch-label }}" \
-            --output  /tmp/unlighthouse-report.md
+            --output  /tmp/unlighthouse-report.md || status=$?
           cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
+          exit "${status:-0}"
 
       - name: Post commit comment
+        if: success() || failure()
         uses: actions/github-script@v7
         with:
           script: |

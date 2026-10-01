@@ -1,45 +1,60 @@
+import { readFileSync } from "node:fs";
 import type { UserConfig } from "unlighthouse";
 
+// Fixed lists keep preview and production scanning the same routes, so scores
+// can be compared route by route. Each demo store has its own catalog.
+const ROUTES: Record<string, string[]> = {
+  "@bigcommerce/catalyst-core": [
+    "/",
+    "/kitchen/",
+    "/garden/",
+    "/brands/sagaform/",
+    "/brands/ofs/",
+    "/chemex-coffeemaker-3-cup/",
+    "/canvas-laundry-cart/",
+    "/fog-linen-chambray-towel-beige-stripe/",
+    "/blog/",
+    "/your-first-blog-post/",
+    "/contact-us/",
+    "/shipping-returns/",
+    "/cart/",
+    "/login/",
+    "/register/",
+    "/gift-certificates/",
+  ],
+  "@bigcommerce/catalyst-makeswift": [
+    "/",
+    "/shop-all/",
+    "/plants/",
+    "/pots/",
+    "/rustic-roots/",
+    "/monstera/",
+    "/zz-plant/",
+    "/3-plant-bundle/",
+    "/blog/",
+    "/your-first-blog-post/",
+    "/shipping-returns/",
+    "/cart/",
+    "/login/",
+    "/register/",
+    "/gift-certificates/",
+  ],
+};
+
+const { name } = JSON.parse(readFileSync("./core/package.json", "utf-8")) as {
+  name: string;
+};
+
 export default {
+  urls: ROUTES[name] ?? ROUTES["@bigcommerce/catalyst-core"],
   ci: {
     buildStatic: true,
     reporter: "jsonExpanded",
-    budget: {
-      // "best-practices": 100,
-      // "accessibility": 100,
-      // "seo": 100,
-      // performance: 80,
-    },
   },
   scanner: {
     // Run each page multiple times and use the median to absorb cold start
-    // outliers across all discovered pages.
+    // outliers.
     samples: 3,
-    dynamicSampling: 5,
-    exclude: [
-      "/bundleb2b/",
-      "/invoices/",
-      "/bath/*/*",
-      "/garden/*/*",
-      "/kitchen/*/*",
-      "/publications/*/*",
-      "/early-access/*/*",
-      "/digital-test-product/",
-      "/blog/\\?tag=*",
-      "/brands/",
-    ],
-    customSampling: {
-      "/smith-journal-13/|/dustpan-brush/|/utility-caddy/|/canvas-laundry-cart/|/laundry-detergent/|/tiered-wire-basket/|/oak-cheese-grater/|/1-l-le-parfait-jar/|/chemex-coffeemaker-3-cup/|/sample-able-brewing-system/|/orbit-terrarium-small/|/orbit-terrarium-large/|/fog-linen-chambray-towel-beige-stripe/|/zz-plant/":
-        { name: "PDP" },
-      "/shop-all/|/bath/|/garden/|/kitchen/|/publications/|/early-access/": {
-        name: "PLP categories",
-      },
-      "/brands/sagaform/|/brands/ofs/|/brands/common-good/": {
-        name: "PLP brands",
-      },
-    },
-    // Disable throttling to avoid issues with cold start and cold cache.
-    throttle: false,
   },
   lighthouseOptions: {
     onlyCategories: ["best-practices", "accessibility", "seo", "performance"],
@@ -50,6 +65,8 @@ export default {
       "third-party-cookies",
       // Disabling inspector issues as it's only providing third-party cookie issues, which are not relevant for our audits.
       "inspector-issues",
+      // reCAPTCHA rejects Vercel preview origins, so this fails on every preview regardless of the change.
+      "errors-in-console",
     ],
   },
 } satisfies UserConfig;

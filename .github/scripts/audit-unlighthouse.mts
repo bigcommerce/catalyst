@@ -6,12 +6,16 @@ import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import { resolve } from "node:path";
 
+import { validateScan } from "./compare-unlighthouse.mts";
+import type { CiRoute } from "./compare-unlighthouse.mts";
+
 interface CiResult {
   summary: {
     score: number;
     categories: Record<string, { score: number }>;
     metrics: Record<string, { displayValue: string }>;
   };
+  routes?: CiRoute[];
 }
 
 function loadCiResult(filePath: string): CiResult {
@@ -142,7 +146,21 @@ if (isMain) {
 
   const desktop = loadCiResult(resolve(values.desktop));
   const mobile = loadCiResult(resolve(values.mobile));
-  const markdown = buildReport(desktop, mobile, values.branch);
+  const problems = [
+    ...validateScan(desktop, "Desktop", 1),
+    ...validateScan(mobile, "Mobile", 1),
+  ];
+  let markdown = buildReport(desktop, mobile, values.branch);
+
+  if (problems.length) {
+    markdown += [
+      "### ❌ Incomplete scans",
+      "",
+      ...problems.map((problem) => `- ${problem}`),
+      "",
+    ].join("\n");
+  }
+
   const outputPath = values.output ? resolve(values.output) : null;
 
   if (outputPath) {
@@ -150,5 +168,13 @@ if (isMain) {
     console.error(`Unlighthouse report written to ${outputPath}`);
   } else {
     process.stdout.write(markdown);
+  }
+
+  if (problems.length) {
+    for (const problem of problems) {
+      console.log(`::error title=Unlighthouse::${problem}`);
+    }
+
+    process.exit(1);
   }
 }
