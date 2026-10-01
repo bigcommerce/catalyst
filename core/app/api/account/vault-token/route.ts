@@ -4,25 +4,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { auth } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
-import { getCachedLocaleRouting } from '~/i18n/locale-config';
-import { getLocaleFromPathname } from '~/i18n/locale-routing';
+import { getLocaleFromRequest } from '~/i18n/request-locale';
 import { getVaultAccessToken } from '~/lib/account-payments/get-vault-access-token';
 
 export const dynamic = 'force-dynamic';
-
-function getRefererPathname(request: NextRequest) {
-  const referer = request.headers.get('referer');
-
-  if (!referer) {
-    return null;
-  }
-
-  try {
-    return new URL(referer).pathname;
-  } catch {
-    return null;
-  }
-}
 
 // This route is used by the account payments microapp component to retrieve a vault access token
 // for the current shopper session. It keeps the token out of server-rendered page data, so it can't
@@ -39,14 +24,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const localeRouting = await getCachedLocaleRouting();
-    const queryLocale = request.nextUrl.searchParams.get('locale');
-    const refererPathname = getRefererPathname(request);
-    const locale =
-      (queryLocale && localeRouting.locales.includes(queryLocale) ? queryLocale : null) ??
-      (refererPathname ? getLocaleFromPathname(localeRouting, refererPathname) : null) ??
-      localeRouting.rootLocale ??
-      localeRouting.defaultLocale;
+    const locale = await getLocaleFromRequest(request);
     const channelId = getChannelIdFromLocale(locale);
 
     const token = await getVaultAccessToken(channelId);
