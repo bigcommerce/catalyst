@@ -94,8 +94,9 @@ interface RouteDrop {
 interface CompareOptions {
   // Minimum drop, in points, in the overall performance score to warn about.
   performanceThreshold?: number;
-  // Minimum number of routes each scan must report to be trusted.
-  minRoutes?: number;
+  // Routes both sides were asked to scan. Defaults to every route either side
+  // reported.
+  expectedRoutes?: string[];
   provider?: string;
 }
 
@@ -128,30 +129,45 @@ function validateScan(
   return problems;
 }
 
-// Both sides scan the same fixed route list, so a route missing from one side
-// means it failed to scan there.
-function findMissingRoutes(
+interface UncomparedRoute {
+  device: string;
+  path: string;
+  reason: string;
+}
+
+// Lighthouse sometimes fails to load a page on shared runners, and Unlighthouse
+// drops it from the results. Those routes can't be compared, but that alone
+// isn't a regression.
+function findUncomparedRoutes(
   production: CiResult,
   preview: CiResult,
   device: string,
-): string[] {
+  expectedRoutes: string[] | undefined,
+): UncomparedRoute[] {
   const productionPaths = new Set(
     (production.routes ?? []).map((route) => route.path),
   );
   const previewPaths = new Set(
     (preview.routes ?? []).map((route) => route.path),
   );
+  const expected =
+    expectedRoutes ?? [...new Set([...productionPaths, ...previewPaths])];
 
-  return [
-    ...[...productionPaths]
-      .filter((path) => !previewPaths.has(path))
-      .map((path) => `Preview ${device.toLowerCase()}: \`${path}\` is missing`),
-    ...[...previewPaths]
-      .filter((path) => !productionPaths.has(path))
-      .map(
-        (path) => `Production ${device.toLowerCase()}: \`${path}\` is missing`,
-      ),
-  ];
+  return expected.flatMap((path) => {
+    const inProduction = productionPaths.has(path);
+    const inPreview = previewPaths.has(path);
+
+    if (inProduction && inPreview) return [];
+
+    const reason =
+      !inProduction && !inPreview
+        ? "failed on both"
+        : inProduction
+          ? "failed on preview"
+          : "failed on production";
+
+    return [{ device, path, reason }];
+  });
 }
 
 function findRouteDrops(
@@ -207,16 +223,48 @@ function compareResults(
   productionMobile: CiResult,
   previewDesktop: CiResult,
   previewMobile: CiResult,
-  { performanceThreshold = 10, minRoutes = 1, provider }: CompareOptions = {},
+  {
+    performanceThreshold = 10,
+    expectedRoutes,
+    provider,
+  }: CompareOptions = {},
 ): { markdown: string; failed: boolean; warnings: string[] } {
   const scanProblems = [
-    ...validateScan(productionDesktop, "Production desktop", minRoutes),
-    ...validateScan(productionMobile, "Production mobile", minRoutes),
-    ...validateScan(previewDesktop, "Preview desktop", minRoutes),
-    ...validateScan(previewMobile, "Preview mobile", minRoutes),
-    ...findMissingRoutes(productionDesktop, previewDesktop, "Desktop"),
-    ...findMissingRoutes(productionMobile, previewMobile, "Mobile"),
+    ...validateScan(productionDesktop, "Production desktop", 1),
+    ...validateScan(productionMobile, "Production mobile", 1),
+    ...validateScan(previewDesktop, "Preview desktop", 1),
+    ...validateScan(previewMobile, "Preview mobile", 1),
   ];
+
+  const uncompared: UncomparedRoute[] = [];
+
+  for (const [device, production, preview] of [
+    ["Desktop", productionDesktop, previewDesktop],
+    ["Mobile", productionMobile, previewMobile],
+  ] as const) {
+    const missing = findUncomparedRoutes(
+      production,
+      preview,
+      device,
+      expectedRoutes,
+    );
+    const total =
+      expectedRoutes?.length ??
+      new Set([
+        ...(production.routes ?? []).map((route) => route.path),
+        ...(preview.routes ?? []).map((route) => route.path),
+      ]).size;
+    const compared = total - missing.length;
+
+    // With fewer than half the routes compared, a clean result means little.
+    if (compared < Math.ceil(total / 2)) {
+      scanProblems.push(
+        `${device}: only ${compared} of ${total} routes could be compared`,
+      );
+    }
+
+    uncompared.push(...missing);
+  }
 
   const regressions = [
     ...findRouteDrops(
@@ -264,8 +312,15 @@ function compareResults(
 
   const failed = scanProblems.length > 0 || regressions.length > 0;
   const hasIssues =
-    failed || warningDrops.length > 0 || performanceDrops.length > 0;
+    failed ||
+    warningDrops.length > 0 ||
+    performanceDrops.length > 0 ||
+    uncompared.length > 0;
   const annotations = [
+    ...uncompared.map(
+      (route) =>
+        `${route.path} (${route.device.toLowerCase()}) wasn't compared: ${route.reason}`,
+    ),
     ...warningDrops.map(
       (drop) =>
         `${CATEGORY_LABELS[drop.category] ?? drop.category} dropped on ${drop.path} (${drop.device.toLowerCase()}): ${score(drop.production)} → ${score(drop.preview)}`,
@@ -320,6 +375,22 @@ function compareResults(
     );
     lines.push("");
     lines.push(...dropsTable(warningDrops));
+    lines.push("");
+  }
+
+  if (uncompared.length) {
+    lines.push("### ⚠️ Routes not compared");
+    lines.push(
+      "_Lighthouse couldn't load these pages on one or both deployments, which usually happens on shared runners. They don't fail the check unless too few routes are left to compare._",
+    );
+    lines.push("");
+    lines.push("| Route | Device | Reason |");
+    lines.push("|:------|:-------|:-------|");
+    lines.push(
+      ...uncompared.map(
+        (route) => `| \`${route.path}\` | ${route.device} | ${route.reason} |`,
+      ),
+    );
     lines.push("");
   }
 
@@ -419,7 +490,7 @@ if (isMain) {
       output: { type: "string" },
       "meta-output": { type: "string" },
       "performance-threshold": { type: "string" },
-      "min-routes": { type: "string" },
+      "expected-routes": { type: "string" },
       provider: { type: "string" },
     },
   });
@@ -436,7 +507,7 @@ if (isMain) {
     !productionMobilePath
   ) {
     console.error(
-      "Usage: compare-unlighthouse.mts --preview-desktop <path> --preview-mobile <path> --production-desktop <path> --production-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--min-routes <n>] [--provider <name>]",
+      "Usage: compare-unlighthouse.mts --preview-desktop <path> --preview-mobile <path> --production-desktop <path> --production-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--expected-routes <json array>] [--provider <name>]",
     );
     process.exit(1);
   }
@@ -453,7 +524,9 @@ if (isMain) {
     previewMobile,
     {
       performanceThreshold: Number(values["performance-threshold"] ?? "10"),
-      minRoutes: Number(values["min-routes"] ?? "1"),
+      expectedRoutes: values["expected-routes"]
+        ? (JSON.parse(values["expected-routes"]) as string[])
+        : undefined,
       provider: values.provider,
     },
   );

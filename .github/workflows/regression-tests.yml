@@ -170,6 +170,7 @@ jobs:
         env:
           PROVIDER: ${{ needs.detect-provider.outputs.provider }}
         run: |
+          EXPECTED_ROUTES=$(node -e 'import("./unlighthouse.config.ts").then((m) => console.log(JSON.stringify(m.default.urls)))')
           node .github/scripts/compare-unlighthouse.mts \
             --preview-desktop    /tmp/unlighthouse-artifacts/unlighthouse-preview-desktop-report/ci-result.json \
             --preview-mobile     /tmp/unlighthouse-artifacts/unlighthouse-preview-mobile-report/ci-result.json \
@@ -177,6 +178,7 @@ jobs:
             --production-mobile  /tmp/unlighthouse-artifacts/unlighthouse-production-mobile-report/ci-result.json \
             --output /tmp/unlighthouse-report.md \
             --meta-output /tmp/unlighthouse-meta.json \
+            --expected-routes "$EXPECTED_ROUTES" \
             --provider "$PROVIDER"
           cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
 

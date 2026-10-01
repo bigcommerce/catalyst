@@ -104,13 +104,36 @@ describe('failed', () => {
     assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
   });
 
-  it('is true when a route is missing from one side', () => {
+  it('warns without failing when a route is missing from one side', () => {
     const preview = withRoutes([{ path: '/' }]);
-    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
+    const { failed, warnings, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
+
+    assert.equal(failed, false);
+    assert.deepEqual(warnings, ["/cart/ (mobile) wasn't compared: failed on preview"]);
+    assert.ok(markdown.includes('### ⚠️ Routes not compared'));
+    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on preview |'));
+  });
+
+  it('warns about expected routes missing from both sides', () => {
+    const { failed, warnings } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES, {
+      expectedRoutes: ['/', '/cart/', '/login/'],
+    });
+
+    assert.equal(failed, false);
+    assert.deepEqual(warnings, [
+      "/login/ (desktop) wasn't compared: failed on both",
+      "/login/ (mobile) wasn't compared: failed on both",
+    ]);
+  });
+
+  it('is true when fewer than half the expected routes are compared', () => {
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES, {
+      expectedRoutes: ['/', '/cart/', '/login/', '/register/', '/blog/'],
+    });
 
     assert.equal(failed, true);
     assert.ok(markdown.includes('### ❌ Incomplete scans'));
-    assert.ok(markdown.includes('Preview mobile: `/cart/` is missing'));
+    assert.ok(markdown.includes('Desktop: only 2 of 5 routes could be compared'));
   });
 
   it('is true when a route has no score', () => {
@@ -119,15 +142,6 @@ describe('failed', () => {
 
     assert.equal(failed, true);
     assert.ok(markdown.includes('Preview desktop: `/` has no accessibility score'));
-  });
-
-  it('is true when a scan has fewer routes than minRoutes', () => {
-    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES, {
-      minRoutes: 3,
-    });
-
-    assert.equal(failed, true);
-    assert.ok(markdown.includes('scanned 2 route(s), expected at least 3'));
   });
 
   it('is true when a scan has no routes', () => {
