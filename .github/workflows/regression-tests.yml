@@ -126,11 +126,23 @@ jobs:
       - name: Unlighthouse audit on ${{ matrix.device }} (${{ matrix.target }})
         env:
           SITE_URL: ${{ matrix.target == 'baseline' && needs.detect-provider.outputs.baseline-url || github.event.deployment_status.target_url }}
+        # Extra headers go to every request the page makes, third parties
+        # included, so the bypass secret is exchanged once for Vercel's bypass
+        # cookie, which the browser only sends to this deployment.
         # The Vercel Toolbar on preview deployments keeps the network busy, so
         # desktop pages time out waiting to finish loading.
         run: |
+          COOKIES=$(curl -s -o /dev/null -D - \
+            "$SITE_URL?x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS&x-vercel-set-bypass-cookie=true" \
+            | tr -d '\r' | sed -nE 's/^set-cookie: *([^;]*).*/\1/Ip' | paste -sd ';' -)
+
+          for cookie in ${COOKIES//;/ }; do
+            echo "::add-mask::${cookie#*=}"
+          done
+
           unlighthouse-ci --site "$SITE_URL" --${{ matrix.device }} --disable-robots-txt \
-            --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true,x-vercel-skip-toolbar=1"
+            --extra-headers "x-vercel-skip-toolbar=1" \
+            ${COOKIES:+--cookies "$COOKIES"}
 
       - name: Upload ${{ matrix.device }} ${{ matrix.target }} audit
         if: failure() || success()
