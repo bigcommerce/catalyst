@@ -37,12 +37,11 @@ env:
 jobs:
   build-pr:
     name: Build & Measure PR Bundle
-    # Release and sync PRs move by design; label events only re-run for the bypass label.
+    # Release and sync PRs move by design. Every label event re-runs (there's no
+    # label-name filter on triggers): a skipped run would replace a failed check.
     if: >-
       !startsWith(github.head_ref, 'changeset-release/') &&
-      !startsWith(github.head_ref, 'sync-integrations-') &&
-      (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) ||
-      github.event.label.name == 'bundle-size-ok')
+      !startsWith(github.head_ref, 'sync-integrations-')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -79,9 +78,7 @@ jobs:
     name: Build & Measure Baseline Bundle
     if: >-
       !startsWith(github.head_ref, 'changeset-release/') &&
-      !startsWith(github.head_ref, 'sync-integrations-') &&
-      (!contains(fromJSON('["labeled", "unlabeled"]'), github.event.action) ||
-      github.event.label.name == 'bundle-size-ok')
+      !startsWith(github.head_ref, 'sync-integrations-')
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -141,6 +138,8 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      # Deleting a stale comment goes through the issues API.
+      issues: write
     steps:
       - uses: actions/checkout@v4
         with:
