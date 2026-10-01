@@ -126,9 +126,11 @@ jobs:
       - name: Unlighthouse audit on ${{ matrix.device }} (${{ matrix.target }})
         env:
           SITE_URL: ${{ matrix.target == 'baseline' && needs.detect-provider.outputs.baseline-url || github.event.deployment_status.target_url }}
+        # The Vercel Toolbar on preview deployments keeps the network busy, so
+        # desktop pages time out waiting to finish loading.
         run: |
           unlighthouse-ci --site "$SITE_URL" --${{ matrix.device }} --disable-robots-txt \
-            --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true"
+            --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true,x-vercel-skip-toolbar=1"
 
       - name: Upload ${{ matrix.device }} ${{ matrix.target }} audit
         if: failure() || success()
