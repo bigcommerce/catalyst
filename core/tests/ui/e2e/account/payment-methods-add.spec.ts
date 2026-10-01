@@ -8,6 +8,9 @@ const DEFAULT_CARD_PAYMENT_METHOD_ID = 'braintree.card';
 const ADD_PAYMENT_METHOD_URL = `/account/payment-methods/add/${DEFAULT_CARD_PAYMENT_METHOD_ID}/`;
 const ADD_PAYMENT_METHOD_URL_REQUIRING_INIT = `${ADD_PAYMENT_METHOD_URL}?init=1`;
 const VAULT_INITIALIZATION_PATH = '/api/account/vault-initialization';
+// Requires the test store to have Square enabled as a payment method. It does NOT require a
+// working Square gateway connection — this only initializes, it never vaults an instrument.
+const INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID = 'squarev2.card';
 
 test(`${ADD_PAYMENT_METHOD_URL} is restricted for guest users`, async ({ page }) => {
   await page.goto(ADD_PAYMENT_METHOD_URL);
@@ -117,6 +120,34 @@ test('A failed initialization request surfaces an error and leaves the form gate
 
   // `renderAccountPayments` is gated on initialization completing, so no form should mount.
   await expect(page.locator('#cardNumber iframe')).toHaveCount(0);
+});
+
+test('The vault initialization route returns the provider client configuration', async ({
+  page,
+  customer,
+}) => {
+  await customer.login();
+
+  const response = await page.request.get(
+    `${VAULT_INITIALIZATION_PATH}?paymentMethodId=${INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID}`,
+  );
+
+  expect(response.status()).toBe(200);
+
+  const body: unknown = await response.json();
+
+  // Asserts the GraphQL inline fragment selects the provider's fields and that `clientConfigType`
+  // survives the `__typename` alias, which is what the microapp discriminates on.
+  expect(body).toMatchObject({
+    paymentProviderInitializationData: {
+      clientConfiguration: {
+        clientConfigType: 'SquareV2ClientConfiguration',
+        applicationId: expect.any(String),
+        locationId: expect.any(String),
+        environment: expect.any(String),
+      },
+    },
+  });
 });
 
 test(
