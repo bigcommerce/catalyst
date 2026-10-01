@@ -5,14 +5,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { getLocaleFromRequest } from '~/i18n/request-locale';
-import { getVaultAccessToken } from '~/lib/account-payments/get-vault-access-token';
+import { getVaultInitialization } from '~/lib/account-payments/get-vault-initialization';
 
 export const dynamic = 'force-dynamic';
 
-// This route is used by the account payments microapp component to retrieve a vault access token
-// for the current shopper session. It keeps the token out of server-rendered page data, so it can't
-// leak into HTML or RSC payloads, and mint it only through this one authenticated, per-request endpoint
-// rather than embedding it anywhere upstream.
+// This route is used by the account payments microapp component to retrieve a vault initialization
+// for the current shopper session. It keeps the provider initialization data (and any provider-issued token)
+// out of server-rendered page data, minted only through this one authenticated, per-request endpoint.
 export async function GET(request: NextRequest) {
   const session = await auth();
 
@@ -23,13 +22,25 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const paymentMethodId = request.nextUrl.searchParams.get('paymentMethodId');
+
+  if (!paymentMethodId) {
+    return NextResponse.json(
+      { error: 'missing paymentMethodId' },
+      { status: 400, headers: { 'Cache-Control': 'no-store' } },
+    );
+  }
+
   try {
     const locale = await getLocaleFromRequest(request);
     const channelId = getChannelIdFromLocale(locale);
 
-    const token = await getVaultAccessToken(channelId);
+    const { token, clientConfiguration } = await getVaultInitialization(paymentMethodId, channelId);
 
-    return NextResponse.json(token, { headers: { 'Cache-Control': 'no-store' } });
+    return NextResponse.json(
+      { paymentProviderInitializationData: { token, clientConfiguration } },
+      { headers: { 'Cache-Control': 'no-store' } },
+    );
   } catch (error) {
     rethrow(error);
 
@@ -44,7 +55,7 @@ export async function GET(request: NextRequest) {
     console.error(error);
 
     return NextResponse.json(
-      { error: 'failed to create vault access token' },
+      { error: 'failed to create vault initialization' },
       { status: 500, headers: { 'Cache-Control': 'no-store' } },
     );
   }
