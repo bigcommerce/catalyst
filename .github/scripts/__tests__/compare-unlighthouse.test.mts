@@ -86,8 +86,16 @@ describe('failed', () => {
     const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
 
     assert.equal(failed, true);
-    assert.ok(markdown.includes('### ❌ Accessibility and SEO regressions'));
+    assert.ok(markdown.includes('### ❌ Accessibility, SEO, and best practices regressions'));
     assert.ok(markdown.includes('| `/cart/` | Desktop | Accessibility | 95 | 91 |'));
+  });
+
+  it('is true when best practices drops on a matched route', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('| `/cart/` | Desktop | Best Practices | 100 | 95 |'));
   });
 
   it('is true when SEO drops on a matched route', () => {
@@ -135,7 +143,7 @@ describe('failed', () => {
     const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
 
     assert.equal(failed, true);
-    assert.ok(markdown.includes('Preview desktop: `/` has no accessibility score'));
+    assert.ok(markdown.includes('Deployment desktop: `/` has no accessibility score'));
   });
 
   it('is true when a scan has no routes', () => {
@@ -219,24 +227,16 @@ describe('details', () => {
 
     assert.equal(failed, false);
     assert.ok(markdown.includes('### Routes not compared'));
-    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on preview |'));
+    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on this deployment |'));
     assert.ok(markdown.includes('| `/login/` | Desktop | failed on both |'));
   });
 
-  it('lists best practices drops without failing', () => {
-    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
-    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
-
-    assert.equal(failed, false);
-    assert.ok(markdown.includes('### Best practices drops'));
-    assert.ok(markdown.includes('| `/cart/` | Desktop | Best Practices | 100 | 95 |'));
-  });
-
   it('keeps everything except failures inside the collapsed section', () => {
-    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
-    const { markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+    const routes = withRoutes([{ path: '/' }, { path: '/cart/' }, { path: '/blog/' }]);
+    const preview = withRoutes([{ path: '/' }, { path: '/blog/' }]);
+    const { markdown } = compareResults(routes, routes, preview, routes);
 
-    assert.ok(markdown.indexOf('<details>') < markdown.indexOf('### Best practices drops'));
+    assert.ok(markdown.indexOf('<details>') < markdown.indexOf('### Routes not compared'));
   });
 });
 
@@ -283,9 +283,17 @@ describe('report heading', () => {
 
     assert.ok(
       markdown.includes(
-        'Comparing PR preview deployment Unlighthouse scores vs production Unlighthouse scores.',
+        "Comparing this deployment's Unlighthouse scores against the baseline deployment.",
       ),
     );
+  });
+
+  it('names the baseline when a label is given', () => {
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE, {
+      baselineLabel: 'canary at 1a2b3c4d5',
+    });
+
+    assert.ok(markdown.includes('against canary at 1a2b3c4d5.'));
   });
 });
 
@@ -329,7 +337,7 @@ describe('Summary Score section', () => {
     const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(
-      markdown.includes('| | Prod Desktop | Prod Mobile | Preview Desktop | Preview Mobile |'),
+      markdown.includes('| | Before Desktop | Before Mobile | After Desktop | After Mobile |'),
     );
   });
 });

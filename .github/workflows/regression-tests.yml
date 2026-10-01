@@ -11,119 +11,111 @@ jobs:
   detect-provider:
     name: Detect Deployment Provider
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: read
     outputs:
       provider: ${{ steps.detect.outputs.provider }}
-      production-url: ${{ steps.detect.outputs.production-url }}
-      branch-label: ${{ steps.detect.outputs.branch-label }}
-      is-preview: ${{ steps.detect.outputs.is-preview }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Detect provider and production URL
-        id: detect
-        run: |
-          CREATOR="${{ github.event.deployment_status.creator.login }}"
-          ENVIRONMENT="${{ github.event.deployment.environment }}"
-
-          if [[ "$ENVIRONMENT" == "Preview" ]]; then
-            echo "is-preview=true" >> $GITHUB_OUTPUT
-          else
-            echo "is-preview=false" >> $GITHUB_OUTPUT
-          fi
-
-          if [[ "$CREATOR" == "vercel[bot]" ]]; then
-            echo "provider=vercel" >> $GITHUB_OUTPUT
-            PKG_NAME=$(node -p "require('./core/package.json').name")
-
-            if [[ "$ENVIRONMENT" == "Preview" ]]; then
-              case "$PKG_NAME" in
-                "@bigcommerce/catalyst-core")
-                  echo "production-url=https://canary.catalyst-demo.site/" >> $GITHUB_OUTPUT ;;
-                "@bigcommerce/catalyst-makeswift")
-                  echo "production-url=https://canary.makeswift.catalyst-demo.site" >> $GITHUB_OUTPUT ;;
-                *)
-                  echo "::warning::No production URL configured for package: $PKG_NAME. Skipping comparison."
-                  echo "production-url=" >> $GITHUB_OUTPUT ;;
-              esac
-              echo "branch-label=" >> $GITHUB_OUTPUT
-            else
-              case "$PKG_NAME" in
-                "@bigcommerce/catalyst-core")
-                  echo "branch-label=canary" >> $GITHUB_OUTPUT
-                  echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
-                "@bigcommerce/catalyst-makeswift")
-                  echo "branch-label=integrations/makeswift" >> $GITHUB_OUTPUT
-                  echo "production-url=${{ github.event.deployment_status.target_url }}" >> $GITHUB_OUTPUT ;;
-                *)
-                  echo "branch-label=" >> $GITHUB_OUTPUT
-                  echo "production-url=" >> $GITHUB_OUTPUT ;;
-              esac
-            fi
-
-          elif [[ "$CREATOR" == "cloudflare-pages[bot]" ]]; then
-            echo "provider=cloudflare" >> $GITHUB_OUTPUT
-            echo "::warning::Cloudflare production URL not yet configured. Skipping comparison."
-            echo "production-url=" >> $GITHUB_OUTPUT
-            echo "branch-label=" >> $GITHUB_OUTPUT
-
-          else
-            echo "::warning::Unknown deployment provider: $CREATOR. Skipping audits."
-            echo "provider=unknown" >> $GITHUB_OUTPUT
-            echo "production-url=" >> $GITHUB_OUTPUT
-            echo "branch-label=" >> $GITHUB_OUTPUT
-          fi
-
-  unlighthouse-audit-preview:
-    name: Unlighthouse Audit Preview (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
-    needs: [detect-provider]
-    if: needs.detect-provider.outputs.is-preview == 'true'
-    runs-on: ubuntu-latest
-    concurrency:
-      group: regression-preview-${{ github.event.deployment.ref }}-${{ matrix.device }}
-      cancel-in-progress: true
-    strategy:
-      matrix:
-        device: [desktop, mobile]
-
+      mode: ${{ steps.detect.outputs.mode }}
+      baseline-url: ${{ steps.detect.outputs.baseline-url }}
+      baseline-label: ${{ steps.detect.outputs.baseline-label }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install Dependencies
-        run: npm install @unlighthouse/cli puppeteer -g
-
-      - name: Unlighthouse audit on ${{ matrix.device }} (preview)
+      # Compare each deployment against the deployment of the commit it builds
+      # on, so only this change differs: the merge base for a PR, or the
+      # previous commit for a push to the base branch.
+      - name: Detect provider and baseline deployment
+        id: detect
         env:
-          PROVIDER: ${{ needs.detect-provider.outputs.provider }}
-          PREVIEW_URL: ${{ github.event.deployment_status.target_url }}
+          GH_TOKEN: ${{ github.token }}
+          CREATOR: ${{ github.event.deployment_status.creator.login }}
+          ENVIRONMENT: ${{ github.event.deployment.environment }}
+          SHA: ${{ github.event.deployment.sha }}
         run: |
-          if [[ "$PROVIDER" == "vercel" ]]; then
-            unlighthouse-ci --site "$PREVIEW_URL" --${{ matrix.device }} --disable-robots-txt \
-              --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true"
-          else
-            unlighthouse-ci --site "$PREVIEW_URL" --${{ matrix.device }} --disable-robots-txt
+          output() { echo "$1=$2" >> "$GITHUB_OUTPUT"; }
+          skip() { echo "::notice::$1"; output baseline-url ""; exit 0; }
+
+          if [[ "$CREATOR" != "vercel[bot]" ]]; then
+            output provider unknown
+            skip "No baseline configured for deployments by $CREATOR. Skipping audits."
           fi
 
-      - name: Upload ${{ matrix.device }} preview audit
-        if: failure() || success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unlighthouse-preview-${{ matrix.device }}-report
-          path: "./.unlighthouse/"
-          include-hidden-files: "true"
+          output provider vercel
+          PKG_NAME=$(node -p "require('./core/package.json').name")
 
-  unlighthouse-audit-production:
-    name: Unlighthouse Audit Production (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
+          case "$PKG_NAME" in
+            "@bigcommerce/catalyst-core")
+              BASE_BRANCH=canary
+              BASE_ENVIRONMENT=Production
+              LIVE_URL=https://canary.catalyst-demo.site/ ;;
+            "@bigcommerce/catalyst-makeswift")
+              BASE_BRANCH=integrations/makeswift
+              BASE_ENVIRONMENT=Preview
+              LIVE_URL=https://canary.makeswift.catalyst-demo.site/ ;;
+            *)
+              skip "No baseline configured for package $PKG_NAME. Skipping audits." ;;
+          esac
+
+          MERGE_BASE=$(git merge-base "origin/$BASE_BRANCH" "$SHA")
+
+          if [[ "$MERGE_BASE" == "$SHA" ]]; then
+            # Merge queue builds of canary commits are Preview deployments too;
+            # only compare the branch's own deployment so each commit runs once.
+            if [[ "$ENVIRONMENT" != "$BASE_ENVIRONMENT" ]]; then
+              skip "$ENVIRONMENT deployment of a $BASE_BRANCH commit. Skipping audits."
+            fi
+
+            output mode branch
+            BASELINE_SHA=$(git rev-parse "$SHA^1")
+          else
+            output mode pr
+            BASELINE_SHA=$MERGE_BASE
+          fi
+
+          BASELINE_URL=""
+          BASELINE_PKG=$(git show "$BASELINE_SHA:core/package.json" | node -p 'JSON.parse(require("fs").readFileSync(0, "utf8")).name')
+
+          if [[ "$BASELINE_PKG" == "$PKG_NAME" ]]; then
+            for id in $(gh api "repos/$GITHUB_REPOSITORY/deployments?sha=$BASELINE_SHA&environment=$BASE_ENVIRONMENT" \
+              --jq '.[] | select(.creator.login == "vercel[bot]") | .id'); do
+              URL=$(gh api "repos/$GITHUB_REPOSITORY/deployments/$id/statuses" \
+                --jq '[.[] | select(.state == "success")][0].target_url // empty')
+
+              # Old deployments can be removed by Vercel's retention policy.
+              if [[ -n "$URL" ]] && [[ "$(curl -s -o /dev/null -w '%{http_code}' \
+                -H "x-vercel-protection-bypass: $VERCEL_PROTECTION_BYPASS" "$URL")" == "200" ]]; then
+                BASELINE_URL=$URL
+                break
+              fi
+            done
+          fi
+
+          if [[ -n "$BASELINE_URL" ]]; then
+            output baseline-url "$BASELINE_URL"
+            output baseline-label "$BASE_BRANCH at ${BASELINE_SHA:0:9}"
+          elif [[ "$MERGE_BASE" != "$SHA" ]]; then
+            echo "::notice::No deployment found for ${BASELINE_SHA:0:9}. Comparing against $LIVE_URL instead."
+            output baseline-url "$LIVE_URL"
+            output baseline-label "live $BASE_BRANCH"
+          else
+            skip "No deployment found for the previous commit ${BASELINE_SHA:0:9}. Skipping audits."
+          fi
+
+  unlighthouse-audit:
+    name: Unlighthouse Audit ${{ matrix.target }} (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
     needs: [detect-provider]
-    if: needs.detect-provider.outputs.production-url != ''
+    if: needs.detect-provider.outputs.baseline-url != ''
     runs-on: ubuntu-latest
     concurrency:
-      group: regression-production-${{ github.event.deployment.environment == 'Preview' && github.event.deployment.ref || github.event.deployment.sha }}-${{ matrix.device }}
-      cancel-in-progress: ${{ github.event.deployment.environment == 'Preview' }}
+      group: regression-${{ matrix.target }}-${{ github.event.deployment.sha }}-${{ matrix.device }}
+      cancel-in-progress: true
     strategy:
       matrix:
         device: [desktop, mobile]
+        target: [deployment, baseline]
 
     steps:
       - uses: actions/checkout@v4
@@ -131,25 +123,28 @@ jobs:
       - name: Install Dependencies
         run: npm install @unlighthouse/cli puppeteer -g
 
-      - name: Unlighthouse audit on ${{ matrix.device }} (production)
+      - name: Unlighthouse audit on ${{ matrix.device }} (${{ matrix.target }})
         env:
-          PRODUCTION_URL: ${{ needs.detect-provider.outputs.production-url }}
-        run: unlighthouse-ci --site "$PRODUCTION_URL" --${{ matrix.device }} --disable-robots-txt
+          SITE_URL: ${{ matrix.target == 'baseline' && needs.detect-provider.outputs.baseline-url || github.event.deployment_status.target_url }}
+        run: |
+          unlighthouse-ci --site "$SITE_URL" --${{ matrix.device }} --disable-robots-txt \
+            --extra-headers "x-vercel-protection-bypass=$VERCEL_PROTECTION_BYPASS,x-vercel-set-bypass-cookie=true"
 
-      - name: Upload ${{ matrix.device }} production audit
+      - name: Upload ${{ matrix.device }} ${{ matrix.target }} audit
         if: failure() || success()
         uses: actions/upload-artifact@v4
         with:
-          name: unlighthouse-production-${{ matrix.device }}-report
+          name: unlighthouse-${{ matrix.target }}-${{ matrix.device }}-report
           path: "./.unlighthouse/"
           include-hidden-files: "true"
 
   unlighthouse-compare:
     name: Unlighthouse Compare & Comment (${{ needs.detect-provider.outputs.provider }})
-    needs: [detect-provider, unlighthouse-audit-preview, unlighthouse-audit-production]
-    if: needs.detect-provider.outputs.is-preview == 'true' && needs.detect-provider.outputs.production-url != ''
+    needs: [detect-provider, unlighthouse-audit]
+    if: needs.detect-provider.outputs.baseline-url != ''
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       pull-requests: write
 
     steps:
@@ -169,20 +164,23 @@ jobs:
       - name: Compare audits
         env:
           PROVIDER: ${{ needs.detect-provider.outputs.provider }}
+          BASELINE_LABEL: ${{ needs.detect-provider.outputs.baseline-label }}
         run: |
           EXPECTED_ROUTES=$(node -e 'import("./unlighthouse.config.ts").then((m) => console.log(JSON.stringify(m.default.urls)))')
           node .github/scripts/compare-unlighthouse.mts \
-            --preview-desktop    /tmp/unlighthouse-artifacts/unlighthouse-preview-desktop-report/ci-result.json \
-            --preview-mobile     /tmp/unlighthouse-artifacts/unlighthouse-preview-mobile-report/ci-result.json \
-            --production-desktop /tmp/unlighthouse-artifacts/unlighthouse-production-desktop-report/ci-result.json \
-            --production-mobile  /tmp/unlighthouse-artifacts/unlighthouse-production-mobile-report/ci-result.json \
+            --deployment-desktop /tmp/unlighthouse-artifacts/unlighthouse-deployment-desktop-report/ci-result.json \
+            --deployment-mobile  /tmp/unlighthouse-artifacts/unlighthouse-deployment-mobile-report/ci-result.json \
+            --baseline-desktop   /tmp/unlighthouse-artifacts/unlighthouse-baseline-desktop-report/ci-result.json \
+            --baseline-mobile    /tmp/unlighthouse-artifacts/unlighthouse-baseline-mobile-report/ci-result.json \
             --output /tmp/unlighthouse-report.md \
             --meta-output /tmp/unlighthouse-meta.json \
             --expected-routes "$EXPECTED_ROUTES" \
+            --baseline-label "$BASELINE_LABEL" \
             --provider "$PROVIDER"
           cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post PR comment
+        if: needs.detect-provider.outputs.mode == 'pr'
         uses: actions/github-script@v7
         with:
           script: |
@@ -195,49 +193,22 @@ jobs:
               metaPath: '/tmp/unlighthouse-meta.json',
             })
 
+      - name: Post commit comment
+        if: needs.detect-provider.outputs.mode == 'branch'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const postComment = require('./.github/scripts/post-unlighthouse-commit-comment.js')
+            await postComment({
+              github,
+              context,
+              reportPath: '/tmp/unlighthouse-report.md',
+              metaPath: '/tmp/unlighthouse-meta.json',
+            })
+
       - name: Fail on regressions
         run: |
           if [[ "$(jq -r .failed /tmp/unlighthouse-meta.json)" == "true" ]]; then
             echo "::error::Unlighthouse found regressions or incomplete scans. See the job summary."
             exit 1
           fi
-
-  unlighthouse-report:
-    name: Unlighthouse Report (${{ needs.detect-provider.outputs.provider }}) — ${{ needs.detect-provider.outputs.branch-label }}
-    needs: [detect-provider, unlighthouse-audit-production]
-    if: needs.detect-provider.outputs.is-preview == 'false' && needs.detect-provider.outputs.production-url != ''
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Download production Unlighthouse artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: unlighthouse-production-*-report
-          path: /tmp/unlighthouse-artifacts
-          merge-multiple: false
-
-      - name: Format report
-        run: |
-          node .github/scripts/audit-unlighthouse.mts \
-            --desktop /tmp/unlighthouse-artifacts/unlighthouse-production-desktop-report/ci-result.json \
-            --mobile  /tmp/unlighthouse-artifacts/unlighthouse-production-mobile-report/ci-result.json \
-            --branch  "${{ needs.detect-provider.outputs.branch-label }}" \
-            --output  /tmp/unlighthouse-report.md || status=$?
-          cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
-          exit "${status:-0}"
-
-      - name: Post commit comment
-        if: success() || failure()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const postReport = require('./.github/scripts/post-unlighthouse-commit-comment.js')
-            await postReport({ github, context, reportPath: '/tmp/unlighthouse-report.md' })

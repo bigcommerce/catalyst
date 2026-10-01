@@ -71,24 +71,20 @@ const METRIC_LABELS: Record<string, string> = {
 };
 
 const COL_HEADER =
-  "| | Prod Desktop | Prod Mobile | Preview Desktop | Preview Mobile |";
+  "| | Before Desktop | Before Mobile | After Desktop | After Mobile |";
 const COL_SEP =
-  "|:-|:------------|:------------|:----------------|:---------------|";
+  "|:-|:--------------|:-------------|:-------------|:------------|";
 
-// Accessibility and SEO audits read the rendered DOM and score identically on
-// matched routes run to run, so any drop is a real regression.
-const GATED_CATEGORIES = ["accessibility", "seo"];
-
-// Best practices hasn't been stable long enough to gate on, so it's only
-// reported in the details.
-const REPORTED_CATEGORIES = ["best-practices"];
+// These score identically on matched routes run to run, so any drop is a real
+// regression.
+const GATED_CATEGORIES = ["accessibility", "seo", "best-practices"];
 
 interface RouteDrop {
   device: string;
   category: string;
   path: string;
-  production: number;
-  preview: number;
+  baseline: number;
+  deployment: number;
 }
 
 interface CompareOptions {
@@ -98,6 +94,8 @@ interface CompareOptions {
   // Routes both sides were asked to scan. Defaults to every route either side
   // reported.
   expectedRoutes?: string[];
+  // Describes what the deployment is compared against, e.g. "canary at 1a2b3c4".
+  baselineLabel?: string;
   provider?: string;
 }
 
@@ -140,55 +138,55 @@ interface UncomparedRoute {
 // drops it from the results. Those routes can't be compared, but that alone
 // isn't a regression.
 function findUncomparedRoutes(
-  production: CiResult,
-  preview: CiResult,
+  baseline: CiResult,
+  deployment: CiResult,
   device: string,
   expectedRoutes: string[] | undefined,
 ): UncomparedRoute[] {
-  const productionPaths = new Set(
-    (production.routes ?? []).map((route) => route.path),
+  const baselinePaths = new Set(
+    (baseline.routes ?? []).map((route) => route.path),
   );
-  const previewPaths = new Set(
-    (preview.routes ?? []).map((route) => route.path),
+  const deploymentPaths = new Set(
+    (deployment.routes ?? []).map((route) => route.path),
   );
   const expected =
-    expectedRoutes ?? [...new Set([...productionPaths, ...previewPaths])];
+    expectedRoutes ?? [...new Set([...baselinePaths, ...deploymentPaths])];
 
   return expected.flatMap((path) => {
-    const inProduction = productionPaths.has(path);
-    const inPreview = previewPaths.has(path);
+    const inBaseline = baselinePaths.has(path);
+    const inDeployment = deploymentPaths.has(path);
 
-    if (inProduction && inPreview) return [];
+    if (inBaseline && inDeployment) return [];
 
     const reason =
-      !inProduction && !inPreview
+      !inBaseline && !inDeployment
         ? "failed on both"
-        : inProduction
-          ? "failed on preview"
-          : "failed on production";
+        : inBaseline
+          ? "failed on this deployment"
+          : "failed on the baseline";
 
     return [{ device, path, reason }];
   });
 }
 
 function findRouteDrops(
-  production: CiResult,
-  preview: CiResult,
+  baseline: CiResult,
+  deployment: CiResult,
   device: string,
   categories: string[],
 ): RouteDrop[] {
-  const productionRoutes = new Map(
-    (production.routes ?? []).map((route) => [route.path, route]),
+  const baselineRoutes = new Map(
+    (baseline.routes ?? []).map((route) => [route.path, route]),
   );
   const drops: RouteDrop[] = [];
 
-  for (const route of preview.routes ?? []) {
-    const productionRoute = productionRoutes.get(route.path);
+  for (const route of deployment.routes ?? []) {
+    const baselineRoute = baselineRoutes.get(route.path);
 
-    if (!productionRoute) continue;
+    if (!baselineRoute) continue;
 
     for (const category of categories) {
-      const before = productionRoute.categories[category]?.score;
+      const before = baselineRoute.categories[category]?.score;
       const after = route.categories[category]?.score;
 
       if (typeof before !== "number" || typeof after !== "number") continue;
@@ -198,8 +196,8 @@ function findRouteDrops(
           device,
           category,
           path: route.path,
-          production: before,
-          preview: after,
+          baseline: before,
+          deployment: after,
         });
       }
     }
@@ -210,27 +208,27 @@ function findRouteDrops(
 
 function dropsTable(drops: RouteDrop[]): string[] {
   return [
-    "| Route | Device | Category | Production | Preview |",
+    "| Route | Device | Category | Before | After |",
     "|:------|:-------|:---------|:-----------|:--------|",
     ...drops.map(
       (drop) =>
-        `| \`${drop.path}\` | ${drop.device} | ${CATEGORY_LABELS[drop.category] ?? drop.category} | ${score(drop.production)} | ${score(drop.preview)} |`,
+        `| \`${drop.path}\` | ${drop.device} | ${CATEGORY_LABELS[drop.category] ?? drop.category} | ${score(drop.baseline)} | ${score(drop.deployment)} |`,
     ),
   ];
 }
 
 // Median of per-route performance drops, in points, across matched routes.
 function medianPerformanceDrop(
-  production: CiResult,
-  preview: CiResult,
+  baseline: CiResult,
+  deployment: CiResult,
 ): number | null {
-  const productionRoutes = new Map(
-    (production.routes ?? []).map((route) => [route.path, route]),
+  const baselineRoutes = new Map(
+    (baseline.routes ?? []).map((route) => [route.path, route]),
   );
   const drops: number[] = [];
 
-  for (const route of preview.routes ?? []) {
-    const before = productionRoutes.get(route.path)?.categories.performance?.score;
+  for (const route of deployment.routes ?? []) {
+    const before = baselineRoutes.get(route.path)?.categories.performance?.score;
     const after = route.categories.performance?.score;
 
     if (typeof before !== "number" || typeof after !== "number") continue;
@@ -257,40 +255,41 @@ function formatChange(drop: number | null): string {
 }
 
 function compareResults(
-  productionDesktop: CiResult,
-  productionMobile: CiResult,
-  previewDesktop: CiResult,
-  previewMobile: CiResult,
+  baselineDesktop: CiResult,
+  baselineMobile: CiResult,
+  deploymentDesktop: CiResult,
+  deploymentMobile: CiResult,
   {
     performanceThreshold = 15,
     expectedRoutes,
+    baselineLabel = "the baseline deployment",
     provider,
   }: CompareOptions = {},
 ): { markdown: string; failed: boolean } {
   const scanProblems = [
-    ...validateScan(productionDesktop, "Production desktop", 1),
-    ...validateScan(productionMobile, "Production mobile", 1),
-    ...validateScan(previewDesktop, "Preview desktop", 1),
-    ...validateScan(previewMobile, "Preview mobile", 1),
+    ...validateScan(baselineDesktop, "Baseline desktop", 1),
+    ...validateScan(baselineMobile, "Baseline mobile", 1),
+    ...validateScan(deploymentDesktop, "Deployment desktop", 1),
+    ...validateScan(deploymentMobile, "Deployment mobile", 1),
   ];
 
   const uncompared: UncomparedRoute[] = [];
 
-  for (const [device, production, preview] of [
-    ["Desktop", productionDesktop, previewDesktop],
-    ["Mobile", productionMobile, previewMobile],
+  for (const [device, baseline, deployment] of [
+    ["Desktop", baselineDesktop, deploymentDesktop],
+    ["Mobile", baselineMobile, deploymentMobile],
   ] as const) {
     const missing = findUncomparedRoutes(
-      production,
-      preview,
+      baseline,
+      deployment,
       device,
       expectedRoutes,
     );
     const total =
       expectedRoutes?.length ??
       new Set([
-        ...(production.routes ?? []).map((route) => route.path),
-        ...(preview.routes ?? []).map((route) => route.path),
+        ...(baseline.routes ?? []).map((route) => route.path),
+        ...(deployment.routes ?? []).map((route) => route.path),
       ]).size;
     const compared = total - missing.length;
 
@@ -306,41 +305,26 @@ function compareResults(
 
   const regressions = [
     ...findRouteDrops(
-      productionDesktop,
-      previewDesktop,
+      baselineDesktop,
+      deploymentDesktop,
       "Desktop",
       GATED_CATEGORIES,
     ),
     ...findRouteDrops(
-      productionMobile,
-      previewMobile,
+      baselineMobile,
+      deploymentMobile,
       "Mobile",
       GATED_CATEGORIES,
-    ),
-  ];
-
-  const reportedDrops = [
-    ...findRouteDrops(
-      productionDesktop,
-      previewDesktop,
-      "Desktop",
-      REPORTED_CATEGORIES,
-    ),
-    ...findRouteDrops(
-      productionMobile,
-      previewMobile,
-      "Mobile",
-      REPORTED_CATEGORIES,
     ),
   ];
 
   const desktopPerformanceDrop = medianPerformanceDrop(
-    productionDesktop,
-    previewDesktop,
+    baselineDesktop,
+    deploymentDesktop,
   );
   const mobilePerformanceDrop = medianPerformanceDrop(
-    productionMobile,
-    previewMobile,
+    baselineMobile,
+    deploymentMobile,
   );
 
   // Requiring both devices keeps one slow runner from failing the check.
@@ -359,7 +343,7 @@ function compareResults(
 
   lines.push(`## Unlighthouse Comparison${providerLabel}`);
   lines.push(
-    "Comparing PR preview deployment Unlighthouse scores vs production Unlighthouse scores.",
+    `Comparing this deployment's Unlighthouse scores against ${baselineLabel}.`,
   );
   lines.push("");
 
@@ -379,9 +363,9 @@ function compareResults(
   }
 
   if (regressions.length) {
-    lines.push("### ❌ Accessibility and SEO regressions");
+    lines.push("### ❌ Accessibility, SEO, and best practices regressions");
     lines.push(
-      "_These scores are stable between runs, so a drop fails the check. Open the full report to see which audits failed. If canary fixed this route since you branched, rebase onto canary._",
+      "_These scores are stable between runs, so a drop fails the check. Open the full report to see which audits failed._",
     );
     lines.push("");
     lines.push(...dropsTable(regressions));
@@ -402,7 +386,7 @@ function compareResults(
 
   lines.push("### Performance");
   lines.push(
-    `_Median per-route change, preview vs production. Fails at a drop of ${performanceThreshold} points on both devices._`,
+    `_Median per-route change against the baseline. Fails at a drop of ${performanceThreshold} points on both devices._`,
   );
   lines.push("");
   lines.push("| Desktop | Mobile |");
@@ -411,14 +395,6 @@ function compareResults(
     `| ${formatChange(desktopPerformanceDrop)} | ${formatChange(mobilePerformanceDrop)} |`,
   );
   lines.push("");
-
-  if (reportedDrops.length) {
-    lines.push("### Best practices drops");
-    lines.push("_Not gated yet, so these don't fail the check._");
-    lines.push("");
-    lines.push(...dropsTable(reportedDrops));
-    lines.push("");
-  }
 
   if (uncompared.length) {
     lines.push("### Routes not compared");
@@ -447,10 +423,10 @@ function compareResults(
   lines.push(
     row(
       "Score",
-      score(productionDesktop.summary.score),
-      score(productionMobile.summary.score),
-      score(previewDesktop.summary.score),
-      score(previewMobile.summary.score),
+      score(baselineDesktop.summary.score),
+      score(baselineMobile.summary.score),
+      score(deploymentDesktop.summary.score),
+      score(deploymentMobile.summary.score),
     ),
   );
   lines.push("");
@@ -458,20 +434,20 @@ function compareResults(
   lines.push("### Category Scores");
   lines.push("");
   lines.push(
-    "| Category | Prod Desktop | Prod Mobile | Preview Desktop | Preview Mobile |",
+    "| Category | Before Desktop | Before Mobile | After Desktop | After Mobile |",
   );
   lines.push(
-    "|:---------|:------------|:------------|:----------------|:---------------|",
+    "|:---------|:--------------|:-------------|:-------------|:------------|",
   );
 
   for (const id of CATEGORY_ORDER) {
     lines.push(
       row(
         CATEGORY_LABELS[id] ?? id,
-        score(productionDesktop.summary.categories[id]?.score ?? 0),
-        score(productionMobile.summary.categories[id]?.score ?? 0),
-        score(previewDesktop.summary.categories[id]?.score ?? 0),
-        score(previewMobile.summary.categories[id]?.score ?? 0),
+        score(baselineDesktop.summary.categories[id]?.score ?? 0),
+        score(baselineMobile.summary.categories[id]?.score ?? 0),
+        score(deploymentDesktop.summary.categories[id]?.score ?? 0),
+        score(deploymentMobile.summary.categories[id]?.score ?? 0),
       ),
     );
   }
@@ -481,20 +457,20 @@ function compareResults(
   lines.push("### Core Web Vitals");
   lines.push("");
   lines.push(
-    "| Metric | Prod Desktop | Prod Mobile | Preview Desktop | Preview Mobile |",
+    "| Metric | Before Desktop | Before Mobile | After Desktop | After Mobile |",
   );
   lines.push(
-    "|:-------|:------------|:------------|:----------------|:---------------|",
+    "|:-------|:--------------|:-------------|:-------------|:------------|",
   );
 
   for (const id of METRIC_ORDER) {
     lines.push(
       row(
         METRIC_LABELS[id] ?? id,
-        productionDesktop.summary.metrics[id]?.displayValue ?? "—",
-        productionMobile.summary.metrics[id]?.displayValue ?? "—",
-        previewDesktop.summary.metrics[id]?.displayValue ?? "—",
-        previewMobile.summary.metrics[id]?.displayValue ?? "—",
+        baselineDesktop.summary.metrics[id]?.displayValue ?? "—",
+        baselineMobile.summary.metrics[id]?.displayValue ?? "—",
+        deploymentDesktop.summary.metrics[id]?.displayValue ?? "—",
+        deploymentMobile.summary.metrics[id]?.displayValue ?? "—",
       ),
     );
   }
@@ -514,50 +490,52 @@ const isMain = process.argv[1] === fileURLToPath(import.meta.url);
 if (isMain) {
   const { values } = parseArgs({
     options: {
-      "preview-desktop": { type: "string" },
-      "preview-mobile": { type: "string" },
-      "production-desktop": { type: "string" },
-      "production-mobile": { type: "string" },
+      "deployment-desktop": { type: "string" },
+      "deployment-mobile": { type: "string" },
+      "baseline-desktop": { type: "string" },
+      "baseline-mobile": { type: "string" },
       output: { type: "string" },
       "meta-output": { type: "string" },
       "performance-threshold": { type: "string" },
       "expected-routes": { type: "string" },
+      "baseline-label": { type: "string" },
       provider: { type: "string" },
     },
   });
 
-  const previewDesktopPath = values["preview-desktop"] ?? "";
-  const previewMobilePath = values["preview-mobile"] ?? "";
-  const productionDesktopPath = values["production-desktop"] ?? "";
-  const productionMobilePath = values["production-mobile"] ?? "";
+  const deploymentDesktopPath = values["deployment-desktop"] ?? "";
+  const deploymentMobilePath = values["deployment-mobile"] ?? "";
+  const baselineDesktopPath = values["baseline-desktop"] ?? "";
+  const baselineMobilePath = values["baseline-mobile"] ?? "";
 
   if (
-    !previewDesktopPath ||
-    !previewMobilePath ||
-    !productionDesktopPath ||
-    !productionMobilePath
+    !deploymentDesktopPath ||
+    !deploymentMobilePath ||
+    !baselineDesktopPath ||
+    !baselineMobilePath
   ) {
     console.error(
-      "Usage: compare-unlighthouse.mts --preview-desktop <path> --preview-mobile <path> --production-desktop <path> --production-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--expected-routes <json array>] [--provider <name>]",
+      "Usage: compare-unlighthouse.mts --deployment-desktop <path> --deployment-mobile <path> --baseline-desktop <path> --baseline-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--expected-routes <json array>] [--baseline-label <text>] [--provider <name>]",
     );
     process.exit(1);
   }
 
-  const previewDesktop = loadCiResult(resolve(previewDesktopPath));
-  const previewMobile = loadCiResult(resolve(previewMobilePath));
-  const productionDesktop = loadCiResult(resolve(productionDesktopPath));
-  const productionMobile = loadCiResult(resolve(productionMobilePath));
+  const deploymentDesktop = loadCiResult(resolve(deploymentDesktopPath));
+  const deploymentMobile = loadCiResult(resolve(deploymentMobilePath));
+  const baselineDesktop = loadCiResult(resolve(baselineDesktopPath));
+  const baselineMobile = loadCiResult(resolve(baselineMobilePath));
 
   const { markdown, failed } = compareResults(
-    productionDesktop,
-    productionMobile,
-    previewDesktop,
-    previewMobile,
+    baselineDesktop,
+    baselineMobile,
+    deploymentDesktop,
+    deploymentMobile,
     {
       performanceThreshold: Number(values["performance-threshold"] ?? "15"),
       expectedRoutes: values["expected-routes"]
         ? (JSON.parse(values["expected-routes"]) as string[])
         : undefined,
+      baselineLabel: values["baseline-label"],
       provider: values.provider,
     },
   );
