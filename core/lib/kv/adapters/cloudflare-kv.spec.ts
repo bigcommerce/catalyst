@@ -6,6 +6,7 @@ import {
   isRoutesKvNamespace,
   type RoutesKvNamespace,
 } from './cloudflare-kv';
+import { SHARED_STORE_RECHECK_MS } from './memory';
 
 const CLOUDFLARE_CONTEXT_SYMBOL = Symbol.for('__cloudflare-context__');
 
@@ -15,7 +16,7 @@ process.env.KV_LOGGER = 'false';
 
 /**
  * Stands in for a Workers KV namespace. Deliberately stores raw strings and
- * parses on `get(key, 'json')`, exactly as Workers KV does, so a round-trip
+ * parses on `get(key, { type: 'json' })`, exactly as Workers KV does, so a round-trip
  * that mismatched `JSON.stringify` / `'json'` would fail here.
  */
 class FakeKvNamespace implements RoutesKvNamespace {
@@ -23,9 +24,12 @@ class FakeKvNamespace implements RoutesKvNamespace {
 
   lastPutOptions: { expirationTtl?: number } | undefined;
 
+  lastGetOptions: { type: 'json'; cacheTtl?: number } | undefined;
+
   // eslint-disable-next-line @typescript-eslint/require-await
-  async get(key: string, type: 'json'): Promise<unknown> {
-    expect(type).toBe('json');
+  async get(key: string, options: { type: 'json'; cacheTtl?: number }): Promise<unknown> {
+    expect(options.type).toBe('json');
+    this.lastGetOptions = options;
 
     const raw = this.store.get(key);
 
@@ -213,6 +217,24 @@ describe('CloudflareKvAdapter', () => {
     await adapter.set('key', 'value');
 
     expect(namespace.lastPutOptions?.expirationTtl).toBeGreaterThan(thirtyMinutes);
+  });
+
+  // At or below the L1 window, the L1 re-reads just as the location's copy
+  // expires, so reads keep going to central storage.
+  it('caches reads at the location for longer than the in-process L1 window', async () => {
+    await adapter.mget('key');
+
+    expect(namespace.lastGetOptions?.cacheTtl).toBeGreaterThan(SHARED_STORE_RECHECK_MS / 1000);
+  });
+
+  // Longer than the storefront status window would serve a status past the
+  // point `with-routes` considers it fresh.
+  it('caches reads no longer than the shortest freshness window in with-routes', async () => {
+    const fiveMinutes = 60 * 5;
+
+    await adapter.mget('key');
+
+    expect(namespace.lastGetOptions?.cacheTtl).toBeLessThanOrEqual(fiveMinutes);
   });
 });
 
