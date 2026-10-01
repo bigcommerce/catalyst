@@ -14,6 +14,7 @@ import {
 } from '~/tests/fixtures/utils/api/customers';
 import { getTranslations } from '~/tests/lib/i18n';
 
+import { runCustomerStore } from './run-customer';
 import { customerSessionStore } from './session';
 
 export class CustomerFixture extends Fixture {
@@ -29,7 +30,7 @@ export class CustomerFixture extends Fixture {
   }
 
   /**
-   * Checks environment variables for a test customer. If the test customer is not found, it creates a new one. \
+   * Gets the customer shared by every test in this run (or the environment's test customer in read-only mode). If there is none, it creates a new one. \
    * This method should always be preferred over creating a new customer directly, unless the test you are writing specifically requires a new customer.
    */
   async getOrCreateTestCustomer(): Promise<Customer> {
@@ -60,6 +61,10 @@ export class CustomerFixture extends Fixture {
   }
 
   async getTestCustomer(): Promise<Customer | undefined> {
+    if (!testEnv.TESTS_READ_ONLY) {
+      return this.getOrCreateRunCustomer();
+    }
+
     if (
       !testEnv.TEST_CUSTOMER_ID ||
       !testEnv.TEST_CUSTOMER_EMAIL ||
@@ -217,6 +222,31 @@ export class CustomerFixture extends Fixture {
 
     await this.api.customers.deleteAddresses(this.addresses.map(({ id }) => id));
     await this.api.customers.deleteWishlists(this.wishlists.map(({ id }) => id));
+  }
+
+  /** Created once per run and deleted by the global teardown, so it is not tracked for per-test cleanup. */
+  private async getOrCreateRunCustomer(): Promise<Customer> {
+    const stored = await runCustomerStore.get();
+
+    if (stored) {
+      const storedCustomer = await this.api.customers.getById(stored.id, true);
+
+      storedCustomer.password = stored.password;
+
+      return storedCustomer;
+    }
+
+    const password = faker.internet.password({
+      pattern: /[a-zA-Z0-9]/,
+      prefix: '1At!',
+      length: 10,
+    });
+
+    const customer = await this.api.customers.create(this.fakeCreateCustomerData(password, true));
+
+    await runCustomerStore.set({ id: customer.id, password });
+
+    return customer;
   }
 
   private fakeCreateAddressData({
