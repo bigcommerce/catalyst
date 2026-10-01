@@ -6,6 +6,7 @@ import { getAddPaymentPageData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string; paymentMethodId: string }>;
+  searchParams: Promise<{ init?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -17,8 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function AddPaymentMethod({ params }: Props) {
+export default async function AddPaymentMethod({ params, searchParams }: Props) {
   const { locale, paymentMethodId } = await params;
+  const { init } = await searchParams;
+  const requiresInitialization = init === '1';
 
   setRequestLocale(locale);
 
@@ -36,8 +39,9 @@ export default async function AddPaymentMethod({ params }: Props) {
         </h1>
       </header>
       <AccountPaymentsMicroapp
-        key={`${locale}-${paymentMethodId}`}
+        key={`${locale}-${paymentMethodId}-${requiresInitialization}`}
         manifest={manifest}
+        requiresInitialization={requiresInitialization}
         storeContextData={storeContextData}
       />
     </>
