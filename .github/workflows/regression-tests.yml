@@ -1,5 +1,6 @@
 name: Regression Tests
 
+# Vercel reports each deployment to GitHub; these audits only run for Vercel.
 on:
   deployment_status:
     states: ["success"]
@@ -8,14 +9,14 @@ env:
   VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
 jobs:
-  detect-provider:
-    name: Detect Deployment Provider
+  find-baseline:
+    name: Find Baseline Deployment
+    if: github.event.deployment_status.creator.login == 'vercel[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: read
     outputs:
-      provider: ${{ steps.detect.outputs.provider }}
       mode: ${{ steps.detect.outputs.mode }}
       baseline-url: ${{ steps.detect.outputs.baseline-url }}
       baseline-label: ${{ steps.detect.outputs.baseline-label }}
@@ -27,23 +28,16 @@ jobs:
       # Compare each deployment against the deployment of the commit it builds
       # on, so only this change differs: the merge base for a PR, or the
       # previous commit for a push to the base branch.
-      - name: Detect provider and baseline deployment
+      - name: Find baseline deployment
         id: detect
         env:
           GH_TOKEN: ${{ github.token }}
-          CREATOR: ${{ github.event.deployment_status.creator.login }}
           ENVIRONMENT: ${{ github.event.deployment.environment }}
           SHA: ${{ github.event.deployment.sha }}
         run: |
           output() { echo "$1=$2" >> "$GITHUB_OUTPUT"; }
           skip() { echo "::notice::$1"; output baseline-url ""; exit 0; }
 
-          if [[ "$CREATOR" != "vercel[bot]" ]]; then
-            output provider unknown
-            skip "No baseline configured for deployments by $CREATOR. Skipping audits."
-          fi
-
-          output provider vercel
           PKG_NAME=$(node -p "require('./core/package.json').name")
 
           case "$PKG_NAME" in
@@ -105,9 +99,9 @@ jobs:
           fi
 
   unlighthouse-audit:
-    name: Unlighthouse Audit ${{ matrix.target }} (${{ needs.detect-provider.outputs.provider }}) - ${{ matrix.device }}
-    needs: [detect-provider]
-    if: needs.detect-provider.outputs.baseline-url != ''
+    name: Unlighthouse Audit ${{ matrix.target }} - ${{ matrix.device }}
+    needs: [find-baseline]
+    if: needs.find-baseline.outputs.baseline-url != ''
     runs-on: ubuntu-latest
     concurrency:
       group: regression-${{ matrix.target }}-${{ github.event.deployment.sha }}-${{ matrix.device }}
@@ -125,7 +119,7 @@ jobs:
 
       - name: Unlighthouse audit on ${{ matrix.device }} (${{ matrix.target }})
         env:
-          SITE_URL: ${{ matrix.target == 'baseline' && needs.detect-provider.outputs.baseline-url || github.event.deployment_status.target_url }}
+          SITE_URL: ${{ matrix.target == 'baseline' && needs.find-baseline.outputs.baseline-url || github.event.deployment_status.target_url }}
         # Extra headers go to every request the page makes, third parties
         # included, so the bypass secret is exchanged once for Vercel's bypass
         # cookie, which the browser only sends to this deployment.
@@ -153,9 +147,9 @@ jobs:
           include-hidden-files: "true"
 
   unlighthouse-compare:
-    name: Unlighthouse Compare & Comment (${{ needs.detect-provider.outputs.provider }})
-    needs: [detect-provider, unlighthouse-audit]
-    if: needs.detect-provider.outputs.baseline-url != ''
+    name: Unlighthouse Compare & Comment
+    needs: [find-baseline, unlighthouse-audit]
+    if: needs.find-baseline.outputs.baseline-url != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -177,8 +171,7 @@ jobs:
 
       - name: Compare audits
         env:
-          PROVIDER: ${{ needs.detect-provider.outputs.provider }}
-          BASELINE_LABEL: ${{ needs.detect-provider.outputs.baseline-label }}
+          BASELINE_LABEL: ${{ needs.find-baseline.outputs.baseline-label }}
         run: |
           EXPECTED_ROUTES=$(node -e 'import("./unlighthouse.config.ts").then((m) => console.log(JSON.stringify(m.default.urls)))')
           node .github/scripts/compare-unlighthouse.mts \
@@ -189,12 +182,11 @@ jobs:
             --output /tmp/unlighthouse-report.md \
             --meta-output /tmp/unlighthouse-meta.json \
             --expected-routes "$EXPECTED_ROUTES" \
-            --baseline-label "$BASELINE_LABEL" \
-            --provider "$PROVIDER"
+            --baseline-label "$BASELINE_LABEL"
           cat /tmp/unlighthouse-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Post PR comment
-        if: needs.detect-provider.outputs.mode == 'pr'
+        if: needs.find-baseline.outputs.mode == 'pr'
         uses: actions/github-script@v7
         with:
           script: |
@@ -202,13 +194,12 @@ jobs:
             await postComment({
               github,
               context,
-              provider: '${{ needs.detect-provider.outputs.provider }}',
               reportPath: '/tmp/unlighthouse-report.md',
               metaPath: '/tmp/unlighthouse-meta.json',
             })
 
       - name: Post commit comment
-        if: needs.detect-provider.outputs.mode == 'branch'
+        if: needs.find-baseline.outputs.mode == 'branch'
         uses: actions/github-script@v7
         with:
           script: |

@@ -254,30 +254,6 @@ describe('report heading', () => {
     );
   });
 
-  it('appends provider label when provider is given', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, { provider: 'vercel' });
-
-    assert.ok(
-      markdown.includes('## Unlighthouse Comparison — Vercel'),
-      'Missing provider label in heading',
-    );
-  });
-
-  it('capitalises the provider label', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, { provider: 'cloudflare' });
-
-    assert.ok(markdown.includes('— Cloudflare'), 'Provider should be capitalised');
-  });
-
-  it('omits provider label when none provided', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
-
-    assert.ok(
-      !markdown.includes(' — '),
-      'Should not contain a provider label separator',
-    );
-  });
-
   it('contains the description text', () => {
     const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 

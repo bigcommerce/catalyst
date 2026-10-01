@@ -9,7 +9,6 @@ const require = createRequire(import.meta.url);
 const postComment = require('../post-unlighthouse-pr-comment.js') as (args: {
   github: ReturnType<typeof makeGithub>['github'];
   context: ReturnType<typeof makeContext>;
-  provider?: string;
   reportPath?: string;
   metaPath?: string;
 }) => Promise<void>;
@@ -165,7 +164,7 @@ describe('comment update', () => {
     const marker = '<!-- unlighthouse-vercel-report -->';
     const existing = { id: 55, body: `${marker}\nOld content` };
     const { github, calls } = makeGithub({ comments: [existing] });
-    await postComment({ github, context: makeContext(), provider: 'vercel', reportPath, metaPath });
+    await postComment({ github, context: makeContext(), reportPath, metaPath });
 
     assert.equal(calls.update.length, 1);
     assert.equal(calls.create.length, 0);
@@ -177,7 +176,7 @@ describe('comment update', () => {
     const marker = '<!-- unlighthouse-vercel-report -->';
     const existing = { id: 55, body: `${marker}\nOld content` };
     const { github, calls } = makeGithub({ comments: [existing] });
-    await postComment({ github, context: makeContext(), provider: 'vercel', reportPath, metaPath });
+    await postComment({ github, context: makeContext(), reportPath, metaPath });
 
     assert.equal(calls.update.length, 1);
     assert.equal(calls.create.length, 0);
@@ -194,7 +193,7 @@ describe('comment update', () => {
       { id: 2, body: '<!-- some-other-marker -->\nOther report' },
     ];
     const { github, calls } = makeGithub({ comments });
-    await postComment({ github, context: makeContext(), provider: 'vercel', reportPath, metaPath });
+    await postComment({ github, context: makeContext(), reportPath, metaPath });
 
     assert.equal(calls.create.length, 1);
     assert.equal(calls.update.length, 0);
@@ -206,25 +205,16 @@ describe('comment update', () => {
 // ---------------------------------------------------------------------------
 
 describe('comment body', () => {
-  it('starts with the provider-specific marker', async () => {
+  it('starts with the report marker', async () => {
     const { github, calls } = makeGithub();
-    await postComment({ github, context: makeContext(), provider: 'vercel', reportPath, metaPath });
+    await postComment({ github, context: makeContext(), reportPath, metaPath });
 
     const body = (calls.create[0] as { body: string }).body;
 
     assert.ok(
       body.startsWith('<!-- unlighthouse-vercel-report -->\n'),
-      `Body should start with vercel marker, got: ${body.slice(0, 60)}`,
+      `Body should start with the marker, got: ${body.slice(0, 60)}`,
     );
-  });
-
-  it('uses provider name in the marker', async () => {
-    const { github, calls } = makeGithub();
-    await postComment({ github, context: makeContext(), provider: 'cloudflare', reportPath, metaPath });
-
-    const body = (calls.create[0] as { body: string }).body;
-
-    assert.ok(body.includes('<!-- unlighthouse-cloudflare-report -->'));
   });
 
   it('includes the report file content', async () => {

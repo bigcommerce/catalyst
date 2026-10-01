@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = async ({ github, context, provider = 'unknown', reportPath = '/tmp/unlighthouse-report.md', metaPath = '/tmp/unlighthouse-meta.json' }) => {
+module.exports = async ({ github, context, reportPath = '/tmp/unlighthouse-report.md', metaPath = '/tmp/unlighthouse-meta.json' }) => {
   const { failed } = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
 
   // Find PR from commit SHA (context.issue.number is 0 in deployment_status events;
@@ -20,7 +20,8 @@ module.exports = async ({ github, context, provider = 'unknown', reportPath = '/
   if (!prNumber) return;
 
   const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-  const marker = `<!-- unlighthouse-${provider}-report -->`;
+  // Matches comments posted when reports were per deployment provider.
+  const marker = '<!-- unlighthouse-vercel-report -->';
 
   const { data: comments } = await github.rest.issues.listComments({
     owner: context.repo.owner,

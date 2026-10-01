@@ -122,7 +122,6 @@ interface CompareOptions {
   expectedRoutes?: string[];
   // Describes what the deployment is compared against, e.g. "canary at 1a2b3c4".
   baselineLabel?: string;
-  provider?: string;
 }
 
 function validateScan(
@@ -354,7 +353,6 @@ function compareResults(
     performanceThreshold = 15,
     expectedRoutes,
     baselineLabel = "the baseline deployment",
-    provider,
   }: CompareOptions = {},
 ): { markdown: string; failed: boolean } {
   const scanProblems = [
@@ -428,11 +426,7 @@ function compareResults(
 
   const lines: string[] = [];
 
-  const providerLabel = provider
-    ? ` — ${provider.charAt(0).toUpperCase()}${provider.slice(1)}`
-    : "";
-
-  lines.push(`## Unlighthouse Comparison${providerLabel}`);
+  lines.push("## Unlighthouse Comparison");
   lines.push(
     `Comparing this deployment's Unlighthouse scores against ${baselineLabel}.`,
   );
@@ -595,7 +589,6 @@ if (isMain) {
       "performance-threshold": { type: "string" },
       "expected-routes": { type: "string" },
       "baseline-label": { type: "string" },
-      provider: { type: "string" },
     },
   });
 
@@ -611,7 +604,7 @@ if (isMain) {
     !baselineMobilePath
   ) {
     console.error(
-      "Usage: compare-unlighthouse.mts --deployment-desktop <path> --deployment-mobile <path> --baseline-desktop <path> --baseline-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--expected-routes <json array>] [--baseline-label <text>] [--provider <name>]",
+      "Usage: compare-unlighthouse.mts --deployment-desktop <path> --deployment-mobile <path> --baseline-desktop <path> --baseline-mobile <path> [--output <path>] [--meta-output <path>] [--performance-threshold <n>] [--expected-routes <json array>] [--baseline-label <text>]",
     );
     process.exit(1);
   }
@@ -632,7 +625,6 @@ if (isMain) {
         ? (JSON.parse(values["expected-routes"]) as string[])
         : undefined,
       baselineLabel: values["baseline-label"],
-      provider: values.provider,
     },
   );
 
