@@ -11,12 +11,14 @@ import { debug } from './commands/debug';
 import { deploy } from './commands/deploy';
 import { domains } from './commands/domains';
 import { env } from './commands/env';
+import { feedback } from './commands/feedback';
 import { logs } from './commands/logs';
 import { projects } from './commands/projects';
 import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
 import { upgrade } from './commands/upgrade';
 import { version } from './commands/version';
+import { surveyPostHook } from './hooks/survey';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
 import { consola } from './lib/logger';
 
@@ -44,6 +46,10 @@ program
     'CLI tool for Catalyst development.\n\nConfiguration priority: flags > process.env > .bigcommerce/project.json. `build` and `deploy` additionally load env files (--env-path, or an auto-loaded .env.local/.env) for the build.\n\nCATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH if unset.\n\nRun `catalyst <command> --help` for details on a specific command.',
   )
   .configureHelp({ showGlobalOptions: true })
+  .option(
+    '--no-hints',
+    'Do not show the feedback survey. Also off in CI, without a TTY, or when CATALYST_NO_HINTS is set.',
+  )
   .addCommand(version)
   .addCommand(create)
   .addCommand(start)
@@ -58,5 +64,7 @@ program
   .addCommand(upgrade)
   .addCommand(telemetry)
   .addCommand(debug)
+  .addCommand(feedback)
   .hook('preAction', telemetryPreHook)
-  .hook('postAction', telemetryPostHook);
+  .hook('postAction', telemetryPostHook)
+  .hook('postAction', surveyPostHook);

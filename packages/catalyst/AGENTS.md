@@ -8,8 +8,8 @@ CLI tool for Catalyst development and deployment — handles build, dev server, 
 src/cli/
 ├── index.ts          # Entry point (#!/usr/bin/env node)
 ├── program.ts        # Commander program setup, registers all commands
-├── commands/         # CLI command implementations (auth, build, channels, create, deploy, domains, env, logs, projects, start, telemetry, upgrade, version)
-├── hooks/            # Pre/post action hooks (telemetry)
+├── commands/         # CLI command implementations (auth, build, channels, create, debug, deploy, domains, env, feedback, logs, projects, start, telemetry, upgrade, version)
+├── hooks/            # Pre/post action hooks (telemetry, feedback survey)
 └── lib/              # Utilities (auth, logger, project config, credentials, wrangler config, telemetry, deployment errors)
 templates/            # OpenNext config and public_headers template
 tests/mocks/          # MSW handlers and test mocks
@@ -30,12 +30,17 @@ Resource-based commands are named in the plural (`projects`, `channels`, `domain
 | `deploy` | Deploy to Cloudflare with bundle upload |
 | `domains add/list/status/claim/transfer/remove` | Manage custom domains for the linked project |
 | `env add/remove/list` | Manage persistent deployment environment variables |
+| `feedback` | Send feedback to BigCommerce (`POST /stores/{hash}/v0/feedback`), with the `debug` report attached unless `--no-diagnostics` |
 | `logs tail/query` | View logs (`tail` is the default). Supports `--format` (default/json/pretty/short/request) |
 | `projects create/list/link/delete` | Manage BigCommerce infrastructure projects |
 | `start` | Start local preview using OpenNext Cloudflare adapter |
 | `telemetry` | Enable/disable/check telemetry |
 | `upgrade` | Upgrade the project to a newer Catalyst release |
 | `version` | Display version and platform info |
+
+## Feedback Survey
+
+`hooks/survey.ts` runs after `deploy` succeeds (see `SURVEY_COMMANDS`). It asks for a 0-10 score and an optional comment, and sends them with `lib/feedback.ts` (source `catalyst-cli-survey`). It shows at most once every 90 days per machine (`survey.lastShownAt` in the user config), and never when `--no-hints`, `CATALYST_NO_HINTS`, CI, or no TTY. It must never fail the command, so `runSurvey` catches all errors.
 
 ## Development
 
