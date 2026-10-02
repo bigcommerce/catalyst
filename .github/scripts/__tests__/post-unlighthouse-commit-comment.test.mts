@@ -10,6 +10,7 @@ const postReport = require('../post-unlighthouse-commit-comment.js') as (args: {
   github: ReturnType<typeof makeGithub>['github'];
   context: ReturnType<typeof makeContext>;
   reportPath?: string;
+  metaPath?: string;
 }) => Promise<void>;
 
 // ---------------------------------------------------------------------------
@@ -55,12 +56,15 @@ function makeContext({
 }
 
 let reportPath: string;
+let metaPath: string;
 
 beforeEach(() => {
   const tmpDir = join(tmpdir(), `post-unlighthouse-report-test-${Date.now()}`);
   mkdirSync(tmpDir, { recursive: true });
   reportPath = join(tmpDir, 'report.md');
-  writeFileSync(reportPath, '## Unlighthouse Audit — `canary`\n\nSome results.');
+  metaPath = join(tmpDir, 'meta.json');
+  writeFileSync(reportPath, '## Unlighthouse Comparison — Vercel\n\nSome results.');
+  writeFileSync(metaPath, JSON.stringify({ failed: true }));
 });
 
 // ---------------------------------------------------------------------------
@@ -68,10 +72,18 @@ beforeEach(() => {
 // ---------------------------------------------------------------------------
 
 describe('early exits', () => {
+  it('does nothing when the check passed', async () => {
+    writeFileSync(metaPath, JSON.stringify({ failed: false }));
+    const { github, calls } = makeGithub();
+    await postReport({ github, context: makeContext(), reportPath, metaPath });
+
+    assert.equal(calls.createCommitComment.length, 0);
+  });
+
   it('does nothing when deployment sha is missing', async () => {
     const { github, calls } = makeGithub();
     const context = { ...makeContext(), payload: {} };
-    await postReport({ github, context, reportPath });
+    await postReport({ github, context, reportPath, metaPath });
 
     assert.equal(calls.createCommitComment.length, 0);
   });
@@ -84,7 +96,7 @@ describe('early exits', () => {
 describe('commit comment creation', () => {
   it('creates a commit comment with the deployment sha', async () => {
     const { github, calls } = makeGithub();
-    await postReport({ github, context: makeContext({ sha: 'deadbeef' }), reportPath });
+    await postReport({ github, context: makeContext({ sha: 'deadbeef' }), reportPath, metaPath });
 
     assert.equal(calls.createCommitComment.length, 1);
     assert.equal(
@@ -99,6 +111,7 @@ describe('commit comment creation', () => {
       github,
       context: makeContext({ owner: 'my-org', repo: 'my-repo' }),
       reportPath,
+      metaPath,
     });
 
     assert.equal((calls.createCommitComment[0] as { owner: string }).owner, 'my-org');
@@ -113,7 +126,7 @@ describe('commit comment creation', () => {
 describe('comment body', () => {
   it('starts with the canary marker', async () => {
     const { github, calls } = makeGithub();
-    await postReport({ github, context: makeContext(), reportPath });
+    await postReport({ github, context: makeContext(), reportPath, metaPath });
 
     const body = (calls.createCommitComment[0] as { body: string }).body;
 
@@ -125,11 +138,11 @@ describe('comment body', () => {
 
   it('includes the report file content', async () => {
     const { github, calls } = makeGithub();
-    await postReport({ github, context: makeContext(), reportPath });
+    await postReport({ github, context: makeContext(), reportPath, metaPath });
 
     const body = (calls.createCommitComment[0] as { body: string }).body;
 
-    assert.ok(body.includes('## Unlighthouse Audit'));
+    assert.ok(body.includes('## Unlighthouse Comparison'));
     assert.ok(body.includes('Some results.'));
   });
 
@@ -139,6 +152,7 @@ describe('comment body', () => {
       github,
       context: makeContext({ owner: 'my-org', repo: 'my-repo', runId: 12345 }),
       reportPath,
+      metaPath,
     });
 
     const body = (calls.createCommitComment[0] as { body: string }).body;
@@ -151,7 +165,7 @@ describe('comment body', () => {
 
   it('run link is preceded by a newline', async () => {
     const { github, calls } = makeGithub();
-    await postReport({ github, context: makeContext(), reportPath });
+    await postReport({ github, context: makeContext(), reportPath, metaPath });
 
     const body = (calls.createCommitComment[0] as { body: string }).body;
     const linkIndex = body.indexOf('[Full Unlighthouse report');

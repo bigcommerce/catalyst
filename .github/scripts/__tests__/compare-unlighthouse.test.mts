@@ -42,57 +42,201 @@ function makeCiResult(overrides: {
 const BASE = makeCiResult();
 
 // ---------------------------------------------------------------------------
-// hasChanges
+// Route-level checks
 // ---------------------------------------------------------------------------
 
-describe('hasChanges', () => {
-  it('is false when all four results are identical', () => {
-    const { hasChanges } = compareResults(BASE, BASE, BASE, BASE, 1);
+interface RouteFixture {
+  path: string;
+  performance?: number;
+  accessibility?: number | null;
+  seo?: number;
+  'best-practices'?: number;
+}
 
-    assert.equal(hasChanges, false);
+function withRoutes(
+  routes: RouteFixture[],
+  overrides: Parameters<typeof makeCiResult>[0] = {},
+): CiResult {
+  return {
+    ...makeCiResult(overrides),
+    routes: routes.map((route) => ({
+      path: route.path,
+      categories: {
+        performance: { score: route.performance ?? 0.8 },
+        accessibility: { score: route.accessibility === undefined ? 0.95 : route.accessibility },
+        'best-practices': { score: route['best-practices'] ?? 1 },
+        seo: { score: route.seo ?? 1 },
+      },
+    })),
+  };
+}
+
+const ROUTES = withRoutes([{ path: '/' }, { path: '/cart/' }]);
+
+describe('failed', () => {
+  it('is false when every route matches', () => {
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES);
+
+    assert.equal(failed, false);
+    assert.ok(markdown.includes('No regressions found.'));
   });
 
-  it('is true when preview desktop summary score differs by exactly 1pp', () => {
-    const preview = makeCiResult({ score: 0.84 }); // 1pp below
-    const { hasChanges } = compareResults(BASE, BASE, preview, BASE, 1);
+  it('is true when accessibility drops on a matched route', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/', accessibility: 0.91 }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
 
-    assert.equal(hasChanges, true);
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('### ❌ Accessibility, SEO, and best practices regressions'));
+    assert.ok(markdown.includes('| `/cart/` | Desktop | Accessibility | 95 | 91 |'));
   });
 
-  it('is false when summary score differs by less than 1pp', () => {
-    const preview = makeCiResult({ score: 0.855 }); // 0.5pp above
-    const { hasChanges } = compareResults(BASE, BASE, preview, BASE, 1);
+  it('is true when best practices drops on a matched route', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/', 'best-practices': 0.95 }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
 
-    assert.equal(hasChanges, false);
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('| `/cart/` | Desktop | Best Practices | 100 | 95 |'));
   });
 
-  it('is true when preview mobile summary score differs by >= 1pp', () => {
-    const previewMobile = makeCiResult({ score: 0.74 });
-    const { hasChanges } = compareResults(BASE, BASE, BASE, previewMobile, 1);
+  it('is true when SEO drops on a matched route', () => {
+    const preview = withRoutes([{ path: '/', seo: 0.92 }, { path: '/cart/' }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, preview);
 
-    assert.equal(hasChanges, true);
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('| `/` | Mobile | SEO | 100 | 92 |'));
   });
 
-  it('is true when a category score differs by >= 1pp', () => {
-    const preview = makeCiResult({ performance: 0.79 }); // 1pp below 0.80
-    const { hasChanges } = compareResults(BASE, BASE, preview, BASE, 1);
+  it('ignores improvements', () => {
+    const preview = withRoutes([{ path: '/', accessibility: 0.99 }, { path: '/cart/' }]);
 
-    assert.equal(hasChanges, true);
+    assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
   });
 
-  it('is false when category score differs by less than 1pp', () => {
-    const preview = makeCiResult({ performance: 0.805 }); // 0.5pp above
-    const { hasChanges } = compareResults(BASE, BASE, preview, BASE, 1);
+  it('ignores sub-point differences that round to the same score', () => {
+    const preview = withRoutes([{ path: '/', accessibility: 0.9499 }, { path: '/cart/' }]);
 
-    assert.equal(hasChanges, false);
+    assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
+  });
+
+  it('ignores summary score drops when routes match', () => {
+    const preview = withRoutes([{ path: '/' }, { path: '/cart/' }], {
+      score: 0.5,
+      accessibility: 0.5,
+      performance: 0.2,
+    });
+
+    assert.equal(compareResults(ROUTES, ROUTES, preview, ROUTES).failed, false);
+  });
+
+  it('is true when fewer than half the expected routes are compared', () => {
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, ROUTES, ROUTES, {
+      expectedRoutes: ['/', '/cart/', '/login/', '/register/', '/blog/'],
+    });
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('### ❌ Incomplete scans'));
+    assert.ok(markdown.includes('Desktop: only 2 of 5 routes could be compared'));
+  });
+
+  it('is true when a route has no score', () => {
+    const preview = withRoutes([{ path: '/', accessibility: null }, { path: '/cart/' }]);
+    const { failed, markdown } = compareResults(ROUTES, ROUTES, preview, ROUTES);
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('Deployment desktop: `/` has no accessibility score'));
+  });
+
+  it('is true when a scan has no routes', () => {
+    assert.equal(compareResults(BASE, BASE, BASE, BASE).failed, true);
+  });
+});
+
+describe('performance', () => {
+  const PROD = withRoutes([
+    { path: '/a/', performance: 0.9 },
+    { path: '/b/', performance: 0.9 },
+    { path: '/c/', performance: 0.9 },
+  ]);
+
+  it('is true when the median route drops by the threshold on both devices', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.7 },
+      { path: '/b/', performance: 0.75 },
+      { path: '/c/', performance: 0.9 },
+    ]);
+    const { failed, markdown } = compareResults(PROD, PROD, preview, preview);
+
+    assert.equal(failed, true);
+    assert.ok(markdown.includes('### ❌ Performance regression'));
+    assert.ok(markdown.includes('lost 15 points on desktop and 15 on mobile'));
+  });
+
+  it('ignores a single slow route', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.3 },
+      { path: '/b/', performance: 0.88 },
+      { path: '/c/', performance: 0.9 },
+    ]);
+
+    assert.equal(compareResults(PROD, PROD, preview, preview).failed, false);
+  });
+
+  it('ignores a drop on only one device', () => {
+    const slow = withRoutes([
+      { path: '/a/', performance: 0.5 },
+      { path: '/b/', performance: 0.5 },
+      { path: '/c/', performance: 0.5 },
+    ]);
+
+    assert.equal(compareResults(PROD, PROD, slow, PROD).failed, false);
   });
 
   it('respects a custom threshold', () => {
-    // 2pp delta — true at threshold=1, false at threshold=3
-    const preview = makeCiResult({ score: 0.83 });
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.85 },
+      { path: '/b/', performance: 0.85 },
+      { path: '/c/', performance: 0.85 },
+    ]);
 
-    assert.equal(compareResults(BASE, BASE, preview, BASE, 1).hasChanges, true);
-    assert.equal(compareResults(BASE, BASE, preview, BASE, 3).hasChanges, false);
+    assert.equal(compareResults(PROD, PROD, preview, preview).failed, false);
+    assert.equal(
+      compareResults(PROD, PROD, preview, preview, { performanceThreshold: 5 }).failed,
+      true,
+    );
+  });
+
+  it('reports the median change in the details', () => {
+    const preview = withRoutes([
+      { path: '/a/', performance: 0.88 },
+      { path: '/b/', performance: 0.92 },
+      { path: '/c/', performance: 0.9 },
+    ]);
+    const { markdown } = compareResults(PROD, PROD, preview, PROD);
+
+    assert.ok(markdown.includes('| 0 | 0 |'));
+  });
+});
+
+describe('details', () => {
+  it('lists routes that could not be compared without failing', () => {
+    const routes = withRoutes([{ path: '/' }, { path: '/cart/' }, { path: '/blog/' }]);
+    const preview = withRoutes([{ path: '/' }, { path: '/blog/' }]);
+    const { failed, markdown } = compareResults(routes, routes, routes, preview, {
+      expectedRoutes: ['/', '/cart/', '/blog/', '/login/'],
+    });
+
+    assert.equal(failed, false);
+    assert.ok(markdown.includes('### Routes not compared'));
+    assert.ok(markdown.includes('| `/cart/` | Mobile | failed on this deployment |'));
+    assert.ok(markdown.includes('| `/login/` | Desktop | failed on both |'));
+  });
+
+  it('keeps everything except failures inside the collapsed section', () => {
+    const routes = withRoutes([{ path: '/' }, { path: '/cart/' }, { path: '/blog/' }]);
+    const preview = withRoutes([{ path: '/' }, { path: '/blog/' }]);
+    const { markdown } = compareResults(routes, routes, preview, routes);
+
+    assert.ok(markdown.indexOf('<details>') < markdown.indexOf('### Routes not compared'));
   });
 });
 
@@ -102,46 +246,30 @@ describe('hasChanges', () => {
 
 describe('report heading', () => {
   it('contains the comparison heading', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(
-      markdown.includes('## Unlighthouse Performance Comparison'),
+      markdown.includes('## Unlighthouse Comparison'),
       'Missing main heading',
     );
   });
 
-  it('appends provider label when provider is given', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1, 'vercel');
-
-    assert.ok(
-      markdown.includes('## Unlighthouse Performance Comparison — Vercel'),
-      'Missing provider label in heading',
-    );
-  });
-
-  it('capitalises the provider label', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1, 'cloudflare');
-
-    assert.ok(markdown.includes('— Cloudflare'), 'Provider should be capitalised');
-  });
-
-  it('omits provider label when none provided', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
-
-    assert.ok(
-      !markdown.includes(' — '),
-      'Should not contain a provider label separator',
-    );
-  });
-
   it('contains the description text', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(
       markdown.includes(
-        'Comparing PR preview deployment Unlighthouse scores vs production Unlighthouse scores.',
+        "Comparing this deployment's Unlighthouse scores against the baseline deployment.",
       ),
     );
+  });
+
+  it('names the baseline when a label is given', () => {
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE, {
+      baselineLabel: 'canary at 1a2b3c4d5',
+    });
+
+    assert.ok(markdown.includes('against canary at 1a2b3c4d5.'));
   });
 });
 
@@ -151,17 +279,17 @@ describe('report heading', () => {
 
 describe('Summary Score section', () => {
   it('contains the Summary Score heading', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(markdown.includes('### Summary Score'));
   });
 
   it('contains the aggregate score note', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(
       markdown.includes(
-        'Aggregate score across all categories as reported by Unlighthouse.',
+        "Averages across the routes both scans reported, so a route that failed on one side doesn't skew them.",
       ),
     );
   });
@@ -169,23 +297,23 @@ describe('Summary Score section', () => {
   it('renders scores as integers on a 1-100 scale', () => {
     const prod = makeCiResult({ score: 0.85 });
     const prev = makeCiResult({ score: 0.72 });
-    const { markdown } = compareResults(prod, prod, prev, prev, 1);
+    const { markdown } = compareResults(prod, prod, prev, prev);
 
     assert.ok(markdown.includes('| Score | 85 | 85 | 72 | 72 |'));
   });
 
   it('rounds fractional scores correctly', () => {
     const prod = makeCiResult({ score: 0.856 }); // rounds to 86
-    const { markdown } = compareResults(prod, BASE, prod, BASE, 1);
+    const { markdown } = compareResults(prod, BASE, prod, BASE);
 
     assert.ok(markdown.includes('86'), 'Score 0.856 should round to 86');
   });
 
   it('contains the four-column header', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(
-      markdown.includes('| | Prod Desktop | Prod Mobile | Preview Desktop | Preview Mobile |'),
+      markdown.includes('| | Before Desktop | Before Mobile | After Desktop | After Mobile |'),
     );
   });
 });
@@ -196,13 +324,13 @@ describe('Summary Score section', () => {
 
 describe('Category Scores section', () => {
   it('contains the Category Scores heading', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(markdown.includes('### Category Scores'));
   });
 
   it('renders all four categories', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(markdown.includes('Performance'));
     assert.ok(markdown.includes('Accessibility'));
@@ -213,7 +341,7 @@ describe('Category Scores section', () => {
   it('renders category scores as integers on a 1-100 scale', () => {
     const prod = makeCiResult({ performance: 0.80 });
     const prev = makeCiResult({ performance: 0.93 });
-    const { markdown } = compareResults(prod, prod, prev, prev, 1);
+    const { markdown } = compareResults(prod, prod, prev, prev);
 
     assert.ok(
       markdown.includes('| Performance | 80 | 80 | 93 | 93 |'),
@@ -226,7 +354,7 @@ describe('Category Scores section', () => {
     const prodMobile = makeCiResult({ seo: 0.75 });
     const prevDesktop = makeCiResult({ seo: 0.91 });
     const prevMobile = makeCiResult({ seo: 0.82 });
-    const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile, 1);
+    const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile);
 
     assert.ok(markdown.includes('| SEO | 88 | 75 | 91 | 82 |'));
   });
@@ -236,15 +364,56 @@ describe('Category Scores section', () => {
 // Core Web Vitals section
 // ---------------------------------------------------------------------------
 
+describe('summary averages', () => {
+  it('averages only routes both scans reported', () => {
+    const baseline = withRoutes([
+      { path: '/', accessibility: 0.9 },
+      { path: '/cart/', accessibility: 0.9 },
+      { path: '/login/', accessibility: 1 },
+    ]);
+    const deployment = withRoutes([
+      { path: '/', accessibility: 0.9 },
+      { path: '/cart/', accessibility: 0.9 },
+    ]);
+    const { markdown } = compareResults(baseline, baseline, deployment, deployment);
+
+    assert.ok(markdown.includes('| Accessibility | 90 | 90 | 90 | 90 |'));
+  });
+
+  it('prefers averageScore over the last route score', () => {
+    const ci = makeCiResult();
+    ci.summary.categories.accessibility = { score: 1, averageScore: 0.96 };
+    const { markdown } = compareResults(ci, ci, ci, ci);
+
+    assert.ok(markdown.includes('| Accessibility | 96 | 96 | 96 | 96 |'));
+  });
+
+  it('formats averageNumericValue instead of the last route displayValue', () => {
+    const ci = makeCiResult({
+      metrics: {
+        ...DEFAULT_METRICS,
+        'largest-contentful-paint': { displayValue: '9.9 s', averageNumericValue: 3456 },
+        'total-blocking-time': { displayValue: '999 ms', averageNumericValue: 12.6 },
+        'cumulative-layout-shift': { displayValue: '0.5', averageNumericValue: 0.01234 },
+      },
+    });
+    const { markdown } = compareResults(ci, ci, ci, ci);
+
+    assert.ok(markdown.includes('| LCP | 3.5 s | 3.5 s | 3.5 s | 3.5 s |'));
+    assert.ok(markdown.includes('| TBT | 13 ms | 13 ms | 13 ms | 13 ms |'));
+    assert.ok(markdown.includes('| CLS | 0.012 | 0.012 | 0.012 | 0.012 |'));
+  });
+});
+
 describe('Core Web Vitals section', () => {
   it('contains the Core Web Vitals heading', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(markdown.includes('### Core Web Vitals'));
   });
 
   it('renders all six metrics', () => {
-    const { markdown } = compareResults(BASE, BASE, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
     assert.ok(markdown.includes('LCP'));
     assert.ok(markdown.includes('CLS'));
@@ -261,14 +430,14 @@ describe('Core Web Vitals section', () => {
         'largest-contentful-paint': { displayValue: '4.8 s' },
       },
     });
-    const { markdown } = compareResults(ci, ci, ci, ci, 1);
+    const { markdown } = compareResults(ci, ci, ci, ci);
 
     assert.ok(markdown.includes('4.8 s'), 'displayValue should appear as-is');
   });
 
   it('shows — for a metric missing from a result', () => {
     const ciMissingMetric = makeCiResult({ metrics: {} });
-    const { markdown } = compareResults(BASE, ciMissingMetric, BASE, BASE, 1);
+    const { markdown } = compareResults(BASE, ciMissingMetric, BASE, BASE);
 
     assert.ok(markdown.includes('—'), 'Missing metric should show —');
   });
@@ -278,7 +447,7 @@ describe('Core Web Vitals section', () => {
     const prodMobile = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '320 ms' } } });
     const prevDesktop = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '75 ms' } } });
     const prevMobile = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '310 ms' } } });
-    const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile, 1);
+    const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile);
 
     assert.ok(markdown.includes('| TBT | 80 ms | 320 ms | 75 ms | 310 ms |'));
   });
