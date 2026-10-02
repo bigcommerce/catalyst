@@ -464,6 +464,9 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.2)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(yaml@2.8.1)
 
   packages/create-catalyst:
     dependencies:

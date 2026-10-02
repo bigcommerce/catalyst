@@ -48,6 +48,41 @@ interface BigCommerceResponse<T> {
 
 type GraphQLErrorPolicy = 'none' | 'all' | 'auth' | 'ignore';
 
+const RETRY_DELAYS_MS = [100, 300];
+const RETRYABLE_STATUSES = new Set([502, 503, 504]);
+
+// undici reports dropped connections and network failures as a TypeError
+// ("fetch failed", or "terminated" when the body read is cut off).
+function isTransientError(error: unknown) {
+  if (error instanceof BigCommerceAPIError) {
+    return RETRYABLE_STATUSES.has(error.status);
+  }
+
+  return error instanceof TypeError;
+}
+
+async function withRetries<T>(
+  maxAttempts: number,
+  signal: AbortSignal | null | undefined,
+  attempt: () => Promise<T>,
+): Promise<T> {
+  for (let attemptNumber = 1; ; attemptNumber += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      return await attempt();
+    } catch (error) {
+      if (attemptNumber >= maxAttempts || signal?.aborted || !isTransientError(error)) {
+        throw error;
+      }
+
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => {
+        setTimeout(resolve, RETRY_DELAYS_MS[attemptNumber - 1]);
+      });
+    }
+  }
+}
+
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
@@ -159,7 +194,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       requestHeaders.set(key, value);
     });
 
-    const response = await fetch(graphqlUrl, {
+    const requestInit: RequestInit = {
       method: 'POST',
       headers: requestHeaders,
       body: JSON.stringify({
@@ -168,19 +203,27 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       }),
       ...additionalFetchOptions,
       ...rest,
-    });
+    };
 
-    if (!response.ok) {
-      if (response.status === 401 && !looksLikeJwt(this.config.storefrontToken)) {
-        throw new InvalidStorefrontTokenError(response.status);
+    // Mutations aren't idempotent, so only queries are retried.
+    const maxAttempts = operationInfo.type === 'query' ? RETRY_DELAYS_MS.length + 1 : 1;
+
+    const result = await withRetries(maxAttempts, requestInit.signal, async () => {
+      const response = await fetch(graphqlUrl, requestInit);
+
+      if (!response.ok) {
+        if (response.status === 401 && !looksLikeJwt(this.config.storefrontToken)) {
+          throw new InvalidStorefrontTokenError(response.status);
+        }
+
+        throw await BigCommerceAPIError.createFromResponse(response);
       }
 
-      throw await BigCommerceAPIError.createFromResponse(response);
-    }
+      log(response);
 
-    log(response);
-
-    const result = (await response.json()) as BigCommerceResponse<TResult>;
+      // A connection dropped mid-response fails here, so the body read is part of the attempt.
+      return (await response.json()) as BigCommerceResponse<TResult>;
+    });
 
     const { errors, ...data } = result;
 

@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
     "lint-fix": "eslint . --ext .ts,.js,.cjs --fix",
+    "test": "vitest run",
     "gen-types": "dotenv -e .env.local -- node scripts/types.js"
   },
   "files": [
@@ -32,6 +33,7 @@
     "eslint": "^8.57.1",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
   }
 }
