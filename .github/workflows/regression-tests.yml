@@ -53,10 +53,18 @@ jobs:
               skip "No baseline configured for package $PKG_NAME. Skipping audits." ;;
           esac
 
+          # The merge queue deploys its temporary branch before the commit lands;
+          # the base branch's own deployment of that commit runs the audits.
+          QUEUE_HEADS=$(git ls-remote --heads origin 'gh-readonly-queue/*' | cut -f1)
+
+          if [[ "$ENVIRONMENT" != "$BASE_ENVIRONMENT" ]] && grep -qx "$SHA" <<< "$QUEUE_HEADS"; then
+            skip "Merge queue build. Skipping audits; the $BASE_BRANCH deployment runs them."
+          fi
+
           MERGE_BASE=$(git merge-base "origin/$BASE_BRANCH" "$SHA")
 
           if [[ "$MERGE_BASE" == "$SHA" ]]; then
-            # Merge queue builds of canary commits are Preview deployments too;
+            # Covers a merge queue build that finishes after its branch is gone;
             # only compare the branch's own deployment so each commit runs once.
             if [[ "$ENVIRONMENT" != "$BASE_ENVIRONMENT" ]]; then
               skip "$ENVIRONMENT deployment of a $BASE_BRANCH commit. Skipping audits."
