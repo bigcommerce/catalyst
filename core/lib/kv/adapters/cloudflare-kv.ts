@@ -6,7 +6,7 @@ import { KvAdapter, SetCommandOptions } from '../types';
 // dependencies; the runtime packages are installed only for projects that opt
 // into Commerce hosting.
 export interface RoutesKvNamespace {
-  get(key: string, type: 'json'): Promise<unknown>;
+  get(key: string, options: { type: 'json'; cacheTtl?: number }): Promise<unknown>;
   put(key: string, value: string, options?: { expirationTtl?: number }): Promise<void>;
 }
 
@@ -28,6 +28,11 @@ const ROUTES_KV_BINDING = 'CATALYST_ROUTES_KV';
 // and refreshes in the background — into a hard miss that blocks on a GraphQL
 // round trip. That would make the cache slower than leaving it uncapped.
 const ROUTES_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
+
+// Outlasts the 60s in-memory cache so its re-reads hit the location cache
+// instead of central storage. Trade-off: status changes can take ~11 min to
+// reach a location instead of ~7.
+const ROUTES_READ_CACHE_TTL_SECONDS = 60 * 5;
 
 // `getCloudflareContext()` from `@opennextjs/cloudflare` is, in sync mode,
 // nothing more than a read of this global registry symbol — the OpenNext
@@ -117,7 +122,10 @@ export class CloudflareKvAdapter implements KvAdapter {
     return Promise.all(
       keys.map(async (key) => {
         try {
-          const value = await this.namespace.get(key, 'json');
+          const value = await this.namespace.get(key, {
+            type: 'json',
+            cacheTtl: ROUTES_READ_CACHE_TTL_SECONDS,
+          });
 
           if (value === null || value === undefined) {
             this.logger(`GET - Key: ${key} - Found: false`);
