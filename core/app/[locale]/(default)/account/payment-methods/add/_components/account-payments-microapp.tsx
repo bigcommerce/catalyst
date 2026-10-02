@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { type MicroappAssets, type MicroappCountry } from '../page-data';
+import { type MicroappAssets, type MicroappCountry, type StripeOcsAchContext } from '../page-data';
 
 interface RenderConfig {
   styles: Record<string, unknown>;
@@ -21,14 +21,17 @@ declare global {
 // Loads the storefront-account-payments microapp bundle from the CDN and calls
 // renderAccountPayments for a single provider.
 //
-// POC scope: renders the ECP (ACH) form. Per the source, vaultToken is submit-only
-// and the ECP form needs no init data, so placeholder values are enough to render.
+// POC scope: renders the ECP (ACH) form by default. Per the source, vaultToken is
+// submit-only and the ECP form needs no init data, so placeholder values are enough
+// to render. When stripeOcsAch is set, renders Stripe ACH with real data instead.
 export function AccountPaymentsMicroapp({
   assets,
   countries,
+  stripeOcsAch,
 }: {
   assets: MicroappAssets;
   countries: MicroappCountry[];
+  stripeOcsAch?: StripeOcsAchContext;
 }) {
   const started = useRef(false);
   const [status, setStatus] = useState('Loading microapp…');
@@ -92,29 +95,53 @@ export function AccountPaymentsMicroapp({
           // eslint-disable-next-line no-console
           console.error('[account-payments]', message);
         },
-        storeContextData: {
-          // ECP (ACH): routes to the plain bank-account form (needs no init data).
-          providerId: 'test',
-          methodType: 'ecp',
-          storeLocale: 'en',
-          countries,
-          paymentsUrl: '',
-          paymentMethodsUrl: '/account/payment-methods',
-          // Submit-only fields. Placeholders are fine for a render-only POC.
-          vaultToken: '',
-          shopperId: '',
-          storeHash: '',
-          currencyCode: 'USD',
-          customerEmail: '',
-          paymentProviderInitializationData: {},
-        },
+        storeContextData: stripeOcsAch
+          ? {
+              // Headless shape: the microapp derives providerId and methodType from this.
+              paymentMethodId: 'stripeocs.ach',
+              storefrontApiBaseUrl: window.location.origin,
+              storeLocale: 'en',
+              countries,
+              paymentsUrl: stripeOcsAch.paymentsUrl,
+              paymentMethodsUrl: '/account/payment-methods',
+              vaultToken: stripeOcsAch.vaultAccessToken,
+              shopperId: stripeOcsAch.shopperId,
+              storeHash: stripeOcsAch.storeHash,
+              currencyCode: 'USD',
+              customerEmail: stripeOcsAch.customerEmail,
+              // GraphQL names mapped to the microapp's names here, for the test only.
+              // A setupIntentToken routes Stripe to the Payment Element path.
+              paymentProviderInitializationData: {
+                setupIntentToken: stripeOcsAch.setupIntentClientSecret,
+                stripePublishableKey: stripeOcsAch.publishableKey,
+                ...(stripeOcsAch.connectedAccountId && {
+                  stripeConnectedAccount: stripeOcsAch.connectedAccountId,
+                }),
+              },
+            }
+          : {
+              // ECP (ACH): routes to the plain bank-account form (needs no init data).
+              providerId: 'test',
+              methodType: 'ecp',
+              storeLocale: 'en',
+              countries,
+              paymentsUrl: '',
+              paymentMethodsUrl: '/account/payment-methods',
+              // Submit-only fields. Placeholders are fine for a render-only POC.
+              vaultToken: '',
+              shopperId: '',
+              storeHash: '',
+              currencyCode: 'USD',
+              customerEmail: '',
+              paymentProviderInitializationData: {},
+            },
       });
 
       setStatus('Microapp rendered.');
     };
 
     run().catch((error: unknown) => setStatus(`Error: ${String(error)}`));
-  }, [assets, countries]);
+  }, [assets, countries, stripeOcsAch]);
 
   return (
     <div>

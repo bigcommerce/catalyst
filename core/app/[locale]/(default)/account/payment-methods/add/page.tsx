@@ -3,18 +3,26 @@ import { setRequestLocale } from 'next-intl/server';
 import { Link } from '~/components/link';
 
 import { AccountPaymentsMicroapp } from './_components/account-payments-microapp';
-import { getMicroappAssets, getMicroappCountries } from './page-data';
+import { getMicroappAssets, getMicroappCountries, getStripeOcsAchContext } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ provider?: string }>;
 }
 
-export default async function AddPaymentMethodPage({ params }: Props) {
+export default async function AddPaymentMethodPage({ params, searchParams }: Props) {
   const { locale } = await params;
+  const { provider } = await searchParams;
 
   setRequestLocale(locale);
 
-  const [assets, countries] = await Promise.all([getMicroappAssets(), getMicroappCountries()]);
+  // ?provider=stripeocs-ach renders Stripe ACH through the Payment Element path.
+  // Without it, the page keeps rendering the placeholder ECP form.
+  const [assets, countries, stripeOcsAch] = await Promise.all([
+    getMicroappAssets(),
+    getMicroappCountries(),
+    provider === 'stripeocs-ach' ? getStripeOcsAchContext() : undefined,
+  ]);
 
   return (
     <div>
@@ -29,7 +37,7 @@ export default async function AddPaymentMethodPage({ params }: Props) {
         Add payment method
       </h1>
 
-      <AccountPaymentsMicroapp assets={assets} countries={countries} />
+      <AccountPaymentsMicroapp assets={assets} countries={countries} stripeOcsAch={stripeOcsAch} />
     </div>
   );
 }

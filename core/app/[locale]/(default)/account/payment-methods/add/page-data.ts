@@ -72,6 +72,115 @@ const GetCountriesQuery = graphql(`
   }
 `);
 
+// Everything the microapp needs to vault a Stripe ACH account through the
+// Payment Element path. Fetched per request: the SetupIntent and the vault
+// access token are both single-use.
+export interface StripeOcsAchContext {
+  setupIntentClientSecret: string;
+  publishableKey: string;
+  connectedAccountId: string | null;
+  vaultAccessToken: string;
+  shopperId: string;
+  customerEmail: string;
+  storeHash: string;
+  paymentsUrl: string;
+}
+
+const StripeOcsAchInitializationMutation = graphql(`
+  mutation StripeOcsAchInitializationMutation {
+    customer {
+      storedPaymentInstruments {
+        createStripeOcsVaultInitialization(input: { paymentMethod: ACH }) {
+          initialization {
+            setupIntentClientSecret
+            publishableKey
+            connectedAccountId
+          }
+          errors {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
+
+// A separate request: Storefront costs each of these mutations as a
+// UniqueMutation, and the two together exceed the query complexity limit.
+const VaultAccessTokenMutation = graphql(`
+  mutation VaultAccessTokenMutation {
+    customer {
+      storedPaymentInstruments {
+        createVaultAccessToken {
+          vaultAccessToken
+          errors {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
+
+const CurrentCustomerQuery = graphql(`
+  query CurrentCustomerQuery {
+    customer {
+      entityId
+      email
+    }
+  }
+`);
+
+export async function getStripeOcsAchContext(): Promise<StripeOcsAchContext> {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const [initResponse, tokenResponse, customerResponse] = await Promise.all([
+    client.fetch({
+      document: StripeOcsAchInitializationMutation,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    }),
+    client.fetch({
+      document: VaultAccessTokenMutation,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    }),
+    client.fetch({
+      document: CurrentCustomerQuery,
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    }),
+  ]);
+
+  const initResult =
+    initResponse.data.customer.storedPaymentInstruments.createStripeOcsVaultInitialization;
+  const tokenResult = tokenResponse.data.customer.storedPaymentInstruments.createVaultAccessToken;
+  const initialization = initResult?.initialization;
+  const vaultAccessToken = tokenResult?.vaultAccessToken;
+  const customer = customerResponse.data.customer;
+
+  if (!initialization || !vaultAccessToken || !customer) {
+    const messages = [...(initResult?.errors ?? []), ...(tokenResult?.errors ?? [])].map(
+      (error) => error.message,
+    );
+
+    throw new Error(`Stripe ACH initialization failed: ${messages.join('; ') || 'no data'}`);
+  }
+
+  return {
+    ...initialization,
+    // BigPay reads the token from "Authorization: VAT <token>", and the microapp
+    // sends vaultToken verbatim, so the scheme must be part of the value.
+    vaultAccessToken: vaultAccessToken.startsWith('VAT ')
+      ? vaultAccessToken
+      : `VAT ${vaultAccessToken}`,
+    shopperId: String(customer.entityId),
+    customerEmail: customer.email,
+    storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
+    paymentsUrl: process.env.PAYMENTS_HOST ?? '',
+  };
+}
+
 export const getMicroappCountries = cache(async (): Promise<MicroappCountry[]> => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
