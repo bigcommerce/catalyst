@@ -3,27 +3,12 @@ import type { CommandUnknownOpts } from '@commander-js/extra-typings';
 import { canPrompt } from '../lib/can-prompt';
 import { getCommandPath } from '../lib/command-path';
 import { consola } from '../lib/logger';
-import { getProjectConfig } from '../lib/project-config';
-import { resolveApiHost } from '../lib/shared-options';
+import { hintsDisabled, resolveCommandCredentials } from '../lib/prompt-context';
 import { isSurveyDue, runSurvey } from '../lib/survey';
 
 // The survey is shown only after these commands succeed: the moment the user
 // has just used native hosting.
 export const SURVEY_COMMANDS = ['deploy'];
-
-// Commander option values are untyped in a hook.
-const stringOption = (options: Record<string, unknown>, key: string): string | undefined => {
-  const value = options[key];
-
-  return typeof value === 'string' ? value : undefined;
-};
-
-// Opt-outs: `--no-hints`, CATALYST_NO_HINTS, CI, or no TTY.
-function hintsDisabled(program: CommandUnknownOpts): boolean {
-  const options: Record<string, unknown> = program.opts();
-
-  return options.hints === false || Boolean(process.env.CATALYST_NO_HINTS);
-}
 
 export const surveyPostHook = async (
   thisCommand: CommandUnknownOpts,
@@ -33,6 +18,7 @@ export const surveyPostHook = async (
   try {
     const commandName = getCommandPath(actionCommand);
 
+    // Opt-outs: `--no-hints`, CATALYST_NO_HINTS, CI, or no TTY.
     if (
       !SURVEY_COMMANDS.includes(commandName) ||
       hintsDisabled(thisCommand) ||
@@ -42,18 +28,14 @@ export const surveyPostHook = async (
       return;
     }
 
-    const options: Record<string, unknown> = actionCommand.opts();
-    const config = getProjectConfig();
-    const storeHash = stringOption(options, 'storeHash') ?? config.get('storeHash');
-    const accessToken = stringOption(options, 'accessToken') ?? config.get('accessToken');
-    const apiHost = resolveApiHost({ apiHost: stringOption(options, 'apiHost') }, config);
-
     // The answer is sent with the user's token. Without one, there is nowhere to send it.
-    if (!storeHash || !accessToken) {
+    const credentials = resolveCommandCredentials(actionCommand);
+
+    if (!credentials) {
       return;
     }
 
-    await runSurvey({ commandName, storeHash, accessToken, apiHost });
+    await runSurvey({ commandName, ...credentials });
   } catch (error) {
     consola.debug(error);
   }

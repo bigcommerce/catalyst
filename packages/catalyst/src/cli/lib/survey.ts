@@ -3,8 +3,9 @@ import { colorize } from 'consola/utils';
 
 import PACKAGE_INFO from '../../../package.json';
 
-import { MAX_DESCRIPTION_LENGTH, submitFeedback } from './feedback';
+import { FEEDBACK_SUBMIT_TIMEOUT_MS, MAX_DESCRIPTION_LENGTH, submitFeedback } from './feedback';
 import { consola } from './logger';
+import { isQuietPromptError, PROMPT_TIMEOUT_MS } from './prompt-context';
 import { getUserConfig } from './user-config';
 
 // Identifies survey answers in the filed issue, apart from `catalyst feedback`.
@@ -13,16 +14,6 @@ export const SURVEY_SOURCE = 'catalyst-cli-survey';
 // After the survey is shown (answered or skipped), do not show it again on
 // this machine for this long.
 export const SURVEY_INTERVAL_MS = 90 * 24 * 60 * 60 * 1000;
-
-// Do not hold up the user's terminal for a slow feedback endpoint.
-const SUBMIT_TIMEOUT_MS = 5000;
-
-// Close an unanswered prompt, in case the CLI runs with a TTY but nobody is
-// there (some runners allocate a pseudo-terminal without setting CI).
-const PROMPT_TIMEOUT_MS = 2 * 60 * 1000;
-
-// Ctrl+C (Exit) and the prompt timeout (Abort) end the survey without a message.
-const QUIET_PROMPT_ERRORS = new Set(['ExitPromptError', 'AbortPromptError']);
 
 const SURVEY_KEY_LAST_SHOWN_AT = 'survey.lastShownAt';
 
@@ -136,12 +127,12 @@ export async function runSurvey(context: SurveyContext, now: number = Date.now()
       context.storeHash,
       context.accessToken,
       context.apiHost,
-      { source: SURVEY_SOURCE, signal: AbortSignal.timeout(SUBMIT_TIMEOUT_MS) },
+      { source: SURVEY_SOURCE, signal: AbortSignal.timeout(FEEDBACK_SUBMIT_TIMEOUT_MS) },
     );
 
     consola.success('Thank you for your feedback!');
   } catch (error) {
-    if (error instanceof Error && QUIET_PROMPT_ERRORS.has(error.name)) {
+    if (isQuietPromptError(error)) {
       return;
     }
 

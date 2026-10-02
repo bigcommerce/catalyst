@@ -10,6 +10,11 @@ export const FEEDBACK_SOURCE = 'catalyst-cli';
 // user gets a clear message instead of a 400.
 export const MAX_TITLE_LENGTH = 200;
 export const MAX_DESCRIPTION_LENGTH = 5000;
+export const MAX_DIAGNOSTICS_BODY_LENGTH = 100_000;
+
+// For prompts that send in the background of another command (the survey, the
+// error report): do not hold up the terminal for a slow endpoint.
+export const FEEDBACK_SUBMIT_TIMEOUT_MS = 5000;
 
 export interface DiagnosticsSection {
   title: string;

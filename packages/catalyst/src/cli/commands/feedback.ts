@@ -1,12 +1,10 @@
 import { input } from '@inquirer/prompts';
 import { Command, Option } from 'commander';
-import { homedir } from 'node:os';
 
 import { canPrompt } from '../lib/can-prompt';
-import { collectDiagnostics } from '../lib/collect-diagnostics';
+import { diagnosticsReportSection } from '../lib/diagnostics-section';
 import { UserActionableError } from '../lib/errors';
-import { type DiagnosticsSection, submitFeedback, validateFeedbackField } from '../lib/feedback';
-import { formatDiagnosticsReport } from '../lib/format-diagnostics';
+import { submitFeedback, validateFeedbackField } from '../lib/feedback';
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { resolveCredentials } from '../lib/resolve-credentials';
@@ -57,21 +55,6 @@ async function resolveField(field: Field, value: string | undefined): Promise<st
   return answer.trim();
 }
 
-// The same report as `catalyst debug`. It never contains secret values. The
-// home directory is replaced with `~` so the OS user name is not sent.
-function diagnosticsSection(): DiagnosticsSection {
-  const diagnostics = collectDiagnostics();
-  const home = homedir();
-  const cwd = diagnostics.project.cwd.startsWith(home)
-    ? `~${diagnostics.project.cwd.slice(home.length)}`
-    : diagnostics.project.cwd;
-
-  return {
-    title: 'Catalyst CLI diagnostics',
-    body: formatDiagnosticsReport({ ...diagnostics, project: { ...diagnostics.project, cwd } }),
-  };
-}
-
 export const feedback = new Command('feedback')
   .configureHelp({ showGlobalOptions: true })
   .description(
@@ -113,7 +96,7 @@ Examples:
 
       const title = await resolveField('Title', options.title);
       const description = await resolveField('Description', options.description);
-      const diagnostics = options.diagnostics ? [diagnosticsSection()] : [];
+      const diagnostics = options.diagnostics ? [diagnosticsReportSection()] : [];
 
       if (options.diagnostics) {
         consola.info('Attaching the diagnostic report (see `catalyst debug`).');

@@ -42,6 +42,10 @@ Resource-based commands are named in the plural (`projects`, `channels`, `domain
 
 `hooks/survey.ts` runs after `deploy` succeeds (see `SURVEY_COMMANDS`). It asks for a 0-10 score and an optional comment, and sends them with `lib/feedback.ts` (source `catalyst-cli-survey`). It shows at most once every 90 days per machine (`survey.lastShownAt` in the user config), and never when `--no-hints`, `CATALYST_NO_HINTS`, CI, or no TTY. It must never fail the command, so `runSurvey` catches all errors.
 
+## Error Report
+
+`index.ts` calls `offerCrashReport` (`lib/crash-report.ts`) after an unexpected error (not a `UserActionableError`). It asks whether to send an error report (default: No) with source `catalyst-cli-crash`. The report has the error, the stack, the command, the Correlation ID, and the `catalyst debug` report. A `preAction` hook (`recordActiveCommand`) records the running command so the handler can find its credentials. It must never throw, so the handler always exits with code 1. Shared helpers for both prompts are in `lib/prompt-context.ts`.
+
 ## Development
 
 ```bash
