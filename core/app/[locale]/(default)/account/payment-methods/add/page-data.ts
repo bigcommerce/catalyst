@@ -72,13 +72,27 @@ const GetCountriesQuery = graphql(`
   }
 `);
 
-// Everything the microapp needs to vault a Stripe ACH account through the
-// Payment Element path. Fetched per request: the SetupIntent and the vault
-// access token are both single-use.
-export interface StripeOcsAchContext {
-  setupIntentClientSecret: string;
-  publishableKey: string;
-  connectedAccountId: string | null;
+// The payment methods this POC can vault, as "<providerId>.<methodId>". The
+// microapp's headless context splits this into its providerId and methodType.
+export const SUPPORTED_PAYMENT_METHOD_IDS = [
+  'stripeocs.card',
+  'stripeocs.ach',
+  'squarev2.card',
+] as const;
+
+export type SupportedPaymentMethodId = (typeof SUPPORTED_PAYMENT_METHOD_IDS)[number];
+
+export const isSupportedPaymentMethodId = (value: unknown): value is SupportedPaymentMethodId =>
+  SUPPORTED_PAYMENT_METHOD_IDS.some((id) => id === value);
+
+// Everything the microapp needs to vault one payment method. Fetched per
+// request: the provider initialization and the vault access token are both
+// single-use.
+export interface VaultContext {
+  paymentMethodId: SupportedPaymentMethodId;
+  // Already in the microapp's field names. Where this mapping should live is
+  // still an open question, so the POC keeps it here.
+  paymentProviderInitializationData: Record<string, string>;
   vaultAccessToken: string;
   shopperId: string;
   customerEmail: string;
@@ -86,15 +100,34 @@ export interface StripeOcsAchContext {
   paymentsUrl: string;
 }
 
-const StripeOcsAchInitializationMutation = graphql(`
-  mutation StripeOcsAchInitializationMutation {
+const StripeOcsInitializationMutation = graphql(`
+  mutation StripeOcsInitializationMutation($paymentMethod: StripeOcsVaultPaymentMethod!) {
     customer {
       storedPaymentInstruments {
-        createStripeOcsVaultInitialization(input: { paymentMethod: ACH }) {
+        createStripeOcsVaultInitialization(input: { paymentMethod: $paymentMethod }) {
           initialization {
             setupIntentClientSecret
             publishableKey
             connectedAccountId
+          }
+          errors {
+            message
+          }
+        }
+      }
+    }
+  }
+`);
+
+const SquareV2InitializationMutation = graphql(`
+  mutation SquareV2InitializationMutation {
+    customer {
+      storedPaymentInstruments {
+        createSquareV2VaultInitialization {
+          initialization {
+            applicationId
+            locationId
+            environment
           }
           errors {
             message
@@ -131,15 +164,75 @@ const CurrentCustomerQuery = graphql(`
   }
 `);
 
-export async function getStripeOcsAchContext(): Promise<StripeOcsAchContext> {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+interface MutationResult<T> {
+  initialization?: T | null;
+  errors: Array<{ message: string }>;
+}
 
-  const [initResponse, tokenResponse, customerResponse] = await Promise.all([
-    client.fetch({
-      document: StripeOcsAchInitializationMutation,
+function unwrap<T>(paymentMethodId: string, result: MutationResult<T> | null | undefined): T {
+  if (!result?.initialization) {
+    const messages = (result?.errors ?? []).map((error) => error.message);
+
+    throw new Error(
+      `Vault initialization for ${paymentMethodId} failed: ${messages.join('; ') || 'no data'}`,
+    );
+  }
+
+  return result.initialization;
+}
+
+// Calls the provider's own initialization mutation and maps the result to the
+// field names the microapp reads.
+async function getInitializationData(
+  paymentMethodId: SupportedPaymentMethodId,
+  customerAccessToken: string | undefined,
+): Promise<Record<string, string>> {
+  if (paymentMethodId === 'squarev2.card') {
+    const squareResponse = await client.fetch({
+      document: SquareV2InitializationMutation,
       customerAccessToken,
       fetchOptions: { cache: 'no-store' },
-    }),
+    });
+    const { applicationId, locationId, environment } = unwrap(
+      paymentMethodId,
+      squareResponse.data.customer.storedPaymentInstruments.createSquareV2VaultInitialization,
+    );
+
+    return {
+      applicationId,
+      locationId,
+      // The microapp loads Square's sandbox SDK only when env is 'staging'.
+      env: environment === 'SANDBOX' ? 'staging' : 'production',
+    };
+  }
+
+  const response = await client.fetch({
+    document: StripeOcsInitializationMutation,
+    variables: { paymentMethod: paymentMethodId === 'stripeocs.ach' ? 'ACH' : 'CARD' },
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+  });
+  const { setupIntentClientSecret, publishableKey, connectedAccountId } = unwrap(
+    paymentMethodId,
+    response.data.customer.storedPaymentInstruments.createStripeOcsVaultInitialization,
+  );
+
+  return {
+    // A setupIntentToken sends the microapp down its Stripe Payment Element
+    // path, for both card and ACH.
+    setupIntentToken: setupIntentClientSecret,
+    stripePublishableKey: publishableKey,
+    ...(connectedAccountId && { stripeConnectedAccount: connectedAccountId }),
+  };
+}
+
+export async function getVaultContext(
+  paymentMethodId: SupportedPaymentMethodId,
+): Promise<VaultContext> {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const [paymentProviderInitializationData, tokenResponse, customerResponse] = await Promise.all([
+    getInitializationData(paymentMethodId, customerAccessToken),
     client.fetch({
       document: VaultAccessTokenMutation,
       customerAccessToken,
@@ -152,23 +245,19 @@ export async function getStripeOcsAchContext(): Promise<StripeOcsAchContext> {
     }),
   ]);
 
-  const initResult =
-    initResponse.data.customer.storedPaymentInstruments.createStripeOcsVaultInitialization;
   const tokenResult = tokenResponse.data.customer.storedPaymentInstruments.createVaultAccessToken;
-  const initialization = initResult?.initialization;
   const vaultAccessToken = tokenResult?.vaultAccessToken;
   const customer = customerResponse.data.customer;
 
-  if (!initialization || !vaultAccessToken || !customer) {
-    const messages = [...(initResult?.errors ?? []), ...(tokenResult?.errors ?? [])].map(
-      (error) => error.message,
-    );
+  if (!vaultAccessToken || !customer) {
+    const messages = (tokenResult?.errors ?? []).map((error) => error.message);
 
-    throw new Error(`Stripe ACH initialization failed: ${messages.join('; ') || 'no data'}`);
+    throw new Error(`Vault access token creation failed: ${messages.join('; ') || 'no data'}`);
   }
 
   return {
-    ...initialization,
+    paymentMethodId,
+    paymentProviderInitializationData,
     // BigPay reads the token from "Authorization: VAT <token>", and the microapp
     // sends vaultToken verbatim, so the scheme must be part of the value.
     vaultAccessToken: vaultAccessToken.startsWith('VAT ')

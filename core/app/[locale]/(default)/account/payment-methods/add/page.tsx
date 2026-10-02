@@ -3,25 +3,31 @@ import { setRequestLocale } from 'next-intl/server';
 import { Link } from '~/components/link';
 
 import { AccountPaymentsMicroapp } from './_components/account-payments-microapp';
-import { getMicroappAssets, getMicroappCountries, getStripeOcsAchContext } from './page-data';
+import {
+  getMicroappAssets,
+  getMicroappCountries,
+  getVaultContext,
+  isSupportedPaymentMethodId,
+} from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ provider?: string }>;
+  searchParams: Promise<{ paymentMethodId?: string }>;
 }
 
 export default async function AddPaymentMethodPage({ params, searchParams }: Props) {
   const { locale } = await params;
-  const { provider } = await searchParams;
+  const { paymentMethodId } = await searchParams;
 
   setRequestLocale(locale);
 
-  // ?provider=stripeocs-ach renders Stripe ACH through the Payment Element path.
-  // Without it, the page keeps rendering the placeholder ECP form.
-  const [assets, countries, stripeOcsAch] = await Promise.all([
+  // ?paymentMethodId=stripeocs.card, stripeocs.ach or squarev2.card renders that
+  // payment method with real data. Without it, the page keeps rendering the
+  // placeholder ECP form.
+  const [assets, countries, vaultContext] = await Promise.all([
     getMicroappAssets(),
     getMicroappCountries(),
-    provider === 'stripeocs-ach' ? getStripeOcsAchContext() : undefined,
+    isSupportedPaymentMethodId(paymentMethodId) ? getVaultContext(paymentMethodId) : undefined,
   ]);
 
   return (
@@ -37,7 +43,7 @@ export default async function AddPaymentMethodPage({ params, searchParams }: Pro
         Add payment method
       </h1>
 
-      <AccountPaymentsMicroapp assets={assets} countries={countries} stripeOcsAch={stripeOcsAch} />
+      <AccountPaymentsMicroapp assets={assets} countries={countries} vaultContext={vaultContext} />
     </div>
   );
 }

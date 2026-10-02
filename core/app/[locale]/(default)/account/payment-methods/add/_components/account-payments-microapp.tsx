@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { type MicroappAssets, type MicroappCountry, type StripeOcsAchContext } from '../page-data';
+import { type MicroappAssets, type MicroappCountry, type VaultContext } from '../page-data';
 
 interface RenderConfig {
   styles: Record<string, unknown>;
@@ -23,15 +23,15 @@ declare global {
 //
 // POC scope: renders the ECP (ACH) form by default. Per the source, vaultToken is
 // submit-only and the ECP form needs no init data, so placeholder values are enough
-// to render. When stripeOcsAch is set, renders Stripe ACH with real data instead.
+// to render. When vaultContext is set, renders that payment method with real data.
 export function AccountPaymentsMicroapp({
   assets,
   countries,
-  stripeOcsAch,
+  vaultContext,
 }: {
   assets: MicroappAssets;
   countries: MicroappCountry[];
-  stripeOcsAch?: StripeOcsAchContext;
+  vaultContext?: VaultContext;
 }) {
   const started = useRef(false);
   const [status, setStatus] = useState('Loading microapp…');
@@ -95,29 +95,21 @@ export function AccountPaymentsMicroapp({
           // eslint-disable-next-line no-console
           console.error('[account-payments]', message);
         },
-        storeContextData: stripeOcsAch
+        storeContextData: vaultContext
           ? {
-              // Headless shape: the microapp derives providerId and methodType from this.
-              paymentMethodId: 'stripeocs.ach',
+              // Headless shape: the microapp derives providerId and methodType from paymentMethodId.
+              paymentMethodId: vaultContext.paymentMethodId,
               storefrontApiBaseUrl: window.location.origin,
               storeLocale: 'en',
               countries,
-              paymentsUrl: stripeOcsAch.paymentsUrl,
+              paymentsUrl: vaultContext.paymentsUrl,
               paymentMethodsUrl: '/account/payment-methods',
-              vaultToken: stripeOcsAch.vaultAccessToken,
-              shopperId: stripeOcsAch.shopperId,
-              storeHash: stripeOcsAch.storeHash,
+              vaultToken: vaultContext.vaultAccessToken,
+              shopperId: vaultContext.shopperId,
+              storeHash: vaultContext.storeHash,
               currencyCode: 'USD',
-              customerEmail: stripeOcsAch.customerEmail,
-              // GraphQL names mapped to the microapp's names here, for the test only.
-              // A setupIntentToken routes Stripe to the Payment Element path.
-              paymentProviderInitializationData: {
-                setupIntentToken: stripeOcsAch.setupIntentClientSecret,
-                stripePublishableKey: stripeOcsAch.publishableKey,
-                ...(stripeOcsAch.connectedAccountId && {
-                  stripeConnectedAccount: stripeOcsAch.connectedAccountId,
-                }),
-              },
+              customerEmail: vaultContext.customerEmail,
+              paymentProviderInitializationData: vaultContext.paymentProviderInitializationData,
             }
           : {
               // ECP (ACH): routes to the plain bank-account form (needs no init data).
@@ -141,7 +133,7 @@ export function AccountPaymentsMicroapp({
     };
 
     run().catch((error: unknown) => setStatus(`Error: ${String(error)}`));
-  }, [assets, countries, stripeOcsAch]);
+  }, [assets, countries, vaultContext]);
 
   return (
     <div>
