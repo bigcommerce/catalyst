@@ -61,6 +61,26 @@ function isTransientError(error: unknown) {
   return error instanceof TypeError;
 }
 
+// Rejects with the abort reason as soon as the request is cancelled, instead of waiting out the delay.
+function backoff(ms: number, signal: AbortSignal | null | undefined) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+
+    function onAbort() {
+      clearTimeout(timer);
+
+      const reason: unknown = signal?.reason;
+
+      reject(reason instanceof Error ? reason : new DOMException('Aborted', 'AbortError'));
+    }
+
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
 async function withRetries<T>(
   maxAttempts: number,
   signal: AbortSignal | null | undefined,
@@ -76,9 +96,7 @@ async function withRetries<T>(
       }
 
       // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => {
-        setTimeout(resolve, RETRY_DELAYS_MS[attemptNumber - 1]);
-      });
+      await backoff(RETRY_DELAYS_MS[attemptNumber - 1] ?? 0, signal);
     }
   }
 }

@@ -147,4 +147,27 @@ describe('client.fetch retries', () => {
     expect(result.error).toBeInstanceOf(TypeError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it('stops waiting to retry when the request is aborted during the delay', async () => {
+    const controller = new AbortController();
+
+    fetchMock.mockResolvedValueOnce(jsonResponse({}, 502));
+
+    const settled = client
+      .fetch({ document: QUERY, fetchOptions: { signal: controller.signal } })
+      .then(
+        () => ({ error: undefined }),
+        (error: unknown) => ({ error }),
+      );
+
+    // Let the first attempt fail and the backoff start, then abort without advancing the timer.
+    await vi.advanceTimersByTimeAsync(0);
+    controller.abort();
+
+    const result = await settled;
+
+    expect(result.error).toBeInstanceOf(DOMException);
+    expect((result.error as DOMException).name).toBe('AbortError');
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });
