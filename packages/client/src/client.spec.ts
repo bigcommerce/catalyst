@@ -17,6 +17,7 @@ const MUTATION =
   >;
 
 const fetchMock = vi.fn<typeof fetch>();
+const warnSpy = vi.spyOn(console, 'warn');
 
 function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -49,6 +50,7 @@ async function settle<T>(promise: Promise<T>): Promise<{ value?: T; error?: unkn
 }
 
 beforeEach(() => {
+  warnSpy.mockImplementation(() => undefined);
   vi.useFakeTimers();
   vi.stubGlobal('fetch', fetchMock);
 });
@@ -57,6 +59,7 @@ afterEach(() => {
   vi.useRealTimers();
   vi.unstubAllGlobals();
   fetchMock.mockReset();
+  warnSpy.mockReset();
 });
 
 describe('client.fetch retries', () => {
@@ -69,17 +72,23 @@ describe('client.fetch retries', () => {
 
     expect(result).toEqual({ value: { data: { site: {} } } });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(warnSpy).toHaveBeenCalledExactlyOnceWith(
+      '[BigCommerce] Retrying query GetSite after HTTP 502 (attempt 2 of 3)',
+    );
   });
 
   it('retries a query when the connection drops', async () => {
     fetchMock
-      .mockRejectedValueOnce(new TypeError('fetch failed'))
+      .mockRejectedValueOnce(new TypeError('fetch failed', { cause: { code: 'UND_ERR_SOCKET' } }))
       .mockResolvedValueOnce(jsonResponse({ data: { site: {} } }));
 
     const result = await settle(client.fetch({ document: QUERY }));
 
     expect(result).toEqual({ value: { data: { site: {} } } });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(warnSpy).toHaveBeenCalledExactlyOnceWith(
+      '[BigCommerce] Retrying query GetSite after fetch failed (UND_ERR_SOCKET) (attempt 2 of 3)',
+    );
   });
 
   it('retries a query when the body read is cut off', async () => {
@@ -100,6 +109,7 @@ describe('client.fetch retries', () => {
 
     expect(result.error).toBeInstanceOf(BigCommerceAPIError);
     expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(warnSpy).toHaveBeenCalledTimes(2);
   });
 
   it('does not retry a mutation', async () => {
@@ -109,6 +119,7 @@ describe('client.fetch retries', () => {
 
     expect(result.error).toBeInstanceOf(BigCommerceAPIError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 
   it('does not retry a 4xx', async () => {
@@ -118,6 +129,7 @@ describe('client.fetch retries', () => {
 
     expect(result.error).toBeInstanceOf(BigCommerceAPIError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 
   it('does not retry GraphQL errors', async () => {
@@ -129,6 +141,7 @@ describe('client.fetch retries', () => {
 
     expect(result.error).toBeInstanceOf(BigCommerceGQLError);
     expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 
   it('does not retry once the request is aborted', async () => {

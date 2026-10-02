@@ -81,9 +81,25 @@ function backoff(ms: number, signal: AbortSignal | null | undefined) {
   });
 }
 
+function describeTransientError(error: unknown) {
+  if (error instanceof BigCommerceAPIError) {
+    return `HTTP ${error.status}`;
+  }
+
+  const message = error instanceof Error ? error.message : String(error);
+  const cause: unknown = error instanceof Error ? error.cause : undefined;
+  const code =
+    cause && typeof cause === 'object' && 'code' in cause && typeof cause.code === 'string'
+      ? cause.code
+      : undefined;
+
+  return code ? `${message} (${code})` : message;
+}
+
 async function withRetries<T>(
   maxAttempts: number,
   signal: AbortSignal | null | undefined,
+  operationLabel: string,
   attempt: () => Promise<T>,
 ): Promise<T> {
   for (let attemptNumber = 1; ; attemptNumber += 1) {
@@ -94,6 +110,12 @@ async function withRetries<T>(
       if (attemptNumber >= maxAttempts || signal?.aborted || !isTransientError(error)) {
         throw error;
       }
+
+      // Recovered failures would otherwise leave no trace of how often the API is failing.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[BigCommerce] Retrying ${operationLabel} after ${describeTransientError(error)} (attempt ${attemptNumber + 1} of ${maxAttempts})`,
+      );
 
       // eslint-disable-next-line no-await-in-loop
       await backoff(RETRY_DELAYS_MS[attemptNumber - 1] ?? 0, signal);
@@ -226,7 +248,9 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     // Mutations aren't idempotent, so only queries are retried.
     const maxAttempts = operationInfo.type === 'query' ? RETRY_DELAYS_MS.length + 1 : 1;
 
-    const result = await withRetries(maxAttempts, requestInit.signal, async () => {
+    const operationLabel = `${operationInfo.type} ${operationInfo.name ?? 'anonymous'}`;
+
+    const result = await withRetries(maxAttempts, requestInit.signal, operationLabel, async () => {
       const response = await fetch(graphqlUrl, requestInit);
 
       if (!response.ok) {
