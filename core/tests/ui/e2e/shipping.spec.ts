@@ -4,6 +4,10 @@ import { expect, Page, test } from '~/tests/fixtures';
 import { CatalogFixture } from '~/tests/fixtures/catalog';
 import { getTranslations } from '~/tests/lib/i18n';
 
+// Every assertion in these tests waits on a cart server action that calls BigCommerce's checkout
+// API. It normally answers in about a second but can stall for several, past the 5s default.
+const expectAfterAction = expect.configure({ timeout: 15_000 });
+
 async function addProductAndGoToCart(page: Page, catalog: CatalogFixture) {
   const t = await getTranslations();
   const product = await catalog.getDefaultOrCreateSimpleProduct();
@@ -72,12 +76,12 @@ test('Add shipping estimates', async ({ page, catalog }) => {
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('viewShippingOptions') }).click();
-  await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
+  await expectAfterAction(page.getByLabel(t('shippingOptions'))).toBeVisible();
 
   const selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('addShipping') }).click();
-  await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
+  await expectAfterAction(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
 });
 
 test('Update shipping estimates', async ({ page, catalog }) => {
@@ -90,12 +94,12 @@ test('Update shipping estimates', async ({ page, catalog }) => {
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('viewShippingOptions') }).click();
-  await expect(page.getByLabel(t('shippingOptions'))).toBeVisible();
+  await expectAfterAction(page.getByLabel(t('shippingOptions'))).toBeVisible();
 
   let selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('addShipping') }).click();
-  await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
+  await expectAfterAction(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
 
   await page.getByText(t('change')).click();
   await page.getByRole('button', { name: t('editAddress') }).click();
@@ -103,12 +107,14 @@ test('Update shipping estimates', async ({ page, catalog }) => {
   await fillOutShippingForm(page);
 
   await page.getByRole('button', { name: t('updatedShippingOptions') }).click();
-  await expect(page.getByRole('button', { name: t('updatedShippingOptions') })).toBeHidden();
+  await expectAfterAction(
+    page.getByRole('button', { name: t('updatedShippingOptions') }),
+  ).toBeHidden();
 
   const shippingOptions = page.getByLabel(t('shippingOptions'));
   const shippingSummary = page.getByText(`${selectedOption}${t('change')}`);
 
-  await expect(shippingOptions.or(shippingSummary).first()).toBeVisible();
+  await expectAfterAction(shippingOptions.or(shippingSummary).first()).toBeVisible();
 
   if (await shippingOptions.isVisible()) {
     selectedOption = await selectRandomShippingOption(page);
@@ -121,7 +127,7 @@ test('Update shipping estimates', async ({ page, catalog }) => {
       .click();
   }
 
-  await expect(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
+  await expectAfterAction(page.getByText(`${selectedOption}${t('change')}`)).toBeVisible();
 });
 
 test('Updating cart quantity with a shipping estimate opens the shipping options for a new quote', async ({
@@ -139,22 +145,26 @@ test('Updating cart quantity with a shipping estimate opens the shipping options
   await page
     .getByRole('button', { name: t('CheckoutSummary.Shipping.viewShippingOptions') })
     .click();
-  await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
+  await expectAfterAction(
+    page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions')),
+  ).toBeVisible();
 
   let selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('CheckoutSummary.Shipping.addShipping') }).click();
-  await expect(
+  await expectAfterAction(
     page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
   ).toBeVisible();
 
   await page.getByLabel(t('increment')).click();
-  await expect(page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions'))).toBeVisible();
+  await expectAfterAction(
+    page.getByLabel(t('CheckoutSummary.Shipping.shippingOptions')),
+  ).toBeVisible();
 
   selectedOption = await selectRandomShippingOption(page);
 
   await page.getByRole('button', { name: t('CheckoutSummary.Shipping.addShipping') }).click();
-  await expect(
+  await expectAfterAction(
     page.getByText(`${selectedOption}${t('CheckoutSummary.Shipping.change')}`),
   ).toBeVisible();
 });
