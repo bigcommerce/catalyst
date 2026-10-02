@@ -81,7 +81,7 @@ export const getMicroappCountries = cache(async (): Promise<MicroappCountry[]> =
     fetchOptions: { next: { revalidate: 3600 } },
   });
 
-  return response.data.geography.countries.map((country) => {
+  return (response.data.geography.countries ?? []).map((country) => {
     const states = country.statesOrProvinces.map((state) => ({
       code: state.abbreviation,
       name: state.name,
