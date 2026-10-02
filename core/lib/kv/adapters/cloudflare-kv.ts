@@ -34,6 +34,11 @@ const ROUTES_CACHE_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 // copy expires and nearly every read goes to central storage. Outlasting the L1
 // lets those re-reads hit the location cache. Kept at the 5-minute storefront
 // status window, the shortest freshness window `with-routes` stores.
+//
+// Trade-off: a value read just before its `expiryTime` stays cached here for
+// the full TTL, so a storefront status change (maintenance, launch) can take up
+// to ~11 minutes to reach a location instead of ~7. A refresh write is usually,
+// but not guaranteed to be, visible at once in the location that made it.
 const ROUTES_READ_CACHE_TTL_SECONDS = 60 * 5;
 
 // `getCloudflareContext()` from `@opennextjs/cloudflare` is, in sync mode,
