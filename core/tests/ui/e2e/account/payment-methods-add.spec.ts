@@ -59,7 +59,7 @@ test('Initialization data is requested when the payment method requires it', asy
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
-        paymentProviderInitializationData: { token: null, clientConfiguration: null },
+        paymentProviderInitializationData: null,
       }),
     }),
   );
@@ -122,7 +122,7 @@ test('A failed initialization request surfaces an error and leaves the form gate
   await expect(page.locator('#cardNumber iframe')).toHaveCount(0);
 });
 
-test('The vault initialization route returns the provider client configuration', async ({
+test('The vault initialization route returns the provider vault initialization', async ({
   page,
   customer,
 }) => {
@@ -136,18 +136,29 @@ test('The vault initialization route returns the provider client configuration',
 
   const body: unknown = await response.json();
 
-  // Asserts the GraphQL inline fragment selects the provider's fields and that `clientConfigType`
+  // Asserts the provider's own mutation selects its fields and that `initializationType`
   // survives the `__typename` alias, which is what the microapp discriminates on.
   expect(body).toMatchObject({
     paymentProviderInitializationData: {
-      clientConfiguration: {
-        clientConfigType: 'SquareV2ClientConfiguration',
-        applicationId: expect.any(String),
-        locationId: expect.any(String),
-        environment: expect.any(String),
-      },
+      initializationType: 'SquareV2VaultInitialization',
+      applicationId: expect.any(String),
+      locationId: expect.any(String),
+      environment: expect.any(String),
     },
   });
+});
+
+test('The vault initialization route rejects a payment method without an initialization mutation', async ({
+  page,
+  customer,
+}) => {
+  await customer.login();
+
+  const response = await page.request.get(
+    `${VAULT_INITIALIZATION_PATH}?paymentMethodId=${DEFAULT_CARD_PAYMENT_METHOD_ID}`,
+  );
+
+  expect(response.status()).toBe(400);
 });
 
 test(

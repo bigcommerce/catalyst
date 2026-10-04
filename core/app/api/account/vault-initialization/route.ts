@@ -5,7 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '~/auth';
 import { getChannelIdFromLocale } from '~/channels.config';
 import { getLocaleFromRequest } from '~/i18n/request-locale';
-import { getVaultInitialization } from '~/lib/account-payments/get-vault-initialization';
+import {
+  getVaultInitialization,
+  UnsupportedVaultInitializationError,
+} from '~/lib/account-payments/get-vault-initialization';
 
 export const dynamic = 'force-dynamic';
 
@@ -35,14 +38,21 @@ export async function GET(request: NextRequest) {
     const locale = await getLocaleFromRequest(request);
     const channelId = getChannelIdFromLocale(locale);
 
-    const { token, clientConfiguration } = await getVaultInitialization(paymentMethodId, channelId);
+    const initialization = await getVaultInitialization(paymentMethodId, channelId);
 
     return NextResponse.json(
-      { paymentProviderInitializationData: { token, clientConfiguration } },
+      { paymentProviderInitializationData: initialization },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (error) {
     rethrow(error);
+
+    if (error instanceof UnsupportedVaultInitializationError) {
+      return NextResponse.json(
+        { error: 'unsupported paymentMethodId' },
+        { status: 400, headers: { 'Cache-Control': 'no-store' } },
+      );
+    }
 
     if (error instanceof BigCommerceAuthError) {
       return NextResponse.json(
