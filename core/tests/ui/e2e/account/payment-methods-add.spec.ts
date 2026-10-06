@@ -6,6 +6,11 @@ import { TAGS } from '~/tests/tags';
 
 const DEFAULT_CARD_PAYMENT_METHOD_ID = 'braintree.card';
 const ADD_PAYMENT_METHOD_URL = `/account/payment-methods/add/${DEFAULT_CARD_PAYMENT_METHOD_ID}/`;
+const ADD_PAYMENT_METHOD_URL_REQUIRING_INIT = `${ADD_PAYMENT_METHOD_URL}?init=1`;
+const VAULT_INITIALIZATION_PATH = '/api/account/vault-initialization';
+// Requires the test store to have Square enabled as a payment method. It does NOT require a
+// working Square gateway connection — this only initializes, it never vaults an instrument.
+const INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID = 'squarev2.card';
 
 test(`${ADD_PAYMENT_METHOD_URL} is restricted for guest users`, async ({ page }) => {
   await page.goto(ADD_PAYMENT_METHOD_URL);
@@ -43,6 +48,106 @@ test('Authenticated shopper sees the default credit card vaulting form', async (
   await expect(page.locator('input[name="postalCode"]')).toBeVisible();
 
   await expect(page.getByRole('button', { name: 'Save Payment Method' })).toBeVisible();
+});
+
+test('Initialization data is requested when the payment method requires it', async ({
+  page,
+  customer,
+}) => {
+  await page.route(`**${VAULT_INITIALIZATION_PATH}*`, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        paymentProviderInitializationData: { token: null, clientConfiguration: null },
+      }),
+    }),
+  );
+
+  await customer.login();
+
+  const initializationRequest = page.waitForRequest((request) =>
+    request.url().includes(VAULT_INITIALIZATION_PATH),
+  );
+
+  await page.goto(ADD_PAYMENT_METHOD_URL_REQUIRING_INIT);
+
+  const { searchParams } = new URL((await initializationRequest).url());
+
+  expect(searchParams.get('paymentMethodId')).toBe(DEFAULT_CARD_PAYMENT_METHOD_ID);
+});
+
+test('Initialization data is not requested when the payment method does not require it', async ({
+  page,
+  customer,
+}) => {
+  const initializationRequests: string[] = [];
+
+  page.on('request', (request) => {
+    if (request.url().includes(VAULT_INITIALIZATION_PATH)) {
+      initializationRequests.push(request.url());
+    }
+  });
+
+  await customer.login();
+  await page.goto(ADD_PAYMENT_METHOD_URL);
+
+  // The rendered form proves the microapp booted, so an initialization request would already
+  // have fired by now if the gate were wrong.
+  await expect(page.locator('#cardNumber iframe')).toBeVisible();
+
+  expect(initializationRequests).toHaveLength(0);
+});
+
+test('A failed initialization request surfaces an error and leaves the form gated', async ({
+  page,
+  customer,
+}) => {
+  await page.route(`**${VAULT_INITIALIZATION_PATH}*`, (route) =>
+    route.fulfill({
+      status: 500,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'failed to create vault initialization' }),
+    }),
+  );
+
+  const t = await getTranslations('Account.PaymentMethods.Add.Errors');
+
+  await customer.login();
+  await page.goto(ADD_PAYMENT_METHOD_URL_REQUIRING_INIT);
+
+  await expect(page.getByText(t('somethingWentWrong'))).toBeVisible();
+
+  // `renderAccountPayments` is gated on initialization completing, so no form should mount.
+  await expect(page.locator('#cardNumber iframe')).toHaveCount(0);
+});
+
+test('The vault initialization route returns the provider client configuration', async ({
+  page,
+  customer,
+}) => {
+  await customer.login();
+
+  const response = await page.request.get(
+    `${VAULT_INITIALIZATION_PATH}?paymentMethodId=${INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID}`,
+  );
+
+  expect(response.status()).toBe(200);
+
+  const body: unknown = await response.json();
+
+  // Asserts the GraphQL inline fragment selects the provider's fields and that `clientConfigType`
+  // survives the `__typename` alias, which is what the microapp discriminates on.
+  expect(body).toMatchObject({
+    paymentProviderInitializationData: {
+      clientConfiguration: {
+        clientConfigType: 'SquareV2ClientConfiguration',
+        applicationId: expect.any(String),
+        locationId: expect.any(String),
+        environment: expect.any(String),
+      },
+    },
+  });
 });
 
 test(

@@ -18,8 +18,12 @@ interface Manifest {
 }
 
 interface Props {
-  storeContextData: Omit<HeadlessStoreContextDataInterface, 'vaultToken'>;
+  storeContextData: Omit<
+    HeadlessStoreContextDataInterface,
+    'paymentProviderInitializationData' | 'vaultToken'
+  >;
   manifest: Manifest;
+  requiresInitialization: boolean;
 }
 
 interface VaultTokenResponse {
@@ -35,16 +39,32 @@ function isVaultTokenResponse(value: unknown): value is VaultTokenResponse {
   );
 }
 
+interface VaultInitializationResponse {
+  paymentProviderInitializationData: PaymentProviderInitializationData;
+}
+
+function isVaultInitializationResponse(value: unknown): value is VaultInitializationResponse {
+  return (
+    typeof value === 'object' && value !== null && 'paymentProviderInitializationData' in value
+  );
+}
+
 class VaultTokenUnauthorizedError extends Error {}
 
-export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
+export function AccountPaymentsMicroapp({
+  storeContextData,
+  manifest,
+  requiresInitialization,
+}: Props) {
   const t = useTranslations('Account.PaymentMethods.Add.Errors');
   const [vaultToken, setVaultToken] = useState<string>();
+  const [initializationData, setInitializationData] = useState<PaymentProviderInitializationData>();
+  const [initializationReady, setInitializationReady] = useState(!requiresInitialization);
   const [scriptsReady, setScriptsReady] = useState(0);
   // Guards against calling `renderAccountPayments` more than once for the lifetime of this component instance
   const hasRenderedRef = useRef(false);
 
-  const { storeLocale } = storeContextData;
+  const { storeLocale, paymentMethodId } = storeContextData;
 
   useEffect(() => {
     async function fetchVaultToken() {
@@ -78,9 +98,46 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
   }, [t, storeLocale]);
 
   useEffect(() => {
+    if (!requiresInitialization) {
+      return;
+    }
+
+    async function fetchVaultInitialization() {
+      const params = new URLSearchParams({ paymentMethodId, locale: storeLocale });
+      const res = await fetch(`/api/account/vault-initialization?${params.toString()}`);
+
+      if (res.status === 401) {
+        throw new VaultTokenUnauthorizedError();
+      }
+
+      if (!res.ok) {
+        throw new Error(`Vault initialization request failed with status ${res.status}`);
+      }
+
+      const data: unknown = await res.json();
+
+      if (!isVaultInitializationResponse(data)) {
+        throw new Error('Invalid vault initialization response');
+      }
+
+      setInitializationData(data.paymentProviderInitializationData);
+      setInitializationReady(true);
+    }
+
+    fetchVaultInitialization().catch((error: unknown) => {
+      toast.error(
+        error instanceof VaultTokenUnauthorizedError
+          ? t('sessionExpired')
+          : t('somethingWentWrong'),
+      );
+    });
+  }, [t, requiresInitialization, paymentMethodId, storeLocale]);
+
+  useEffect(() => {
     if (
       hasRenderedRef.current ||
       !vaultToken ||
+      !initializationReady ||
       scriptsReady < manifest.scripts.length ||
       !window.BigCommerce?.renderAccountPayments
     ) {
@@ -91,12 +148,23 @@ export function AccountPaymentsMicroapp({ storeContextData, manifest }: Props) {
 
     window.BigCommerce.renderAccountPayments({
       styles: buildMicroappStyles(),
-      storeContextData: { ...storeContextData, vaultToken },
+      storeContextData: {
+        ...storeContextData,
+        vaultToken,
+        paymentProviderInitializationData: initializationData,
+      },
       errorHandler: (message: string) => {
         toast.error(message);
       },
     });
-  }, [vaultToken, scriptsReady, manifest.scripts.length, storeContextData]);
+  }, [
+    vaultToken,
+    initializationReady,
+    initializationData,
+    scriptsReady,
+    manifest.scripts.length,
+    storeContextData,
+  ]);
 
   return (
     <>
