@@ -16,6 +16,10 @@ const CreateVaultInitializationMutation = graphql(`
               locationId
               environment
             }
+            ... on StripeOcsClientConfiguration {
+              publishableKey
+              connectedAccountId
+            }
           }
           errors {
             message
