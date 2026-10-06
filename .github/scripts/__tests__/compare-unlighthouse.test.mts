@@ -1,7 +1,10 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 
-import { compareResults } from '../compare-unlighthouse.mts';
+import { compareResults, dropBlockedRoutes, hasBlockedRequests } from '../compare-unlighthouse.mts';
 import type { CiResult } from '../compare-unlighthouse.mts';
 
 // ---------------------------------------------------------------------------
@@ -450,5 +453,73 @@ describe('Core Web Vitals section', () => {
     const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile);
 
     assert.ok(markdown.includes('| TBT | 80 ms | 320 ms | 75 ms | 310 ms |'));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Blocked requests
+// ---------------------------------------------------------------------------
+
+function lighthouseResult(requests: { url: string; statusCode: number }[]) {
+  return {
+    finalDisplayedUrl: 'https://store.example/blog/',
+    audits: { 'network-requests': { details: { items: requests } } },
+  };
+}
+
+describe('hasBlockedRequests', () => {
+  it('is true when a request to the deployment got a 403', () => {
+    const result = lighthouseResult([
+      { url: 'https://store.example/blog/', statusCode: 200 },
+      { url: 'https://store.example/_next/static/css/app.css', statusCode: 403 },
+    ]);
+
+    assert.equal(hasBlockedRequests(result), true);
+  });
+
+  it('is true when a request to the deployment got a 429', () => {
+    const result = lighthouseResult([{ url: 'https://store.example/font.woff2', statusCode: 429 }]);
+
+    assert.equal(hasBlockedRequests(result), true);
+  });
+
+  it('ignores blocked third-party requests', () => {
+    const result = lighthouseResult([
+      { url: 'https://store.example/blog/', statusCode: 200 },
+      { url: 'https://www.google-analytics.com/collect', statusCode: 403 },
+      { url: 'https://store.example.evil.test/app.css', statusCode: 403 },
+    ]);
+
+    assert.equal(hasBlockedRequests(result), false);
+  });
+
+  it('ignores other error codes', () => {
+    const result = lighthouseResult([{ url: 'https://store.example/missing.png', statusCode: 404 }]);
+
+    assert.equal(hasBlockedRequests(result), false);
+  });
+});
+
+describe('dropBlockedRoutes', () => {
+  function writeReport(dir: string, result: object) {
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(
+      join(dir, 'lighthouse.html'),
+      `<html><script>window.__LIGHTHOUSE_JSON__ = ${JSON.stringify(result)};</script></html>`,
+    );
+  }
+
+  it('drops routes whose report has blocked requests, including the root route', () => {
+    const reports = mkdtempSync(join(tmpdir(), 'unlighthouse-reports-'));
+    const blocked = [{ url: 'https://store.example/app.css', statusCode: 403 }];
+
+    writeReport(reports, lighthouseResult(blocked));
+    writeReport(join(reports, 'blog'), lighthouseResult(blocked));
+    writeReport(join(reports, 'cart'), lighthouseResult([]));
+
+    const result = withRoutes([{ path: '/' }, { path: '/blog/' }, { path: '/cart/' }, { path: '/login/' }]);
+    const paths = dropBlockedRoutes(result, reports).routes?.map((route) => route.path);
+
+    assert.deepEqual(paths, ['/cart/', '/login/']);
   });
 });

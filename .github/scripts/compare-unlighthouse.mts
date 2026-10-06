@@ -4,7 +4,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
-import { resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 
 interface CiRoute {
   path: string;
@@ -53,6 +53,67 @@ function loadCiResult(filePath: string): CiResult {
   }
 
   return JSON.parse(readFileSync(filePath, "utf-8")) as CiResult;
+}
+
+interface LighthouseResult {
+  finalDisplayedUrl: string;
+  audits: Record<
+    string,
+    { details?: { items?: { url: string; statusCode?: number }[] } } | undefined
+  >;
+}
+
+// The static report embeds the full Lighthouse result in each route's HTML.
+function readLighthouseResult(html: string): LighthouseResult | null {
+  const match = html.match(
+    /window\.__LIGHTHOUSE_JSON__ = (\{.*?\});<\/script>/s,
+  );
+
+  return match?.[1] ? (JSON.parse(match[1]) as LighthouseResult) : null;
+}
+
+// Vercel's DDoS mitigation sometimes blocks a page's own CSS or scripts on CI
+// runners, and the page then gets scored unstyled.
+function hasBlockedRequests(result: LighthouseResult): boolean {
+  const { origin } = new URL(result.finalDisplayedUrl);
+  const requests = result.audits["network-requests"]?.details?.items ?? [];
+
+  return requests.some((request) => {
+    try {
+      return (
+        new URL(request.url).origin === origin &&
+        (request.statusCode === 403 || request.statusCode === 429)
+      );
+    } catch {
+      return false;
+    }
+  });
+}
+
+function dropBlockedRoutes(result: CiResult, reportsDir: string): CiResult {
+  const routes = (result.routes ?? []).filter((route) => {
+    const reportPath = join(
+      reportsDir,
+      route.path.replace(/^\/+|\/+$/g, ""),
+      "lighthouse.html",
+    );
+
+    if (!existsSync(reportPath)) return true;
+
+    const lighthouseResult = readLighthouseResult(
+      readFileSync(reportPath, "utf-8"),
+    );
+
+    if (lighthouseResult && hasBlockedRequests(lighthouseResult)) {
+      console.error(`Ignoring ${route.path}: some of its requests were blocked`);
+
+      return false;
+    }
+
+    return true;
+  });
+
+  return { ...result, routes };
 }
 
 function score(value: number): string {
@@ -484,7 +545,7 @@ function compareResults(
   if (uncompared.length) {
     lines.push("### Routes not compared");
     lines.push(
-      "_Lighthouse couldn't load these pages on one or both deployments, which usually happens on shared runners. They don't fail the check unless fewer than half the routes are left to compare._",
+      "_Lighthouse couldn't load these pages, or Vercel blocked their CSS or scripts, on one or both deployments. This usually happens on shared runners. They don't fail the check unless fewer than half the routes are left to compare._",
     );
     lines.push("");
     lines.push("| Route | Device | Reason |");
@@ -572,7 +633,7 @@ function compareResults(
   return { markdown: lines.join("\n"), failed };
 }
 
-export { compareResults, validateScan };
+export { compareResults, dropBlockedRoutes, hasBlockedRequests, validateScan };
 export type { CiResult, CiRoute };
 
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);
@@ -609,10 +670,16 @@ if (isMain) {
     process.exit(1);
   }
 
-  const deploymentDesktop = loadCiResult(resolve(deploymentDesktopPath));
-  const deploymentMobile = loadCiResult(resolve(deploymentMobilePath));
-  const baselineDesktop = loadCiResult(resolve(baselineDesktopPath));
-  const baselineMobile = loadCiResult(resolve(baselineMobilePath));
+  const load = (path: string) =>
+    dropBlockedRoutes(
+      loadCiResult(resolve(path)),
+      join(dirname(resolve(path)), "reports"),
+    );
+
+  const deploymentDesktop = load(deploymentDesktopPath);
+  const deploymentMobile = load(deploymentMobilePath);
+  const baselineDesktop = load(baselineDesktopPath);
+  const baselineMobile = load(baselineMobilePath);
 
   const { markdown, failed } = compareResults(
     baselineDesktop,
