@@ -598,9 +598,7 @@ export async function mergeCorePerFile(
 // ── merge strategy selection ───────────────────────────────────────────────────
 export type MergeStrategy = 'auto' | 'tree' | 'per-file';
 
-// The whole-tree engine runs `git merge-tree --write-tree --merge-base`. `--write-tree`
-// landed in git 2.38 but `--merge-base` only in 2.40, so 2.38/2.39 (e.g. Apple Git 2.39)
-// must fall back to per-file.
+// `git merge-tree --write-tree` (the whole-tree engine) landed in git 2.38.
 export function versionSupportsMergeTree(gitVersionOutput: string): boolean {
   const match = /(\d+)\.(\d+)/.exec(gitVersionOutput);
 
@@ -608,7 +606,7 @@ export function versionSupportsMergeTree(gitVersionOutput: string): boolean {
 
   const [major, minor] = [Number(match[1]), Number(match[2])];
 
-  return major > 2 || (major === 2 && minor >= 40);
+  return major > 2 || (major === 2 && minor >= 38);
 }
 
 export async function gitSupportsMergeTree(): Promise<boolean> {
@@ -628,14 +626,14 @@ export async function resolveStrategy(strategy: MergeStrategy): Promise<'tree' |
   if (await gitSupportsMergeTree()) return 'tree';
 
   consola.warn(
-    'git < 2.40 — using the per-file merge engine, which does not carry your edits across ' +
-      'renamed files. Upgrade to git 2.40+ for a full-fidelity merge.',
+    'git < 2.38 — using the per-file merge engine, which does not carry your edits across ' +
+      'renamed files. Upgrade to git 2.38+ for a full-fidelity merge.',
   );
 
   return 'per-file';
 }
 
-// ── whole-tree 3-way merge engine (git merge-tree, 2.40+) ──────────────────────
+// ── whole-tree 3-way merge engine (git merge-tree, 2.38+) ──────────────────────
 // Builds base/ours/theirs as commits in a throwaway object store, runs a real
 // recursive merge (rename detection, modify/delete, mode changes, binary — all
 // native to git), then materialises the merged tree into the catalyst root.
@@ -701,20 +699,15 @@ export async function mergeCoreTree(
       execa('git', ['branch', 'theirs', theirsCommit], { env }),
     ]);
 
+    // ours and theirs both have base as their parent, so merge-tree finds the merge
+    // base itself. Don't pass --merge-base: it needs git 2.40.
+    //
     // -z --name-only output: <merged-tree-oid> NUL, then conflicted paths each
     // NUL-terminated, then an empty field marks the end of the conflicted set
     // (everything after is informational messages we don't need).
     const merge = await execa(
       'git',
-      [
-        'merge-tree',
-        '--write-tree',
-        '-z',
-        '--name-only',
-        `--merge-base=${baseCommit}`,
-        'ours',
-        'theirs',
-      ],
+      ['merge-tree', '--write-tree', '-z', '--name-only', 'ours', 'theirs'],
       { env, reject: false },
     );
 
@@ -1251,7 +1244,7 @@ export const upgrade = new Command('upgrade')
   .addOption(
     new Option(
       '--strategy <strategy>',
-      'Merge engine: tree (git merge-tree, full fidelity), per-file (git merge-file, no-history fallback), or auto (tree when git >= 2.40, else per-file)',
+      'Merge engine: tree (git merge-tree, full fidelity), per-file (git merge-file, no-history fallback), or auto (tree when git >= 2.38, else per-file)',
     )
       .choices(['auto', 'tree', 'per-file'] as const)
       .default('auto' as const)
