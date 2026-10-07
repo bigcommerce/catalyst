@@ -627,7 +627,10 @@ export async function resolveStrategy(strategy: MergeStrategy): Promise<'tree' |
 
   if (await gitSupportsMergeTree()) return 'tree';
 
-  consola.warn('git < 2.40 — using the per-file merge engine (no `git merge-tree`).');
+  consola.warn(
+    'git < 2.40 — using the per-file merge engine, which does not carry your edits across ' +
+      'renamed files. Upgrade to git 2.40+ for a full-fidelity merge.',
+  );
 
   return 'per-file';
 }
