@@ -598,17 +598,24 @@ export async function mergeCorePerFile(
 // ── merge strategy selection ───────────────────────────────────────────────────
 export type MergeStrategy = 'auto' | 'tree' | 'per-file';
 
-// `git merge-tree --write-tree` (the whole-tree engine) landed in git 2.38.
+// The whole-tree engine runs `git merge-tree --write-tree --merge-base`. `--write-tree`
+// landed in git 2.38 but `--merge-base` only in 2.40, so 2.38/2.39 (e.g. Apple Git 2.39)
+// must fall back to per-file.
+export function versionSupportsMergeTree(gitVersionOutput: string): boolean {
+  const match = /(\d+)\.(\d+)/.exec(gitVersionOutput);
+
+  if (!match) return false;
+
+  const [major, minor] = [Number(match[1]), Number(match[2])];
+
+  return major > 2 || (major === 2 && minor >= 40);
+}
+
 export async function gitSupportsMergeTree(): Promise<boolean> {
   try {
     const { stdout } = await execa('git', ['--version']);
-    const match = /(\d+)\.(\d+)/.exec(stdout);
 
-    if (!match) return false;
-
-    const [major, minor] = [Number(match[1]), Number(match[2])];
-
-    return major > 2 || (major === 2 && minor >= 38);
+    return versionSupportsMergeTree(stdout);
   } catch {
     return false;
   }
@@ -620,12 +627,12 @@ export async function resolveStrategy(strategy: MergeStrategy): Promise<'tree' |
 
   if (await gitSupportsMergeTree()) return 'tree';
 
-  consola.warn('git < 2.38 — using the per-file merge engine (no `git merge-tree`).');
+  consola.warn('git < 2.40 — using the per-file merge engine (no `git merge-tree`).');
 
   return 'per-file';
 }
 
-// ── whole-tree 3-way merge engine (git merge-tree, 2.38+) ──────────────────────
+// ── whole-tree 3-way merge engine (git merge-tree, 2.40+) ──────────────────────
 // Builds base/ours/theirs as commits in a throwaway object store, runs a real
 // recursive merge (rename detection, modify/delete, mode changes, binary — all
 // native to git), then materialises the merged tree into the catalyst root.
@@ -1241,7 +1248,7 @@ export const upgrade = new Command('upgrade')
   .addOption(
     new Option(
       '--strategy <strategy>',
-      'Merge engine: tree (git merge-tree, full fidelity), per-file (git merge-file, no-history fallback), or auto (tree when git >= 2.38, else per-file)',
+      'Merge engine: tree (git merge-tree, full fidelity), per-file (git merge-file, no-history fallback), or auto (tree when git >= 2.40, else per-file)',
     )
       .choices(['auto', 'tree', 'per-file'] as const)
       .default('auto' as const)

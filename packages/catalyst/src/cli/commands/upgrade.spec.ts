@@ -42,6 +42,7 @@ import {
   rewriteScriptCommand,
   rewriteWorkspaceSpecifier,
   upgrade,
+  versionSupportsMergeTree,
 } from './upgrade';
 
 const confirmMock = vi.mocked(confirm);
@@ -292,19 +293,31 @@ describe('computeBaseSimilarity', () => {
   });
 });
 
-// merge-tree --write-tree (the whole-tree engine) needs git >= 2.38. Gate its
-// tests so they're skipped rather than failing on an older git.
+// The whole-tree engine needs git >= 2.40. Gate its tests so they're skipped
+// rather than failing on an older git.
 const SUPPORTS_TREE = (() => {
   try {
-    const match = /(\d+)\.(\d+)/.exec(execSync('git --version').toString());
-
-    return !!match && (Number(match[1]) > 2 || (Number(match[1]) === 2 && Number(match[2]) >= 38));
+    return versionSupportsMergeTree(execSync('git --version').toString());
   } catch {
     return false;
   }
 })();
 
 const engines: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
+
+describe('versionSupportsMergeTree', () => {
+  test('requires git 2.40+ for merge-tree --merge-base', () => {
+    expect(versionSupportsMergeTree('git version 2.38.1')).toBe(false);
+    expect(versionSupportsMergeTree('git version 2.39.5 (Apple Git-154)')).toBe(false);
+    expect(versionSupportsMergeTree('git version 2.40.0')).toBe(true);
+    expect(versionSupportsMergeTree('git version 2.55.0.windows.1')).toBe(true);
+    expect(versionSupportsMergeTree('git version 3.0.0')).toBe(true);
+  });
+
+  test('returns false for unparseable output', () => {
+    expect(versionSupportsMergeTree('')).toBe(false);
+  });
+});
 
 describe('resolveStrategy', () => {
   test('passes explicit engines through unchanged', async () => {
