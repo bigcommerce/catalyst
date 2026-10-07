@@ -293,7 +293,7 @@ describe('computeBaseSimilarity', () => {
   });
 });
 
-// The whole-tree engine needs git >= 2.38. Gate its tests so they're skipped
+// The whole-tree engine needs git >= 2.40. Gate its tests so they're skipped
 // rather than failing on an older git.
 const SUPPORTS_TREE = (() => {
   try {
@@ -306,10 +306,10 @@ const SUPPORTS_TREE = (() => {
 const engines: Array<'per-file' | 'tree'> = SUPPORTS_TREE ? ['per-file', 'tree'] : ['per-file'];
 
 describe('versionSupportsMergeTree', () => {
-  test('requires git 2.38+ for merge-tree --write-tree', () => {
-    expect(versionSupportsMergeTree('git version 2.37.3')).toBe(false);
-    expect(versionSupportsMergeTree('git version 2.38.1')).toBe(true);
-    expect(versionSupportsMergeTree('git version 2.39.5 (Apple Git-154)')).toBe(true);
+  test('requires git 2.40+ for merge-tree --merge-base', () => {
+    expect(versionSupportsMergeTree('git version 2.38.1')).toBe(false);
+    expect(versionSupportsMergeTree('git version 2.39.5 (Apple Git-154)')).toBe(false);
+    expect(versionSupportsMergeTree('git version 2.40.0')).toBe(true);
     expect(versionSupportsMergeTree('git version 2.55.0.windows.1')).toBe(true);
     expect(versionSupportsMergeTree('git version 3.0.0')).toBe(true);
   });
