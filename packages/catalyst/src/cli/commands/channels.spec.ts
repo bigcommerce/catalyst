@@ -804,6 +804,44 @@ describe('channels checkout URLs', () => {
     expect(putBody).toEqual({ url: 'https://checkout.example.com' });
   });
 
+  // Shoppers may try checkout as soon as the command finishes, so it doesn't
+  // finish before the certificate the write provisions has issued.
+  test('update --checkout-url waits for a managed-zone certificate', async () => {
+    let probed = false;
+
+    server.use(
+      http.head('https://c.project-one.catalyst-sandbox.store/', () => {
+        probed = true;
+
+        return HttpResponse.json(null, { status: 302 });
+      }),
+    );
+
+    await run(
+      'update',
+      '--channel-id',
+      '2',
+      '--checkout-url',
+      'c.project-one.catalyst-sandbox.store',
+    );
+
+    expect(probed).toBe(true);
+    expect(consola.success).toHaveBeenCalledWith(
+      'c.project-one.catalyst-sandbox.store is serving checkout.',
+    );
+  });
+
+  test('update --checkout-url warns when the domain is not serving a certificate yet', async () => {
+    server.use(http.head('https://checkout.example.com/', () => HttpResponse.error()));
+
+    await run('update', '--channel-id', '2', '--checkout-url', 'checkout.example.com');
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining("checkout.example.com isn't serving a certificate yet"),
+    );
+    expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
   test('update rejects a non-https checkout URL before calling the API', async () => {
     let called = false;
 

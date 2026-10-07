@@ -358,6 +358,10 @@ export const handlers = [
     () => new HttpResponse(null, { status: 204 }),
   ),
 
+  // Default handler for the checkout certificate probe — the hostname serves,
+  // so nothing waits. Tests that exercise the wait override per hostname.
+  http.head('https://*/', () => new HttpResponse(null, { status: 200 })),
+
   // Default handler for the npm registry — 404 so the stale-CLI check stays
   // silent by default. Tests that assert on it override with a version payload.
   http.get('https://registry.npmjs.org/:scope/:name/latest', () =>
