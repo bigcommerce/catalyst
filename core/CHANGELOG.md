@@ -1,5 +1,53 @@
 # Changelog
 
+## 1.12.3
+
+### Patch Changes
+
+- [#3254](https://github.com/bigcommerce/catalyst/pull/3254) [`75aa709`](https://github.com/bigcommerce/catalyst/commit/75aa7099f9da397aac96eae1e24f0cdda6d7ffad) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix the cart shipping estimator not updating until a page reload. After "View shipping options", "Add shipping", or a quantity change, the shipping form now reflects the new address, quote, and selected option immediately.
+
+  ## Migration
+
+  In `core/vibes/soul/sections/cart/client.tsx`, key the `ShippingForm` on the server's shipping state so it remounts when that state changes:
+
+  ```tsx
+  {
+    shipping && (
+      <ShippingForm
+        key={JSON.stringify([
+          shipping.address,
+          shipping.shippingOptions,
+          shipping.shippingOption?.value,
+          shipping.showShippingForm,
+        ])}
+        {...shipping}
+      />
+    );
+  }
+  ```
+
+- [#3261](https://github.com/bigcommerce/catalyst/pull/3261) [`24dacae`](https://github.com/bigcommerce/catalyst/commit/24dacaebb7fcdb8956dafcf0aaecb0c10071e5fe) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Speed up routing cache reads on BigCommerce Native Hosting. The Cloudflare KV adapter now caches reads at each Cloudflare location for 5 minutes instead of Workers KV's 60-second default, so most `with-routes` lookups that miss the in-process cache take a few milliseconds instead of a trip to central KV storage. The trade-off is staleness: in the worst case, a storefront status change (maintenance mode, launch) can take up to about 11 minutes to reach a location instead of about 7. It's usually sooner, since the background refresh's write is normally visible at once in the location that made it. Route changes have the same 4 extra minutes on top of their 30-minute window.
+
+  ## Migration
+
+  In `core/lib/kv/adapters/cloudflare-kv.ts`, pass a `cacheTtl` when reading from the namespace:
+
+  ```ts
+  const ROUTES_READ_CACHE_TTL_SECONDS = 60 * 5;
+
+  // RoutesKvNamespace
+  get(key: string, options: { type: 'json'; cacheTtl?: number }): Promise<unknown>;
+
+  // CloudflareKvAdapter.mget
+  const value = await this.namespace.get(key, {
+    type: 'json',
+    cacheTtl: ROUTES_READ_CACHE_TTL_SECONDS,
+  });
+  ```
+
+- Updated dependencies [[`4db7221`](https://github.com/bigcommerce/catalyst/commit/4db7221e2d2e9bbc4c2541306f7b50daabbef4b9)]:
+  - @bigcommerce/catalyst-client@1.0.4
+
 ## 1.12.2
 
 ### Patch Changes
