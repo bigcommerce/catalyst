@@ -259,6 +259,42 @@ describe('runChannelCheckoutUrlFlow on a managed hosting zone', () => {
     expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('serving checkout'));
   });
 
+  // Its certificate is the merchant's to provision, so check once rather than wait.
+  test('warns when a merchant checkout domain is not serving a certificate yet', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false),
+      http.head('https://checkout.example.com/', () => HttpResponse.error()),
+    );
+
+    await run({ storefrontHostname: undefined, url: 'checkout.example.com' });
+
+    expect(writes.deleted).toBe(false);
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining("checkout.example.com isn't serving a certificate yet"),
+    );
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('Waiting for'));
+  });
+
+  // Chosen by the user, so a timeout warns instead of undoing the write.
+  test('waits for an explicit managed-zone URL and keeps it on timeout', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false),
+      http.head(probe, () => HttpResponse.error()),
+    );
+
+    await run({ storefrontHostname: undefined, url: checkoutUrl, certificateTimeoutMs: 0 });
+
+    expect(writes.put).toEqual({ url: checkoutUrl });
+    expect(writes.deleted).toBe(false);
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('--channel-id 2 --remove-checkout-url'),
+    );
+  });
+
   test('explains the wait while the certificate issues', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout'] });
 
