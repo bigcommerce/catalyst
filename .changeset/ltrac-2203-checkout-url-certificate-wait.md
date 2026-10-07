@@ -2,4 +2,4 @@
 '@bigcommerce/catalyst': patch
 ---
 
-`catalyst channels update --checkout-url` now waits for the checkout hostname's certificate when it's on a native hosting deployment hostname (`c.<project>`), so the command doesn't finish before checkout loads. On your own domain, it checks once and warns if the domain isn't serving a certificate yet.
+`catalyst channels update --checkout-url` now checks that the checkout URL is serving a certificate, and warns if it isn't, so the command doesn't finish silently before checkout loads. On a native hosting deployment hostname (`c.<project>`), where setting the URL is what provisions the certificate, it waits for the certificate to be issued first.
