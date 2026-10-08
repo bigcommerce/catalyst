@@ -1,5 +1,6 @@
 import { Command, type CommandUnknownOpts } from '@commander-js/extra-typings';
 
+import { getCommandPath } from '../lib/command-path';
 import { getTelemetry } from '../lib/telemetry';
 
 const allowlistArguments = ['--keep-temp-dir', '--api-host', '--project-uuid'];
@@ -31,18 +32,6 @@ function parseArguments(args: string[]) {
 
     return result;
   }, {});
-}
-
-function getCommandPath(cmd: CommandUnknownOpts): string {
-  const parts: string[] = [];
-  let current: CommandUnknownOpts | null = cmd;
-
-  while (current.parent) {
-    parts.unshift(current.name());
-    current = current.parent;
-  }
-
-  return parts.join(' ');
 }
 
 export const telemetryPreHook = async (thisCommand: Command, actionCommand: CommandUnknownOpts) => {

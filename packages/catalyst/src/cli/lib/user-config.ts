@@ -5,6 +5,10 @@ export interface UserConfigSchema {
     enabled: boolean;
     anonymousId: string;
   };
+  survey: {
+    // ISO timestamp of the last time the feedback survey was shown.
+    lastShownAt: string;
+  };
 }
 
 let userConfigInstance: Conf<UserConfigSchema> | undefined;
@@ -23,6 +27,12 @@ export function getUserConfig(): Conf<UserConfigSchema> {
         properties: {
           enabled: { type: 'boolean' },
           anonymousId: { type: 'string' },
+        },
+      },
+      survey: {
+        type: 'object',
+        properties: {
+          lastShownAt: { type: 'string' },
         },
       },
     },
