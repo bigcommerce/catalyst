@@ -145,6 +145,8 @@ export function ProductDetail<F extends Field>({
                     {(imagesData) => (
                       <ProductGallery
                         images={imagesData.images}
+                        // Remount when a variant swaps the default image so state and carousel reset
+                        key={imagesData.images[0]?.src}
                         loadMoreAction={loadMoreImagesAction}
                         pageInfo={imagesData.pageInfo}
                         productId={Number(product.id)}
@@ -235,6 +237,7 @@ export function ProductDetail<F extends Field>({
                       {(imagesData) => (
                         <ProductGallery
                           images={imagesData.images}
+                          key={imagesData.images[0]?.src}
                           loadMoreAction={loadMoreImagesAction}
                           pageInfo={imagesData.pageInfo}
                           productId={Number(product.id)}
