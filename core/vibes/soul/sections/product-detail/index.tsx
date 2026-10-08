@@ -145,6 +145,8 @@ export function ProductDetail<F extends Field>({
                     {(imagesData) => (
                       <ProductGallery
                         images={imagesData.images}
+                        // Remount when a variant changes the images so state and carousel reset
+                        key={imagesData.images.map(({ src }) => src).join()}
                         loadMoreAction={loadMoreImagesAction}
                         pageInfo={imagesData.pageInfo}
                         productId={Number(product.id)}
@@ -235,6 +237,7 @@ export function ProductDetail<F extends Field>({
                       {(imagesData) => (
                         <ProductGallery
                           images={imagesData.images}
+                          key={imagesData.images.map(({ src }) => src).join()}
                           loadMoreAction={loadMoreImagesAction}
                           pageInfo={imagesData.pageInfo}
                           productId={Number(product.id)}
