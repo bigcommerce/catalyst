@@ -6,12 +6,12 @@ Fix the product gallery not updating when selecting a variant with a different d
 
 ## Migration
 
-In `core/vibes/soul/sections/product-detail/index.tsx`, key both `ProductGallery` usages on their image sources so the gallery remounts when the selected variant changes the images:
+In `core/vibes/soul/sections/product-detail/index.tsx`, key both `ProductGallery` usages on the first image so the gallery remounts when the variant's default image changes:
 
 ```tsx
 <ProductGallery
   images={imagesData.images}
-  key={imagesData.images.map(({ src }) => src).join()}
+  key={imagesData.images[0]?.src}
   ...
 />
 ```
