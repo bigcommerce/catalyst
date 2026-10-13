@@ -20,6 +20,7 @@ import { upgrade } from './commands/upgrade';
 import { version } from './commands/version';
 import { surveyPostHook } from './hooks/survey';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+import { recordActiveCommand } from './lib/crash-report';
 import { consola } from './lib/logger';
 
 // Env files are only loaded by `build` and `deploy` (which auto-load
@@ -48,7 +49,7 @@ program
   .configureHelp({ showGlobalOptions: true })
   .option(
     '--no-hints',
-    'Do not show the feedback survey. Also off in CI, without a TTY, or when CATALYST_NO_HINTS is set.',
+    'Do not show the feedback survey or the error report prompt. Also off in CI, without a TTY, or when CATALYST_NO_HINTS is set.',
   )
   .addCommand(version)
   .addCommand(create)
@@ -65,6 +66,7 @@ program
   .addCommand(telemetry)
   .addCommand(debug)
   .addCommand(feedback)
+  .hook('preAction', recordActiveCommand)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook)
   .hook('postAction', surveyPostHook);
