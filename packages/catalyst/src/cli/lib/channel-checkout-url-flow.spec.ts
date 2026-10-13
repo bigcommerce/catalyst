@@ -169,3 +169,202 @@ describe('runChannelCheckoutUrlFlow', () => {
     expect(called).toBe(false);
   });
 });
+
+describe('runChannelCheckoutUrlFlow on a managed hosting zone', () => {
+  const storefrontHostname = 'project-one.catalyst-sandbox.store';
+  const checkoutUrl = 'https://c.project-one.catalyst-sandbox.store';
+  const probe = 'https://c.project-one.catalyst-sandbox.store/';
+
+  const siteWith = (isCheckoutUrlCustomized: boolean, checkout?: string) =>
+    http.get(sitePath, () =>
+      HttpResponse.json({
+        data: {
+          id: 1,
+          url: `https://${storefrontHostname}`,
+          channel_id: 2,
+          ssl_status: null,
+          is_checkout_url_customized: isCheckoutUrlCustomized,
+          urls: [
+            { url: `https://${storefrontHostname}`, type: 'primary' },
+            ...(checkout ? [{ url: checkout, type: 'checkout' }] : []),
+          ],
+        },
+      }),
+    );
+
+  const trackWrites = () => {
+    const writes: { put: unknown; deleted: boolean } = { put: undefined, deleted: false };
+
+    server.use(
+      http.put(checkoutPath, async ({ request }) => {
+        writes.put = await request.json();
+
+        return HttpResponse.json({ data: { id: 1, url: checkoutUrl, channel_id: 2 } });
+      }),
+      http.delete(checkoutPath, () => {
+        writes.deleted = true;
+
+        return new HttpResponse(null, { status: 204 });
+      }),
+    );
+
+    return writes;
+  };
+
+  const run = (overrides: Partial<Parameters<typeof runChannelCheckoutUrlFlow>[0]> = {}) =>
+    runChannelCheckoutUrlFlow({ ...api, channelId: 2, storefrontHostname, ...overrides });
+
+  // The write is what provisions the hostname, so it can't wait for the
+  // certificate first — it writes, then waits.
+  test('sets the checkout hostname without prompting, then waits for its certificate', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false, 'https://store-abc-1.mybigcommerce.com'),
+      http.head(probe, () => HttpResponse.json(null, { status: 302 })),
+    );
+
+    await run();
+
+    expect(writes.put).toEqual({ url: checkoutUrl });
+    expect(inputMock).not.toHaveBeenCalled();
+    expect(consola.success).toHaveBeenCalledWith(
+      'c.project-one.catalyst-sandbox.store is serving checkout.',
+    );
+  });
+
+  // `deploy --update-checkout-url` alone doesn't pass the hostname.
+  test('derives the checkout hostname from the channel when not given one', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false, 'https://store-abc-1.mybigcommerce.com'),
+      http.head(probe, () => HttpResponse.json(null, { status: 302 })),
+    );
+
+    await run({ storefrontHostname: undefined });
+
+    expect(writes.put).toEqual({ url: checkoutUrl });
+    expect(inputMock).not.toHaveBeenCalled();
+  });
+
+  test('writes an explicit URL as given', async () => {
+    const writes = trackWrites();
+
+    server.use(siteWith(false));
+
+    await run({ storefrontHostname: undefined, url: 'checkout.example.com' });
+
+    expect(writes.put).toEqual({ url: 'https://checkout.example.com' });
+    expect(consola.success).not.toHaveBeenCalledWith(expect.stringContaining('serving checkout'));
+  });
+
+  test('explains the wait while the certificate issues', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout'] });
+
+    let probes = 0;
+
+    trackWrites();
+    server.use(
+      siteWith(false),
+      http.head(probe, () => {
+        probes += 1;
+
+        return probes === 1 ? HttpResponse.error() : HttpResponse.json(null, { status: 302 });
+      }),
+    );
+
+    const done = run();
+
+    while (probes === 0 || vi.getTimerCount() === 0) {
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise((resolve) => setImmediate(resolve));
+    }
+
+    await vi.advanceTimersByTimeAsync(10_000);
+    await done;
+
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining('Waiting for c.project-one.catalyst-sandbox.store'),
+    );
+
+    vi.useRealTimers();
+  });
+
+  // Checkout on a hostname without a certificate is broken for shoppers, so
+  // falling back to the default channel's checkout is the better failure.
+  test('removes the checkout URL when the certificate never issues', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(false),
+      http.head(probe, () => HttpResponse.error()),
+    );
+
+    await run({ certificateTimeoutMs: 0 });
+
+    expect(writes.put).toEqual({ url: checkoutUrl });
+    expect(writes.deleted).toBe(true);
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining("wasn't issued a certificate in time"),
+    );
+  });
+
+  // Writing it again would ask BigCommerce to register a hostname it holds.
+  test('only waits when the checkout hostname is already set', async () => {
+    const writes = trackWrites();
+
+    server.use(
+      siteWith(true, `${checkoutUrl}/`),
+      http.head(probe, () => HttpResponse.json(null, { status: 302 })),
+    );
+
+    await run();
+
+    expect(writes.put).toBeUndefined();
+    expect(consola.success).toHaveBeenCalledWith(
+      'c.project-one.catalyst-sandbox.store is serving checkout.',
+    );
+  });
+
+  test('leaves a different custom checkout URL alone', async () => {
+    const writes = trackWrites();
+
+    server.use(siteWith(true, 'https://checkout.example.com'));
+
+    await run({ channelName: 'Storefront' });
+
+    expect(writes.put).toBeUndefined();
+    expect(consola.info).toHaveBeenCalledWith(
+      expect.stringContaining('Channel "Storefront" (2) already has a custom checkout URL'),
+    );
+  });
+
+  test('leaves checkout alone when the hostname is too long to take a prefix', async () => {
+    const writes = trackWrites();
+    const tooLong = `${'a'.repeat(63 - '.catalyst-sandbox.store'.length)}.catalyst-sandbox.store`;
+
+    await run({ storefrontHostname: tooLong });
+
+    expect(writes.put).toBeUndefined();
+    expect(inputMock).not.toHaveBeenCalled();
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('too long to take a checkout prefix'),
+    );
+  });
+
+  // Off the managed zone the `c.` subdomain is the merchant's DNS, so there is
+  // nothing to derive and the flow prompts as before. A merchant domain added
+  // with `catalyst domains add` is listed among the project's hostnames, which
+  // is exactly the case that must not be mistaken for the managed zone.
+  test('prompts for a merchant domain listed among the project hostnames', async () => {
+    const writes = trackWrites();
+
+    inputMock.mockResolvedValueOnce('https://checkout.project-one.example.com');
+
+    await run({ storefrontHostname: 'vanity.project-one.example.com' });
+
+    expect(inputMock).toHaveBeenCalled();
+    expect(writes.put).toEqual({ url: 'https://checkout.project-one.example.com' });
+  });
+});

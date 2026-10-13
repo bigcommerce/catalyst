@@ -3,7 +3,11 @@ import { Command, InvalidArgumentError, Option } from 'commander';
 import type Conf from 'conf';
 import { colorize } from 'consola/utils';
 
-import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
+import { canPrompt } from '../lib/can-prompt';
+import {
+  offerManagedCheckoutUrl,
+  runChannelCheckoutUrlFlow,
+} from '../lib/channel-checkout-url-flow';
 import { resolveChannel, runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
   channelPlatformLabel,
@@ -166,17 +170,21 @@ Examples:
     // asked to change.
     const touchesCheckout = options.checkoutUrl !== undefined || options.removeCheckoutUrl === true;
     const updatesSiteUrl = options.hostname !== undefined || !touchesCheckout;
+    // A site URL update deletes the checkout URL, so offer the managed-zone one next.
+    const offersCheckout = updatesSiteUrl && !touchesCheckout && canPrompt();
     let channelId = options.channelId;
+    let siteHostname: string | undefined;
 
     if (updatesSiteUrl) {
       try {
-        ({ channelId } = await runChannelSiteUrlFlow({
+        ({ channelId, hostname: siteHostname } = await runChannelSiteUrlFlow({
           storeHash,
           accessToken,
           apiHost,
           projectUuid: options.projectUuid ?? config.get('projectUuid'),
           channelId: options.channelId,
           hostname: options.hostname,
+          diagnoseCheckout: !offersCheckout,
         }));
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {
@@ -190,6 +198,24 @@ Examples:
         }
 
         throw error;
+      }
+    }
+
+    if (offersCheckout && channelId !== undefined && siteHostname !== undefined) {
+      const offered = await offerManagedCheckoutUrl({
+        storeHash,
+        accessToken,
+        apiHost,
+        channelId,
+        storefrontHostname: siteHostname,
+        config,
+        // Explicit command, so an earlier decline doesn't silence it.
+        respectOptOut: false,
+        defaultAnswer: true,
+      });
+
+      if (!offered) {
+        warnOnCrossDomainCheckout(await getChannelSite(channelId, storeHash, accessToken, apiHost));
       }
     }
 
@@ -211,7 +237,7 @@ Examples:
 
         consola.success(`Updated channel ${label} checkout URL to ${options.checkoutUrl}.`);
         reportChannelSite(updated);
-        await warnOnCrossDomainCheckout(updated, { storeHash, accessToken, apiHost });
+        warnOnCrossDomainCheckout(updated);
       } else {
         await deleteChannelCheckoutUrl(channel.id, storeHash, accessToken, apiHost);
 
@@ -225,7 +251,7 @@ Examples:
         const reverted = await getChannelSite(channel.id, storeHash, accessToken, apiHost);
 
         reportChannelSite(reverted);
-        await warnOnCrossDomainCheckout(reverted, { storeHash, accessToken, apiHost });
+        warnOnCrossDomainCheckout(reverted);
       }
     }
 
@@ -553,14 +579,11 @@ Examples:
     consola.success(`Channel ${label}:`);
     reportChannelSite(site);
 
-    const report = await warnOnCrossDomainCheckout(site, { storeHash, accessToken, apiHost });
+    const report = warnOnCrossDomainCheckout(site);
 
     // The channel and site are already in hand, so offer to fix it rather than
-    // making the user re-run `channels update --checkout-url`.
-    //
-    // Not offered on a managed zone, where BigCommerce would reject every value
-    // (the diagnostic explains why), nor without a TTY, so the command stays
-    // scriptable — matching the guards in `commerce-hosting`.
+    // making the user re-run `channels update --checkout-url`. Not on a managed
+    // zone, where the diagnostic printed the command, nor without a TTY.
     if (report.crossDomain && report.storefrontOnManagedZone !== true) {
       const suggested = report.suggestion ?? '<domain>';
 

@@ -1,5 +1,22 @@
 # @bigcommerce/catalyst
 
+## 1.4.2
+
+### Patch Changes
+
+- [#3245](https://github.com/bigcommerce/catalyst/pull/3245) [`bd061a2`](https://github.com/bigcommerce/catalyst/commit/bd061a25360373e12d7fd18e724f26228d2bf8d2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix `catalyst build` and `catalyst deploy` failing on pnpm 12 with `ERR_PNPM_IGNORED_BUILDS`. pnpm 12 stops `pnpm dlx` when a package has build scripts that haven't been approved, and Wrangler depends on `esbuild` and `workerd`, which both have one. The Wrangler dry-run now passes `--allow-build` for those two packages. Older pnpm versions accept the same flags.
+
+- [#3240](https://github.com/bigcommerce/catalyst/pull/3240) [`55fb9bc`](https://github.com/bigcommerce/catalyst/commit/55fb9bcae3b918373e187bae14949cfde5be6aab) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix the cross-domain checkout warning for storefronts on an auto-generated hostname (`<project>.catalyst-sandbox.store`). It no longer says a checkout URL can't be set there. Instead it names the checkout hostname, `c.<project>.catalyst-sandbox.store`, and prints the `catalyst channels update --checkout-url` command that sets it. A custom domain is no longer mistaken for an auto-generated hostname.
+
+- [#3248](https://github.com/bigcommerce/catalyst/pull/3248) [`740474d`](https://github.com/bigcommerce/catalyst/commit/740474d7ec279ac119be9adfab54ed0ab16c1d7c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Put checkout on the same domain as a native-hosted storefront. For a storefront on an auto-generated hostname, the checkout URL is `https://c.<project>.<zone>`:
+  - `catalyst deploy --update-site-url --update-checkout-url` sets it without prompting.
+  - An interactive `catalyst deploy` without those flags offers to point the channel at the deployment and to move its checkout there. Both questions default to No, and declining is remembered per channel in `.bigcommerce/project.json`.
+  - `catalyst channels update` offers it after changing a site URL.
+
+  After setting it, the CLI waits for the certificate, which usually takes a minute or two. If none is issued within six minutes, the checkout URL is removed so checkout keeps working on the default domain. An existing custom checkout URL is left alone, and re-running with an unchanged site URL no longer resets the checkout URL. Nothing is asked without a terminal or in CI.
+
+- [#3239](https://github.com/bigcommerce/catalyst/pull/3239) [`00c2f48`](https://github.com/bigcommerce/catalyst/commit/00c2f486582f1cf055edce1d432a7a46c7bfbaef) Thanks [@mfaris9](https://github.com/mfaris9)! - `catalyst deploy` now sends `CATALYST_HOSTING=native` as a plain-text deployment variable so the storefront can identify itself as native hosted.
+
 ## 1.4.1
 
 ### Patch Changes

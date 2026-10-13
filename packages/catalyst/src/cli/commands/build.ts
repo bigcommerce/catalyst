@@ -115,10 +115,13 @@ export async function buildCatalystProject(
     join(openNextOutDir, 'assets', '_headers'),
   );
 
+  // pnpm 12 fails `dlx` on unapproved build scripts; Wrangler needs these two.
   await execa(
     'pnpm',
     [
       'dlx',
+      '--allow-build=esbuild',
+      '--allow-build=workerd',
       `wrangler@${wranglerVersion}`,
       'deploy',
       '--config',

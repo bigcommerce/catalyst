@@ -13,6 +13,10 @@ export interface ProjectConfigSchema {
   // `catalyst env` commands. Lives here (gitignored .bigcommerce/project.json)
   // so users don't have to re-pass `--secret` on every deploy.
   env?: Record<string, string>;
+  // Channels that declined the post-deploy site URL offer.
+  declinedSiteUrlChannels?: number[];
+  // Channels that declined the post-deploy checkout URL offer.
+  declinedCheckoutUrlChannels?: number[];
 }
 
 // `cwd` defaults to the process working directory — the project the user is
@@ -37,6 +41,14 @@ export function getProjectConfig(cwd: string = process.cwd()) {
         type: 'object',
         additionalProperties: { type: 'string' },
         default: {},
+      },
+      declinedSiteUrlChannels: {
+        type: 'array',
+        items: { type: 'number' },
+      },
+      declinedCheckoutUrlChannels: {
+        type: 'array',
+        items: { type: 'number' },
       },
     },
   });
