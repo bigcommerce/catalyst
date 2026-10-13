@@ -1,8 +1,10 @@
 import { validate as isUuid, v4 as uuidv4 } from 'uuid';
 
 import {
+  deleteProductViewsCookie,
   deleteVisitIdCookie,
   deleteVisitorIdCookie,
+  getProductViewsCookie,
   getVisitIdCookie,
   getVisitorIdCookie,
   setVisitIdCookie,
@@ -37,6 +39,10 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
 
       if (existingVisitId != null) {
         await deleteVisitIdCookie();
+      }
+
+      if ((await getProductViewsCookie()) != null) {
+        await deleteProductViewsCookie();
       }
 
       return next(request, event);
