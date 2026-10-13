@@ -2,7 +2,7 @@
 '@bigcommerce/catalyst-core': patch
 ---
 
-Send the `ProductViewed` analytics event once per product per visit. Before, every PDP request with the visit cookies sent one, so refreshes and repeat hits each cost BigCommerce an uncacheable GraphQL mutation. The product ids already reported are kept in a new `catalyst.productViews` cookie tied to the current visit id, with the same 30-minute lifetime as `catalyst.visitId`, and the cookie is removed along with the other analytics cookies when measurement consent is declined.
+Send the `ProductViewed` analytics event once per product per visit. Before, every PDP request with the visit cookies sent one, so refreshes and repeat hits each cost BigCommerce an uncacheable GraphQL mutation. The product ids already reported are kept in a new `catalyst.productViews` cookie tied to the current visit id, with the same sliding 30-minute lifetime as `catalyst.visitId`, and the cookie is removed along with the other analytics cookies when measurement consent is declined.
 
 ## Migration
 
@@ -34,10 +34,17 @@ async function isFirstViewInVisit(productId: number) {
 }
 ```
 
-In `core/proxies/with-analytics-cookies.ts`, delete the cookie when consent is declined:
+In `core/proxies/with-analytics-cookies.ts`, delete the cookie when consent is declined, and refresh it along with the visit cookie:
 
 ```ts
 if ((await getProductViewsCookie()) != null) {
   await deleteProductViewsCookie();
+}
+
+// In the `hasValidVisit` branch, after `setVisitIdCookie(existingVisitId)`:
+const existingProductViews = await getProductViewsCookie();
+
+if (existingProductViews != null) {
+  await setProductViewsCookie(existingProductViews);
 }
 ```
