@@ -11,6 +11,7 @@ import { debug } from './commands/debug';
 import { deploy } from './commands/deploy';
 import { domains } from './commands/domains';
 import { env } from './commands/env';
+import { feedback } from './commands/feedback';
 import { logs } from './commands/logs';
 import { projects } from './commands/projects';
 import { start } from './commands/start';
@@ -58,5 +59,6 @@ program
   .addCommand(upgrade)
   .addCommand(telemetry)
   .addCommand(debug)
+  .addCommand(feedback)
   .hook('preAction', telemetryPreHook)
   .hook('postAction', telemetryPostHook);
