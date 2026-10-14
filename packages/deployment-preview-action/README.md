@@ -1,7 +1,7 @@
 # Catalyst Deployment Preview
 
 Deploys a [BigCommerce Catalyst](https://catalyst.dev) pull request preview to a
-BigCommerce Storefront Hosting project, and keeps the pull request comments
+Storefront Hosting project, and keeps the pull request comments
 describing it accurate.
 
 ## How previews work here
@@ -198,7 +198,7 @@ older. Override the floor with the `min-cli-version` input.
 
 ## Requirements
 
-- The project must be on BigCommerce Storefront Hosting, with `@bigcommerce/catalyst`
+- The project must be on Storefront Hosting, with `@bigcommerce/catalyst`
   in its dependencies.
 - **pnpm.** The Catalyst CLI shells out to `pnpm` to build, so npm and Yarn
   projects will not work.
