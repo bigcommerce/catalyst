@@ -8,9 +8,26 @@ const DEFAULT_CARD_PAYMENT_METHOD_ID = 'braintree.card';
 const ADD_PAYMENT_METHOD_URL = `/account/payment-methods/add/${DEFAULT_CARD_PAYMENT_METHOD_ID}/`;
 const ADD_PAYMENT_METHOD_URL_REQUIRING_INIT = `${ADD_PAYMENT_METHOD_URL}?init=1`;
 const VAULT_INITIALIZATION_PATH = '/api/account/vault-initialization';
-// Requires the test store to have Square enabled as a payment method. It does NOT require a
-// working Square gateway connection — this only initializes, it never vaults an instrument.
 const INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID = 'squarev2.card';
+const SQUARE_ADD_PAYMENT_METHOD_URL = `/account/payment-methods/add/${INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID}/?init=1`;
+const SQUARE_TEST_CARD = {
+  number: '4111111111111111',
+  expiry: '12/30',
+  cvv: '111',
+  postalCode: '94103',
+  state: 'California',
+};
+const STRIPE_PAYMENT_METHOD_ID = 'stripeocs.credit_card';
+const STRIPE_ADD_PAYMENT_METHOD_URL = `/account/payment-methods/add/${STRIPE_PAYMENT_METHOD_ID}/?init=1`;
+const STRIPE_TEST_CARD = {
+  number: '4242424242424242',
+  expiry: '12/30',
+  cvc: '123',
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
 
 test(`${ADD_PAYMENT_METHOD_URL} is restricted for guest users`, async ({ page }) => {
   await page.goto(ADD_PAYMENT_METHOD_URL);
@@ -116,7 +133,8 @@ test('A failed initialization request surfaces an error and leaves the form gate
   await customer.login();
   await page.goto(ADD_PAYMENT_METHOD_URL_REQUIRING_INIT);
 
-  await expect(page.getByText(t('somethingWentWrong'))).toBeVisible();
+  // Against the dev server React Strict Mode double-invokes the effect
+  await expect(page.getByText(t('somethingWentWrong')).first()).toBeVisible();
 
   // `renderAccountPayments` is gated on initialization completing, so no form should mount.
   await expect(page.locator('#cardNumber iframe')).toHaveCount(0);
@@ -179,6 +197,119 @@ test(
     // On success, the microapp does a full-page `window.location.href` navigation to
     // `paymentMethodsUrl` (`/account/payment-methods/`), which Catalyst hasn't built yet
     // Landing on the 404 page is therefore the expected outcome.
+    // TODO: Replace this with the actual payment methods list page once it's built.
+    await expect(page).toHaveURL('/account/payment-methods/');
+
+    const t = await getTranslations();
+
+    await expect(page.getByRole('heading', { name: t('NotFound.title') })).toBeVisible();
+  },
+);
+
+test(
+  'Vaulting a Square credit card redirects to the (not yet built) payment methods list',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer }) => {
+    await customer.login();
+
+    // Skip rather than fail on a store wired to a live Square account,
+    // where test card would be declined.
+    const initializationResponse = await page.request.get(
+      `${VAULT_INITIALIZATION_PATH}?paymentMethodId=${INITIALIZATION_REQUIRED_PAYMENT_METHOD_ID}`,
+    );
+    const initializationBody: unknown = await initializationResponse.json();
+    const environment =
+      isRecord(initializationBody) &&
+      isRecord(initializationBody.paymentProviderInitializationData) &&
+      isRecord(initializationBody.paymentProviderInitializationData.clientConfiguration)
+        ? initializationBody.paymentProviderInitializationData.clientConfiguration.environment
+        : undefined;
+
+    test.skip(
+      environment !== 'SANDBOX',
+      `Square is connected in '${String(environment)}' mode on this store, which rejects test cards; skipping.`,
+    );
+
+    await page.goto(SQUARE_ADD_PAYMENT_METHOD_URL);
+
+    // Unlike the hosted-fields providers, Square renders every card field inside a single nested
+    // iframe mounted on `#bc-payment-fields`, so there is one frame to reach into rather than four.
+    const squareFields = page.frameLocator('#bc-payment-fields iframe');
+
+    await expect(squareFields.locator('#cardNumber')).toBeVisible();
+
+    await squareFields.locator('#cardNumber').fill(SQUARE_TEST_CARD.number);
+    await squareFields.locator('#expirationDate').fill(SQUARE_TEST_CARD.expiry);
+    await squareFields.locator('#cvv').fill(SQUARE_TEST_CARD.cvv);
+    await squareFields.locator('#postalCode').fill(SQUARE_TEST_CARD.postalCode);
+
+    await page.locator('input[name="cardholderName"]').fill(faker.person.fullName());
+
+    await page.locator('input[name="firstName"]').fill(faker.person.firstName());
+    await page.locator('input[name="lastName"]').fill(faker.person.lastName());
+    await page.locator('input[name="address1"]').fill(faker.location.streetAddress());
+    await page.locator('input[name="city"]').fill(faker.location.city());
+    await page.locator('select[name="countryCode"]').selectOption({ label: 'United States' });
+    await page
+      .locator('select[name="stateOrProvinceCode"]')
+      .selectOption({ label: SQUARE_TEST_CARD.state });
+    await page.locator('input[name="postalCode"]').fill(SQUARE_TEST_CARD.postalCode);
+
+    await page.getByRole('button', { name: 'Save Payment Method' }).click();
+
+    // TODO: Replace this with the actual payment methods list page once it's built.
+    await expect(page).toHaveURL('/account/payment-methods/');
+
+    const t = await getTranslations();
+
+    await expect(page.getByRole('heading', { name: t('NotFound.title') })).toBeVisible();
+  },
+);
+
+test(
+  'Vaulting a Stripe credit card redirects to the (not yet built) payment methods list',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer }) => {
+    await customer.login();
+
+    // Skip rather than fail on a store wired to a live Stripe account,
+    // where this card would be declined.
+    const initializationResponse = await page.request.get(
+      `${VAULT_INITIALIZATION_PATH}?paymentMethodId=${STRIPE_PAYMENT_METHOD_ID}`,
+    );
+    const initializationBody: unknown = await initializationResponse.json();
+    const publishableKey =
+      isRecord(initializationBody) &&
+      isRecord(initializationBody.paymentProviderInitializationData) &&
+      isRecord(initializationBody.paymentProviderInitializationData.clientConfiguration)
+        ? initializationBody.paymentProviderInitializationData.clientConfiguration.publishableKey
+        : undefined;
+
+    test.skip(
+      typeof publishableKey !== 'string' || !publishableKey.startsWith('pk_test_'),
+      'Stripe is connected in live mode on this store, which rejects test cards; skipping.',
+    );
+
+    await page.goto(STRIPE_ADD_PAYMENT_METHOD_URL);
+
+    const stripeFields = page.frameLocator('#stripeocs-iframe-container iframe');
+
+    await expect(stripeFields.locator('input[name="number"]')).toBeVisible();
+
+    await stripeFields.locator('input[name="number"]').fill(STRIPE_TEST_CARD.number);
+    await stripeFields.locator('input[name="expiry"]').fill(STRIPE_TEST_CARD.expiry);
+    await stripeFields.locator('input[name="cvc"]').fill(STRIPE_TEST_CARD.cvc);
+
+    await page.locator('input[name="firstName"]').fill(faker.person.firstName());
+    await page.locator('input[name="lastName"]').fill(faker.person.lastName());
+    await page.locator('input[name="address1"]').fill(faker.location.streetAddress());
+    await page.locator('input[name="city"]').fill(faker.location.city());
+    await page.locator('select[name="countryCode"]').selectOption({ label: 'United States' });
+    await page.locator('select[name="stateOrProvinceCode"]').selectOption({ label: 'California' });
+    await page.locator('input[name="postalCode"]').fill('94103');
+
+    await page.getByRole('button', { name: 'Save Payment Method' }).click();
+
     // TODO: Replace this with the actual payment methods list page once it's built.
     await expect(page).toHaveURL('/account/payment-methods/');
 
