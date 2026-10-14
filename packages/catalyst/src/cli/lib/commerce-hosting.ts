@@ -412,13 +412,13 @@ export async function promptForCommerceHostingProject(
 
   const action = await select<Action>({
     message: hasOtherProjects
-      ? `It looks like you already have an existing Commerce Hosting project named "${conflict.name}". Would you like to use it, select from your projects, or create a new one?`
-      : `It looks like you already have an existing Commerce Hosting project named "${conflict.name}". Would you like to use it, or create a new one?`,
+      ? `It looks like you already have an existing Storefront Hosting project named "${conflict.name}". Would you like to use it, select from your projects, or create a new one?`
+      : `It looks like you already have an existing Storefront Hosting project named "${conflict.name}". Would you like to use it, or create a new one?`,
     choices,
   });
 
   if (action === 'use-named') {
-    consola.success(`Using existing Commerce Hosting project "${conflict.name}"`);
+    consola.success(`Using existing Storefront Hosting project "${conflict.name}"`);
 
     return conflict;
   }
@@ -428,7 +428,7 @@ export async function promptForCommerceHostingProject(
   }
 
   const selected = await select<ProjectListItem | 'create-new'>({
-    message: 'Which Commerce Hosting project would you like to use?',
+    message: 'Which Storefront Hosting project would you like to use?',
     choices: [
       ...existingProjects.map((project) => ({
         name: project.name,
@@ -444,7 +444,7 @@ export async function promptForCommerceHostingProject(
     return promptAndCreateCommerceHostingProject(api, takenNames, defaultName);
   }
 
-  consola.success(`Using existing Commerce Hosting project "${selected.name}"`);
+  consola.success(`Using existing Storefront Hosting project "${selected.name}"`);
 
   return selected;
 }
@@ -455,7 +455,7 @@ export async function promptAndCreateCommerceHostingProject(
   defaultName?: string,
 ): Promise<ProjectListItem> {
   const projectName = await input({
-    message: 'What would you like to name your Commerce Hosting project?',
+    message: 'What would you like to name your Storefront Hosting project?',
     default: defaultName,
     validate: (value) => {
       const trimmed = value.trim();
@@ -465,7 +465,7 @@ export async function promptAndCreateCommerceHostingProject(
       const conflict = takenNames.find((taken) => taken.toLowerCase() === trimmed.toLowerCase());
 
       if (conflict) {
-        return `A Commerce Hosting project named "${conflict}" already exists`;
+        return `A Storefront Hosting project named "${conflict}" already exists`;
       }
 
       return true;
@@ -489,7 +489,7 @@ export async function promptAndCreateCommerceHostingProject(
       api.apiHost,
     );
 
-    consola.success(`Commerce Hosting project "${created.name}" created successfully`);
+    consola.success(`Storefront Hosting project "${created.name}" created successfully`);
 
     return { uuid: created.uuid, name: created.name, deployment_hostnames: [] };
   } catch (error) {
@@ -512,7 +512,7 @@ async function resolveCollisionChoice(
   if (!process.stdin.isTTY) return false;
 
   return select<boolean>({
-    message: `A Commerce Hosting project named "${existingName}" already exists. Use the existing project?`,
+    message: `A Storefront Hosting project named "${existingName}" already exists. Use the existing project?`,
     choices: [
       { name: 'Yes', value: true },
       { name: 'No', value: false },
@@ -534,7 +534,7 @@ async function autoCreateCommerceHostingProject(
     const shouldUseExisting = await resolveCollisionChoice(existing.name, useExistingOnCollision);
 
     if (shouldUseExisting) {
-      consola.success(`Using existing Commerce Hosting project "${existing.name}"`);
+      consola.success(`Using existing Storefront Hosting project "${existing.name}"`);
 
       return existing;
     }
@@ -548,13 +548,13 @@ async function autoCreateCommerceHostingProject(
   try {
     const created = await createProject(name, api.storeHash, api.accessToken, api.apiHost);
 
-    consola.success(`Commerce Hosting project "${created.name}" created successfully`);
+    consola.success(`Storefront Hosting project "${created.name}" created successfully`);
 
     return { uuid: created.uuid, name: created.name, deployment_hostnames: [] };
   } catch (error) {
     if (error instanceof InfrastructureProjectValidationError) {
       consola.error(
-        `Failed to create Commerce Hosting project "${name}": ${error.message}\nRe-run with a different --project-name.`,
+        `Failed to create Storefront Hosting project "${name}": ${error.message}\nRe-run with a different --project-name.`,
       );
       process.exit(1);
     }

@@ -810,7 +810,7 @@ describe('projects link', () => {
     expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
   });
 
-  describe('post-link Commerce Hosting setup prompt', () => {
+  describe('post-link Storefront Hosting setup prompt', () => {
     test('does not prompt when project is already transformed', async () => {
       vi.mocked(getProjectState).mockReturnValue(transformedState);
 
@@ -826,7 +826,7 @@ describe('projects link', () => {
       const confirmMessages = confirmMock.mock.calls.map(([opts]) => opts.message);
 
       expect(confirmMessages).not.toContainEqual(
-        expect.stringContaining('not fully set up for Commerce Hosting'),
+        expect.stringContaining('not fully set up for Storefront Hosting'),
       );
     });
 
@@ -846,7 +846,7 @@ describe('projects link', () => {
 
       expect(confirmMock).toHaveBeenCalledTimes(1);
       expect(confirmMock.mock.calls[0][0].message).toContain(
-        'not fully set up for Commerce Hosting',
+        'not fully set up for Storefront Hosting',
       );
 
       expect(setupCommerceHosting).toHaveBeenCalledWith(

@@ -196,7 +196,44 @@ describe('happy paths', () => {
     expect(Object.keys(writtenEnv).filter((key) => key.startsWith('CATALYST_'))).toEqual([]);
   });
 
-  test('--hosting commerce sets up commerce hosting and writes BIGCOMMERCE_ACCESS_TOKEN', async () => {
+  test('--hosting bigcommerce sets up Storefront Hosting and writes BIGCOMMERCE_ACCESS_TOKEN', async () => {
+    const projectName = uniqueProjectName();
+
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'create',
+      '--project-name',
+      projectName,
+      '--project-dir',
+      tmpDir,
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--channel-id',
+      '42',
+      '--storefront-token',
+      'flag-storefront-token',
+      '--hosting',
+      'bigcommerce',
+    ]);
+
+    expect(hasProjectsAccess).toHaveBeenCalledWith(storeHash, accessToken, 'api.bigcommerce.com');
+    expect(promptForCommerceHostingProject).toHaveBeenCalled();
+    expect(setupCommerceHosting).toHaveBeenCalledWith({
+      projectDir: join(tmpDir, projectName),
+      projectUuid: 'commerce-project-uuid',
+      storeHash,
+      accessToken,
+    });
+    expect(writeEnv).toHaveBeenCalledWith(
+      join(tmpDir, projectName),
+      expect.objectContaining({ BIGCOMMERCE_ACCESS_TOKEN: accessToken }),
+    );
+  });
+
+  test('--hosting commerce still sets up Storefront Hosting, with a deprecation warning', async () => {
     const projectName = uniqueProjectName();
 
     await program.parseAsync([
@@ -219,18 +256,10 @@ describe('happy paths', () => {
       'commerce',
     ]);
 
-    expect(hasProjectsAccess).toHaveBeenCalledWith(storeHash, accessToken, 'api.bigcommerce.com');
-    expect(promptForCommerceHostingProject).toHaveBeenCalled();
-    expect(setupCommerceHosting).toHaveBeenCalledWith({
-      projectDir: join(tmpDir, projectName),
-      projectUuid: 'commerce-project-uuid',
-      storeHash,
-      accessToken,
-    });
-    expect(writeEnv).toHaveBeenCalledWith(
-      join(tmpDir, projectName),
-      expect.objectContaining({ BIGCOMMERCE_ACCESS_TOKEN: accessToken }),
+    expect(consola.warn).toHaveBeenCalledWith(
+      '`--hosting commerce` is deprecated. Use `--hosting bigcommerce` instead.',
     );
+    expect(setupCommerceHosting).toHaveBeenCalled();
   });
 
   test('login is invoked when creds are missing — channel info alone is insufficient', async () => {
@@ -264,7 +293,7 @@ describe('happy paths', () => {
     );
   });
 
-  test('warns when --use-existing is passed without --hosting commerce', async () => {
+  test('warns when --use-existing is passed without --hosting bigcommerce', async () => {
     await program.parseAsync([
       'node',
       'catalyst',
@@ -285,7 +314,7 @@ describe('happy paths', () => {
     ]);
 
     expect(consola.warn).toHaveBeenCalledWith(
-      '--use-existing has no effect without --hosting commerce. Ignoring.',
+      '--use-existing has no effect without --hosting bigcommerce. Ignoring.',
     );
   });
 });
@@ -390,7 +419,7 @@ describe('credential persistence', () => {
       '--storefront-token',
       'flag-storefront-token',
       '--hosting',
-      'commerce',
+      'bigcommerce',
     ]);
 
     expect(readProjectJson(projectName)).toMatchObject({ projectUuid, storeHash, accessToken });
@@ -602,7 +631,7 @@ describe('failure handling', () => {
   });
 });
 
-describe('--hosting commerce preconditions', () => {
+describe('--hosting bigcommerce preconditions', () => {
   test('exits with error when hasProjectsAccess returns false', async () => {
     vi.mocked(hasProjectsAccess).mockResolvedValueOnce(false);
 
@@ -631,7 +660,7 @@ describe('--hosting commerce preconditions', () => {
         '--storefront-token',
         'flag-storefront-token',
         '--hosting',
-        'commerce',
+        'bigcommerce',
       ]),
     ).rejects.toThrow(/should not have prompted/);
 

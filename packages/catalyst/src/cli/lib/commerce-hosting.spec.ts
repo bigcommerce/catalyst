@@ -197,10 +197,10 @@ describe('promptAndCreateCommerceHostingProject', () => {
 
     expect(validator).toBeDefined();
     expect(validator?.('taken-one')).toBe(
-      'A Commerce Hosting project named "taken-one" already exists',
+      'A Storefront Hosting project named "taken-one" already exists',
     );
     expect(validator?.('  taken-two  ')).toBe(
-      'A Commerce Hosting project named "taken-two" already exists',
+      'A Storefront Hosting project named "taken-two" already exists',
     );
     expect(validator?.('available')).toBe(true);
   });
@@ -214,19 +214,19 @@ describe('promptAndCreateCommerceHostingProject', () => {
     const validator = inputMock.mock.calls[0]?.[0].validate;
 
     expect(validator?.('myproject')).toBe(
-      'A Commerce Hosting project named "MyProject" already exists',
+      'A Storefront Hosting project named "MyProject" already exists',
     );
     expect(validator?.('MYPROJECT')).toBe(
-      'A Commerce Hosting project named "MyProject" already exists',
+      'A Storefront Hosting project named "MyProject" already exists',
     );
     expect(validator?.('  MyProject  ')).toBe(
-      'A Commerce Hosting project named "MyProject" already exists',
+      'A Storefront Hosting project named "MyProject" already exists',
     );
   });
 });
 
 describe('promptForCommerceHostingProject', () => {
-  it('silently auto-creates with the supplied default name when no Commerce Hosting project conflicts (no existing projects)', async () => {
+  it('silently auto-creates with the supplied default name when no Storefront Hosting project conflicts (no existing projects)', async () => {
     fetchProjectsSpy.mockResolvedValue([]);
     createProjectSpy.mockResolvedValueOnce(createdProject('u', 'fresh'));
 
@@ -317,7 +317,7 @@ describe('promptForCommerceHostingProject', () => {
     await promptForCommerceHostingProject(API, 'my-store');
 
     expect(selectMock.mock.calls[0]?.[0].message).toBe(
-      'It looks like you already have an existing Commerce Hosting project named "My-Store". Would you like to use it, select from your projects, or create a new one?',
+      'It looks like you already have an existing Storefront Hosting project named "My-Store". Would you like to use it, select from your projects, or create a new one?',
     );
     expect(selectMock.mock.calls[0]?.[0].choices).toEqual([
       { name: 'Use "My-Store"', value: 'use-named' },
@@ -405,7 +405,7 @@ describe('promptForCommerceHostingProject', () => {
       { name: 'Create a new project', value: 'create' },
     ]);
     expect(selectMock.mock.calls[0]?.[0].message).toBe(
-      'It looks like you already have an existing Commerce Hosting project named "My-Store". Would you like to use it, or create a new one?',
+      'It looks like you already have an existing Storefront Hosting project named "My-Store". Would you like to use it, or create a new one?',
     );
   });
 
@@ -444,7 +444,7 @@ describe('promptForCommerceHostingProject', () => {
       expect(result).toEqual(existing);
       expect(createProjectSpy).not.toHaveBeenCalled();
       expect(selectMock.mock.calls[0]?.[0].message).toMatch(
-        /A Commerce Hosting project named "taken-name" already exists/,
+        /A Storefront Hosting project named "taken-name" already exists/,
       );
     } finally {
       restoreTty();
@@ -501,7 +501,7 @@ describe('promptForCommerceHostingProject', () => {
       expect(result).toEqual(existing);
       expect(createProjectSpy).not.toHaveBeenCalled();
       expect(selectMock.mock.calls[0]?.[0].message).toMatch(
-        /A Commerce Hosting project named "MyProject" already exists/,
+        /A Storefront Hosting project named "MyProject" already exists/,
       );
     } finally {
       restoreTty();
