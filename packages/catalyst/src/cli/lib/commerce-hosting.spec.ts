@@ -1011,7 +1011,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
     expect(readCorePackageJson().dependencies).toMatchObject({ next: '^15.0.0' });
   });
 
-  it('prompts with copy that ties the removal to native hosting', async () => {
+  it('prompts with copy that ties the removal to Storefront Hosting', async () => {
     writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
     writeCoreInstrumentationFile('export function register() {}\n');
 
@@ -1019,7 +1019,7 @@ describe('cleanupCloudflareIncompatibilities', () => {
 
     const message = confirmMock.mock.calls[0]?.[0].message ?? '';
 
-    expect(message.toLowerCase()).toContain('native hosting');
+    expect(message.toLowerCase()).toContain('storefront hosting');
   });
 
   it('leaves the file and the dep alone when the user declines (TTY)', async () => {

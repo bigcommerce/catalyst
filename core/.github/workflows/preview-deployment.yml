@@ -1,4 +1,4 @@
-# Deploys a preview of each pull request to a BigCommerce native hosting
+# Deploys a preview of each pull request to a BigCommerce Storefront Hosting
 # project, and comments the URL on the pull request.
 #
 # This does nothing until you configure it, so it is safe to leave in place:

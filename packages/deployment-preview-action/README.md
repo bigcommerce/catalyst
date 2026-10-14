@@ -1,14 +1,14 @@
 # Catalyst Deployment Preview
 
 Deploys a [BigCommerce Catalyst](https://catalyst.dev) pull request preview to a
-BigCommerce native hosting project, and keeps the pull request comments
+BigCommerce Storefront Hosting project, and keeps the pull request comments
 describing it accurate.
 
 ## How previews work here
 
 Every preview deploys into **one shared hosting project**, so there is exactly
 one preview URL and it serves one pull request at a time. This is not a
-limitation of the action: native hosting assigns a hostname per *project*, not
+limitation of the action: Storefront Hosting assigns a hostname per *project*, not
 per deployment, so a second deployment replaces the first at the same address.
 
 That shapes the behaviour:
@@ -198,7 +198,7 @@ older. Override the floor with the `min-cli-version` input.
 
 ## Requirements
 
-- The project must be on Catalyst native hosting, with `@bigcommerce/catalyst`
+- The project must be on BigCommerce Storefront Hosting, with `@bigcommerce/catalyst`
   in its dependencies.
 - **pnpm.** The Catalyst CLI shells out to `pnpm` to build, so npm and Yarn
   projects will not work.

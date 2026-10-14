@@ -1218,7 +1218,7 @@ export async function reconcileNativeHosting(
     await cleanupCloudflareIncompatibilities(catalystRoot);
   } catch (err) {
     consola.warn(
-      `Couldn't fully reconcile native-hosting files (${err instanceof Error ? err.message : String(err)}). Remove @vercel/otel from package.json by hand if the merge brought it back.`,
+      `Couldn't fully reconcile Storefront Hosting files (${err instanceof Error ? err.message : String(err)}). Remove @vercel/otel from package.json by hand if the merge brought it back.`,
     );
   }
 

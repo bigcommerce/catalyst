@@ -1,7 +1,7 @@
 name: Catalyst Deployment Preview
 description: >-
-  Deploy a BigCommerce Catalyst pull request preview to a shared native hosting
-  project, and keep the pull request comments describing it accurate.
+  Deploy a BigCommerce Catalyst pull request preview to a shared BigCommerce
+  Storefront Hosting project, and keep the pull request comments describing it accurate.
 author: BigCommerce
 
 branding:
