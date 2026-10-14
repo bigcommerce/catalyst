@@ -26,7 +26,6 @@ const elementGroup = (label: string, defaults: ElementGroupDefaults) =>
     },
   });
 
-// `Group` props reject optional keys, so the selected state can't be a conditional spread.
 const selectableElementGroup = (
   label: string,
   defaults: ElementGroupDefaults & { textSelected: string },
