@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.4
+
+### Patch Changes
+
+- [#3263](https://github.com/bigcommerce/catalyst/pull/3263) [`4db7221`](https://github.com/bigcommerce/catalyst/commit/4db7221e2d2e9bbc4c2541306f7b50daabbef4b9) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Retry Storefront GraphQL queries that fail on a dropped connection or a `502`, `503`, or `504`. Previously a single upstream hiccup threw straight to the error page ("There was a server error!"). Queries are now retried up to twice, after 100ms and 300ms, including when the connection drops while the response body is being read (`TypeError: terminated`). Mutations are never retried, since they aren't idempotent, and 4xx responses, GraphQL errors, and aborted requests fail immediately as before. Each retry logs a `console.warn` naming the operation, the attempt, and the failure (for example `[BigCommerce] Retrying query GetSite after HTTP 502 (attempt 2 of 3)`), so recovered failures still show up in server logs.
+
 ## 1.0.3
 
 ### Patch Changes
