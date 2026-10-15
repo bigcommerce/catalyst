@@ -13,6 +13,7 @@ import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
+import { PaymentInstrumentFixture } from './payment-instrument';
 import { PromotionFixture } from './promotion';
 import { RedirectsFixture } from './redirects';
 import { SettingsFixture } from './settings';
@@ -24,6 +25,7 @@ interface Fixtures {
   order: OrderFixture;
   catalog: CatalogFixture;
   customer: CustomerFixture;
+  paymentInstrument: PaymentInstrumentFixture;
   currency: CurrencyFixture;
   promotion: PromotionFixture;
   redirects: RedirectsFixture;
@@ -70,6 +72,18 @@ export const test = baseTest.extend<Fixtures>({
       await use(orderFixture);
 
       await orderFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  paymentInstrument: [
+    async ({ page }, use, currentTest) => {
+      const paymentInstrumentFixture = new PaymentInstrumentFixture(page, currentTest);
+
+      await paymentInstrumentFixture.recordPreexisting();
+
+      await use(paymentInstrumentFixture);
+
+      await paymentInstrumentFixture.cleanup();
     },
     { scope: 'test' },
   ],
