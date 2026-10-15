@@ -46,8 +46,7 @@ const getEndpoint = () => {
   return `https://store-${storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
 };
 
-// Mirrors the runtime client's User-Agent so firewall rules that allow Catalyst
-// traffic don't block schema generation during dev and build.
+// Mirrors the runtime client's User-Agent.
 const getUserAgent = () => {
   const catalystVersion = corePackage.catalyst?.version ?? corePackage.version;
 
