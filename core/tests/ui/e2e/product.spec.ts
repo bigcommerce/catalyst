@@ -169,6 +169,36 @@ test('Displays product price correctly for an alternate currency', async ({
   await expect(page.getByText(formatted)).toBeVisible();
 });
 
+test('Adds the current product even if the hidden product id is changed', async ({
+  page,
+  catalog,
+}) => {
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
+  const otherProduct = await catalog.createSimpleProduct();
+
+  await page.goto(product.path);
+  await page.waitForLoadState('networkidle');
+
+  await page.locator('input[type="hidden"][name="id"]').evaluate((input: HTMLInputElement, id) => {
+    input.value = id;
+  }, String(otherProduct.id));
+
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const addToCartSuccessMessage = t.rich('Product.ProductDetails.successMessage', {
+    cartItems: 1,
+    cartLink: (chunks: React.ReactNode) => chunks,
+  }) as string;
+
+  await expect(page.getByText(addToCartSuccessMessage)).toBeVisible();
+
+  await page.goto('/cart');
+  await expect(page.getByText(product.name)).toBeVisible();
+  await expect(page.getByText(otherProduct.name)).toBeHidden();
+});
+
 test('Quantity buttons work and adds the correct amount to the cart', async ({ page, catalog }) => {
   const t = await getTranslations('Product.ProductDetails');
   const product = await catalog.getDefaultOrCreateSimpleProduct();
