@@ -1,6 +1,9 @@
 // @ts-check
+const clientPackage = require('@bigcommerce/catalyst-client/package.json');
 const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
 const { join } = require('path');
+
+const corePackage = require('../package.json');
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 
@@ -43,11 +46,19 @@ const getEndpoint = () => {
   return `https://store-${storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
 };
 
+// Mirrors the runtime client's User-Agent so firewall rules that allow Catalyst
+// traffic don't block schema generation during dev and build.
+const getUserAgent = () => {
+  const catalystVersion = corePackage.catalyst?.version ?? corePackage.version;
+
+  return `${clientPackage.name}/${clientPackage.version} (schema-generation; node ${process.version}) ${corePackage.name}/${catalystVersion}`;
+};
+
 const generate = async () => {
   try {
     await generateSchema({
       input: getEndpoint(),
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: { Authorization: `Bearer ${getToken()}`, 'User-Agent': getUserAgent() },
       output: join(__dirname, '../bigcommerce.graphql'),
       tsconfig: undefined,
     });
