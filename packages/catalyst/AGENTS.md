@@ -9,7 +9,7 @@ src/cli/
 ├── index.ts          # Entry point (#!/usr/bin/env node)
 ├── program.ts        # Commander program setup, registers all commands
 ├── commands/         # CLI command implementations (auth, build, channels, create, debug, deploy, domains, env, feedback, logs, projects, start, telemetry, upgrade, version)
-├── hooks/            # Pre/post action hooks (telemetry)
+├── hooks/            # Pre/post action hooks (telemetry, feedback survey)
 └── lib/              # Utilities (auth, logger, project config, credentials, wrangler config, telemetry, deployment errors)
 templates/            # OpenNext config and public_headers template
 tests/mocks/          # MSW handlers and test mocks
@@ -37,6 +37,10 @@ Resource-based commands are named in the plural (`projects`, `channels`, `domain
 | `telemetry` | Enable/disable/check telemetry |
 | `upgrade` | Upgrade the project to a newer Catalyst release |
 | `version` | Display version and platform info |
+
+## Feedback Survey
+
+`hooks/survey.ts` runs after `deploy` succeeds (see `SURVEY_COMMANDS`). It asks for a 0-10 score and an optional comment, and sends them with `lib/feedback.ts` (source `catalyst-cli-survey`). It shows at most once every 90 days per machine (`survey.lastShownAt` in the user config), and never when `--no-hints`, `CATALYST_NO_HINTS`, CI, or no TTY. It must never fail the command, so `runSurvey` catches all errors. Shared prompt helpers are in `lib/prompt-context.ts`.
 
 ## Development
 
