@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 
 const VISITOR_COOKIE_NAME = 'catalyst.visitorId';
 const VISIT_COOKIE_NAME = 'catalyst.visitId';
+const PRODUCT_VIEWS_COOKIE_NAME = 'catalyst.productViews';
 const VISITOR_DURATION = 400 * 24 * 60 * 60; // 400 days
 const VISIT_DURATION = 30 * 60; // 30 minutes
 
@@ -49,4 +50,27 @@ export async function deleteVisitIdCookie(): Promise<void> {
   const cookieStore = await cookies();
 
   cookieStore.delete(VISIT_COOKIE_NAME);
+}
+
+export async function getProductViewsCookie(): Promise<string | undefined> {
+  const cookieStore = await cookies();
+
+  return cookieStore.get(PRODUCT_VIEWS_COOKIE_NAME)?.value;
+}
+
+export async function setProductViewsCookie(value: string): Promise<void> {
+  const cookieStore = await cookies();
+
+  cookieStore.set(PRODUCT_VIEWS_COOKIE_NAME, value, {
+    httpOnly: true,
+    secure: true,
+    path: '/',
+    maxAge: VISIT_DURATION,
+  });
+}
+
+export async function deleteProductViewsCookie(): Promise<void> {
+  const cookieStore = await cookies();
+
+  cookieStore.delete(PRODUCT_VIEWS_COOKIE_NAME);
 }

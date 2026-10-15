@@ -1,10 +1,13 @@
 import { validate as isUuid, v4 as uuidv4 } from 'uuid';
 
 import {
+  deleteProductViewsCookie,
   deleteVisitIdCookie,
   deleteVisitorIdCookie,
+  getProductViewsCookie,
   getVisitIdCookie,
   getVisitorIdCookie,
+  setProductViewsCookie,
   setVisitIdCookie,
   setVisitorIdCookie,
 } from '~/lib/analytics/bigcommerce';
@@ -39,6 +42,10 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
         await deleteVisitIdCookie();
       }
 
+      if ((await getProductViewsCookie()) != null) {
+        await deleteProductViewsCookie();
+      }
+
       return next(request, event);
     }
 
@@ -55,6 +62,13 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
     if (hasValidVisit) {
       // Sliding window: refresh the TTL on every request
       await setVisitIdCookie(existingVisitId);
+
+      // Expire with the visit, not with the last new product view.
+      const existingProductViews = await getProductViewsCookie();
+
+      if (existingProductViews != null) {
+        await setProductViewsCookie(existingProductViews);
+      }
     } else if (!isPrefetch && !isRSC && !isServerAction) {
       // New visit on a real navigation: create cookie and fire event
       const visitId = uuidv4();
