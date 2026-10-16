@@ -13,6 +13,7 @@ import {
 } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
@@ -409,7 +410,12 @@ export const withRoutes: ProxyFactory = () => {
           const isPrefetch = req.headers.get('Next-Router-Prefetch') === '1';
           const isRSC = req.headers.get('RSC') === '1';
 
-          if (!isPrefetch && !isRSC && (await isFirstViewInVisit(node.entityId))) {
+          if (
+            !isAnalyticsDisabled() &&
+            !isPrefetch &&
+            !isRSC &&
+            (await isFirstViewInVisit(node.entityId))
+          ) {
             event.waitUntil(recordProductVisit(req, node.entityId));
           }
 

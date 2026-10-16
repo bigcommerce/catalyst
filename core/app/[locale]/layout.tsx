@@ -24,6 +24,7 @@ import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
 import { getLocaleRouting } from '~/i18n/locale-config';
 import { LocaleRoutingProvider } from '~/i18n/locale-routing-provider';
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { getToastNotification } from '~/lib/server-toast';
 
 const RootLayoutMetadataQuery = graphql(
@@ -107,7 +108,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const VercelComponents = () => {
-  if (process.env.VERCEL !== '1') {
+  if (process.env.VERCEL !== '1' || isAnalyticsDisabled()) {
     return null;
   }
 
@@ -158,7 +159,7 @@ export default async function RootLayout({ params, children }: Props) {
                 <AnalyticsProvider
                   channelId={rootData.data.channel.entityId}
                   isCookieConsentEnabled={isCookieConsentEnabled}
-                  settings={rootData.data.site.settings}
+                  settings={isAnalyticsDisabled() ? null : rootData.data.site.settings}
                 >
                   <Providers>
                     {toastNotificationCookieData && (
