@@ -12,12 +12,17 @@ import {
   setVisitorIdCookie,
 } from '~/lib/analytics/bigcommerce';
 import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { getConsentDecision } from '~/lib/consent-manager/has-consent-for';
 
 import { ProxyFactory } from './compose-proxies';
 
 export const withAnalyticsCookies: ProxyFactory = (next) => {
   return async (request, event) => {
+    if (isAnalyticsDisabled()) {
+      return next(request, event);
+    }
+
     const consentDecision = await getConsentDecision('measurement', event);
 
     if (consentDecision === 'unknown') {

@@ -10,6 +10,7 @@ import {
   setVisitorIdCookie,
 } from '~/lib/analytics/bigcommerce';
 import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
 
 // Starts an analytics visit after the shopper grants measurement consent.
@@ -18,7 +19,7 @@ import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
 // Idempotent: validates consent against the cookie and no-ops if a visit is
 // already active (the proxy may have started one while handling this request).
 export async function startVisit(): Promise<void> {
-  if (!(await hasConsentFor('measurement'))) {
+  if (isAnalyticsDisabled() || !(await hasConsentFor('measurement'))) {
     return;
   }
 

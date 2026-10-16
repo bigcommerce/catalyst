@@ -1,5 +1,7 @@
 import type { PropsWithChildren } from 'react';
 
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
+
 import { ConsentManagerDialog } from './consent-manager-dialog';
 import { type C15tScripts, ConsentManagerProvider } from './consent-providers';
 import { CookieBanner } from './cookie-banner';
@@ -19,7 +21,7 @@ export function ConsentManager({
 }: ConsentManagerProps) {
   return (
     <ConsentManagerProvider isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
-      <StartVisitOnConsent />
+      {!isAnalyticsDisabled() && <StartVisitOnConsent />}
       <ConsentManagerDialog />
       <CookieBanner privacyPolicyUrl={privacyPolicyUrl} />
       {children}
