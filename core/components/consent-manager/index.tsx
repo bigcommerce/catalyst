@@ -19,9 +19,17 @@ export function ConsentManager({
   isCookieConsentEnabled,
   privacyPolicyUrl,
 }: ConsentManagerProps) {
+  const analyticsDisabled = isAnalyticsDisabled();
+
   return (
-    <ConsentManagerProvider isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
-      {!isAnalyticsDisabled() && <StartVisitOnConsent />}
+    <ConsentManagerProvider
+      isCookieConsentEnabled={isCookieConsentEnabled}
+      // Script Manager scripts in the Analytics category map to `measurement`.
+      scripts={
+        analyticsDisabled ? scripts.filter((script) => script.category !== 'measurement') : scripts
+      }
+    >
+      {!analyticsDisabled && <StartVisitOnConsent />}
       <ConsentManagerDialog />
       <CookieBanner privacyPolicyUrl={privacyPolicyUrl} />
       {children}

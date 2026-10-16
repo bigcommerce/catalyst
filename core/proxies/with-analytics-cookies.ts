@@ -20,6 +20,9 @@ import { ProxyFactory } from './compose-proxies';
 export const withAnalyticsCookies: ProxyFactory = (next) => {
   return async (request, event) => {
     if (isAnalyticsDisabled()) {
+      // Remove cookies left over from before analytics were disabled.
+      await deleteAnalyticsCookies();
+
       return next(request, event);
     }
 
@@ -31,28 +34,18 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
       return next(request, event);
     }
 
-    const existingVisitorId = await getVisitorIdCookie();
-    const existingVisitId = await getVisitIdCookie();
-
     if (consentDecision === 'declined') {
       // No measurement consent: never set or refresh analytics cookies, and
       // remove any left over from before consent was withdrawn. Once the
       // shopper grants consent, the startVisit server action (triggered by the
       // consent manager) creates the cookies and fires the visit event.
-      if (existingVisitorId != null) {
-        await deleteVisitorIdCookie();
-      }
-
-      if (existingVisitId != null) {
-        await deleteVisitIdCookie();
-      }
-
-      if ((await getProductViewsCookie()) != null) {
-        await deleteProductViewsCookie();
-      }
+      await deleteAnalyticsCookies();
 
       return next(request, event);
     }
+
+    const existingVisitorId = await getVisitorIdCookie();
+    const existingVisitId = await getVisitIdCookie();
 
     const isPrefetch = request.headers.get('Next-Router-Prefetch') === '1';
     const isRSC = request.headers.get('RSC') === '1';
@@ -89,6 +82,20 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
     return next(request, event);
   };
 };
+
+async function deleteAnalyticsCookies() {
+  if ((await getVisitorIdCookie()) != null) {
+    await deleteVisitorIdCookie();
+  }
+
+  if ((await getVisitIdCookie()) != null) {
+    await deleteVisitIdCookie();
+  }
+
+  if ((await getProductViewsCookie()) != null) {
+    await deleteProductViewsCookie();
+  }
+}
 
 async function recordNewVisit(request: Request, visitorId: string, visitId: string) {
   await sendVisitStartedEvent({
