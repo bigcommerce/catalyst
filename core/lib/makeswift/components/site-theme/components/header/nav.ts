@@ -5,30 +5,16 @@ import { hsl } from '~/lib/makeswift/utils/color';
 
 import { colors } from '../../base-colors';
 
-interface ElementGroupDefaults {
-  fontFamily: FontFamilyCssVar;
-  text: string;
-  textHover: string;
-  background: string;
-  backgroundHover: string;
-}
-
-const elementGroup = (label: string, defaults: ElementGroupDefaults) =>
-  Group({
-    label,
-    preferredLayout: Group.Layout.Popover,
-    props: {
-      fontFamily: FontFamily({ label: 'Font', defaultValue: defaults.fontFamily }),
-      text: Color({ label: 'Text', defaultValue: defaults.text }),
-      textHover: Color({ label: 'Text hover', defaultValue: defaults.textHover }),
-      background: Color({ label: 'Background', defaultValue: defaults.background }),
-      backgroundHover: Color({ label: 'Background hover', defaultValue: defaults.backgroundHover }),
-    },
-  });
-
-const selectableElementGroup = (
+const elementGroup = (
   label: string,
-  defaults: ElementGroupDefaults & { textSelected: string },
+  defaults: {
+    fontFamily: FontFamilyCssVar;
+    text: string;
+    textHover: string;
+    textSelected?: string;
+    background: string;
+    backgroundHover: string;
+  },
 ) =>
   Group({
     label,
@@ -37,7 +23,9 @@ const selectableElementGroup = (
       fontFamily: FontFamily({ label: 'Font', defaultValue: defaults.fontFamily }),
       text: Color({ label: 'Text', defaultValue: defaults.text }),
       textHover: Color({ label: 'Text hover', defaultValue: defaults.textHover }),
-      textSelected: Color({ label: 'Text selected', defaultValue: defaults.textSelected }),
+      ...(defaults.textSelected && {
+        textSelected: Color({ label: 'Text selected', defaultValue: defaults.textSelected }),
+      }),
       background: Color({ label: 'Background', defaultValue: defaults.background }),
       backgroundHover: Color({ label: 'Background hover', defaultValue: defaults.backgroundHover }),
     },
@@ -130,7 +118,7 @@ const locale = Group({
   preferredLayout: Group.Layout.Popover,
   props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
-    link: selectableElementGroup('Link', {
+    link: elementGroup('Link', {
       fontFamily: FontFamily.Body,
       text: hsl(colors.contrast[400]),
       textHover: hsl(colors.foreground),

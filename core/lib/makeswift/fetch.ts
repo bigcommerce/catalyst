@@ -1,5 +1,4 @@
-// Must match the runtime's `MAKESWIFT_CACHE_TAG`, which isn't exported.
-const MAKESWIFT_CACHE_TAG = '@@makeswift';
+import { fetch as makeswiftFetch } from '@makeswift/runtime/next';
 
 // Makeswift tags its API responses but declares no revalidate window, and
 // `app/[locale]/layout.tsx` sets `fetchCache = 'default-cache'`, so without a TTL Next.js
@@ -34,11 +33,8 @@ export const fetch = (input: string | URL | Request, init?: RequestInit): Promis
   // discard both and fall back to caching the builder's edits indefinitely.
   const cacheable = method === 'GET' && requestOption(input, init, 'cache') !== 'no-store';
 
-  return globalThis.fetch(input, {
+  return makeswiftFetch(input, {
     ...init,
-    next: {
-      tags: [MAKESWIFT_CACHE_TAG],
-      ...(cacheable && { revalidate: MAKESWIFT_REVALIDATE_TARGET }),
-    },
+    ...(cacheable && { next: { ...init?.next, revalidate: MAKESWIFT_REVALIDATE_TARGET } }),
   });
 };
