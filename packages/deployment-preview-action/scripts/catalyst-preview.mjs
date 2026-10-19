@@ -88,7 +88,7 @@ async function bigcommerce(path) {
   if (response.status === 403 || response.status === 404) {
     fail(
       `The Infrastructure Projects API rejected the request (${response.status}). ` +
-        'Confirm the store is enabled for Catalyst native hosting and that the access ' +
+        'Confirm the store is enabled for Storefront Hosting and that the access ' +
         'token carries the store_infrastructure_projects_manage scope.',
     );
   }
