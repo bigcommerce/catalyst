@@ -336,6 +336,7 @@ describe('log event processing', () => {
     };
     const event2 = {
       ...validLogEvent,
+      uuid: 'a3c5e0f1-6b0e-4c1e-9d6a-2f1b7c8d9e0a',
       logs: [{ ...validLogEvent.logs[0], messages: ['second'] }],
     };
 
@@ -609,6 +610,119 @@ describe('retry and reconnect', () => {
 
     // Events from both successful connections should have been processed
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('hello world'));
+  });
+});
+
+describe('connection rotation', () => {
+  const tailUrl = 'https://:apiHost/stores/:storeHash/v3/infrastructure/logs/:projectUuid/tail';
+  const notFoundError =
+    'Failed to open log stream: The request was rejected. Check your input — your access token may be missing a required scope, or the resource may not exist.';
+
+  const sse = (message: string, uuid: string) =>
+    encoder.encode(
+      `data: ${JSON.stringify({
+        ...validLogEvent,
+        uuid,
+        logs: [{ ...validLogEvent.logs[0], messages: [message] }],
+      })}\n\n`,
+    );
+
+  const loggedLines = () => vi.mocked(consola.log).mock.calls.map(([line]) => String(line));
+
+  test(
+    'keeps reading the current stream while the next one opens on TTL',
+    { timeout: 3000 },
+    async () => {
+      const ttlMs = 200;
+      let requestCount = 0;
+      let firstStream: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+      server.use(
+        http.get(tailUrl, async () => {
+          requestCount += 1;
+
+          if (requestCount === 1) {
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  firstStream = controller;
+                  controller.enqueue(sse('before rotation', 'event-1'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          if (requestCount === 2) {
+            // Emitted on the old stream while the new one is still opening.
+            // Closing the old stream first would lose it.
+            firstStream?.enqueue(sse('during handoff', 'event-2'));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  controller.enqueue(sse('after rotation', 'event-3'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+        }),
+      );
+
+      await expect(
+        tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+      ).rejects.toThrow(notFoundError);
+
+      expect(loggedLines()).toEqual(['before rotation', 'during handoff', 'after rotation']);
+    },
+  );
+
+  test('prints events replayed on reconnect only once', async () => {
+    let requestCount = 0;
+
+    server.use(
+      http.get(tailUrl, () => {
+        requestCount += 1;
+
+        const chunks =
+          requestCount === 1
+            ? [sse('first', 'event-1'), sse('second', 'event-2')]
+            : // The tail worker replays its recent events to a new connection.
+              [sse('first', 'event-1'), sse('second', 'event-2'), sse('third', 'event-3')];
+
+        if (requestCount > 2) {
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+        }
+
+        return new HttpResponse(
+          new ReadableStream<Uint8Array>({
+            start(controller) {
+              chunks.forEach((chunk) => controller.enqueue(chunk));
+              setTimeout(() => controller.close(), 10);
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+        );
+      }),
+    );
+
+    await expect(tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short')).rejects.toThrow(
+      notFoundError,
+    );
+
+    expect(loggedLines()).toEqual(['first', 'second', 'third']);
+  });
+
+  test('prints replayed events only once in json format', async () => {
+    const event = `data: ${JSON.stringify(validLogEvent)}\n\n`;
+
+    await callTailLogs('json', [event, event]);
+
+    expect(stdoutWriteMock).toHaveBeenCalledTimes(1);
   });
 });
 
