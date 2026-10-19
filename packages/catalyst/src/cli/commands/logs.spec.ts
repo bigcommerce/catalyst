@@ -681,6 +681,66 @@ describe('connection rotation', () => {
     },
   );
 
+  test(
+    'switches to the next stream when the current one errors during the handoff',
+    { timeout: 3000 },
+    async () => {
+      const ttlMs = 200;
+      const unhandledRejection = vi.fn();
+      let requestCount = 0;
+      let firstStream: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+      process.on('unhandledRejection', unhandledRejection);
+
+      server.use(
+        http.get(tailUrl, async () => {
+          requestCount += 1;
+
+          if (requestCount === 1) {
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  firstStream = controller;
+                  controller.enqueue(sse('before rotation', 'event-1'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          if (requestCount === 2) {
+            firstStream?.error(new Error('connection reset'));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  controller.enqueue(sse('after rotation', 'event-2'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+        }),
+      );
+
+      try {
+        await expect(
+          tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+        ).rejects.toThrow(notFoundError);
+        // Let a stray rejection from cancelling the errored stream surface.
+        await new Promise((resolve) => setTimeout(resolve, 20));
+      } finally {
+        process.off('unhandledRejection', unhandledRejection);
+      }
+
+      expect(unhandledRejection).not.toHaveBeenCalled();
+      expect(loggedLines()).toEqual(['before rotation', 'after rotation']);
+    },
+  );
+
   test('prints events replayed on reconnect only once', async () => {
     let requestCount = 0;
 

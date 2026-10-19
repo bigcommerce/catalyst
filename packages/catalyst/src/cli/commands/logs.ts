@@ -242,6 +242,7 @@ const openLogStream = async (
 };
 
 type StreamReader = ReadableStreamDefaultReader<Uint8Array>;
+type ReadResult = ReadableStreamReadResult<Uint8Array>;
 
 const STOPPED = Symbol('stopped');
 
@@ -253,21 +254,36 @@ const STOPPED = Symbol('stopped');
 const createEventPump = (reader: StreamReader, onEvent: (event: string) => void) => {
   const decoder = new TextDecoder();
   let buffer = '';
-  let pendingRead: Promise<ReadableStreamReadResult<Uint8Array>> | undefined;
+  let pendingRead: Promise<ReadResult> | undefined;
   let receivedData = false;
 
   const pumpUntil = async (stop: Promise<unknown>): Promise<'stopped' | 'stream-done'> => {
-    const stopped = stop.then(
-      (): typeof STOPPED => STOPPED,
-      (): typeof STOPPED => STOPPED,
-    );
+    // `stop` gets a single reaction that wakes only the current read's wait.
+    // Racing it directly each iteration would pile a reaction (and the chunk
+    // it resolved with) onto `stop` per read until it settles.
+    const stopState: { stopped: boolean; wake?: () => void } = { stopped: false };
+    const onStop = () => {
+      stopState.stopped = true;
+      stopState.wake?.();
+    };
+    const nextRead = (read: Promise<ReadResult>) =>
+      new Promise<ReadResult | typeof STOPPED>((resolve, reject) => {
+        stopState.wake = () => resolve(STOPPED);
+        read.then(resolve, reject);
+      });
+
+    void stop.then(onStop, onStop);
 
     // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
     while (true) {
+      if (stopState.stopped) return 'stopped';
+
       pendingRead ??= reader.read();
 
       // eslint-disable-next-line no-await-in-loop
-      const result = await Promise.race([pendingRead, stopped]);
+      const result = await nextRead(pendingRead);
+
+      stopState.wake = undefined;
 
       if (result === STOPPED) return 'stopped';
 
@@ -350,7 +366,9 @@ export const tailLogs = async (
         consola.warn('Log stream idle, reconnecting...');
       }
 
-      void reader.cancel();
+      // Cancelling a stream that already errored rejects with that error; the
+      // read loop has handled it, so don't let it escape as unhandled.
+      reader.cancel().catch(() => undefined);
     } catch (error) {
       if (error instanceof StreamError && error.fatal) {
         throw error;
