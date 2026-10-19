@@ -1,5 +1,15 @@
 # @bigcommerce/catalyst
 
+## 1.4.3
+
+### Patch Changes
+
+- [#3268](https://github.com/bigcommerce/catalyst/pull/3268) [`4b2daee`](https://github.com/bigcommerce/catalyst/commit/4b2daeeed3fd82699a98ebac0f00891907d2d8ae) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels update --checkout-url` now checks that the checkout URL is serving a certificate, and warns if it isn't, so the command doesn't finish silently before checkout loads. On a Storefront Hosting deployment hostname (`c.<project>`), where setting the URL is what provisions the certificate, it waits for the certificate to be issued first.
+
+- [#3267](https://github.com/bigcommerce/catalyst/pull/3267) [`9d528fc`](https://github.com/bigcommerce/catalyst/commit/9d528fc7b06c63d56a1882829014c2fd57f4bd99) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix `catalyst upgrade` failing with ``unknown option `merge-base'`` on git versions older than 2.40.
+
+- [#3279](https://github.com/bigcommerce/catalyst/pull/3279) [`3425ecc`](https://github.com/bigcommerce/catalyst/commit/3425ecc2757c2fb5ccd3c547ae3dc738512848e6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - The CLI now refers to Storefront Hosting instead of Native Hosting and Commerce Hosting in help text, prompts and messages. `catalyst create --hosting bigcommerce` replaces `--hosting commerce`, which still works but prints a deprecation warning.
+
 ## 1.4.2
 
 ### Patch Changes
