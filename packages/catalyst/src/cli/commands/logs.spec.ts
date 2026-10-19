@@ -873,6 +873,107 @@ describe('connection rotation', () => {
     },
   );
 
+  test(
+    'keeps reading a quiet stream while the next one opens on TTL',
+    { timeout: 3000 },
+    async () => {
+      const ttlMs = 200;
+      let requestCount = 0;
+      let firstStream: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+      server.use(
+        http.get(tailUrl, async () => {
+          requestCount += 1;
+
+          if (requestCount === 1) {
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  firstStream = controller;
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          if (requestCount === 2) {
+            firstStream?.enqueue(sse('first event', 'event-1'));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  controller.enqueue(sse('after rotation', 'event-2'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+        }),
+      );
+
+      await expect(
+        tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+      ).rejects.toThrow(notFoundError);
+
+      expect(consola.warn).toHaveBeenCalledWith('Log stream idle, reconnecting...');
+      expect(loggedLines()).toEqual(['first event', 'after rotation']);
+    },
+  );
+
+  test('prints a bounded replay only once after a busy handoff', { timeout: 3000 }, async () => {
+    const ttlMs = 200;
+    // More events than the dedupe window, then the tail worker's replay of
+    // its newest 100 on the new connection.
+    const handoffEvents = Array.from({ length: 1100 }, (_, i) => `event-${i}`);
+    const replay = handoffEvents.slice(-100);
+    let requestCount = 0;
+    let firstStream: ReadableStreamDefaultController<Uint8Array> | undefined;
+
+    server.use(
+      http.get(tailUrl, async () => {
+        requestCount += 1;
+
+        if (requestCount === 1) {
+          return new HttpResponse(
+            new ReadableStream<Uint8Array>({
+              start(controller) {
+                firstStream = controller;
+                controller.enqueue(sse('before rotation', 'event-start'));
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          );
+        }
+
+        if (requestCount === 2) {
+          handoffEvents.forEach((id) => firstStream?.enqueue(sse(id, id)));
+          await new Promise((resolve) => setTimeout(resolve, 20));
+
+          return new HttpResponse(
+            new ReadableStream<Uint8Array>({
+              start(controller) {
+                replay.forEach((id) => controller.enqueue(sse(id, id)));
+                controller.enqueue(sse('after rotation', 'event-end'));
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          );
+        }
+
+        return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+      }),
+    );
+
+    await expect(
+      tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+    ).rejects.toThrow(notFoundError);
+
+    expect(loggedLines()).toEqual(['before rotation', ...handoffEvents, 'after rotation']);
+  });
+
   test('prints events replayed on reconnect only once', async () => {
     let requestCount = 0;
 

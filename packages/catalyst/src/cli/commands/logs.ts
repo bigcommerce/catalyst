@@ -29,6 +29,8 @@ type LogFormat = 'json' | 'pretty' | 'default' | 'short' | 'request';
 
 const DEFAULT_CONNECTION_TTL_MS = 1 * 60 * 1000; // 1 minute
 const MAX_RETRIES = 5;
+// Well above the tail worker's replay on connect (its newest MAX_BUFFER_SIZE,
+// 100, events), so replayed IDs are always still in the window.
 const MAX_SEEN_EVENT_IDS = 1000;
 
 const isFatalStatusCode = (status: number) => status >= 400 && status < 500;
@@ -406,12 +408,14 @@ export const tailLogs = async (
       // eslint-disable-next-line no-await-in-loop
       const result = await pump.pumpUntil(ttl.promise).finally(ttl.clear);
 
-      if (result === 'stopped' && pump.receivedData()) {
+      if (result === 'stopped') {
+        // No data for the whole window: the proxy may have half-closed the
+        // socket, or the project is just quiet. Overlap either way so a quiet
+        // stream's next event isn't lost.
+        if (!pump.receivedData()) consola.warn('Log stream idle, reconnecting...');
+
         // eslint-disable-next-line no-await-in-loop
         ({ next: nextStream } = await handOff(pump));
-      } else if (result === 'stopped') {
-        // No data for the whole window: proxy likely half-closed the socket.
-        consola.warn('Log stream idle, reconnecting...');
       }
     } catch (error) {
       recordStreamError(error);
