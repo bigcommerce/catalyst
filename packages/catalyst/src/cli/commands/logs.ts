@@ -29,9 +29,7 @@ type LogFormat = 'json' | 'pretty' | 'default' | 'short' | 'request';
 
 const DEFAULT_CONNECTION_TTL_MS = 1 * 60 * 1000; // 1 minute
 const MAX_RETRIES = 5;
-// Must cover the tail worker's replay on connect (its newest 100 events) plus
-// the live events both streams receive while the replacement opens; IDs that
-// fall out of the window print twice.
+// Covers the tail worker's 100-event replay plus live events seen during a handoff.
 const MAX_SEEN_EVENT_IDS = 10_000;
 
 const isFatalStatusCode = (status: number) => status >= 400 && status < 500;
@@ -172,9 +170,7 @@ const parseEventId = (event: string) => {
   }
 };
 
-// Rotations overlap and the tail worker replays its recent events on connect,
-// so the same event can arrive more than once. Remembers the most recent IDs
-// so each event prints once; events without an ID always print.
+// Rotations overlap and the tail worker replays on connect, so drop repeated IDs.
 const createEventDeduper = () => {
   const seen = new Set<string>();
 
@@ -249,11 +245,8 @@ type ReadResult = ReadableStreamReadResult<Uint8Array>;
 
 const STOPPED = Symbol('stopped');
 
-// Reads SSE events off one stream until `stop` settles or the stream ends.
-// Racing `stop` keeps a hung `reader.read()` from blocking the loop when the
-// API proxy half-closes the socket (bytes stop, but no FIN or error surfaces).
-// A read still pending when it stops is kept for the next call, so pumping the
-// same stream again never drops a chunk.
+// Reads SSE events until `stop` settles or the stream ends. Racing `stop` keeps a
+// half-closed proxy socket from hanging `reader.read()`; a pending read carries over.
 const createEventPump = (reader: StreamReader, onEvent: (event: string) => void) => {
   const decoder = new TextDecoder();
   let buffer = '';
@@ -261,9 +254,7 @@ const createEventPump = (reader: StreamReader, onEvent: (event: string) => void)
   let receivedData = false;
 
   const pumpUntil = async (stop: Promise<unknown>): Promise<'stopped' | 'stream-done'> => {
-    // `stop` gets a single reaction that wakes only the current read's wait.
-    // Racing it directly each iteration would pile a reaction (and the chunk
-    // it resolved with) onto `stop` per read until it settles.
+    // One reaction on `stop`; racing it per read would retain every chunk until it settles.
     const stopState: { stopped: boolean; wake?: () => void } = { stopped: false };
     const onStop = () => {
       stopState.stopped = true;
@@ -363,10 +354,8 @@ export const tailLogs = async (
     );
   };
 
-  // Opens the next stream while still reading the current one, so events
-  // emitted during the handoff still arrive; the deduper drops the overlap.
-  // Failures to open it are retried without dropping the current stream. If
-  // the current stream ends first, the pending open becomes a normal reconnect.
+  // Opens the next stream while still reading the current one; failed opens are retried.
+  // If the current stream ends first, the pending open becomes the reconnect.
   const handOff = async (pump: EventPump): Promise<{ next: Promise<StreamReader> }> => {
     // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
     while (true) {
@@ -410,9 +399,7 @@ export const tailLogs = async (
       const result = await pump.pumpUntil(ttl.promise).finally(ttl.clear);
 
       if (result === 'stopped') {
-        // No data for the whole window: the proxy may have half-closed the
-        // socket, or the project is just quiet. Overlap either way so a quiet
-        // stream's next event isn't lost.
+        // No data: a half-closed socket or a quiet project. Overlap either way.
         if (!pump.receivedData()) consola.warn('Log stream idle, reconnecting...');
 
         // eslint-disable-next-line no-await-in-loop
@@ -421,8 +408,7 @@ export const tailLogs = async (
     } catch (error) {
       recordStreamError(error);
     } finally {
-      // Cancelling a stream that already errored rejects with that error; the
-      // read loop has handled it, so don't let it escape as unhandled.
+      // Cancelling an errored stream rejects with an error the read loop already handled.
       reader?.cancel().catch(() => undefined);
     }
   }
