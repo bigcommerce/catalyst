@@ -313,6 +313,8 @@ const createEventPump = (reader: StreamReader, onEvent: (event: string) => void)
   return { pumpUntil, receivedData: () => receivedData };
 };
 
+type EventPump = ReturnType<typeof createEventPump>;
+
 export const tailLogs = async (
   projectUuid: string,
   storeHash: string,
@@ -327,21 +329,76 @@ export const tailLogs = async (
   const onEvent = (event: string) => {
     if (isNewEvent(event)) processLogEvent(event, format);
   };
+  const open = () => openLogStream(projectUuid, storeHash, accessToken, apiHost);
 
   let retries = 0;
   let nextStream: Promise<StreamReader> | undefined;
 
+  // Rethrows fatal errors and counts the rest against the retry budget.
+  const recordStreamError = (error: unknown) => {
+    if (error instanceof StreamError && error.fatal) {
+      throw error;
+    }
+
+    const isServerDisconnect = error instanceof TypeError && error.message === 'terminated';
+
+    if (isServerDisconnect) {
+      consola.warn('Log stream closed by server, reconnecting...');
+
+      return;
+    }
+
+    retries += 1;
+
+    if (retries >= MAX_RETRIES) {
+      throw new StreamError(`Failed to connect to log stream after ${MAX_RETRIES} retries.`, true);
+    }
+
+    consola.warn(
+      `Log stream disconnected, reconnecting (attempt ${retries}/${MAX_RETRIES})...`,
+      error,
+    );
+  };
+
+  // Opens the next stream while still reading the current one, so events
+  // emitted during the handoff still arrive; the deduper drops the overlap.
+  // Failures to open it are retried without dropping the current stream. If
+  // the current stream ends first, the pending open becomes a normal reconnect.
+  const handOff = async (pump: EventPump): Promise<{ next: Promise<StreamReader> }> => {
+    // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
+    while (true) {
+      const next = open();
+
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const result = await pump.pumpUntil(next);
+
+        if (result === 'stream-done') return { next };
+      } catch {
+        return { next };
+      }
+
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await next;
+
+        return { next };
+      } catch (error) {
+        recordStreamError(error);
+      }
+    }
+  };
+
   // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
   while (true) {
+    let reader: StreamReader | undefined;
+
     try {
       const pendingStream = nextStream;
 
       nextStream = undefined;
-
       // eslint-disable-next-line no-await-in-loop
-      const reader = await (pendingStream ??
-        openLogStream(projectUuid, storeHash, accessToken, apiHost));
-
+      reader = await (pendingStream ?? open());
       retries = 0;
 
       const pump = createEventPump(reader, onEvent);
@@ -350,46 +407,18 @@ export const tailLogs = async (
       const result = await pump.pumpUntil(ttl.promise).finally(ttl.clear);
 
       if (result === 'stopped' && pump.receivedData()) {
-        // Healthy rotation: open the next stream before closing this one, so
-        // events emitted during the handoff still arrive. The overlap's
-        // duplicates are dropped by the deduper.
-        nextStream = openLogStream(projectUuid, storeHash, accessToken, apiHost);
-
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          await pump.pumpUntil(nextStream);
-        } catch {
-          // The next stream takes over; this one failing mid-handoff is fine.
-        }
+        // eslint-disable-next-line no-await-in-loop
+        ({ next: nextStream } = await handOff(pump));
       } else if (result === 'stopped') {
         // No data for the whole window: proxy likely half-closed the socket.
         consola.warn('Log stream idle, reconnecting...');
       }
-
+    } catch (error) {
+      recordStreamError(error);
+    } finally {
       // Cancelling a stream that already errored rejects with that error; the
       // read loop has handled it, so don't let it escape as unhandled.
-      reader.cancel().catch(() => undefined);
-    } catch (error) {
-      if (error instanceof StreamError && error.fatal) {
-        throw error;
-      }
-
-      const isServerDisconnect = error instanceof TypeError && error.message === 'terminated';
-
-      if (isServerDisconnect) {
-        consola.warn('Log stream closed by server, reconnecting...');
-      } else {
-        retries += 1;
-
-        if (retries >= MAX_RETRIES) {
-          throw new Error(`Failed to connect to log stream after ${MAX_RETRIES} retries.`);
-        }
-
-        consola.warn(
-          `Log stream disconnected, reconnecting (attempt ${retries}/${MAX_RETRIES})...`,
-          error,
-        );
-      }
+      reader?.cancel().catch(() => undefined);
     }
   }
 };

@@ -741,6 +741,138 @@ describe('connection rotation', () => {
     },
   );
 
+  // Records reader cancels alongside requests, so tests can check the current
+  // stream is only closed once its replacement is settled.
+  const trackCancels = (order: string[]) => {
+    const { cancel } = ReadableStreamDefaultReader.prototype;
+
+    return vi
+      .spyOn(ReadableStreamDefaultReader.prototype, 'cancel')
+      .mockImplementation(function trackedCancel(
+        this: ReadableStreamDefaultReader,
+        reason?: unknown,
+      ) {
+        order.push('cancel');
+
+        return cancel.call(this, reason);
+      });
+  };
+
+  test(
+    'keeps reading the current stream while a failed replacement is retried',
+    { timeout: 3000 },
+    async () => {
+      const ttlMs = 200;
+      const order: string[] = [];
+      let requestCount = 0;
+      let firstStream: ReadableStreamDefaultController<Uint8Array> | undefined;
+      const cancelSpy = trackCancels(order);
+
+      server.use(
+        http.get(tailUrl, async () => {
+          requestCount += 1;
+          order.push(`request ${requestCount}`);
+
+          if (requestCount === 1) {
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  firstStream = controller;
+                  controller.enqueue(sse('before rotation', 'event-1'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          if (requestCount === 2) {
+            firstStream?.enqueue(sse('during retry', 'event-2'));
+
+            return new HttpResponse(null, { status: 503, statusText: 'Service Unavailable' });
+          }
+
+          if (requestCount === 3) {
+            firstStream?.enqueue(sse('during handoff', 'event-3'));
+            await new Promise((resolve) => setTimeout(resolve, 20));
+
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  controller.enqueue(sse('after rotation', 'event-4'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          return new HttpResponse(null, { status: 404, statusText: 'Not Found' });
+        }),
+      );
+
+      try {
+        await expect(
+          tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+        ).rejects.toThrow(notFoundError);
+      } finally {
+        cancelSpy.mockRestore();
+      }
+
+      expect(order.slice(0, 4)).toEqual(['request 1', 'request 2', 'request 3', 'cancel']);
+      expect(consola.warn).toHaveBeenCalledWith(
+        'Log stream disconnected, reconnecting (attempt 1/5)...',
+        expect.anything(),
+      );
+      expect(loggedLines()).toEqual([
+        'before rotation',
+        'during retry',
+        'during handoff',
+        'after rotation',
+      ]);
+    },
+  );
+
+  test(
+    'closes the current stream and throws when the replacement fails fatally',
+    { timeout: 3000 },
+    async () => {
+      const ttlMs = 200;
+      const order: string[] = [];
+      let requestCount = 0;
+      const cancelSpy = trackCancels(order);
+
+      server.use(
+        http.get(tailUrl, () => {
+          requestCount += 1;
+          order.push(`request ${requestCount}`);
+
+          if (requestCount === 1) {
+            return new HttpResponse(
+              new ReadableStream<Uint8Array>({
+                start(controller) {
+                  controller.enqueue(sse('before rotation', 'event-1'));
+                },
+              }),
+              { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+            );
+          }
+
+          return new HttpResponse(null, { status: 401, statusText: 'Unauthorized' });
+        }),
+      );
+
+      try {
+        await expect(
+          tailLogs(projectUuid, storeHash, accessToken, apiHost, 'short', ttlMs),
+        ).rejects.toThrow('catalyst auth login');
+      } finally {
+        cancelSpy.mockRestore();
+      }
+
+      expect(order).toEqual(['request 1', 'request 2', 'cancel']);
+      expect(loggedLines()).toEqual(['before rotation']);
+    },
+  );
+
   test('prints events replayed on reconnect only once', async () => {
     let requestCount = 0;
 
