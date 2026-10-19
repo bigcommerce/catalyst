@@ -29,9 +29,10 @@ type LogFormat = 'json' | 'pretty' | 'default' | 'short' | 'request';
 
 const DEFAULT_CONNECTION_TTL_MS = 1 * 60 * 1000; // 1 minute
 const MAX_RETRIES = 5;
-// Well above the tail worker's replay on connect (its newest MAX_BUFFER_SIZE,
-// 100, events), so replayed IDs are always still in the window.
-const MAX_SEEN_EVENT_IDS = 1000;
+// Must cover the tail worker's replay on connect (its newest 100 events) plus
+// the live events both streams receive while the replacement opens; IDs that
+// fall out of the window print twice.
+const MAX_SEEN_EVENT_IDS = 10_000;
 
 const isFatalStatusCode = (status: number) => status >= 400 && status < 500;
 
