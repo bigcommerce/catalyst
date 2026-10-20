@@ -1,5 +1,156 @@
 # Changelog
 
+## 1.13.0
+
+### Minor Changes
+
+- [#3281](https://github.com/bigcommerce/catalyst/pull/3281) [`92098bc`](https://github.com/bigcommerce/catalyst/commit/92098bc04263e830d827605e36491c4ffa7bd156) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add a `DISABLE_ANALYTICS` env var. When set to `true`, the storefront sends no analytics: no BigCommerce `VisitStarted` or `ProductViewed` events (existing `catalyst.visitorId`, `catalyst.visitId` and `catalyst.productViews` cookies are removed), no Google Analytics, no Script Manager scripts in the Analytics category, and no Vercel Analytics or Speed Insights. Set it at build time, since the root layout reads it while prerendering.
+
+  ## Migration
+
+  Add `core/lib/analytics/is-analytics-disabled.ts`:
+
+  ```ts
+  export const isAnalyticsDisabled = () => process.env.DISABLE_ANALYTICS === 'true';
+  ```
+
+  Then check it in each place analytics are sent:
+  - `core/proxies/with-analytics-cookies.ts`: move the cookie deletion from the `declined` branch into a `deleteAnalyticsCookies()` function, and first thing, when `isAnalyticsDisabled()`, call it and return `next(request, event)`.
+  - `core/proxies/with-routes.ts`: add `!isAnalyticsDisabled() &&` to the condition that calls `recordProductVisit`.
+  - `core/components/consent-manager/_actions/start-visit.ts`: return early when `isAnalyticsDisabled()`.
+  - `core/components/consent-manager/index.tsx`: when `isAnalyticsDisabled()`, drop `measurement` scripts before passing `scripts` to `ConsentManagerProvider`, and don't render `<StartVisitOnConsent />`.
+  - `core/app/[locale]/layout.tsx`: return `null` from `VercelComponents` when `isAnalyticsDisabled()`, and pass `settings={isAnalyticsDisabled() ? null : rootData.data.site.settings}` to `AnalyticsProvider`.
+
+### Patch Changes
+
+- [#3254](https://github.com/bigcommerce/catalyst/pull/3254) [`75aa709`](https://github.com/bigcommerce/catalyst/commit/75aa7099f9da397aac96eae1e24f0cdda6d7ffad) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix the cart shipping estimator not updating until a page reload. After "View shipping options", "Add shipping", or a quantity change, the shipping form now reflects the new address, quote, and selected option immediately.
+
+  ## Migration
+
+  In `core/vibes/soul/sections/cart/client.tsx`, key the `ShippingForm` on the server's shipping state so it remounts when that state changes:
+
+  ```tsx
+  {
+    shipping && (
+      <ShippingForm
+        key={JSON.stringify([
+          shipping.address,
+          shipping.shippingOptions,
+          shipping.shippingOption?.value,
+          shipping.showShippingForm,
+        ])}
+        {...shipping}
+      />
+    );
+  }
+  ```
+
+- [#3261](https://github.com/bigcommerce/catalyst/pull/3261) [`24dacae`](https://github.com/bigcommerce/catalyst/commit/24dacaebb7fcdb8956dafcf0aaecb0c10071e5fe) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Speed up routing cache reads on Storefront Hosting. The Cloudflare KV adapter now caches reads at each Cloudflare location for 5 minutes instead of Workers KV's 60-second default, so most `with-routes` lookups that miss the in-process cache take a few milliseconds instead of a trip to central KV storage. The trade-off is staleness: in the worst case, a storefront status change (maintenance mode, launch) can take up to about 11 minutes to reach a location instead of about 7. It's usually sooner, since the background refresh's write is normally visible at once in the location that made it. Route changes have the same 4 extra minutes on top of their 30-minute window.
+
+  ## Migration
+
+  In `core/lib/kv/adapters/cloudflare-kv.ts`, pass a `cacheTtl` when reading from the namespace:
+
+  ```ts
+  const ROUTES_READ_CACHE_TTL_SECONDS = 60 * 5;
+
+  // RoutesKvNamespace
+  get(key: string, options: { type: 'json'; cacheTtl?: number }): Promise<unknown>;
+
+  // CloudflareKvAdapter.mget
+  const value = await this.namespace.get(key, {
+    type: 'json',
+    cacheTtl: ROUTES_READ_CACHE_TTL_SECONDS,
+  });
+  ```
+
+- [#3272](https://github.com/bigcommerce/catalyst/pull/3272) [`95f78f9`](https://github.com/bigcommerce/catalyst/commit/95f78f91e7d39c5cac2256f7f2d6c71858bc36b1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add the product the shopper is viewing to the cart, even if the product page's hidden `id` field was edited. The add to cart form now sets the product ID from its `productId` prop right before calling the action, so changing the field in devtools or with a script no longer adds a different product. The hidden input stays so add to cart still works without JavaScript.
+
+  ## Migration
+
+  In `core/vibes/soul/sections/product-detail/product-detail-form.tsx`, set the product ID in the `onSubmit` handler before calling the action:
+
+  ```ts
+  onSubmit(event, { formData }) {
+    event.preventDefault();
+
+    // Use the product from props, not the hidden field, so editing the form can't add a different product.
+    formData.set('id', productId);
+
+    startTransition(() => {
+      formAction(formData);
+
+      events.onAddToCart?.(formData);
+    });
+  },
+  ```
+
+- [#3271](https://github.com/bigcommerce/catalyst/pull/3271) [`42fd792`](https://github.com/bigcommerce/catalyst/commit/42fd792f784097d65e09c6550a81af476a853b67) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Send the `ProductViewed` analytics event once per product per visit. Before, every PDP request with the visit cookies sent one, so refreshes and repeat hits each cost BigCommerce an uncacheable GraphQL mutation. The product ids already reported are kept in a new `catalyst.productViews` cookie tied to the current visit id, with the same sliding 30-minute lifetime as `catalyst.visitId`, and the cookie is removed along with the other analytics cookies when measurement consent is declined.
+
+  ## Migration
+
+  Add `core/lib/analytics/bigcommerce/product-views.ts` (with `addProductView` and `parseProductViews`), and `getProductViewsCookie`, `setProductViewsCookie` and `deleteProductViewsCookie` to `core/lib/analytics/bigcommerce/index.ts`.
+
+  In `core/proxies/with-routes.ts`, only record the visit on the first view of the product in the current visit:
+
+  ```ts
+  if (!isPrefetch && !isRSC && (await isFirstViewInVisit(node.entityId))) {
+    event.waitUntil(recordProductVisit(req, node.entityId));
+  }
+
+  async function isFirstViewInVisit(productId: number) {
+    const visitId = await getVisitIdCookie();
+
+    if (!visitId) {
+      return false;
+    }
+
+    const productViews = addProductView(await getProductViewsCookie(), visitId, productId);
+
+    if (!productViews) {
+      return false;
+    }
+
+    await setProductViewsCookie(productViews);
+
+    return true;
+  }
+  ```
+
+  In `core/proxies/with-analytics-cookies.ts`, delete the cookie when consent is declined, and refresh it along with the visit cookie:
+
+  ```ts
+  if ((await getProductViewsCookie()) != null) {
+    await deleteProductViewsCookie();
+  }
+
+  // In the `hasValidVisit` branch, after `setVisitIdCookie(existingVisitId)`:
+  const existingProductViews = await getProductViewsCookie();
+
+  if (existingProductViews != null) {
+    await setProductViewsCookie(existingProductViews);
+  }
+  ```
+
+- [#3280](https://github.com/bigcommerce/catalyst/pull/3280) [`446ecdf`](https://github.com/bigcommerce/catalyst/commit/446ecdf1a1fb877b5aeeabff04b3b573bc066237) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Send the Catalyst `User-Agent` when fetching the GraphQL schema during `dev` and `build`, matching the storefront's runtime requests.
+
+- [#3269](https://github.com/bigcommerce/catalyst/pull/3269) [`0755fff`](https://github.com/bigcommerce/catalyst/commit/0755fff23922a74813fd5df0c9a60b50f675d3ea) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix the product gallery not updating when selecting a variant with a different default image.
+
+  ## Migration
+
+  In `core/vibes/soul/sections/product-detail/index.tsx`, key both `ProductGallery` usages on the first image so the gallery remounts when the variant's default image changes:
+
+  ```tsx
+  <ProductGallery
+    images={imagesData.images}
+    key={imagesData.images[0]?.src}
+    ...
+  />
+  ```
+
+- Updated dependencies [[`4db7221`](https://github.com/bigcommerce/catalyst/commit/4db7221e2d2e9bbc4c2541306f7b50daabbef4b9)]:
+  - @bigcommerce/catalyst-client@1.0.4
+
 ## 1.12.2
 
 ### Patch Changes
