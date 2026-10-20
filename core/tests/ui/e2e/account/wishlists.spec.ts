@@ -1,5 +1,4 @@
 import { faker } from '@faker-js/faker';
-import { Browser } from '@playwright/test';
 
 import { testEnv } from '~/tests/environment';
 import { expect, test } from '~/tests/fixtures';
@@ -11,15 +10,11 @@ test.use({ permissions: ['clipboard-read', 'clipboard-write'] });
 
 const bold = (chunks: React.ReactNode) => chunks;
 
-async function logoutInSeparateBrowser(fixture: CustomerFixture, browser: Browser) {
+async function logoutInSeparateBrowser(fixture: CustomerFixture) {
   return test.step('Sign out in a different browser window', async () => {
-    const newBrowser = await browser.newContext();
-    const newPage = await newBrowser.newPage();
-    const customer = fixture.withNewPage(newPage);
-
-    await customer.login();
-    await newPage.goto('/account/wishlists/');
-    await newPage.waitForURL('/account/wishlists/');
+    // Playwright can't restore partitioned cookies into a new context, and the auth cookies are
+    // partitioned (see `core/auth/index.ts`), so sign out from another tab of the same context.
+    const newPage = await fixture.page.context().newPage();
 
     await newPage.goto('/logout', { waitUntil: 'networkidle' });
     await newPage.close();
@@ -266,7 +261,6 @@ test.describe('Wishlist actions menu', () => {
 
   test('Rename wishlist action fails if the user is no longer logged in', async ({
     page,
-    browser,
     customer,
   }) => {
     const t = await getTranslations('Wishlist');
@@ -276,7 +270,7 @@ test.describe('Wishlist actions menu', () => {
     await page.goto('/account/wishlists/');
     await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-    await logoutInSeparateBrowser(customer, browser);
+    await logoutInSeparateBrowser(customer);
 
     const locator = page.getByRole('region', { name });
 
@@ -334,7 +328,6 @@ test.describe('Wishlist actions menu', () => {
 
   test('Public/private wishlist action fails if the user is no longer logged in', async ({
     page,
-    browser,
     customer,
   }) => {
     const t = await getTranslations('Wishlist');
@@ -344,7 +337,7 @@ test.describe('Wishlist actions menu', () => {
     await page.goto('/account/wishlists/');
     await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-    await logoutInSeparateBrowser(customer, browser);
+    await logoutInSeparateBrowser(customer);
 
     const locator = page.getByRole('region', { name });
 
@@ -383,7 +376,6 @@ test.describe('Wishlist actions menu', () => {
 
   test('Delete wishlist action fails if the user is no longer logged in', async ({
     page,
-    browser,
     customer,
   }) => {
     const t = await getTranslations('Wishlist');
@@ -393,7 +385,7 @@ test.describe('Wishlist actions menu', () => {
     await page.goto('/account/wishlists/');
     await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-    await logoutInSeparateBrowser(customer, browser);
+    await logoutInSeparateBrowser(customer);
 
     const locator = page.getByRole('region', { name });
 
