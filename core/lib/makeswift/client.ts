@@ -20,13 +20,26 @@ export const getPageSnapshot = async ({ path, locale }: { path: string; locale: 
   });
 
 export const getComponentSnapshot = async (snapshotId: string) => {
-  const locale = await getLocale();
+  const siteVersion = await getSiteVersion();
+  const locale = await normalizeLocale(await getLocale());
 
-  return await client.getComponentSnapshot(snapshotId, {
-    siteVersion: await getSiteVersion(),
-    locale: await normalizeLocale(locale),
-  });
+  try {
+    return await client.getComponentSnapshot(snapshotId, { siteVersion, locale });
+  } catch (error) {
+    // Makeswift 404s component snapshots for a locale the site hasn't added, so fall back to
+    // the default locale's content.
+    if (locale !== undefined && isNotFoundError(error)) {
+      return await client.getComponentSnapshot(snapshotId, { siteVersion, locale: undefined });
+    }
+
+    throw error;
+  }
 };
+
+// `RestApiClientError` isn't exported by `@makeswift/runtime`.
+function isNotFoundError(error: unknown): boolean {
+  return error instanceof Error && 'status' in error && error.status === 404;
+}
 
 async function normalizeLocale(locale: string): Promise<string | undefined> {
   const { defaultLocale } = await getLocaleRouting();
