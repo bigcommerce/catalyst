@@ -58,12 +58,12 @@ export default async function PaymentMethods({ params }: Props) {
                       {/* Update button is displayed if editing is supported while Edit functionality is not implemented yet.
                           `updateStoredPaymentInstrument` GQL mutation is available for updating stored payment instruments */}
                       {isEditSupported && (
-                        <button
+                        <Link
                           className="rounded border border-blue-600 px-2 py-0.5 text-sm text-blue-600 hover:bg-blue-50"
-                          type="button"
+                          href={`/account/payment-methods/edit/${encodeURIComponent(token)}`}
                         >
                           Update
-                        </button>
+                        </Link>
                       )}
                       {isDeleteSupported && (
                         <form action={deleteStoredPaymentInstrument}>
