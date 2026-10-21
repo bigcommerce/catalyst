@@ -25,8 +25,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Mirrors `cleanupCloudflareIncompatibilities` in the CLI: the default
+      # instrumentation.ts registers @vercel/otel, which crashes workerd on cold start.
+      - name: Remove Cloudflare-incompatible instrumentation
+        working-directory: core
+        run: |
+          rm -f instrumentation.ts
+          pnpm remove @vercel/otel
+
+      # Keep the adapter version in sync with OPENNEXT_CLOUDFLARE_VERSION in
+      # packages/catalyst/src/cli/lib/commerce-hosting.ts
       - name: Install Catalyst CLI
-        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@latest
+        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@1.20.6
         working-directory: core
 
       - name: Convert proxy.ts to middleware.ts
@@ -65,9 +75,33 @@ jobs:
             --secret BIGCOMMERCE_STORE_HASH=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }} \
             --secret BIGCOMMERCE_STOREFRONT_TOKEN=${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }} \
             --secret BIGCOMMERCE_CHANNEL_ID=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }} \
-            --secret AUTH_SECRET=${{ secrets.NATIVE_HOSTING_AUTH_SECRET }}
+            --secret AUTH_SECRET=${{ secrets.NATIVE_HOSTING_AUTH_SECRET }} \
+            2>&1 | tee "$RUNNER_TEMP/deploy.log"
         working-directory: core
         env:
           CATALYST_STORE_HASH: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }}
           CATALYST_ACCESS_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_ACCESS_TOKEN }}
           CATALYST_PROJECT_UUID: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_PROJECT_UUID }}
+
+      - name: Verify deployment responds with 200
+        run: |
+          url=$(sed 's/\x1b\[[0-9;]*m//g' "$RUNNER_TEMP/deploy.log" \
+            | grep -oE 'View your deployment at: https://[^[:space:]]+' | tail -n1 | sed 's/.*: //')
+
+          if [ -z "$url" ]; then
+            echo "::error::Could not find the deployed URL in the deploy output"
+            exit 1
+          fi
+
+          echo "Checking $url"
+
+          status=000
+          for attempt in 1 2 3 4 5 6; do
+            status=$(curl -s -o /dev/null -L -w '%{http_code}' --max-time 30 "$url" || true)
+            echo "Attempt $attempt: HTTP $status"
+            [ "$status" = "200" ] && exit 0
+            sleep 10
+          done
+
+          echo "::error::Expected HTTP 200 from $url but got $status"
+          exit 1
