@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.13.1
+
+### Patch Changes
+
+- [#3287](https://github.com/bigcommerce/catalyst/pull/3287) [`2d1d9df`](https://github.com/bigcommerce/catalyst/commit/2d1d9dfe9e4f7b8fd013a5811ec60139222610ec) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - Fix the password reset email sent to customers flagged with "Request customer to set their password on next login". BigCommerce generates that link in the legacy Stencil format (`/login?action=change_password&c=<id>&t=<token>`), which the login page ignored. The login page now forwards it to `/change-password` so the customer can set a new password.
+
 ## 1.13.0
 
 ### Minor Changes
