@@ -1,4 +1,3 @@
-import { fetch } from '@makeswift/runtime/next';
 import { registerBoxComponent } from '@makeswift/runtime/react/builtins/box';
 import { registerDividerComponent } from '@makeswift/runtime/react/builtins/divider';
 import { registerEmbedComponent } from '@makeswift/runtime/react/builtins/embed';
@@ -9,6 +8,8 @@ import { registerSocialLinksComponent } from '@makeswift/runtime/react/builtins/
 import { registerTextComponent } from '@makeswift/runtime/react/builtins/text';
 import { registerVideoComponent } from '@makeswift/runtime/react/builtins/video';
 import { ReactRuntimeCore } from '@makeswift/runtime/react/core';
+
+import { fetch } from './fetch';
 
 const runtime = new ReactRuntimeCore({
   apiOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_API_ORIGIN,

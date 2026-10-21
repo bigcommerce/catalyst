@@ -10,7 +10,7 @@ import { execa } from 'execa';
 import { cp, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, beforeEach, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeEach, expect, test, vi } from 'vitest';
 
 // Windows holds git file locks longer than the default 10 s hook timeout.
 vi.setConfig({ hookTimeout: 60_000 });
@@ -69,6 +69,39 @@ afterEach(async () => {
   );
 });
 
+// Each tag is downloaded once and copied from, since re-extracting ~600 files per
+// test dominated this suite's runtime on Windows. Tests must only read the seed.
+const seedTrees = new Map<string, Promise<string>>();
+const seedDirs: string[] = [];
+
+function seedTree(ref: string): Promise<string> {
+  const cached = seedTrees.get(ref);
+
+  if (cached) return cached;
+
+  const tree = (async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upgrade-action-seed-'));
+    const dir = join(root, 'core');
+
+    seedDirs.push(root);
+    await downloadCore(REPO, ref, dir);
+
+    return dir;
+  })();
+
+  seedTrees.set(ref, tree);
+
+  return tree;
+}
+
+afterAll(async () => {
+  await Promise.all(
+    seedDirs
+      .splice(0)
+      .map((d) => rm(d, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 })),
+  );
+});
+
 async function initGitProject(dir: string): Promise<void> {
   await execa('git', ['init', '-q'], { cwd: dir });
   await execa('git', ['config', 'user.email', 't@t.com'], { cwd: dir });
@@ -89,10 +122,7 @@ async function setup163Project(
   opts: { withCatalystRef?: boolean } = {},
 ): Promise<string> {
   const { withCatalystRef = true } = opts;
-  const baseDir = join(root, 'base');
-
-  await downloadCore(REPO, BASE_REF, baseDir);
-
+  const baseDir = await seedTree(BASE_REF);
   const projectDir = join(root, 'project');
 
   await cp(baseDir, projectDir, { recursive: true });
@@ -228,9 +258,7 @@ test(
   'running upgrade from inside core/ resolves to the git root and applies correctly',
   async () => {
     const root = await mkTmp();
-    const baseDir = join(root, 'base');
-
-    await downloadCore(REPO, BASE_REF, baseDir);
+    const baseDir = await seedTree(BASE_REF);
 
     // Nested layout: Catalyst package lives under <projectRoot>/core/.
     const projectRoot = join(root, 'project');
@@ -322,10 +350,7 @@ test(
   '--ref flag upgrades a makeswift integration family project to the target tag',
   async () => {
     const root = await mkTmp();
-    const baseDir = join(root, 'base');
-
-    await downloadCore(REPO, MAKESWIFT_BASE_REF, baseDir);
-
+    const baseDir = await seedTree(MAKESWIFT_BASE_REF);
     const projectDir = join(root, 'project');
 
     await cp(baseDir, projectDir, { recursive: true });

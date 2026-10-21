@@ -5,6 +5,7 @@ import { colorize } from 'consola/utils';
 
 import { canPrompt } from '../lib/can-prompt';
 import {
+  confirmCheckoutCertificate,
   offerManagedCheckoutUrl,
   runChannelCheckoutUrlFlow,
 } from '../lib/channel-checkout-url-flow';
@@ -66,9 +67,10 @@ pointed at BigCommerce with a certificate provisioned there — not one added wi
 \`catalyst domains add\`, which only routes traffic to this project.
 
 BigCommerce also requires the checkout URL to share a main domain with the
-channel's storefront URL, so that sessions carry between the two. This means a
-custom checkout URL is only possible on a custom storefront domain; channels on
-an auto-generated deployment hostname use the shared checkout domain.`;
+channel's storefront URL, so that sessions carry between the two. A storefront
+on an auto-generated deployment hostname uses its \`c.\` subdomain for checkout;
+BigCommerce issues its certificate when it's set, which takes a few minutes, and
+the command waits for it.`;
 
 // Resolve credentials from flags/env → persisted project config → interactive
 // login (persisting on success). Returns null when the user aborts login.
@@ -238,6 +240,7 @@ Examples:
         consola.success(`Updated channel ${label} checkout URL to ${options.checkoutUrl}.`);
         reportChannelSite(updated);
         warnOnCrossDomainCheckout(updated);
+        await confirmCheckoutCertificate(options.checkoutUrl, { channelId: channel.id });
       } else {
         await deleteChannelCheckoutUrl(channel.id, storeHash, accessToken, apiHost);
 

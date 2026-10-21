@@ -132,6 +132,59 @@ export async function runChannelCheckoutUrlFlow(
   );
 
   consola.success(`Updated channel ${label} checkout URL to ${checkoutUrl}.`);
+
+  await confirmCheckoutCertificate(checkoutUrl, {
+    channelId: channel.id,
+    timeoutMs: options.certificateTimeoutMs,
+  });
+}
+
+// Waits for a managed-zone checkout hostname's certificate, explaining the pause.
+async function waitForManagedCheckoutCertificate(
+  hostname: string,
+  timeoutMs?: number,
+): Promise<boolean> {
+  const ready = await waitForCheckoutHostname(hostname, {
+    timeoutMs,
+    onWait: () =>
+      consola.info(
+        `Waiting for ${hostname} to be issued a certificate. This usually takes a minute or two...`,
+      ),
+  });
+
+  if (ready) consola.success(`${hostname} is serving checkout.`);
+
+  return ready;
+}
+
+// Checks a checkout URL the user chose, so the command doesn't finish before
+// checkout loads. On the managed zone the write provisions the certificate, so
+// wait for it. A merchant's own domain is checked once: its certificate is
+// theirs to provision and may never come.
+export async function confirmCheckoutCertificate(
+  checkoutUrl: string,
+  { channelId, timeoutMs }: { channelId: number; timeoutMs?: number },
+): Promise<void> {
+  const { hostname } = new URL(checkoutUrl);
+
+  if (isManagedHostingHostname(hostname)) {
+    if (await waitForManagedCheckoutCertificate(hostname, timeoutMs)) return;
+
+    consola.warn(
+      `${hostname} wasn't issued a certificate in time, so checkout won't load until it is. ` +
+        "To fall back to the default channel's checkout, run " +
+        `\`catalyst channels update --channel-id ${channelId} --remove-checkout-url\`.`,
+    );
+
+    return;
+  }
+
+  if (await waitForCheckoutHostname(hostname, { timeoutMs: 0 })) return;
+
+  consola.warn(
+    `${hostname} isn't serving a certificate yet, so checkout won't load until it does. ` +
+      'Point it at BigCommerce and provision its certificate there.',
+  );
 }
 
 interface ManagedCheckoutUrlOptions {
@@ -187,19 +240,7 @@ async function setManagedCheckoutUrl(options: ManagedCheckoutUrlOptions): Promis
     consola.success(`Updated channel ${label} checkout URL to ${checkoutUrl}.`);
   }
 
-  const ready = await waitForCheckoutHostname(hostname, {
-    timeoutMs: options.timeoutMs,
-    onWait: () =>
-      consola.info(
-        `Waiting for ${hostname} to be issued a certificate. This usually takes a minute or two...`,
-      ),
-  });
-
-  if (ready) {
-    consola.success(`${hostname} is serving checkout.`);
-
-    return true;
-  }
+  if (await waitForManagedCheckoutCertificate(hostname, options.timeoutMs)) return true;
 
   await deleteChannelCheckoutUrl(channelId, storeHash, accessToken, apiHost);
   consola.warn(

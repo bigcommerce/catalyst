@@ -92,7 +92,7 @@ describe('command configuration', () => {
     expect(domains).toBeInstanceOf(Command);
     expect(domains.name()).toBe('domains');
     expect(domains.description()).toBe(
-      'Manage custom domains for the current Native Hosting project.',
+      'Manage custom domains for the current Storefront Hosting project.',
     );
 
     const add = domains.commands.find((command) => command.name() === 'add');
@@ -103,7 +103,9 @@ describe('command configuration', () => {
     const remove = domains.commands.find((command) => command.name() === 'remove');
 
     expect(add).toBeDefined();
-    expect(add?.description()).toBe('Add a custom domain to the current Native Hosting project.');
+    expect(add?.description()).toBe(
+      'Add a custom domain to the current Storefront Hosting project.',
+    );
     expect(add?.options).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ flags: '--store-hash <hash>' }),
@@ -115,7 +117,9 @@ describe('command configuration', () => {
     );
 
     expect(list).toBeDefined();
-    expect(list?.description()).toBe('List custom domains for the current Native Hosting project.');
+    expect(list?.description()).toBe(
+      'List custom domains for the current Storefront Hosting project.',
+    );
     expect(list?.options).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ flags: '--store-hash <hash>' }),
@@ -129,7 +133,7 @@ describe('command configuration', () => {
 
     expect(status).toBeDefined();
     expect(status?.description()).toBe(
-      'Show the status of a custom domain on the current Native Hosting project.',
+      'Show the status of a custom domain on the current Storefront Hosting project.',
     );
     expect(status?.options).toEqual(
       expect.arrayContaining([
@@ -172,7 +176,7 @@ describe('command configuration', () => {
 
     expect(remove).toBeDefined();
     expect(remove?.description()).toBe(
-      'Remove a custom domain from the current Native Hosting project.',
+      'Remove a custom domain from the current Storefront Hosting project.',
     );
     expect(remove?.options).toEqual(
       expect.arrayContaining([

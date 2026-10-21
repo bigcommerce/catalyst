@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { offerCrashReport } from './lib/crash-report';
 import { UserActionableError } from './lib/errors';
 import { consola } from './lib/logger';
 import { getTelemetry } from './lib/telemetry';
@@ -42,6 +43,9 @@ const handleFatalError = async (error: unknown) => {
       'Enable telemetry (`catalyst telemetry enable`) for improved troubleshooting with BigCommerce support.',
     );
   }
+
+  // Never throws, so the exit below always runs.
+  await offerCrashReport({ error, program, correlationId: telemetry.correlationId });
 
   process.exit(1);
 };

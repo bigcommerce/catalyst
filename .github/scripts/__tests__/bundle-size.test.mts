@@ -11,6 +11,7 @@ import {
   computeRootLayout,
   computeRouteMetrics,
   compareReport,
+  findOverBudget,
   clearSizeCache,
   readTurbopackEntries,
 } from '../bundle-size.mts';
@@ -408,13 +409,12 @@ describe('compareReport', () => {
   });
 
   it('shows "No route changes detected." when only global metrics changed', () => {
-    // Global metric differs (Case 2) but routes are identical → section shown, no threshold
+    // Global metric differs but routes are identical → section shown with placeholder
     const baseline = makeReport({ firstLoadJs: 100, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
     const current = makeReport({ firstLoadJs: 110, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes('_No route changes detected._'));
-    assert.ok(!report.includes(`Threshold:`));
   });
 
   it('does not show global metrics table when global metrics are unchanged', () => {
@@ -467,86 +467,74 @@ describe('compareReport', () => {
     assert.ok(report.includes('120 kB'));
   });
 
-  it('does not show warning for increase under threshold', () => {
-    // delta=3kB, pct=3% < 5% threshold: no warning row
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 103, js: 53, css: 5 } } });
-    const report = compareReport(baseline, current);
-
-    assert.ok(!report.includes(WARN_IN_ROW), 'Should not have a warning table cell');
-  });
-
-  it('shows warning for increase over threshold (over 1kB AND over threshold percent)', () => {
-    // delta=10kB, pct=10% > 5% threshold: warning row present
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 110, js: 60, css: 5 } } });
-    const report = compareReport(baseline, current);
-
-    assert.ok(report.includes(WARN_IN_ROW), 'Should have a warning table cell');
-  });
-
-  it('does not warn when delta is over threshold percent but 1kB or less', () => {
-    // delta=0.5kB = 50% but <=1kB: no warning
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 1, js: 1, css: 0 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 1.5, js: 1.5, css: 0 } } });
+  it('does not warn when a route grows by exactly the budget', () => {
+    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 300, js: 50, css: 5 } } });
+    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 325, js: 75, css: 5 } } });
     const report = compareReport(baseline, current);
 
     assert.ok(!report.includes(WARN_IN_ROW));
+    assert.ok(report.includes('✅ Within budget.'));
   });
 
-  it('does not warn when delta is over 1kB but at or under threshold percent', () => {
-    // delta=2kB = 1% < 5% threshold: no warning
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 200, js: 200, css: 0 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 202, js: 202, css: 0 } } });
-    const report = compareReport(baseline, current);
-
-    assert.ok(!report.includes(WARN_IN_ROW));
-  });
-
-  it('respects custom threshold: no warning when under', () => {
-    // delta=8kB = 8%, threshold=10: no warning
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 108, js: 58, css: 5 } } });
-    const report = compareReport(baseline, current, { threshold: 10 });
-
-    assert.ok(!report.includes(WARN_IN_ROW));
-  });
-
-  it('respects custom threshold: warning when over', () => {
-    // delta=8kB = 8%, threshold=3: warning
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 108, js: 58, css: 5 } } });
-    const report = compareReport(baseline, current, { threshold: 3 });
-
-    assert.ok(report.includes(WARN_IN_ROW));
-  });
-
-  it('uses default threshold of 5 percent when not specified', () => {
-    // delta=6kB = 6% > 5%: warning with default
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 100, css: 0 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 106, js: 106, css: 0 } } });
+  it('warns when a route grows past the budget', () => {
+    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 300, js: 50, css: 5 } } });
+    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 334, js: 84, css: 5 } } });
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes(WARN_IN_ROW));
-    assert.ok(report.includes('Threshold: 5%'));
+    assert.ok(report.includes('❌ **Over budget:** /app/page.'));
+    assert.ok(report.includes('`bundle-size-ok`'));
   });
 
-  it('shows threshold in footer only when route changes are present', () => {
-    // Route changed: threshold callout shown
-    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 110, js: 60, css: 5 } } });
-    const report = compareReport(baseline, current, { threshold: 7 });
+  it('ignores large percentage growth that stays under the budget', () => {
+    // +80% on a tiny route used to warn under the percentage threshold
+    const baseline = makeReport({ routes: { '/app/page': { firstLoadJs: 10, js: 10, css: 0 } } });
+    const current = makeReport({ routes: { '/app/page': { firstLoadJs: 18, js: 18, css: 0 } } });
+    const report = compareReport(baseline, current);
 
-    assert.ok(report.includes('Threshold: 7%'));
+    assert.ok(!report.includes(WARN_IN_ROW));
   });
 
-  it('omits threshold footer when there are no route changes', () => {
-    // Global metrics differ but routes are identical — no threshold callout
+  it('warns when First Load JS grows past its budget', () => {
+    const baseline = makeReport({ firstLoadJs: 117.7 });
+    const current = makeReport({ firstLoadJs: 128.8 });
+    const report = compareReport(baseline, current);
+
+    assert.ok(report.includes(`| First Load JS | 117.7 kB | 128.8 kB | +11.1 kB (+9.4%) | ${WARN_EMOJI} |`));
+    assert.ok(report.includes('❌ **Over budget:** First Load JS.'));
+  });
+
+  it('never warns on Total JS, which grows with every new route', () => {
+    const baseline = makeReport({ totalJs: 200 });
+    const current = makeReport({ totalJs: 500 });
+    const report = compareReport(baseline, current);
+
+    assert.ok(!report.includes(WARN_IN_ROW));
+    assert.ok(report.includes('✅ Within budget.'));
+  });
+
+  it('respects custom budgets', () => {
+    const baseline = makeReport({ firstLoadJs: 100, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
+    const current = makeReport({ firstLoadJs: 104, routes: { '/app/page': { firstLoadJs: 104, js: 54, css: 5 } } });
+    const report = compareReport(baseline, current, { firstLoadJsBudget: 3, routeBudget: 5 });
+
+    assert.ok(report.includes('❌ **Over budget:** First Load JS.'));
+    assert.ok(report.includes('First Load JS may grow by 3 kB and each route by 5 kB'));
+  });
+
+  it('shows the budget footer whenever something changed', () => {
     const baseline = makeReport({ firstLoadJs: 100 });
-    const current = makeReport({ firstLoadJs: 115 });
+    const current = makeReport({ firstLoadJs: 101 });
     const report = compareReport(baseline, current);
 
-    assert.ok(!report.includes('Threshold:'));
+    assert.ok(report.includes('> Budget: First Load JS may grow by 10 kB and each route by 25 kB.'));
+  });
+
+  it('omits the verdict and footer when nothing changed', () => {
+    const report = compareReport(makeReport(), makeReport());
+
+    assert.ok(!report.includes('budget'));
+    assert.ok(!report.includes('Budget'));
   });
 
   it('formats positive delta with + sign and percent', () => {
@@ -661,6 +649,54 @@ describe('compareReport', () => {
     assert.ok(report.includes('| Route |'));
     assert.ok(report.includes('| Baseline |'));
     assert.ok(report.includes('| Current |'));
+  });
+});
+
+describe('findOverBudget', () => {
+  const route = (firstLoadJs: number) => ({ firstLoadJs, js: 0, css: 0 });
+  const makeReport = (firstLoadJs: number, routes = {}) => ({
+    commitSha: 'abc123',
+    updatedAt: '2024-01-01',
+    firstLoadJs,
+    totalJs: 0,
+    totalCss: 0,
+    routes,
+  });
+
+  it('returns an empty list when everything is within budget', () => {
+    const baseline = makeReport(100, { '/a/page': route(300) });
+    const current = makeReport(110, { '/a/page': route(325) });
+
+    assert.deepEqual(findOverBudget(baseline, current), []);
+  });
+
+  it('lists First Load JS first, then over-budget routes sorted without the locale prefix', () => {
+    const baseline = makeReport(100, {
+      '/[locale]/z/page': route(300),
+      '/[locale]/a/page': route(300),
+      '/[locale]/m/page': route(300),
+    });
+    const current = makeReport(111, {
+      '/[locale]/z/page': route(340),
+      '/[locale]/a/page': route(340),
+      '/[locale]/m/page': route(310),
+    });
+
+    assert.deepEqual(findOverBudget(baseline, current), ['First Load JS', '/a/page', '/z/page']);
+  });
+
+  it('does not count new routes against the budget', () => {
+    const baseline = makeReport(100);
+    const current = makeReport(100, { '/new/page': route(900) });
+
+    assert.deepEqual(findOverBudget(baseline, current), []);
+  });
+
+  it('ignores shrinking routes', () => {
+    const baseline = makeReport(100, { '/a/page': route(400) });
+    const current = makeReport(50, { '/a/page': route(300) });
+
+    assert.deepEqual(findOverBudget(baseline, current), []);
   });
 });
 

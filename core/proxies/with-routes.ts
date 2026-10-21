@@ -5,8 +5,15 @@ import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
+import {
+  getProductViewsCookie,
+  getVisitIdCookie,
+  getVisitorIdCookie,
+  setProductViewsCookie,
+} from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
+import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
+import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
@@ -403,7 +410,12 @@ export const withRoutes: ProxyFactory = () => {
           const isPrefetch = req.headers.get('Next-Router-Prefetch') === '1';
           const isRSC = req.headers.get('RSC') === '1';
 
-          if (!isPrefetch && !isRSC) {
+          if (
+            !isAnalyticsDisabled() &&
+            !isPrefetch &&
+            !isRSC &&
+            (await isFirstViewInVisit(node.entityId))
+          ) {
             event.waitUntil(recordProductVisit(req, node.entityId));
           }
 
@@ -455,6 +467,27 @@ export const withRoutes: ProxyFactory = () => {
       // @ts-expect-error auth() overload expects middleware return type, but we return NextResponse directly for the proxy
     })(request, event);
 };
+
+// `ProductViewed` is a mutation BigCommerce can't cache, so refreshes and
+// repeat hits on the same PDP would otherwise each send one. Decided before the
+// response so the cookie update ships with it.
+async function isFirstViewInVisit(productId: number) {
+  const visitId = await getVisitIdCookie();
+
+  if (!visitId) {
+    return false;
+  }
+
+  const productViews = addProductView(await getProductViewsCookie(), visitId, productId);
+
+  if (!productViews) {
+    return false;
+  }
+
+  await setProductViewsCookie(productViews);
+
+  return true;
+}
 
 async function recordProductVisit(request: Request, productId: number) {
   const visitId = await getVisitIdCookie();

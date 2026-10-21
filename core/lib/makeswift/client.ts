@@ -1,4 +1,3 @@
-import { type MakeswiftClient } from '@makeswift/runtime/client';
 import { Makeswift } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
@@ -10,53 +9,7 @@ import { runtime } from './runtime';
 
 strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
 
-// `Makeswift` narrows this to a non-null site version, but the client passes `null` for the
-// published site.
-type SiteVersionArg = Parameters<MakeswiftClient['fetchOptions']>[0];
-
-// Makeswift tags its API responses but declares no revalidate window, and
-// `app/[locale]/layout.tsx` sets `fetchCache = 'default-cache'`, so without a TTL Next.js
-// caches them indefinitely. In production the publish webhook revalidates the `@@makeswift`
-// tag, making this only a backstop; it stays long because time-based expiry serves the
-// previous response to the request that triggers the refresh. Makeswift cannot reach a local
-// dev server, where the TTL is the only invalidation, so development defaults to 0.
-const MAKESWIFT_REVALIDATE_TARGET = resolveRevalidateTarget();
-
-function resolveRevalidateTarget(): number {
-  const override = process.env.MAKESWIFT_REVALIDATE_TARGET;
-
-  if (override) {
-    return Number(override);
-  }
-
-  return process.env.NODE_ENV === 'development' ? 0 : 3600;
-}
-
-class CatalystMakeswift extends Makeswift {
-  fetchOptions(siteVersion: SiteVersionArg): Record<string, unknown> {
-    // The base implementation ignores this argument despite typing it as required.
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const options = super.fetchOptions(siteVersion!);
-
-    // Draft mode already sets `cache: 'no-store'`; pairing that with `revalidate` makes
-    // Next.js discard both and fall back to caching the builder's edits indefinitely.
-    if (siteVersion != null) {
-      return options;
-    }
-
-    const { next } = options;
-
-    return {
-      ...options,
-      next: {
-        ...(typeof next === 'object' && next !== null ? next : {}),
-        revalidate: MAKESWIFT_REVALIDATE_TARGET,
-      },
-    };
-  }
-}
-
-export const client = new CatalystMakeswift(process.env.MAKESWIFT_SITE_API_KEY, {
+export const client = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY, {
   runtime,
 });
 
@@ -67,13 +20,26 @@ export const getPageSnapshot = async ({ path, locale }: { path: string; locale: 
   });
 
 export const getComponentSnapshot = async (snapshotId: string) => {
-  const locale = await getLocale();
+  const siteVersion = await getSiteVersion();
+  const locale = await normalizeLocale(await getLocale());
 
-  return await client.getComponentSnapshot(snapshotId, {
-    siteVersion: await getSiteVersion(),
-    locale: await normalizeLocale(locale),
-  });
+  try {
+    return await client.getComponentSnapshot(snapshotId, { siteVersion, locale });
+  } catch (error) {
+    // Makeswift 404s component snapshots for a locale the site hasn't added, so fall back to
+    // the default locale's content.
+    if (locale !== undefined && isNotFoundError(error)) {
+      return await client.getComponentSnapshot(snapshotId, { siteVersion, locale: undefined });
+    }
+
+    throw error;
+  }
 };
+
+// `RestApiClientError` isn't exported by `@makeswift/runtime`.
+function isNotFoundError(error: unknown): boolean {
+  return error instanceof Error && 'status' in error && error.status === 404;
+}
 
 async function normalizeLocale(locale: string): Promise<string | undefined> {
   const { defaultLocale } = await getLocaleRouting();

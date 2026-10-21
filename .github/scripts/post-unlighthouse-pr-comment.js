@@ -1,10 +1,7 @@
 const fs = require('fs');
 
-module.exports = async ({ github, context, provider = 'unknown', reportPath = '/tmp/unlighthouse-report.md', metaPath = '/tmp/unlighthouse-meta.json' }) => {
-  // Exit early if no changes
-  const { hasChanges } = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
-
-  if (!hasChanges) return;
+module.exports = async ({ github, context, reportPath = '/tmp/unlighthouse-report.md', metaPath = '/tmp/unlighthouse-meta.json' }) => {
+  const { failed } = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
 
   // Find PR from commit SHA (context.issue.number is 0 in deployment_status events;
   // deployment.ref is also the SHA in Vercel deployments, not the branch name)
@@ -23,8 +20,8 @@ module.exports = async ({ github, context, provider = 'unknown', reportPath = '/
   if (!prNumber) return;
 
   const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-  const marker = `<!-- unlighthouse-${provider}-report -->`;
-  const body = marker + '\n' + fs.readFileSync(reportPath, 'utf-8') + `\n[Full Unlighthouse report →](${runUrl})\n`;
+  // Matches comments posted when reports were per deployment provider.
+  const marker = '<!-- unlighthouse-vercel-report -->';
 
   const { data: comments } = await github.rest.issues.listComments({
     owner: context.repo.owner,
@@ -33,6 +30,15 @@ module.exports = async ({ github, context, provider = 'unknown', reportPath = '/
   });
 
   const existing = comments.find(c => c.body.includes(marker));
+
+  // Only open a new comment for failures, but keep an existing one current so
+  // it shows when the regression is fixed.
+  if (!failed && !existing) return;
+
+  const report = failed
+    ? fs.readFileSync(reportPath, 'utf-8')
+    : '## Unlighthouse Comparison\n\n✅ Resolved: the latest run found no regressions.\n';
+  const body = marker + '\n' + report + `\n[Full Unlighthouse report →](${runUrl})\n`;
 
   if (existing) {
     await github.rest.issues.updateComment({

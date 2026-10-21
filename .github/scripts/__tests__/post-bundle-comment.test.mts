@@ -9,6 +9,7 @@ const require = createRequire(import.meta.url);
 const postBundleComment = require('../post-bundle-comment.js') as (args: {
   github: ReturnType<typeof makeGithub>['github'];
   context: ReturnType<typeof makeContext>;
+  overBudget: boolean;
   reportPath?: string;
 }) => Promise<void>;
 
@@ -32,12 +33,13 @@ interface Comment {
 interface GithubCalls {
   create: object[];
   update: object[];
+  delete: object[];
   list: object[];
 }
 
 // Helper to create a mock github object and record calls
 function makeGithub(existingComments: Comment[] = []) {
-  const calls: GithubCalls = { create: [], update: [], list: [] };
+  const calls: GithubCalls = { create: [], update: [], delete: [], list: [] };
   const github = {
     rest: {
       issues: {
@@ -50,6 +52,9 @@ function makeGithub(existingComments: Comment[] = []) {
         },
         updateComment: async (args: object) => {
           calls.update.push(args);
+        },
+        deleteComment: async (args: object) => {
+          calls.delete.push(args);
         },
       },
     },
@@ -67,7 +72,7 @@ function makeContext({ owner = 'test-owner', repo = 'test-repo', number = 42 } =
 describe('post-bundle-comment', () => {
   it('creates a new comment when no existing comment contains the marker', async () => {
     const { github, calls } = makeGithub([]);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     assert.equal(calls.create.length, 1, 'Should create exactly one comment');
     assert.equal(calls.update.length, 0, 'Should not update any comment');
@@ -76,7 +81,7 @@ describe('post-bundle-comment', () => {
   it('updates existing comment when marker found', async () => {
     const existing = { id: 99, body: `${marker}\nOld content` };
     const { github, calls } = makeGithub([existing]);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     assert.equal(calls.update.length, 1, 'Should update exactly one comment');
     assert.equal(calls.create.length, 0, 'Should not create a new comment');
@@ -85,7 +90,7 @@ describe('post-bundle-comment', () => {
 
   it('body always starts with marker and newline', async () => {
     const { github, calls } = makeGithub([]);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     const body = (calls.create[0] as { body: string }).body;
 
@@ -95,7 +100,7 @@ describe('post-bundle-comment', () => {
   it('updated comment body also starts with marker and newline', async () => {
     const existing = { id: 7, body: `${marker}\nStale content` };
     const { github, calls } = makeGithub([existing]);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     const body = (calls.update[0] as { body: string }).body;
 
@@ -104,7 +109,7 @@ describe('post-bundle-comment', () => {
 
   it('includes report file content in the comment body', async () => {
     const { github, calls } = makeGithub([]);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     const body = (calls.create[0] as { body: string }).body;
 
@@ -118,7 +123,7 @@ describe('post-bundle-comment', () => {
     writeFileSync(customPath, 'Custom report content for testing!');
 
     const { github, calls } = makeGithub([]);
-    await postBundleComment({ github, context: makeContext(), reportPath: customPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath: customPath });
 
     assert.ok((calls.create[0] as { body: string }).body.includes('Custom report content for testing!'));
   });
@@ -128,6 +133,7 @@ describe('post-bundle-comment', () => {
     await postBundleComment({
       github,
       context: makeContext({ owner: 'my-org', repo: 'my-repo', number: 123 }),
+      overBudget: true,
       reportPath,
     });
 
@@ -141,6 +147,7 @@ describe('post-bundle-comment', () => {
     await postBundleComment({
       github,
       context: makeContext({ owner: 'my-org', repo: 'my-repo', number: 123 }),
+      overBudget: true,
       reportPath,
     });
 
@@ -155,6 +162,7 @@ describe('post-bundle-comment', () => {
     await postBundleComment({
       github,
       context: makeContext({ owner: 'org2', repo: 'repo2', number: 7 }),
+      overBudget: true,
       reportPath,
     });
 
@@ -169,7 +177,7 @@ describe('post-bundle-comment', () => {
       { id: 3, body: `${marker}\nSecond bundle report` },
     ];
     const { github, calls } = makeGithub(comments);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     assert.equal(calls.update.length, 1);
     assert.equal((calls.update[0] as { comment_id: number }).comment_id, 2, 'Should update the first matching comment');
@@ -181,9 +189,29 @@ describe('post-bundle-comment', () => {
       { id: 11, body: 'Also no marker' },
     ];
     const { github, calls } = makeGithub(comments);
-    await postBundleComment({ github, context: makeContext(), reportPath });
+    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     assert.equal(calls.create.length, 1);
     assert.equal(calls.update.length, 0);
+  });
+
+  it('deletes an existing comment when back within budget', async () => {
+    const existing = { id: 99, body: `${marker}\nOld content` };
+    const { github, calls } = makeGithub([existing]);
+    await postBundleComment({ github, context: makeContext(), overBudget: false, reportPath });
+
+    assert.equal(calls.delete.length, 1);
+    assert.equal((calls.delete[0] as { comment_id: number }).comment_id, 99);
+    assert.equal(calls.create.length, 0);
+    assert.equal(calls.update.length, 0);
+  });
+
+  it('posts nothing when within budget and no comment exists', async () => {
+    const { github, calls } = makeGithub([{ id: 1, body: 'Just a regular comment' }]);
+    await postBundleComment({ github, context: makeContext(), overBudget: false, reportPath });
+
+    assert.equal(calls.create.length, 0);
+    assert.equal(calls.update.length, 0);
+    assert.equal(calls.delete.length, 0);
   });
 });

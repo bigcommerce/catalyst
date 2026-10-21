@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+### Patch Changes
+
+- [#3279](https://github.com/bigcommerce/catalyst/pull/3279) [`3425ecc`](https://github.com/bigcommerce/catalyst/commit/3425ecc2757c2fb5ccd3c547ae3dc738512848e6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - The action's description, README and error messages now refer to Storefront Hosting instead of native hosting.
+
 ## 1.1.0
 
 ### Minor Changes

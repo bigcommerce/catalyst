@@ -6,7 +6,15 @@ import { getTranslations } from '~/tests/lib/i18n';
 
 test.use({ ...devices['iPhone 11'], permissions: ['clipboard-read'] });
 
-test('Share button calls navigator.share with the correct URL', async ({ page, customer }) => {
+test('Share button calls navigator.share with the correct URL', async ({
+  page,
+  customer,
+  baseURL,
+}) => {
+  // The auth cookies are `Secure; SameSite=None; Partitioned` (see `core/auth/index.ts`), which
+  // WebKit rejects over plain http, so the customer can't log in there.
+  test.skip(baseURL?.startsWith('http:') === true, 'WebKit drops Secure cookies over http');
+
   const navigatorShareData: { hasBeenCalled: boolean; shareUrl?: string } = {
     hasBeenCalled: false,
     shareUrl: undefined,

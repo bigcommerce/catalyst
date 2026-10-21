@@ -494,7 +494,7 @@ Example:
     if (!getProjectState().isTransformed) {
       const shouldSetup = await confirm({
         message:
-          'Your project is not yet set up for Commerce Hosting deployments. Would you like to run the Commerce Hosting setup now?',
+          'Your project is not yet set up for Storefront Hosting deployments. Would you like to run the Storefront Hosting setup now?',
         default: true,
       });
 
@@ -506,7 +506,7 @@ Example:
       const projectDir = process.cwd();
 
       await setupCommerceHosting({ projectDir, projectUuid, storeHash, accessToken });
-      consola.success('Commerce Hosting setup complete.');
+      consola.success('Storefront Hosting setup complete.');
 
       // Match the manager the project was scaffolded with (from its lockfile),
       // rather than forcing pnpm on npm/yarn/bun projects.
