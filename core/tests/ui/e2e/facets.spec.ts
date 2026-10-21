@@ -6,6 +6,16 @@ const PRODUCT_LE_PARFAIT_JAR = '[Sample] 1 L Le Parfait Jar';
 const PRODUCT_DUSTPAN_BRUSH = '[Sample] Dustpan & Brush';
 const PRODUCT_UTILITY_CADDY = '[Sample] Utility Caddy';
 
+// The store's product total can shift (other runs, catalog edits), so compare counts instead of
+// hard-coding them.
+async function getProductCount(page: Page): Promise<number> {
+  const heading = page.getByRole('heading', { name: /^Shop All \d+$/ });
+
+  await expect(heading).toBeVisible();
+
+  return Number((await heading.textContent())?.match(/(\d+)\s*$/)?.[1]);
+}
+
 async function expandFilterIfNeeded(page: Page, filterLabel: string) {
   const filterButton = page
     .getByRole('heading', { name: filterLabel, level: 3 })
@@ -28,7 +38,7 @@ async function clickSpecificFilterOption(page: Page, filterName: string, optionN
 
 test('Blue color filter shows expected product on shop-all page', async ({ page }) => {
   await page.goto(SHOP_ALL_URL);
-  await expect(page.getByRole('heading', { name: 'Shop All 13' })).toBeVisible();
+  await getProductCount(page);
 
   await expandFilterIfNeeded(page, 'Color');
   await clickSpecificFilterOption(page, 'Color', 'Blue');
@@ -39,13 +49,14 @@ test('Blue color filter shows expected product on shop-all page', async ({ page 
 
 test('Brand filter shows correct products', async ({ page }) => {
   await page.goto(SHOP_ALL_URL);
-  await expect(page.getByRole('heading', { name: 'Shop All 13' })).toBeVisible();
+
+  const total = await getProductCount(page);
 
   await expandFilterIfNeeded(page, 'Brand');
   await clickSpecificFilterOption(page, 'Brand', 'OFS');
 
   await expect(page).toHaveURL((url) => url.searchParams.has('brand'));
-  await expect(page.getByRole('heading', { name: 'Shop All 5' })).toBeVisible();
+  await expect.poll(() => getProductCount(page)).toBeLessThan(total);
   await expect(page.getByRole('link', { name: PRODUCT_DUSTPAN_BRUSH })).toBeVisible();
   await expect(page.getByRole('link', { name: PRODUCT_UTILITY_CADDY })).toBeVisible();
   await expect(page.getByRole('link', { name: PRODUCT_LE_PARFAIT_JAR })).toBeVisible();
@@ -53,7 +64,7 @@ test('Brand filter shows correct products', async ({ page }) => {
 
 test('Multiple filters work together (Color + Brand)', async ({ page }) => {
   await page.goto(SHOP_ALL_URL);
-  await expect(page.getByRole('heading', { name: 'Shop All 13' })).toBeVisible();
+  await getProductCount(page);
 
   await expandFilterIfNeeded(page, 'Color');
   await clickSpecificFilterOption(page, 'Color', 'Blue');
@@ -73,16 +84,17 @@ test('Multiple filters work together (Color + Brand)', async ({ page }) => {
 
 test('Removing filter restores product list', async ({ page }) => {
   await page.goto(SHOP_ALL_URL);
-  await expect(page.getByRole('heading', { name: 'Shop All 13' })).toBeVisible();
+
+  const total = await getProductCount(page);
 
   await expandFilterIfNeeded(page, 'Brand');
   await clickSpecificFilterOption(page, 'Brand', 'OFS');
 
   await expect(page).toHaveURL((url) => url.searchParams.has('brand'));
-  await expect(page.getByRole('heading', { name: 'Shop All 5' })).toBeVisible();
+  await expect.poll(() => getProductCount(page)).toBeLessThan(total);
 
   await page.getByRole('button', { name: 'Reset filters' }).click();
 
   await expect(page).toHaveURL((url) => !url.searchParams.has('brand'));
-  await expect(page.getByRole('heading', { name: 'Shop All 13' })).toBeVisible();
+  await expect.poll(() => getProductCount(page)).toBe(total);
 });

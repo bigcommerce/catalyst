@@ -9,7 +9,7 @@ import { execSync } from 'node:child_process';
 import { access, cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, describe, expect, test, vi } from 'vitest';
 import { z } from 'zod';
 
 vi.setConfig({ hookTimeout: 60_000 });
@@ -85,17 +85,52 @@ const ParsedPkg = z.looseObject({ scripts: z.record(z.string(), z.string()) });
 
 const parsePkg = (raw: string) => ParsedPkg.parse(JSON.parse(raw));
 
-async function fetchTarballs(root: string): Promise<{ baseDir: string; theirsDir: string }> {
-  const baseDir = join(root, 'base');
-  const theirsDir = join(root, 'theirs');
-
-  await Promise.all([
-    downloadCore(REPO, BASE_REF, baseDir),
-    downloadCore(REPO, TARGET_REF, theirsDir),
-  ]);
-
-  return { baseDir, theirsDir };
+interface Tarballs {
+  baseDir: string;
+  theirsDir: string;
 }
+
+// Downloaded once per tag pair and shared, since re-copying ~600 files per test
+// dominated this suite's runtime on Windows. Only for tests that never write to
+// base/theirs — normalizeWorkspaceDeps and normalizeManagedScripts rewrite
+// their package.json, so tests calling those download their own copies.
+const sharedTarballs = new Map<string, Promise<Tarballs>>();
+const sharedDirs: string[] = [];
+
+function fetchSharedTarballs(baseRef = BASE_REF, targetRef = TARGET_REF): Promise<Tarballs> {
+  const key = `${baseRef}..${targetRef}`;
+  const cached = sharedTarballs.get(key);
+
+  if (cached) return cached;
+
+  const tarballs = (async () => {
+    const root = await mkdtemp(join(tmpdir(), 'upgrade-integ-shared-'));
+
+    sharedDirs.push(root);
+
+    const baseDir = join(root, 'base');
+    const theirsDir = join(root, 'theirs');
+
+    await Promise.all([
+      downloadCore(REPO, baseRef, baseDir),
+      downloadCore(REPO, targetRef, theirsDir),
+    ]);
+
+    return { baseDir, theirsDir };
+  })();
+
+  sharedTarballs.set(key, tarballs);
+
+  return tarballs;
+}
+
+afterAll(async () => {
+  await Promise.all(
+    sharedDirs
+      .splice(0)
+      .map((d) => rm(d, { recursive: true, force: true, maxRetries: 10, retryDelay: 500 })),
+  );
+});
 
 async function initGitProject(dir: string): Promise<void> {
   await execa('git', ['init', '-q'], { cwd: dir });
@@ -182,7 +217,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     'clean project upgrades without conflicts and all changes staged',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       // Project = fresh copy of 1.6.3 with no merchant modifications.
       const oursDir = join(root, 'project');
@@ -219,7 +254,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     'merchant-deleted file that upstream modifies is restored as a conflict',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       // Start from the base version, then delete package.json — a file upstream always
       // modifies (version bump at minimum between 1.6.3 and 1.7.0).
@@ -246,7 +281,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     'merchant dep addition in a non-overlapping region is preserved after upgrade',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       const oursDir = join(root, 'project');
 
@@ -285,7 +320,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     're-merging after upgrade with identical base and target produces no changes',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       const oursDir = join(root, 'project');
 
@@ -314,7 +349,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     'flat repo layout — changes land at root and resolveProject detects relDir "."',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       // Flat layout: extract base tarball contents directly to the repo root (no core/ subdir).
       const oursDir = join(root, 'flat-project');
@@ -354,7 +389,7 @@ describe.each(engines)('integration (engine: %s)', (engine) => {
     'file modified by merchant AND upstream produces conflict markers',
     async () => {
       const root = await mkTmp();
-      const { baseDir, theirsDir } = await fetchTarballs(root);
+      const { baseDir, theirsDir } = await fetchSharedTarballs();
 
       // Merchant project: start from 1.6.3, then change package.json's version
       // field — the same field that the 1.6.3 → 1.7.0 diff also touches.
@@ -500,13 +535,10 @@ describe.each(engines)('integration makeswift family (engine: %s)', (engine) => 
     'clean makeswift project (1.2.0 → 1.3.0) upgrades without conflicts',
     async () => {
       const root = await mkTmp();
-      const baseDir = join(root, 'base');
-      const theirsDir = join(root, 'theirs');
-
-      await Promise.all([
-        downloadCore(REPO, MAKESWIFT_BASE_REF, baseDir),
-        downloadCore(REPO, MAKESWIFT_TARGET_REF, theirsDir),
-      ]);
+      const { baseDir, theirsDir } = await fetchSharedTarballs(
+        MAKESWIFT_BASE_REF,
+        MAKESWIFT_TARGET_REF,
+      );
 
       const oursDir = join(root, 'project');
 
@@ -537,13 +569,10 @@ describe.each(engines)('integration makeswift family (engine: %s)', (engine) => 
     'computeBaseSimilarity scores higher for the correct makeswift base than a wrong base',
     async () => {
       const root = await mkTmp();
-      const baseDir = join(root, 'base');
-      const theirsDir = join(root, 'theirs');
-
-      await Promise.all([
-        downloadCore(REPO, MAKESWIFT_BASE_REF, baseDir),
-        downloadCore(REPO, MAKESWIFT_TARGET_REF, theirsDir),
-      ]);
+      const { baseDir, theirsDir } = await fetchSharedTarballs(
+        MAKESWIFT_BASE_REF,
+        MAKESWIFT_TARGET_REF,
+      );
 
       // "Project" = clean makeswift 1.2.0 (no modifications).
       const projectDir = join(root, 'project');
@@ -566,7 +595,7 @@ test(
   'computeBaseSimilarity: correct base scores higher than a wrong base',
   async () => {
     const root = await mkTmp();
-    const { baseDir, theirsDir } = await fetchTarballs(root);
+    const { baseDir, theirsDir } = await fetchSharedTarballs();
 
     // "Project" = clean 1.6.3 (no merchant modifications).
     const projectDir = join(root, 'project');

@@ -177,6 +177,9 @@ export function ProductDetailForm<F extends Field>({
     onSubmit(event, { formData }) {
       event.preventDefault();
 
+      // Use the product from props, not the hidden field, so editing the form can't add a different product.
+      formData.set('id', productId);
+
       startTransition(() => {
         formAction(formData);
 

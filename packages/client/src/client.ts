@@ -48,6 +48,81 @@ interface BigCommerceResponse<T> {
 
 type GraphQLErrorPolicy = 'none' | 'all' | 'auth' | 'ignore';
 
+const RETRY_DELAYS_MS = [100, 300];
+const RETRYABLE_STATUSES = new Set([502, 503, 504]);
+
+// undici reports dropped connections and network failures as a TypeError
+// ("fetch failed", or "terminated" when the body read is cut off).
+function isTransientError(error: unknown) {
+  if (error instanceof BigCommerceAPIError) {
+    return RETRYABLE_STATUSES.has(error.status);
+  }
+
+  return error instanceof TypeError;
+}
+
+// Rejects with the abort reason as soon as the request is cancelled, instead of waiting out the delay.
+function backoff(ms: number, signal: AbortSignal | null | undefined) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      signal?.removeEventListener('abort', onAbort);
+      resolve();
+    }, ms);
+
+    function onAbort() {
+      clearTimeout(timer);
+
+      const reason: unknown = signal?.reason;
+
+      reject(reason instanceof Error ? reason : new DOMException('Aborted', 'AbortError'));
+    }
+
+    signal?.addEventListener('abort', onAbort, { once: true });
+  });
+}
+
+function describeTransientError(error: unknown) {
+  if (error instanceof BigCommerceAPIError) {
+    return `HTTP ${error.status}`;
+  }
+
+  const message = error instanceof Error ? error.message : String(error);
+  const cause: unknown = error instanceof Error ? error.cause : undefined;
+  const code =
+    cause && typeof cause === 'object' && 'code' in cause && typeof cause.code === 'string'
+      ? cause.code
+      : undefined;
+
+  return code ? `${message} (${code})` : message;
+}
+
+async function withRetries<T>(
+  maxAttempts: number,
+  signal: AbortSignal | null | undefined,
+  operationLabel: string,
+  attempt: () => Promise<T>,
+): Promise<T> {
+  for (let attemptNumber = 1; ; attemptNumber += 1) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      return await attempt();
+    } catch (error) {
+      if (attemptNumber >= maxAttempts || signal?.aborted || !isTransientError(error)) {
+        throw error;
+      }
+
+      // Recovered failures would otherwise leave no trace of how often the API is failing.
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[BigCommerce] Retrying ${operationLabel} after ${describeTransientError(error)} (attempt ${attemptNumber + 1} of ${maxAttempts})`,
+      );
+
+      // eslint-disable-next-line no-await-in-loop
+      await backoff(RETRY_DELAYS_MS[attemptNumber - 1] ?? 0, signal);
+    }
+  }
+}
+
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
@@ -159,7 +234,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       requestHeaders.set(key, value);
     });
 
-    const response = await fetch(graphqlUrl, {
+    const requestInit: RequestInit = {
       method: 'POST',
       headers: requestHeaders,
       body: JSON.stringify({
@@ -168,19 +243,29 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       }),
       ...additionalFetchOptions,
       ...rest,
-    });
+    };
 
-    if (!response.ok) {
-      if (response.status === 401 && !looksLikeJwt(this.config.storefrontToken)) {
-        throw new InvalidStorefrontTokenError(response.status);
+    // Mutations aren't idempotent, so only queries are retried.
+    const maxAttempts = operationInfo.type === 'query' ? RETRY_DELAYS_MS.length + 1 : 1;
+
+    const operationLabel = `${operationInfo.type} ${operationInfo.name ?? 'anonymous'}`;
+
+    const result = await withRetries(maxAttempts, requestInit.signal, operationLabel, async () => {
+      const response = await fetch(graphqlUrl, requestInit);
+
+      if (!response.ok) {
+        if (response.status === 401 && !looksLikeJwt(this.config.storefrontToken)) {
+          throw new InvalidStorefrontTokenError(response.status);
+        }
+
+        throw await BigCommerceAPIError.createFromResponse(response);
       }
 
-      throw await BigCommerceAPIError.createFromResponse(response);
-    }
+      log(response);
 
-    log(response);
-
-    const result = (await response.json()) as BigCommerceResponse<TResult>;
+      // A connection dropped mid-response fails here, so the body read is part of the attempt.
+      return (await response.json()) as BigCommerceResponse<TResult>;
+    });
 
     const { errors, ...data } = result;
 

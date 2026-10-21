@@ -5,6 +5,7 @@ import { testEnv } from '~/tests/environment';
 export default defineConfig({
   testDir: './tests',
   outputDir: './.tests/test-results',
+  globalSetup: './tests/global-setup.ts',
   workers: 1, // TODO: Implement parallel workers in the future
   expect: {
     toHaveScreenshot: {

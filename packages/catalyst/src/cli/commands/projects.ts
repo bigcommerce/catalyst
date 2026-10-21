@@ -46,7 +46,7 @@ async function offerCommerceHostingSetup(
 
   const shouldSetup = await confirm({
     message:
-      'Your project has been linked, but is not fully set up for Commerce Hosting deployments yet. Would you like to run the setup now?',
+      'Your project has been linked, but is not fully set up for Storefront Hosting deployments yet. Would you like to run the setup now?',
     default: true,
   });
 
@@ -59,7 +59,7 @@ async function offerCommerceHostingSetup(
     accessToken: credentials?.accessToken,
   });
 
-  consola.success('Commerce Hosting setup complete.');
+  consola.success('Storefront Hosting setup complete.');
 
   // Match the manager the project was scaffolded with (from its lockfile),
   // rather than forcing pnpm on npm/yarn/bun projects.

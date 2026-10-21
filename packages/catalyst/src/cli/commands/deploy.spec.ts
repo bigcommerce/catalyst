@@ -822,7 +822,7 @@ describe('transformation guard', () => {
     expect(confirm).toHaveBeenCalledWith(
       expect.objectContaining({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        message: expect.stringContaining('not yet set up for Commerce Hosting deployments'),
+        message: expect.stringContaining('not yet set up for Storefront Hosting deployments'),
       }),
     );
     expect(setupCommerceHosting).toHaveBeenCalledWith({

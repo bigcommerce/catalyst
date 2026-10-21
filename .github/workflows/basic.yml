@@ -83,5 +83,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # TEMP defaults to the C: OS disk, which is slow on Windows runners; the D: work
+      # drive makes the git-heavy upgrade specs ~4x faster.
+      - name: Put temp files on the work drive
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          echo "TEMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+          echo "TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+
       - name: Run Tests
         run: pnpm run test

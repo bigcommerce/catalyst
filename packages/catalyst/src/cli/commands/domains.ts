@@ -201,7 +201,7 @@ export async function waitForDomainVerification({
 
 const add = new Command('add')
   .configureHelp({ showGlobalOptions: true })
-  .description('Add a custom domain to the current Native Hosting project.')
+  .description('Add a custom domain to the current Storefront Hosting project.')
   .argument('<domain>', 'Custom domain to add.')
   .addHelpText(
     'after',
@@ -297,7 +297,7 @@ Examples:
 
 const list = new Command('list')
   .configureHelp({ showGlobalOptions: true })
-  .description('List custom domains for the current Native Hosting project.')
+  .description('List custom domains for the current Storefront Hosting project.')
   .addHelpText(
     'after',
     `
@@ -350,7 +350,7 @@ Examples:
 
 const showStatus = new Command('status')
   .configureHelp({ showGlobalOptions: true })
-  .description('Show the status of a custom domain on the current Native Hosting project.')
+  .description('Show the status of a custom domain on the current Storefront Hosting project.')
   .argument('<domain>', 'Custom domain to check.')
   .addHelpText(
     'after',
@@ -589,7 +589,7 @@ Examples:
 
 const remove = new Command('remove')
   .configureHelp({ showGlobalOptions: true })
-  .description('Remove a custom domain from the current Native Hosting project.')
+  .description('Remove a custom domain from the current Storefront Hosting project.')
   .argument('<domain>', 'Custom domain to remove.')
   .addHelpText(
     'after',
@@ -651,7 +651,7 @@ Examples:
 export const domains = new Command('domains')
   .alias('domain')
   .configureHelp({ showGlobalOptions: true })
-  .description('Manage custom domains for the current Native Hosting project.')
+  .description('Manage custom domains for the current Storefront Hosting project.')
   .addCommand(add)
   .addCommand(list)
   .addCommand(showStatus)

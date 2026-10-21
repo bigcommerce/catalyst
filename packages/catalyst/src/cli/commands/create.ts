@@ -46,6 +46,21 @@ function parseChannelId(value: string): number {
   return parsed;
 }
 
+// `commerce` is the original value; keep accepting it so existing scripts work.
+function parseHosting(value: string): 'self-hosted' | 'bigcommerce' {
+  if (value === 'self-hosted' || value === 'bigcommerce') {
+    return value;
+  }
+
+  if (value === 'commerce') {
+    consola.warn('`--hosting commerce` is deprecated. Use `--hosting bigcommerce` instead.');
+
+    return 'bigcommerce';
+  }
+
+  throw new InvalidArgumentError('Allowed choices are self-hosted, bigcommerce.');
+}
+
 // Variadic argParser: called once per `--env KEY=VALUE`, accumulating into a
 // merged record. Splits on the first `=` so values containing `=` are preserved.
 function parseEnvFlag(
@@ -155,8 +170,8 @@ Examples:
   # Non-interactive: skip the project-name prompt
   $ catalyst create --project-name my-store
 
-  # Eagerly set up Commerce Hosting at create time
-  $ catalyst create --project-name my-store --hosting commerce`,
+  # Eagerly set up Storefront Hosting at create time
+  $ catalyst create --project-name my-store --hosting bigcommerce`,
   )
   .option('--project-name <name>', 'Name of your Catalyst project')
   .option('--project-dir <dir>', 'Directory in which to create your project', process.cwd())
@@ -175,15 +190,14 @@ Examples:
     'Arbitrary environment variables to set in .env.local. Format: KEY=VALUE (repeatable).',
     parseEnvFlag,
   )
-  .addOption(
-    new Option(
-      '--hosting <mode>',
-      'Hosting mode: "self-hosted" (default) or "commerce" to set up Commerce Hosting at create time. When omitted, scaffolding is hosting-agnostic; run `catalyst deploy` later to opt in.',
-    ).choices(['self-hosted', 'commerce'] as const),
+  .option(
+    '--hosting <mode>',
+    'Hosting mode: "self-hosted" (default) or "bigcommerce" to set up Storefront Hosting at create time. When omitted, scaffolding is hosting-agnostic; run `catalyst deploy` later to opt in.',
+    parseHosting,
   )
   .option(
     '--use-existing',
-    'Only used with --hosting commerce and --project-name. When the named project already exists on the store, reuse it instead of prompting. Has no effect without --hosting commerce.',
+    'Only used with --hosting bigcommerce and --project-name. When the named project already exists on the store, reuse it instead of prompting. Has no effect without --hosting bigcommerce.',
   )
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
@@ -205,8 +219,8 @@ Examples:
   .action(async (options) => {
     const { ghRef, repository } = options;
 
-    if (options.useExisting && options.hosting !== 'commerce') {
-      consola.warn('--use-existing has no effect without --hosting commerce. Ignoring.');
+    if (options.useExisting && options.hosting !== 'bigcommerce') {
+      consola.warn('--use-existing has no effect without --hosting bigcommerce. Ignoring.');
     }
 
     checkRequiredTools();
@@ -250,7 +264,7 @@ Examples:
       }
     }
 
-    const useCommerceHosting = options.hosting === 'commerce';
+    const useCommerceHosting = options.hosting === 'bigcommerce';
 
     await getTelemetry().identify(storeHash);
 
@@ -420,7 +434,7 @@ Examples:
 
     if (useCommerceHosting) {
       steps.push(
-        `Run 'cd ${projectName} && ${packageManager} run deploy' when ready to deploy to Commerce Hosting.`,
+        `Run 'cd ${projectName} && ${packageManager} run deploy' when ready to deploy to Storefront Hosting.`,
       );
     }
 

@@ -1,7 +1,13 @@
 #!/usr/bin/env node
 /* eslint-disable no-console, no-restricted-syntax, no-plusplus, no-continue */
 
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import {
+  appendFileSync,
+  existsSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
@@ -33,7 +39,8 @@ interface BundleReport {
 }
 
 interface CompareOptions {
-  threshold?: number;
+  firstLoadJsBudget?: number;
+  routeBudget?: number;
 }
 
 function round1(n: number): number {
@@ -243,18 +250,52 @@ function readTurbopackEntries(serverAppDir: string): Record<string, string[]> {
   return entries;
 }
 
+function hasChanged(base: number, curr: number): boolean {
+  if (round1(curr - base) === 0) return false;
+  const pct = base > 0 ? ((curr - base) / base) * 100 : null;
+  if (pct !== null && round1(pct) === 0) return false;
+  return true;
+}
+
+function displayRoute(route: string): string {
+  return route.replace(/^\/\[locale\]/, "");
+}
+
+function exceeds(base: number, curr: number, budget: number): boolean {
+  return round1(curr - base) > budget;
+}
+
+// Absolute kB budgets: a percentage threshold flagged trivial growth on small
+// routes and let large regressions on big routes slide.
+function findOverBudget(
+  baseline: BundleReport,
+  current: BundleReport,
+  { firstLoadJsBudget = 10, routeBudget = 25 }: CompareOptions = {},
+): string[] {
+  const over: string[] = [];
+
+  if (exceeds(baseline.firstLoadJs, current.firstLoadJs, firstLoadJsBudget)) {
+    over.push("First Load JS");
+  }
+
+  const routes: string[] = [];
+
+  for (const [route, curr] of Object.entries(current.routes ?? {})) {
+    const base = baseline.routes?.[route];
+
+    if (base && exceeds(base.firstLoadJs, curr.firstLoadJs, routeBudget)) {
+      routes.push(displayRoute(route));
+    }
+  }
+
+  return [...over, ...routes.sort()];
+}
+
 function compareReport(
   baseline: BundleReport,
   current: BundleReport,
-  { threshold = 5 }: CompareOptions = {},
+  { firstLoadJsBudget = 10, routeBudget = 25 }: CompareOptions = {},
 ): string {
-  function hasChanged(base: number, curr: number): boolean {
-    if (round1(curr - base) === 0) return false;
-    const pct = base > 0 ? ((curr - base) / base) * 100 : null;
-    if (pct !== null && round1(pct) === 0) return false;
-    return true;
-  }
-
   function formatDelta(base: number, curr: number): string {
     const delta = curr - base;
     const rounded = round1(delta);
@@ -264,16 +305,10 @@ function compareReport(
     return `${sign}${rounded} kB${pctStr}`;
   }
 
-  function isWarning(base: number, curr: number): boolean {
-    const delta = curr - base;
-    const pct = base > 0 ? (delta / base) * 100 : 0;
-
-    return delta > 1 && pct > threshold;
-  }
-
-  function displayRoute(route: string): string {
-    return route.replace(/^\/\[locale\]/, "");
-  }
+  const overBudget = findOverBudget(baseline, current, {
+    firstLoadJsBudget,
+    routeBudget,
+  });
 
   const lines: string[] = [];
 
@@ -284,11 +319,17 @@ function compareReport(
   );
   lines.push("");
 
-  const changedMetrics = [
+  const changedMetrics: Array<{
+    name: string;
+    base: number;
+    curr: number;
+    budget?: number;
+  }> = [
     {
       name: "First Load JS",
       base: baseline.firstLoadJs,
       curr: current.firstLoadJs,
+      budget: firstLoadJsBudget,
     },
     { name: "Total JS", base: baseline.totalJs, curr: current.totalJs },
     { name: "Total CSS", base: baseline.totalCss, curr: current.totalCss },
@@ -317,7 +358,9 @@ function compareReport(
       );
     } else if (base && curr && hasChanged(base.firstLoadJs, curr.firstLoadJs)) {
       const d = formatDelta(base.firstLoadJs, curr.firstLoadJs);
-      const warn = isWarning(base.firstLoadJs, curr.firstLoadJs) ? " ⚠️" : "";
+      const warn = exceeds(base.firstLoadJs, curr.firstLoadJs, routeBudget)
+        ? " ⚠️"
+        : "";
 
       routeLines.push(
         `| ${display} | ${round1(base.firstLoadJs)} kB | ${round1(curr.firstLoadJs)} kB | ${d} |${warn} |`,
@@ -331,13 +374,26 @@ function compareReport(
     return lines.join("\n");
   }
 
+  if (overBudget.length > 0) {
+    lines.push(
+      `❌ **Over budget:** ${overBudget.join(", ")}. If the increase is intended, add the \`bundle-size-ok\` label.`,
+    );
+  } else {
+    lines.push("✅ Within budget.");
+  }
+
+  lines.push("");
+
   if (changedMetrics.length > 0) {
     lines.push("| Metric | Baseline | Current | Delta | |");
     lines.push("|:-------|:---------|:--------|:------|:-|");
 
     for (const m of changedMetrics) {
       const d = formatDelta(m.base, m.curr);
-      const warn = isWarning(m.base, m.curr) ? " ⚠️" : "";
+      const warn =
+        m.budget !== undefined && exceeds(m.base, m.curr, m.budget)
+          ? " ⚠️"
+          : "";
 
       lines.push(
         `| ${m.name} | ${round1(m.base)} kB | ${round1(m.curr)} kB | ${d} |${warn} |`,
@@ -354,14 +410,14 @@ function compareReport(
     lines.push("| Route | Baseline | Current | Delta | |");
     lines.push("|:------|:---------|:--------|:------|:-|");
     lines.push(...routeLines);
-    lines.push("");
-    lines.push(
-      `> Threshold: ${threshold}% increase. Routes with ⚠️ exceed the threshold.`,
-    );
   } else {
     lines.push("_No route changes detected._");
   }
 
+  lines.push("");
+  lines.push(
+    `> Budget: First Load JS may grow by ${firstLoadJsBudget} kB and each route by ${routeBudget} kB. Rows with ⚠️ exceed it.`,
+  );
   lines.push("");
 
   return lines.join("\n");
@@ -473,7 +529,10 @@ function compare(
     values.baseline ?? join(CORE_DIR, "bundle-baseline.json"),
   );
   const currentPath = resolve(values.current ?? "");
-  const threshold = Number(values.threshold ?? "5");
+  const budgets: CompareOptions = {
+    firstLoadJsBudget: Number(values["first-load-budget"] ?? "10"),
+    routeBudget: Number(values["route-budget"] ?? "25"),
+  };
 
   if (!currentPath || !existsSync(currentPath)) {
     console.error("Error: --current <path> is required and must exist");
@@ -492,7 +551,13 @@ function compare(
     readFileSync(currentPath, "utf-8"),
   ) as BundleReport;
 
-  process.stdout.write(compareReport(baseline, current, { threshold }));
+  process.stdout.write(compareReport(baseline, current, budgets));
+
+  const overBudget = findOverBudget(baseline, current, budgets).length > 0;
+
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, `over_budget=${overBudget}\n`);
+  }
 }
 
 export {
@@ -503,6 +568,7 @@ export {
   computeRootLayout,
   computeRouteMetrics,
   compareReport,
+  findOverBudget,
   clearSizeCache,
   readTurbopackEntries,
 };
@@ -518,7 +584,8 @@ if (isMain) {
       output: { type: "string" },
       baseline: { type: "string" },
       current: { type: "string" },
-      threshold: { type: "string" },
+      "first-load-budget": { type: "string" },
+      "route-budget": { type: "string" },
       sha: { type: "string" },
       dir: { type: "string" },
     },
@@ -548,7 +615,10 @@ if (isMain) {
       "    --current <path>   Path to current bundle JSON (required)",
     );
     console.error(
-      "    --threshold <n>    Warning threshold percentage (default: 5)",
+      "    --first-load-budget <kB>  Allowed First Load JS increase (default: 10)",
+    );
+    console.error(
+      "    --route-budget <kB>       Allowed per-route increase (default: 25)",
     );
     process.exit(1);
   }

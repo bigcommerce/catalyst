@@ -24,7 +24,7 @@ Example:
     const state = getProjectState();
 
     if (!state.isTransformed) {
-      consola.info('Project is not set up for Commerce Hosting — running `next start`.');
+      consola.info('Project is not set up for Storefront Hosting — running `next start`.');
 
       await execa('pnpm', ['exec', 'next', 'start'], {
         stdio: 'inherit',

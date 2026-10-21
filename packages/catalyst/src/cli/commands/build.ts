@@ -187,8 +187,8 @@ Examples:
     const state = getProjectState();
 
     if (!state.isTransformed) {
-      consola.info('Project is not set up for Commerce Hosting — running `next build`.');
-      consola.info('To deploy to Commerce Hosting, run `catalyst deploy`.');
+      consola.info('Project is not set up for Storefront Hosting — running `next build`.');
+      consola.info('To deploy to Storefront Hosting, run `catalyst deploy`.');
 
       // `next build` reads the same storefront env vars; fail fast with an
       // actionable message here too, since this path doesn't go through
