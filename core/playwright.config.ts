@@ -29,7 +29,13 @@ export default defineConfig({
   projects: [
     {
       name: 'tests-chromium',
-      testIgnore: /.*\.mobile\.spec\.ts$/,
+      testIgnore: [
+        /.*\.mobile\.spec\.ts$/,
+        // The homepage is rendered entirely from Makeswift, so these canary specs, which assert
+        // Catalyst's native featured/newest/newsletter sections, can't pass against it.
+        /e2e\/home\.spec\.ts$/,
+        /e2e\/subscribe\.spec\.ts$/,
+      ],
       use: {
         ...devices['Desktop Chrome'],
         launchOptions: {
