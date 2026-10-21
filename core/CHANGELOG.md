@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.13.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.13.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.13.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/aabde65d0e93d40cc8faf3f5b19ae36a53dc1d21/core/CHANGELOG.md#1130).
+
+### Patch Changes
+
+- [#3270](https://github.com/bigcommerce/catalyst/pull/3270) [`31e3630`](https://github.com/bigcommerce/catalyst/commit/31e363082238fbb59b210a9eef09fadff56a80c0) Thanks [@rodrigomf24](https://github.com/rodrigomf24)! - Upgrade @makeswift/runtime from 0.28.5 to 0.29.2. The Makeswift revalidate window (MAKESWIFT_REVALIDATE_TARGET) is now applied by the runtime's fetch in lib/makeswift/fetch.ts, since Makeswift#fetchOptions no longer exists.
+
+- [#3288](https://github.com/bigcommerce/catalyst/pull/3288) [`8a107a9`](https://github.com/bigcommerce/catalyst/commit/8a107a98d743a2ab3cb2649e12cd133f4b355d5b) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fall back to the default locale's Makeswift components (such as the site header, footer and theme) when the Makeswift site hasn't added the storefront's locale. Since `@makeswift/runtime` 0.29, these requests fail for such locales, which broke every page in them.
+
 ## 1.12.2
 
 ### Patch Changes
