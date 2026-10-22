@@ -46,26 +46,30 @@ const isTrackingParam = (key: string) => {
   return name.startsWith('utm_') || TRACKING_PARAMS.has(name);
 };
 
-// Normalizes a query string for route resolution: drops tracking params and
-// sorts the rest by key, so URLs that only differ in those share one lookup.
-// Segments are kept as-is (not re-encoded) and the relative order of repeated
-// keys is preserved.
-export function normalizeRouteLookupSearch(search: string): string {
-  const query = search.startsWith('?') ? search.slice(1) : search;
+const toSearch = (segments: string[]) => (segments.length > 0 ? `?${segments.join('&')}` : '');
 
-  const params = query
+// Splits a query string into the part used for route resolution and the
+// tracking params removed from it. Order is kept because BigCommerce matches
+// redirect sources against the query as written. Segments are not re-encoded.
+export function splitRouteLookupSearch(search: string): { lookup: string; tracking: string } {
+  const query = search.startsWith('?') ? search.slice(1) : search;
+  const lookup: string[] = [];
+  const tracking: string[] = [];
+
+  query
     .split('&')
     .filter((segment) => segment.length > 0)
-    .map((segment) => ({ segment, key: segment.split('=', 1)[0] ?? '' }))
-    .filter(({ key }) => !isTrackingParam(key))
-    .sort((a, b) => {
-      if (a.key === b.key) {
-        return 0;
-      }
+    .forEach((segment) => {
+      const key = segment.split('=', 1)[0] ?? '';
 
-      return a.key < b.key ? -1 : 1;
-    })
-    .map(({ segment }) => segment);
+      (isTrackingParam(key) ? tracking : lookup).push(segment);
+    });
 
-  return params.length > 0 ? `?${params.join('&')}` : '';
+  return { lookup: toSearch(lookup), tracking: toSearch(tracking) };
+}
+
+// BigCommerce redirects can match on specific query params; those are consumed
+// by the redirect, so only the tracking params are carried over in that case.
+export function getRedirectSearch(fromPathSearch: string, requestSearch: string): string {
+  return fromPathSearch.length > 0 ? splitRouteLookupSearch(requestSearch).tracking : requestSearch;
 }

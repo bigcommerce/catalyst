@@ -15,7 +15,7 @@ import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events'
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-import { normalizeRouteLookupSearch } from '~/lib/routes/route-lookup-search';
+import { getRedirectSearch, splitRouteLookupSearch } from '~/lib/routes/route-lookup-search';
 
 import { kv } from '../lib/kv';
 
@@ -267,10 +267,10 @@ const getRouteInfo = async (
 
   try {
     // Query params are part of the lookup because BigCommerce redirects can match on them.
-    // Tracking params are stripped and the rest sorted so they don't fragment the route cache;
-    // redirects and rewrites still carry the original query string.
+    // Tracking params are stripped so they don't fragment the route cache; redirects and
+    // rewrites still carry them.
     const pathname = clearLocaleFromPath(
-      request.nextUrl.pathname + normalizeRouteLookupSearch(request.nextUrl.search),
+      request.nextUrl.pathname + splitRouteLookupSearch(request.nextUrl.search).lookup,
       localePrefix,
     );
 
@@ -349,9 +349,8 @@ export const withRoutes: ProxyFactory = () => {
       };
 
       if (route?.redirect) {
-        // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
         const fromPathSearchParams = new URL(route.redirect.fromPath, req.url).search;
-        const searchParams = fromPathSearchParams.length > 0 ? '' : req.nextUrl.search;
+        const searchParams = getRedirectSearch(fromPathSearchParams, req.nextUrl.search);
 
         switch (route.redirect.to.__typename) {
           case 'BlogPostRedirect':
