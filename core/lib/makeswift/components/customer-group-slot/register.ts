@@ -10,7 +10,8 @@ async function getAllCustomerGroups(): Promise<CustomerGroupsType | null> {
 
   if (!response.ok) {
     if (response.status === 403) {
-      // 403 indicates the store-level API token is not configured, which is the default OCC setup
+      // 403 indicates the store-level API token is not configured (the default OCC setup), or that
+      // this isn't a Makeswift builder session
       return null;
     }
 
