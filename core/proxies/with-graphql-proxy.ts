@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { auth } from '~/auth';
 import { client } from '~/client';
+import { parseAllowedWalletOperation } from '~/lib/graphql-proxy/wallet-operations';
 
 import { type ProxyFactory } from './compose-proxies';
 
@@ -10,7 +11,7 @@ const ALLOWED_REQUESTERS = ['checkout-sdk-js'];
 const graphqlPathPattern = new URLPattern({ pathname: '/graphql{/}?' });
 
 const bodySchema = z.object({
-  query: z.unknown(),
+  query: z.string().min(1),
   variables: z.record(z.unknown()).default({}),
 });
 
@@ -33,30 +34,48 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
       return new NextResponse('Method not allowed', { status: 405 });
     }
 
+    let body: unknown;
+
+    try {
+      // Read a clone so the body stays unconsumed for auth(), which may rebuild the request.
+      body = await request.clone().json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    }
+
+    const parsedBody = bodySchema.safeParse(body);
+
+    if (!parsedBody.success) {
+      return NextResponse.json({ error: 'Invalid GraphQL request' }, { status: 400 });
+    }
+
+    const { query, variables } = parsedBody.data;
+
+    // The requester header is client-controlled, so only relay the checkout-sdk-js wallet button
+    // operations rather than any query or mutation.
+    const document = parseAllowedWalletOperation(query);
+
+    if (!document) {
+      return NextResponse.json({ error: 'Operation not allowed' }, { status: 403 });
+    }
+
     // Wrap in auth to get customer access token for customer-specific data
     return auth(async (req) => {
       try {
-        // Parse incoming GraphQL request body
-        const body: unknown = await req.json();
-        const { query, variables } = bodySchema.parse(body);
-
-        if (!query) {
-          return NextResponse.json({ error: 'Missing query' }, { status: 400 });
-        }
-
         // Get customer access token if authenticated
         const customerAccessToken = req.auth?.user?.customerAccessToken;
 
         // Proxy the request using the existing client with an unauthenticated storefront token
         const response = await client.fetch({
-          document: query,
+          document,
           variables,
           customerAccessToken,
           fetchOptions: {
             headers: {
               Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN ?? ''}`,
             },
-            next: { revalidate: 0 },
+            // Uncacheable so the client forwards the shopper's IP to BigCommerce.
+            cache: 'no-store',
           },
         });
 
