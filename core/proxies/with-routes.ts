@@ -268,7 +268,8 @@ const getRouteInfo = async (
   try {
     // Query params are part of the lookup because BigCommerce redirects can match on them.
     // Tracking params are stripped so they don't fragment the route cache; redirects and
-    // rewrites still carry them.
+    // rewrites still carry them. Intentional trade-off: redirect sources keyed on tracking
+    // params no longer match, since any full-query fallback reintroduces the uncached lookup.
     const pathname = clearLocaleFromPath(
       request.nextUrl.pathname + splitRouteLookupSearch(request.nextUrl.search).lookup,
       localePrefix,
