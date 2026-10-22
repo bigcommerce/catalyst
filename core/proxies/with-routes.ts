@@ -15,6 +15,7 @@ import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events'
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { normalizeRouteLookupSearch } from '~/lib/routes/route-lookup-search';
 
 import { kv } from '../lib/kv';
 
@@ -265,9 +266,11 @@ const getRouteInfo = async (
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
-    // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
+    // Query params are part of the lookup because BigCommerce redirects can match on them.
+    // Tracking params are stripped and the rest sorted so they don't fragment the route cache;
+    // redirects and rewrites still carry the original query string.
     const pathname = clearLocaleFromPath(
-      request.nextUrl.pathname + request.nextUrl.search,
+      request.nextUrl.pathname + normalizeRouteLookupSearch(request.nextUrl.search),
       localePrefix,
     );
 
