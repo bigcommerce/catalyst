@@ -330,15 +330,23 @@ async function doctor(values) {
     has('ffmpeg') ? 'available (GIF/MP4 from video)' : `optional, for GIF/MP4: ${ffmpegHint()}`,
   );
 
-  const ghAuthed = has('gh') && run('gh', ['auth', 'status']).ok;
+  const gh = has('gh') ? ghVersion() : null;
+  const ghAuthed = gh && run('gh', ['auth', 'status']).ok;
+  const ghMin = GH_ATTACH_MIN.join('.');
 
-  add(
-    ghAuthed ? 'PASS' : 'WARN',
-    'gh',
-    ghAuthed
-      ? 'authenticated (publish can upload evidence)'
-      : 'optional, for `publish` — install GitHub CLI and run `gh auth login`',
-  );
+  if (!gh) {
+    add('WARN', 'gh', `not installed — install GitHub CLI ${ghMin}+ to upload evidence to PRs`);
+  } else if (!supportsAttach(gh)) {
+    add(
+      'WARN',
+      'gh',
+      `${gh.join('.')} is too old for \`--attach\` — upgrade to ${ghMin}+ (${ghUpgradeHint()})`,
+    );
+  } else if (!ghAuthed) {
+    add('WARN', 'gh', `${gh.join('.')} installed but not authenticated — run \`gh auth login\``);
+  } else {
+    add('PASS', 'gh', `${gh.join('.')} authenticated (publish uploads straight to the PR)`);
+  }
 
   const state = readState();
 
@@ -379,6 +387,13 @@ async function doctor(values) {
   }
 
   if (rows.some((row) => row.level === 'FAIL')) process.exitCode = 1;
+}
+
+function ghUpgradeHint() {
+  if (process.platform === 'darwin') return '`brew upgrade gh`';
+  if (IS_WINDOWS) return '`winget upgrade --id GitHub.cli`';
+
+  return 'your package manager, or https://github.com/cli/cli/releases';
 }
 
 function ffmpegHint() {
@@ -799,7 +814,7 @@ async function capture(values, positionals) {
   if (status !== 'passed') process.exitCode = 1;
 }
 
-function renderMarkdown(manifest, urlFor) {
+function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
   const lines = [];
   const icon = manifest.status === 'passed' ? '✅' : '❌';
   const sha = manifest.git.sha ? manifest.git.sha.slice(0, 10) : 'unknown';
@@ -822,17 +837,22 @@ function renderMarkdown(manifest, urlFor) {
 
   if (manifest.failure) lines.push('```', manifest.failure, '```', '');
 
-  if (manifest.files.includes('video.gif')) {
-    lines.push(`![Recording](${urlFor('video.gif')})`, '');
-  }
-
   const videoFile = manifest.files.includes('video.mp4') ? 'video.mp4' : 'video.webm';
 
-  if (manifest.files.includes(videoFile)) {
-    lines.push(
-      `🎥 [Full recording (${videoFile.split('.')[1]})](${urlFor(videoFile)}) · 🔍 [Playwright trace](${urlFor('trace.zip')}) (\`npx playwright show-trace trace.zip\`)`,
-      '',
-    );
+  if (attach) {
+    // `gh --attach` uploads the video as a native attachment, which GitHub renders as a player.
+    if (manifest.files.includes(videoFile)) lines.push(`![Recording](${urlFor(videoFile)})`, '');
+  } else {
+    if (manifest.files.includes('video.gif')) {
+      lines.push(`![Recording](${urlFor('video.gif')})`, '');
+    }
+
+    if (manifest.files.includes(videoFile)) {
+      lines.push(
+        `🎥 [Full recording (${videoFile.split('.')[1]})](${urlFor(videoFile)}) · 🔍 [Playwright trace](${urlFor('trace.zip')}) (\`npx playwright show-trace trace.zip\`)`,
+        '',
+      );
+    }
   }
 
   lines.push('| # | Step | Result |', '|---|---|---|');
@@ -847,12 +867,7 @@ function renderMarkdown(manifest, urlFor) {
   lines.push('<details><summary>Screenshots</summary>', '');
 
   for (const s of manifest.steps) {
-    lines.push(
-      `**${s.n}. ${s.label}**`,
-      '',
-      `<img src="${urlFor(s.screenshot)}" width="720" alt="${s.label}">`,
-      '',
-    );
+    lines.push(`**${s.n}. ${s.label}**`, '', `![${s.label}](${urlFor(s.screenshot)})`, '');
   }
 
   lines.push('</details>', '');
@@ -869,6 +884,69 @@ function renderMarkdown(manifest, urlFor) {
 // ---------------------------------------------------------------------------------------------
 // publish: upload a run's evidence and write PR-ready markdown
 
+// `gh` 2.99.0 added `--attach` to `gh pr create|edit|comment`, which uploads images and videos as
+// native GitHub attachments: videos play inline and access follows the repository. GitHub only
+// accepts attachments from accounts with write access to the repository, so contributors
+// opening a PR from a fork upload elsewhere and post the markdown instead.
+const GH_ATTACH_MIN = [2, 99, 0];
+const ATTACH_LIMIT = 50;
+const EVIDENCE_MARKER = '<!-- verification-evidence -->';
+
+function ghVersion() {
+  const match = run('gh', ['--version']).stdout.match(/gh version (\d+)\.(\d+)\.(\d+)/);
+
+  return match ? match.slice(1, 4).map(Number) : null;
+}
+
+function supportsAttach(version) {
+  if (!version) return false;
+
+  for (let i = 0; i < 3; i++) {
+    if (version[i] !== GH_ATTACH_MIN[i]) return version[i] > GH_ATTACH_MIN[i];
+  }
+
+  return true;
+}
+
+function resolvePr(values) {
+  const view = run('gh', [
+    'pr',
+    'view',
+    ...(values.pr ? [values.pr] : []),
+    '--json',
+    'url',
+    '--jq',
+    '.url',
+  ]);
+
+  return view.ok ? view.stdout : (values.pr ?? null);
+}
+
+function prRepo(prUrl) {
+  const match = prUrl?.match(/github\.com\/([^/]+)\/([^/]+)\/pull\/\d+/);
+
+  return match ? { owner: match[1], repo: match[2] } : null;
+}
+
+function repoAccess({ owner, repo }) {
+  const view = run('gh', [
+    'repo',
+    'view',
+    `${owner}/${repo}`,
+    '--json',
+    'visibility,viewerPermission',
+  ]);
+
+  return view.ok ? JSON.parse(view.stdout) : {};
+}
+
+function githubSlug(remote) {
+  const url = git(['remote', 'get-url', remote]).stdout;
+  const match = url.match(/github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/);
+
+  return match ? { owner: match[1], repo: match[2] } : null;
+}
+
 function latestRunDir() {
   const runsDir = join(EVIDENCE_DIR, 'runs');
 
@@ -882,28 +960,20 @@ function latestRunDir() {
   return runs.at(-1) ?? null;
 }
 
-function githubSlug(remote) {
-  const url = git(['remote', 'get-url', remote]).stdout;
-  const match = url.match(/github\.com[:/]([^/]+)\/(.+?)(?:\.git)?$/);
+// Media for the PR. The MP4 supersedes the WebM (and the GIF, where video plays inline).
+function mediaFiles(manifest, { inlineVideo }) {
+  const files = [];
+  const video = ['video.mp4', 'video.webm'].find((file) => manifest.files.includes(file));
 
-  return match ? { owner: match[1], repo: match[2] } : null;
+  if (video) files.push(video);
+  if (!inlineVideo && manifest.files.includes('video.gif')) files.push('video.gif');
+
+  return [...files, ...manifest.steps.map((s) => s.screenshot)];
 }
 
-function publishableFiles(runDir, manifest) {
-  const files = new Set(manifest.steps.map((s) => s.screenshot));
-
-  for (const file of manifest.files) files.add(file);
-
-  // The MP4 supersedes the WebM when both exist; GitHub only plays MP4/MOV inline.
-  if (files.has('video.mp4')) files.delete('video.webm');
-  files.delete('journey.mjs');
-
-  return [...files].filter((file) => existsSync(join(runDir, file)));
-}
-
-function publishToBranch(runDir, manifest, remote) {
+function uploadToBranch(runs, remote) {
   const slug = githubSlug(remote) ?? fail(`Remote "${remote}" is not a GitHub remote.`);
-  const branch = `verification-evidence/${slugify(manifest.git.branch || 'detached')}`;
+  const branch = `verification-evidence/${slugify(runs[0].manifest.git.branch || 'detached')}`;
   const index = join(mkdtempSync(join(tmpdir(), 'verify-index-')), 'index');
   const env = { ...process.env, GIT_INDEX_FILE: index };
   const fetched = git(['fetch', '--quiet', remote, `refs/heads/${branch}`]);
@@ -911,25 +981,21 @@ function publishToBranch(runDir, manifest, remote) {
 
   git(parent ? ['read-tree', parent] : ['read-tree', '--empty'], { env });
 
-  const files = publishableFiles(runDir, manifest);
+  for (const r of runs) {
+    for (const file of [...mediaFiles(r.manifest, { inlineVideo: false }), 'trace.zip']) {
+      if (!existsSync(join(r.dir, file))) continue;
 
-  for (const file of files) {
-    const blob = git(['hash-object', '-w', join(runDir, file)]).stdout;
+      const blob = git(['hash-object', '-w', join(r.dir, file)]).stdout;
 
-    git(['update-index', '--add', '--cacheinfo', `100644,${blob},${manifest.runId}/${file}`], {
-      env,
-    });
+      git(['update-index', '--add', '--cacheinfo', `100644,${blob},${r.manifest.runId}/${file}`], {
+        env,
+      });
+    }
   }
 
   const tree = git(['write-tree'], { env }).stdout;
   const commit = git(
-    [
-      'commit-tree',
-      tree,
-      ...(parent ? ['-p', parent] : []),
-      '-m',
-      `verification evidence: ${manifest.runId}`,
-    ],
+    ['commit-tree', tree, ...(parent ? ['-p', parent] : []), '-m', 'verification evidence'],
     { env },
   );
 
@@ -942,43 +1008,52 @@ function publishToBranch(runDir, manifest, remote) {
   if (!push.ok) fail(`Pushing ${branch} to ${remote} failed: ${push.stderr}`);
 
   console.log(
-    `Pushed ${files.length} file(s) to ${remote}/${branch} (outside the PR branch; nothing added to your diff).`,
+    `Uploaded evidence to ${remote}/${branch} (outside the PR branch; the diff is untouched).`,
   );
 
-  return (file) =>
-    `https://github.com/${slug.owner}/${slug.repo}/raw/${commit.stdout}/${manifest.runId}/${file}`;
+  return (r) => (file) =>
+    `https://github.com/${slug.owner}/${slug.repo}/raw/${commit.stdout}/${r.manifest.runId}/${file}`;
 }
 
-function publishToGist(runDir, manifest) {
+function uploadToGist(runs) {
   const login =
     run('gh', ['api', 'user', '--jq', '.login']).stdout || fail('`gh` is not authenticated.');
-  const summary = join(runDir, '00-summary.md');
+  const tmp = mkdtempSync(join(tmpdir(), 'verify-gist-'));
+  const readme = join(tmp, '00-verification.md');
+  const title = runs.map((r) => r.manifest.runId).join(', ');
 
-  writeFileSync(summary, `Verification evidence for ${manifest.title} (${manifest.runId})\n`);
+  writeFileSync(readme, `Catalyst verification evidence: ${title}\n`);
 
   const created = run('gh', [
     'gist',
     'create',
-    summary,
+    readme,
     '--desc',
-    `Catalyst verification: ${manifest.title} (${manifest.runId})`,
+    `Catalyst verification: ${title}`,
   ]);
   const id = created.stdout.match(/gist\.github\.com\/(?:[^/]+\/)?([0-9a-f]+)/)?.[1];
 
   if (!created.ok || !id) fail(`gh gist create failed: ${created.stderr}`);
 
-  // Gists are git repositories; binaries cannot go through `gh gist create`, but they can be pushed.
-  const clone = join(mkdtempSync(join(tmpdir(), 'verify-gist-')), 'gist');
+  // Gists are flat git repositories; binaries cannot go through `gh gist create`, but they can be
+  // pushed. Prefix each file with its device so runs do not collide.
+  const clone = join(tmp, 'gist');
   const cloned = git(['clone', '--quiet', `https://gist.github.com/${id}.git`, clone]);
 
   if (!cloned.ok) fail(`Cloning the gist failed (try \`gh auth setup-git\`): ${cloned.stderr}`);
 
-  const files = publishableFiles(runDir, manifest);
+  const name = (r, file) =>
+    `${r.manifest.device}${r.manifest.label ? `-${r.manifest.label}` : ''}-${file}`;
 
-  for (const file of files) copyFileSync(join(runDir, file), join(clone, file));
+  for (const r of runs) {
+    for (const file of [...mediaFiles(r.manifest, { inlineVideo: false }), 'trace.zip']) {
+      if (existsSync(join(r.dir, file)))
+        copyFileSync(join(r.dir, file), join(clone, name(r, file)));
+    }
+  }
 
   git(['add', '.'], { cwd: clone });
-  git(['commit', '--quiet', '-m', `evidence: ${manifest.runId}`], { cwd: clone });
+  git(['commit', '--quiet', '-m', 'verification evidence'], { cwd: clone });
 
   const push = git(['push', '--quiet'], { cwd: clone });
 
@@ -986,68 +1061,149 @@ function publishToGist(runDir, manifest) {
 
   const sha = git(['rev-parse', 'HEAD'], { cwd: clone }).stdout;
 
-  rmSync(dirname(clone), { recursive: true, force: true });
-  console.log(
-    `Uploaded ${files.length} file(s) to secret gist https://gist.github.com/${login}/${id}`,
-  );
+  rmSync(tmp, { recursive: true, force: true });
+  console.log(`Uploaded evidence to secret gist https://gist.github.com/${login}/${id}`);
 
-  return (file) => `https://gist.githubusercontent.com/${login}/${id}/raw/${sha}/${file}`;
+  return (r) => (file) =>
+    `https://gist.githubusercontent.com/${login}/${id}/raw/${sha}/${name(r, file)}`;
 }
 
-function publish(values, positionals) {
-  const runDir = positionals[0] ? resolve(positionals[0]) : latestRunDir();
-
-  if (!runDir || !existsSync(join(runDir, 'manifest.json')))
-    fail('No run to publish — run `capture` first.');
-
-  const manifest = JSON.parse(readFileSync(join(runDir, 'manifest.json'), 'utf8'));
+function chooseDestination(values, prUrl) {
   const remote = values.remote ?? 'origin';
-  let to = values.to ?? 'auto';
+  const version = has('gh') ? ghVersion() : null;
+  const authed = version && run('gh', ['auth', 'status']).ok;
 
-  if (to === 'auto') {
-    const ghReady = has('gh') && run('gh', ['auth', 'status']).ok;
-    const slug = githubSlug(remote);
-    const visibility =
-      ghReady && slug
-        ? run('gh', [
-            'repo',
-            'view',
-            `${slug.owner}/${slug.repo}`,
-            '--json',
-            'visibility',
-            '--jq',
-            '.visibility',
-          ]).stdout
-        : '';
-
-    // Secret gists are unlisted but readable by anyone with the link, so evidence from a private
-    // repository stays in that repository, where GitHub's access control applies.
-    if (!ghReady || !slug) to = 'manual';
-    else to = visibility === 'PUBLIC' ? 'gist' : 'branch';
-
+  if (!authed) {
     console.log(
-      `--to auto → ${to}${visibility ? ` (${remote} is ${visibility.toLowerCase()})` : ''}`,
+      `gh ${GH_ATTACH_MIN.join('.')}+ is not installed and signed in, so evidence cannot be uploaded from the CLI.`,
+    );
+
+    return 'manual';
+  }
+
+  const target = prRepo(prUrl) ?? githubSlug(remote);
+  const access = target ? repoAccess(target) : {};
+  const canWrite = ['ADMIN', 'MAINTAIN', 'WRITE'].includes(access.viewerPermission);
+
+  if (canWrite && supportsAttach(version)) return 'attach';
+
+  if (!supportsAttach(version)) {
+    console.log(
+      `gh ${version.join('.')} predates --attach; upgrade to ${GH_ATTACH_MIN.join('.')}+ (${ghUpgradeHint()}) to upload straight to the PR.`,
+    );
+  } else {
+    console.log(
+      `No write access to ${target.owner}/${target.repo} (a fork contribution?), and GitHub only takes --attach uploads from writers.`,
     );
   }
 
-  if (to === 'manual') {
-    writeFileSync(
-      join(runDir, 'pr-evidence.md'),
-      renderMarkdown(manifest, (file) => file),
+  // Secret gists are unlisted but readable by anyone with the link, so evidence for a private
+  // repository goes to a branch, where GitHub's access control applies.
+  return access.visibility === 'PUBLIC' || !access.visibility ? 'gist' : 'branch';
+}
+
+function publish(values, positionals) {
+  const dirs = positionals.length ? positionals.map((p) => resolve(p)) : [latestRunDir()];
+  const runs = dirs.map((dir) => {
+    if (!dir || !existsSync(join(dir, 'manifest.json'))) {
+      fail(`No run at ${dir ?? EVIDENCE_DIR} — run \`capture\` first.`);
+    }
+
+    return { dir, manifest: JSON.parse(readFileSync(join(dir, 'manifest.json'), 'utf8')) };
+  });
+  const cwd = dirname(runs[0].dir);
+
+  if (runs.some((r) => dirname(r.dir) !== cwd)) fail('Publish runs from the same directory.');
+
+  const pr = resolvePr(values);
+  let to = values.to ?? 'auto';
+
+  if (to === 'auto') {
+    to = chooseDestination(values, pr);
+    console.log(`--to auto → ${to}`);
+  }
+
+  const attach = to === 'attach';
+  // In attach mode, references are paths relative to `cwd` that `gh` rewrites to uploaded URLs.
+  const local = (r) => (file) => `./${basename(r.dir)}/${file}`;
+  const urlsFor =
+    to === 'gist'
+      ? uploadToGist(runs)
+      : to === 'branch'
+        ? uploadToBranch(runs, values.remote ?? 'origin')
+        : local;
+  const evidence = runs
+    .map((r) => renderMarkdown(r.manifest, urlsFor(r), { attach }))
+    .join('\n')
+    .concat(
+      attach
+        ? '\n<sub>Recorded with the verify-catalyst skill. Playwright traces stay local: `npx playwright show-trace <run>/trace.zip`.</sub>\n'
+        : '\n<sub>Recorded with the verify-catalyst skill.</sub>\n',
     );
+  const bodyFile = join(cwd, `pr-evidence-${timestamp()}.md`);
+
+  if (to === 'manual') {
+    writeFileSync(bodyFile, evidence);
     console.log(
-      `Manual upload: drag video.mp4 (or video.webm) and the screenshots from\n  ${runDir}\ninto the PR description on github.com; GitHub hosts them and plays MP4 inline.\nA text skeleton is in ${join(runDir, 'pr-evidence.md')}.`,
+      `Drag the MP4s and screenshots from\n  ${runs.map((r) => r.dir).join('\n  ')}\ninto a comment on the PR at github.com (GitHub hosts them and plays MP4 inline).\nA text skeleton is in ${bodyFile}.`,
     );
 
     return;
   }
 
-  const urlFor =
-    to === 'gist' ? publishToGist(runDir, manifest) : publishToBranch(runDir, manifest, remote);
-  const evidence = join(runDir, 'pr-evidence.md');
+  const into = values.into ?? 'comment';
+  let args;
 
-  writeFileSync(evidence, renderMarkdown(manifest, urlFor));
-  console.log(`\nPR-ready markdown: ${evidence}`);
+  if (into === 'body') {
+    const current = pr ? run('gh', ['pr', 'view', pr, '--json', 'body', '--jq', '.body']) : null;
+    const body = current?.ok ? current.stdout : '';
+
+    writeFileSync(
+      bodyFile,
+      body.includes(EVIDENCE_MARKER)
+        ? body.replace(EVIDENCE_MARKER, `\n\n${evidence}\n`)
+        : `${body}\n\n## Verification evidence\n\n${evidence}`,
+    );
+    args = ['pr', 'edit', pr ?? '<pr>', '--body-file', bodyFile];
+  } else {
+    writeFileSync(bodyFile, evidence);
+    args = ['pr', 'comment', pr ?? '<pr>', '--body-file', bodyFile];
+  }
+
+  if (attach) {
+    const attachments = runs.flatMap((r) =>
+      mediaFiles(r.manifest, { inlineVideo: true }).map(local(r)),
+    );
+
+    if (attachments.length > ATTACH_LIMIT) {
+      fail(
+        `${attachments.length} files exceed gh's ${ATTACH_LIMIT}-attachment limit; publish fewer runs at once.`,
+      );
+    }
+
+    for (const file of attachments) args.push('--attach', file);
+  }
+
+  const printable = `gh ${args.map((a) => (/[\s<>]/.test(a) ? `"${a}"` : a)).join(' ')}`;
+
+  if (!pr || values['dry-run']) {
+    if (!pr) console.log('No pull request found for this branch; pass --pr <number|url>.');
+    console.log(`Evidence markdown: ${bodyFile}\nFrom ${cwd}, run:\n  ${printable}`);
+
+    return;
+  }
+
+  const result = run('gh', args, { cwd });
+
+  if (!result.ok) {
+    fail(
+      `gh ${args[0]} ${args[1]} failed: ${result.stderr || result.stdout}\nFrom ${cwd}, retry with:\n  ${printable}`,
+    );
+  }
+
+  console.log(
+    `Posted evidence to ${into === 'body' ? 'the body of' : 'a comment on'} ${pr}\n${result.stdout}`,
+  );
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -1061,8 +1217,9 @@ const HELP = `Usage: node <skill>/scripts/verify.mjs <command> [options]
                                              Print the ARIA snapshot of a page to find stable handles
   capture  <journey.mjs> [--device desktop|tablet|mobile] [--label before|after] [--name slug] [--url URL]
                                              Run a journey; record video, screenshots, and a trace
-  publish  [run-dir] [--to auto|gist|branch|manual] [--remote origin]
-                                             Upload a run's evidence and write PR-ready markdown
+  publish  [run-dir ...] [--pr <number|url>] [--into comment|body] [--dry-run]
+           [--to auto|attach|gist|branch|manual] [--remote origin]
+                                             Upload runs to the pull request (gh 2.99.0+ --attach)
 
   --url defaults to the server started by \`launch\`. Evidence lives in ${relative(process.cwd(), EVIDENCE_DIR) || '.verification'}/runs/.
   Set VERIFY_HEADED=1 to watch the browser.`;
@@ -1080,6 +1237,9 @@ const { values, positionals } = parseArgs({
     screenshot: { type: 'string' },
     to: { type: 'string' },
     remote: { type: 'string' },
+    pr: { type: 'string' },
+    into: { type: 'string' },
+    'dry-run': { type: 'boolean' },
     help: { type: 'boolean', short: 'h' },
   },
 });

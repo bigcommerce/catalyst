@@ -2,7 +2,7 @@
 name: verify-catalyst
 description: Drive a Catalyst storefront in a real browser to prove a UI change works, and attach screenshot and video evidence to the pull request. Use when you change anything a shopper can see or do (pages, components, forms, cart, account, search), when asked to "verify", "show it working", "screenshot this", or "add evidence to the PR", and before marking a UI pull request ready for review. Works in the Catalyst monorepo and in any project created with `create catalyst` or forked from it.
 license: MIT
-compatibility: Requires Node.js 24+, the storefront's installed dependencies (including @playwright/test), and a BigCommerce store configured in .env.local. git and the GitHub CLI are needed only to publish evidence; ffmpeg is optional (GIF/MP4). Runs on macOS, Linux, Windows, and WSL.
+compatibility: Requires Node.js 24+, the storefront's installed dependencies (including @playwright/test), and a BigCommerce store configured in .env.local. git and GitHub CLI 2.99.0+ (for `--attach`) are needed only to publish evidence; ffmpeg is optional (GIF/MP4). Runs on macOS, Linux, Windows, and WSL.
 metadata:
   adapted-from: https://github.com/cursor/plugins/tree/main/pstack/skills/create-verification-skill
 ---
@@ -30,7 +30,7 @@ The helper is plain Node, so the same command works in bash, zsh, PowerShell, an
 - **Read-only by default.** The storefront talks to a live BigCommerce store. Do not submit orders, register customers, or write reviews unless the store is a sandbox and the change requires it. Stop before the final submit button when the visible result is enough. Treat `TESTS_READ_ONLY=true` in `.env.test.local` as a hard stop.
 - **Never weaken a journey to make it pass.** If the store lacks a precondition (no product with variants, no country without states), report the run as blocked and name the missing data.
 - **Never drive or stop a server you did not start.** Point `--url` at a developer's own server only when asked to.
-- **Evidence is not secret-free by default.** Screenshots show the store's real catalog and prices. `publish` decides where uploads go based on repository visibility; see _Publish_.
+- **Evidence is not secret-free by default.** Screenshots show the store's real catalog and prices. `publish` chooses where uploads go based on your access and the repository's visibility; see _Publish_.
 
 ## 1. Doctor
 
@@ -49,7 +49,7 @@ Common fixes:
 | `chromium missing`                     | `npx playwright install chromium`. On a fresh Linux box or in CI, use `npx playwright install --with-deps chromium`.                         |
 | `dependencies`                         | `pnpm install` (the monorepo and new projects use pnpm).                                                                                     |
 
-`WARN` lines are optional capabilities: ffmpeg gives GIF/MP4 output, `gh` gives one-command publishing, and a test customer enables signed-in journeys.
+`WARN` lines are optional capabilities: ffmpeg gives GIF/MP4 output, `gh` 2.99.0+ posts evidence straight to the PR, and a test customer enables signed-in journeys.
 
 ## 2. Launch
 
@@ -119,7 +119,7 @@ Each run writes `.verification/runs/<timestamp>-<name>-<device>/` containing:
 - `manifest.json` (git SHA, dirty flag, OS, viewport, step results, console errors, same-origin 4xx/5xx responses)
 - `summary.md`
 
-`git.dirty` is true for any uncommitted change, including files `next dev` rewrites on start (such as `AGENTS.md`); check `git status` before reading it as untested code.
+`git.dirtyFiles` lists uncommitted tracked files, and the evidence names them. `next dev` rewrites `AGENTS.md` on start, so that entry alone does not mean untested code.
 
 Exit code 0 means every step passed. Read `manifest.json` → `consoleErrors` even when the run passes; a new hydration error is a finding.
 
@@ -128,26 +128,35 @@ Exit code 0 means every step passed. Read `manifest.json` → `consoleErrors` ev
 
 ## 6. Publish to the pull request
 
-```sh
-verify publish                      # latest run
-verify publish .verification/runs/<run-dir> --to gist|branch|manual
-```
-
-`publish` uploads screenshots, the GIF, MP4, and trace, then writes `pr-evidence.md` (inside the run directory) with absolute URLs. Paste that into the PR's **Testing** section, for example:
+Evidence belongs on the PR, posted from the CLI. Use **GitHub CLI 2.99.0 or newer**. That release added `--attach` to `gh pr create`, `gh pr edit`, and `gh pr comment`, which upload images and videos as native GitHub attachments: MP4s play inline and access follows the repository. Check with `gh --version`. Upgrade with `brew upgrade gh` (macOS), `winget upgrade --id GitHub.cli` (Windows), or your Linux package manager / [the releases page](https://github.com/cli/cli/releases), then run `gh auth login`. `verify doctor` warns when `gh` is missing, too old, or signed out.
 
 ```sh
-gh pr comment <number> --body-file <run-dir>/pr-evidence.md
+verify publish                                     # latest run → new comment on this branch's PR
+verify publish <desktop-run> <mobile-run>          # several runs in one comment
+verify publish <run> --pr 123 --into body          # into the PR body instead of a comment
+verify publish <run> --dry-run                     # write the markdown and print the gh command only
 ```
 
-Or append it to the PR body with `gh pr edit <number> --body-file …`. `publish` handles one run at a time: for desktop and mobile, publish each run directory and paste both `pr-evidence.md` files (the device is in each block's subtitle). Where `--to auto` (the default) uploads:
+`publish` writes the evidence markdown (recording, step table, screenshots, console errors), then posts it with `gh`. The PR defaults to the current branch's (`gh pr view`); pass `--pr <number|url>` otherwise. With `--into body`, it replaces a `<!-- verification-evidence -->` marker if the body has one (put it under **Testing**), or else appends a section.
 
-| Repository (from `--remote`, default `origin`) | Destination                                                      | Why                                                                                                                  |
-| ---------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Public                                         | A **secret gist** owned by you                                   | Adds nothing to the repository; works for contributors without push access to upstream.                              |
-| Private or internal                            | An orphan branch `verification-evidence/<branch>` on that remote | Secret gists are readable by anyone with the link; a branch keeps GitHub's access control. The PR diff is untouched. |
-| `gh` missing or not GitHub                     | `manual`                                                         | Drag the run's MP4 and PNGs into the PR description on github.com. GitHub hosts them and plays MP4 inline.           |
+GitHub only accepts `--attach` uploads from accounts with **write access** to the PR's repository. `--to auto` (the default) checks that and picks the route:
 
-Fork contributors opening a PR against `bigcommerce/catalyst` get a gist automatically. To keep evidence out of gists, use `--to branch --remote <your-fork>`.
+| Situation                                                              | Route    | Result                                                                                                                                                               |
+| ---------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Write access, `gh` ≥ 2.99.0                                            | `attach` | Native attachments on the PR; video plays inline. Traces stay local (not a media type).                                                                              |
+| No write access (fork contribution to a public repo), or `gh` < 2.99.0 | `gist`   | Files go to a secret gist you own; the markdown, posted by `gh`, embeds the GIF and links the MP4 and trace.                                                         |
+| Same, but the repository is private                                    | `branch` | Files go to an orphan `verification-evidence/<branch>` on `--remote` (default `origin`; use your fork) so GitHub's access control applies. The PR diff is untouched. |
+| `gh` missing or signed out                                             | `manual` | Prints the files to drag into a PR comment on github.com, which hosts them and plays MP4 inline.                                                                     |
+
+Force a route with `--to attach|gist|branch|manual`. Secret gists are unlisted but readable by anyone with the link, so never use `gist` for a private storefront's evidence.
+
+**By hand.** The `attach` route is plain `gh`, so a person can do the same thing without the helper. Run it from the directory that holds the files. `gh` rewrites any `![alt](./path)` reference in the body that matches an `--attach` path to the uploaded URL, and appends files the body does not reference:
+
+```sh
+gh pr comment 123 --body-file evidence.md --attach ./video.mp4 --attach './03-result.png#State/Province hidden'
+```
+
+The limit is 50 files per command. If some uploads fail, `gh` still posts the rest and exits non-zero.
 
 ## 7. Clean up
 
