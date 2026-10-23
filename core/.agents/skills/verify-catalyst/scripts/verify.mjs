@@ -166,9 +166,14 @@ function git(args, opts = {}) {
 function gitInfo() {
   const sha = git(['rev-parse', 'HEAD']).stdout;
   const branch = git(['rev-parse', '--abbrev-ref', 'HEAD']).stdout;
-  const dirty = git(['status', '--porcelain']).stdout.length > 0;
+  // `next dev` rewrites agent docs (AGENTS.md) on startup; list changed files so a reviewer can
+  // tell that apart from untested code.
+  const dirtyFiles = git(['status', '--porcelain', '--untracked-files=no'])
+    .stdout.split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => line.slice(3));
 
-  return { sha, branch, dirty };
+  return { sha, branch, dirty: dirtyFiles.length > 0, dirtyFiles };
 }
 
 // The first entry of `git worktree list` is the main checkout. Worktrees do not inherit
@@ -799,10 +804,19 @@ function renderMarkdown(manifest, urlFor) {
   const icon = manifest.status === 'passed' ? '✅' : '❌';
   const sha = manifest.git.sha ? manifest.git.sha.slice(0, 10) : 'unknown';
 
-  lines.push(`### ${icon} ${manifest.title}${manifest.label ? ` (${manifest.label})` : ''}`);
+  const tags = [manifest.device, manifest.label].filter(Boolean).join(', ');
+  const dirtyFiles = manifest.git.dirtyFiles ?? [];
+  const dirtyNote = dirtyFiles.length
+    ? ` + uncommitted changes to ${dirtyFiles
+        .slice(0, 3)
+        .map((file) => `\`${file}\``)
+        .join(', ')}${dirtyFiles.length > 3 ? ` and ${dirtyFiles.length - 3} more` : ''}`
+    : '';
+
+  lines.push(`### ${icon} ${manifest.title} (${tags})`);
   lines.push('');
   lines.push(
-    `\`${sha}\`${manifest.git.dirty ? ' + uncommitted changes' : ''} · ${manifest.device} ${manifest.viewport.width}×${manifest.viewport.height} · ${manifest.platform} · ${(manifest.durationMs / 1000).toFixed(1)}s`,
+    `\`${sha}\`${dirtyNote} · ${manifest.device} ${manifest.viewport.width}×${manifest.viewport.height} · ${manifest.platform} · ${(manifest.durationMs / 1000).toFixed(1)}s`,
   );
   lines.push('');
 
