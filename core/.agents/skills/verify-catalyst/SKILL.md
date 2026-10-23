@@ -1,0 +1,176 @@
+---
+name: verify-catalyst
+description: Drive a Catalyst storefront in a real browser to prove a UI change works, and attach screenshot and video evidence to the pull request. Use when you change anything a shopper can see or do (pages, components, forms, cart, account, search), when asked to "verify", "show it working", "screenshot this", or "add evidence to the PR", and before marking a UI pull request ready for review. Works in the Catalyst monorepo and in any project created with `create catalyst` or forked from it.
+license: MIT
+compatibility: Requires Node.js 24+, the storefront's installed dependencies (including @playwright/test), and a BigCommerce store configured in .env.local. git and the GitHub CLI are needed only to publish evidence; ffmpeg is optional (GIF/MP4). Runs on macOS, Linux, Windows, and WSL.
+metadata:
+  adapted-from: https://github.com/cursor/plugins/tree/main/pstack/skills/create-verification-skill
+---
+
+# Verify a Catalyst storefront
+
+Prove a change by driving the real storefront the way a shopper would, then hand the reviewer the evidence: a recording, step screenshots, and a Playwright trace. Unit tests and type checks do not count as proof of UI behavior.
+
+Everything goes through one helper, run from the **storefront directory** (the folder with `next.config.ts`):
+
+- Catalyst monorepo: `core/`
+- A project created with `create catalyst`, or a fork of one: the repository root
+
+```sh
+node .agents/skills/verify-catalyst/scripts/verify.mjs <command>
+```
+
+The helper is plain Node, so the same command works in bash, zsh, PowerShell, and cmd. Below, `verify` stands for that whole command.
+
+## Rules
+
+- **Exercise the real user path.** Click, type, and navigate as a shopper. Do not call server actions, set cookies, or hit internal routes to fake a state.
+- **Capture the action and the result,** not only the final screen. A step's screenshot is taken _after_ its action, so name steps by what they prove.
+- **Never hardcode store data.** Each store has its own catalog, categories, and settings. Discover product URLs, category names, and countries from the running store (`verify explore`), or read them from `.env.test.local` (`DEFAULT_PRODUCT_ID`, `TEST_CUSTOMER_EMAIL`, …).
+- **Read-only by default.** The storefront talks to a live BigCommerce store. Do not submit orders, register customers, or write reviews unless the store is a sandbox and the change requires it. Stop before the final submit button when the visible result is enough. Treat `TESTS_READ_ONLY=true` in `.env.test.local` as a hard stop.
+- **Never weaken a journey to make it pass.** If the store lacks a precondition (no product with variants, no country without states), report the run as blocked and name the missing data.
+- **Never drive or stop a server you did not start.** Point `--url` at a developer's own server only when asked to.
+- **Evidence is not secret-free by default.** Screenshots show the store's real catalog and prices. `publish` decides where uploads go based on repository visibility; see _Publish_.
+
+## 1. Doctor
+
+```sh
+verify doctor
+```
+
+This read-only check covers Node, dependencies, `.env.local` keys (names only, never values), Makeswift config, Chromium, ffmpeg, the GitHub CLI, and whether the target URL serves Catalyst (`<meta name="platform" content="bigcommerce.catalyst">`). Fix every `FAIL` before going on, and run it again whenever something looks wrong.
+
+Common fixes:
+
+| FAIL                                   | Fix                                                                                                                                          |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.env.local missing` in a git worktree | Worktrees do not copy gitignored files. Copy `.env.local` (and `.env.test.local`, if present) from the main checkout path the doctor prints. |
+| `.env.local missing` elsewhere         | Copy `.env.example` and fill it in, or use the Catalyst CLI to link a store.                                                                 |
+| `chromium missing`                     | `npx playwright install chromium`. On a fresh Linux box or in CI, use `npx playwright install --with-deps chromium`.                         |
+| `dependencies`                         | `pnpm install` (the monorepo and new projects use pnpm).                                                                                     |
+
+`WARN` lines are optional capabilities: ffmpeg gives GIF/MP4 output, `gh` gives one-command publishing, and a test customer enables signed-in journeys.
+
+## 2. Launch
+
+```sh
+verify launch            # next dev on port 3100
+verify launch --prod     # next build + next start, closer to production; slower
+verify launch --port 3200
+```
+
+`launch` builds `@bigcommerce/catalyst-client` when the monorepo needs it, regenerates GraphQL types, and starts Next.js detached with its log at `.verification/server.log`. It returns once the home page serves a Catalyst page; the first dev compile can take a few minutes. It refuses a busy port instead of attaching to someone else's server.
+
+A developer who already runs `pnpm dev` can skip `launch` and pass `--url http://localhost:3000` to the other commands. Next.js allows only one `next dev` per directory, so if `launch` reports the server exiting at startup, check for an existing dev server and use `--url` instead.
+
+## 3. Find stable handles
+
+```sh
+verify explore /                       # whole page
+verify explore /register --selector main
+verify explore "/search?term=shirt" --device mobile --screenshot tmp.png
+```
+
+`explore` prints the page's ARIA snapshot. Build locators from roles and accessible names (`page.getByRole('button', { name: 'Add to cart' })`). Avoid CSS classes, which are Tailwind utilities and change freely, and avoid DOM position.
+
+Before writing a journey, read the matching feature file in [`features/`](features/README.md). It lists entry points, known handles, and gotchas for each area of the storefront.
+
+## 4. Write a journey
+
+A journey is a small ES module. Keep throwaway journeys in `.verification/journeys/`, which is gitignored:
+
+```js
+// .verification/journeys/state-field.mjs
+export const meta = { title: 'Register: State/Province follows country', feature: 'account' };
+
+export default async function journey({ page, step, expect }) {
+  await step('Open the registration form', async () => {
+    await page.goto('/register');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  });
+
+  await step('Country without states hides State/Province', async () => {
+    // ...interact, then assert what the shopper sees
+    await expect(page.getByRole('textbox', { name: 'State/Province' })).toHaveCount(0);
+  });
+}
+```
+
+The journey receives:
+
+- `page`, `context`: Playwright objects with `baseURL` set, so `page.goto('/cart')` works.
+- `step(label, fn, { fullPage })`: runs `fn`, waits for the network to settle, then screenshots. If `fn` throws, it saves a `-FAILED` screenshot and the run fails.
+- `expect`: Playwright's auto-waiting assertions. Assert inside every step; a screenshot with no assertion proves nothing.
+- `env`: values from `.env.test.local`, such as test customer credentials.
+
+## 5. Capture
+
+```sh
+verify capture .verification/journeys/state-field.mjs
+verify capture .verification/journeys/state-field.mjs --device mobile
+```
+
+Each run writes `.verification/runs/<timestamp>-<name>-<device>/` containing:
+
+- `video.webm`, plus `video.mp4` and `video.gif` when ffmpeg is installed
+- `NN-<step>.png` for every step
+- `trace.zip` (open it with `npx playwright show-trace trace.zip`)
+- `manifest.json` (git SHA, dirty flag, OS, viewport, step results, console errors, same-origin 4xx/5xx responses)
+- `summary.md`
+
+Exit code 0 means every step passed. Read `manifest.json` → `consoleErrors` even when the run passes; a new hydration error is a finding.
+
+**Responsive changes:** capture both `--device desktop` and `--device mobile`.
+**Before/after:** for a visual change, capture the base branch too. Run `git worktree add ../catalyst-base origin/<base>`, install dependencies, copy `.env.local`, then `verify launch --port 3101`. Capture with `--label before --url http://localhost:3101` there, and with `--label after` on your branch. Stop the base server from the base worktree.
+
+## 6. Publish to the pull request
+
+```sh
+verify publish                      # latest run
+verify publish .verification/runs/<run-dir> --to gist|branch|manual
+```
+
+`publish` uploads screenshots, the GIF, MP4, and trace, then writes `pr-evidence.md` (inside the run directory) with absolute URLs. Paste that into the PR's **Testing** section, for example:
+
+```sh
+gh pr comment <number> --body-file <run-dir>/pr-evidence.md
+```
+
+Or append it to the PR body with `gh pr edit <number> --body-file …`. Where `--to auto` (the default) uploads:
+
+| Repository (from `--remote`, default `origin`) | Destination                                                      | Why                                                                                                                  |
+| ---------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| Public                                         | A **secret gist** owned by you                                   | Adds nothing to the repository; works for contributors without push access to upstream.                              |
+| Private or internal                            | An orphan branch `verification-evidence/<branch>` on that remote | Secret gists are readable by anyone with the link; a branch keeps GitHub's access control. The PR diff is untouched. |
+| `gh` missing or not GitHub                     | `manual`                                                         | Drag the run's MP4 and PNGs into the PR description on github.com. GitHub hosts them and plays MP4 inline.           |
+
+Fork contributors opening a PR against `bigcommerce/catalyst` get a gist automatically. To keep evidence out of gists, use `--to branch --remote <your-fork>`.
+
+## 7. Clean up
+
+```sh
+verify stop
+```
+
+This stops only the server that `launch` started, using its recorded PID: process group on macOS and Linux, `taskkill /T` on Windows. It never removes `.verification/runs/`; evidence must outlive the server. Delete old runs by hand when you no longer need them. Run `stop` after failed attempts too, so you do not strand ports.
+
+## Reporting
+
+End with a short report containing:
+
+- Which feature and entry points were driven, and on which devices.
+- Pass or fail per step, linked to the evidence (`pr-evidence.md` or the run directory).
+- Anything skipped or blocked, with the missing precondition. Never report a skipped entry point as verified through a different path.
+- Any console errors or failed requests recorded during the run.
+
+## Platform notes
+
+- **Windows:** use the same commands in PowerShell or cmd, with forward slashes in paths. The helper spawns Node directly, so it needs no bash and no `.cmd` shims. Install ffmpeg with `winget install Gyan.FFmpeg`.
+- **WSL:** run everything inside WSL, including Node, the browser, and the git checkout. Do not mix a Windows Node with a WSL checkout.
+- **Linux/CI (headless):** run `npx playwright install --with-deps chromium` once. No display is needed.
+- **macOS:** install ffmpeg with `brew install ffmpeg`.
+- **Watching the browser:** set `VERIFY_HEADED=1` (`$env:VERIFY_HEADED=1` in PowerShell).
+
+## Keep the feature map honest
+
+[`features/`](features/README.md) is the maintained recipe book. When a verification run teaches you something, update the matching file in the same PR: a new entry point, a handle that changed, or a gotcha that cost time. Add a new file when you verify an area that has none.
