@@ -53,7 +53,7 @@ pnpm dev          # Watch mode (rebuilds dist/cli.js on changes)
 pnpm build        # Production build via tsup
 pnpm test         # Run tests (vitest)
 pnpm test:watch   # Watch mode tests
-pnpm typecheck    # tsc --noEmit
+pnpm typecheck    # tsrs --noEmit (Rust port of the TypeScript 7 checker)
 pnpm lint         # oxlint (type-aware) with 0 warnings threshold
 ```
 

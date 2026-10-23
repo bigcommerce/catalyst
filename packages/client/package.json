@@ -12,7 +12,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "node ../../core/scripts/typecheck.mjs",
     "lint": "oxlint",
     "lint-fix": "oxlint --fix",
     "test": "vitest run",
@@ -31,6 +31,7 @@
     "dotenv-cli": "^8.0.0",
     "oxlint": "1.89.0",
     "oxlint-tsgolint": "7.0.2005",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
