@@ -19,7 +19,9 @@
     "test": "vitest run",
     "prelint": "next typegen",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -105,12 +107,11 @@
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",
+    "oxfmt": "0.74.0",
     "oxlint": "1.89.0",
     "oxlint-tsgolint": "7.0.2005",
     "postcss": "^8.5.4",
     "postcss-preset-env": "^10.2.1",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "1.0.7",
     "typescript": "^5.8.3",

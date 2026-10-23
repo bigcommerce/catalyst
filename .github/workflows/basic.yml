@@ -52,6 +52,9 @@ jobs:
       - name: Gql Tada
         run: pnpm run -r generate
 
+      - name: Format
+        run: pnpm run format:check
+
       - name: Lint
         run: pnpm run lint -- --max-warnings=0
 

@@ -10,15 +10,16 @@
     "test": "turbo run test",
     "test:scripts": "node --test .github/scripts/__tests__/*.test.mts",
     "typecheck": "turbo typecheck",
-    "changeset:version": "changeset version && node .github/scripts/sync-catalyst-version.mts"
+    "changeset:version": "changeset version && node .github/scripts/sync-catalyst-version.mts",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.4",
     "@types/node": "^22.20.5",
     "dotenv-cli": "^8.0.0",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.12",
+    "oxfmt": "0.74.0",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "unlighthouse": "^0.16.3"
