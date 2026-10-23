@@ -214,9 +214,7 @@ async function announceQuietly(pullNumber, body) {
 function deployedBody(url) {
   const commit = (process.env.COMMIT || '').slice(0, 7);
   const runUrl = process.env.RUN_URL || '';
-  const meta = commit
-    ? `Commit \`${commit}\` · [build log](${runUrl})`
-    : `[build log](${runUrl})`;
+  const meta = commit ? `Commit \`${commit}\` · [build log](${runUrl})` : `[build log](${runUrl})`;
 
   return `${MARKER}\n${DEPLOYED_HEADING} → ${url}\n\n${meta}\n`;
 }

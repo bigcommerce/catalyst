@@ -22,22 +22,20 @@ const OrderAddressSchema = z
     phone: z.string().optional(),
     email: z.string().optional(),
   })
-  .transform(
-    (data): OrderAddress => ({
-      firstName: data.first_name,
-      lastName: data.last_name,
-      company: data.company,
-      street1: data.street_1,
-      street2: data.street_2,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-      country: data.country,
-      countryIso2: data.country_iso2,
-      phone: data.phone,
-      email: data.email,
-    }),
-  );
+  .transform((data): OrderAddress => ({
+    firstName: data.first_name,
+    lastName: data.last_name,
+    company: data.company,
+    street1: data.street_1,
+    street2: data.street_2,
+    city: data.city,
+    state: data.state,
+    zip: data.zip,
+    country: data.country,
+    countryIso2: data.country_iso2,
+    phone: data.phone,
+    email: data.email,
+  }));
 
 const OrderSchema = z
   .object({
@@ -58,26 +56,24 @@ const OrderSchema = z
     coupon_discount: z.string(),
     billing_address: OrderAddressSchema,
   })
-  .transform(
-    (data): Order => ({
-      id: data.id,
-      customerId: data.customer_id,
-      currencyCode: data.currency_code,
-      currencyId: data.currency_id,
-      dateCreated: data.date_created,
-      defaultCurrencyCode: data.default_currency_code,
-      defaultCurrencyId: data.default_currency_id,
-      statusId: data.status_id,
-      status: data.status,
-      subtotalExTax: data.subtotal_ex_tax,
-      subtotalTax: data.subtotal_tax,
-      totalIncTax: data.total_inc_tax,
-      itemsTotal: data.items_total,
-      discountAmount: data.discount_amount,
-      couponDiscount: data.coupon_discount,
-      billingAddress: data.billing_address,
-    }),
-  );
+  .transform((data): Order => ({
+    id: data.id,
+    customerId: data.customer_id,
+    currencyCode: data.currency_code,
+    currencyId: data.currency_id,
+    dateCreated: data.date_created,
+    defaultCurrencyCode: data.default_currency_code,
+    defaultCurrencyId: data.default_currency_id,
+    statusId: data.status_id,
+    status: data.status,
+    subtotalExTax: data.subtotal_ex_tax,
+    subtotalTax: data.subtotal_tax,
+    totalIncTax: data.total_inc_tax,
+    itemsTotal: data.items_total,
+    discountAmount: data.discount_amount,
+    couponDiscount: data.coupon_discount,
+    billingAddress: data.billing_address,
+  }));
 
 export const ordersHttpClient: OrdersApi = {
   get: async (customerId?: number): Promise<Order[]> => {

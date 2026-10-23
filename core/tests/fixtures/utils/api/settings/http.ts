@@ -11,13 +11,11 @@ const InventorySettingsSchema = z
     show_out_of_stock_message: z.boolean(),
     stock_level_display: z.enum(['dont_show', 'show', 'show_when_low']).nullable(),
   })
-  .transform(
-    (data): InventorySettings => ({
-      defaultOutOfStockMessage: data.default_out_of_stock_message,
-      showOutOfStockMessage: data.show_out_of_stock_message,
-      stockLevelDisplay: data.stock_level_display,
-    }),
-  );
+  .transform((data): InventorySettings => ({
+    defaultOutOfStockMessage: data.default_out_of_stock_message,
+    showOutOfStockMessage: data.show_out_of_stock_message,
+    stockLevelDisplay: data.stock_level_display,
+  }));
 
 const transformInventorySettingsData = (data: InventorySettings) => ({
   default_out_of_stock_message: data.defaultOutOfStockMessage,

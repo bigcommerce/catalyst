@@ -5,10 +5,10 @@ import { buildCatalystField, syncCatalystField } from '../sync-catalyst-version.
 
 describe('buildCatalystField', () => {
   it('derives version and ref from name + version', () => {
-    assert.deepEqual(
-      buildCatalystField({ name: '@bigcommerce/catalyst-core', version: '1.7.0' }),
-      { version: '1.7.0', ref: '@bigcommerce/catalyst-core@1.7.0' },
-    );
+    assert.deepEqual(buildCatalystField({ name: '@bigcommerce/catalyst-core', version: '1.7.0' }), {
+      version: '1.7.0',
+      ref: '@bigcommerce/catalyst-core@1.7.0',
+    });
   });
 });
 

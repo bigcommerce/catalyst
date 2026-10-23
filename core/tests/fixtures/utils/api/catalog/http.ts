@@ -34,24 +34,22 @@ const VariantSchema = z
     inventory_level: z.number().optional(),
     inventory_warning_level: z.number().optional(),
   })
-  .transform(
-    (data): Variant => ({
-      id: data.id,
-      productId: data.product_id,
-      sku: data.sku,
-      price: data.price ?? undefined,
-      salePrice: data.sale_price ?? undefined,
-      retailPrice: data.retail_price ?? undefined,
-      optionValues: data.option_values.map((option) => ({
-        id: option.id,
-        label: option.label,
-        optionId: option.option_id,
-        optionDisplayName: option.option_display_name,
-      })),
-      inventoryLevel: data.inventory_level,
-      inventoryWarningLevel: data.inventory_warning_level,
-    }),
-  );
+  .transform((data): Variant => ({
+    id: data.id,
+    productId: data.product_id,
+    sku: data.sku,
+    price: data.price ?? undefined,
+    salePrice: data.sale_price ?? undefined,
+    retailPrice: data.retail_price ?? undefined,
+    optionValues: data.option_values.map((option) => ({
+      id: option.id,
+      label: option.label,
+      optionId: option.option_id,
+      optionDisplayName: option.option_display_name,
+    })),
+    inventoryLevel: data.inventory_level,
+    inventoryWarningLevel: data.inventory_warning_level,
+  }));
 
 const VariantCreateSchema = z.object({
   sku: z.string(),
@@ -86,24 +84,22 @@ const ProductSchema = z
     inventory_warning_level: z.number().optional(),
     inventory_tracking: z.enum(['none', 'product', 'variant']).optional(),
   })
-  .transform(
-    (data): Product => ({
-      id: data.id,
-      name: data.name,
-      description: data.description,
-      sku: data.sku,
-      price: data.price,
-      retailPrice: data.retail_price,
-      salePrice: data.sale_price,
-      customUrl: data.custom_url,
-      path: data.custom_url.url,
-      variants: data.variants,
-      categories: data.categories,
-      inventoryLevel: data.inventory_level,
-      inventoryWarningLevel: data.inventory_warning_level,
-      inventoryTracking: data.inventory_tracking,
-    }),
-  );
+  .transform((data): Product => ({
+    id: data.id,
+    name: data.name,
+    description: data.description,
+    sku: data.sku,
+    price: data.price,
+    retailPrice: data.retail_price,
+    salePrice: data.sale_price,
+    customUrl: data.custom_url,
+    path: data.custom_url.url,
+    variants: data.variants,
+    categories: data.categories,
+    inventoryLevel: data.inventory_level,
+    inventoryWarningLevel: data.inventory_warning_level,
+    inventoryTracking: data.inventory_tracking,
+  }));
 
 const ProductCreateCustomUrlSchema = z.object({
   url: z.string(),
@@ -139,15 +135,13 @@ const CategorySchema = z
       path: z.string(),
     }),
   })
-  .transform(
-    (data): Category => ({
-      categoryId: data.category_id,
-      parentId: data.parent_id,
-      name: data.name,
-      description: data.description,
-      path: data.url.path,
-    }),
-  );
+  .transform((data): Category => ({
+    categoryId: data.category_id,
+    parentId: data.parent_id,
+    name: data.name,
+    description: data.description,
+    path: data.url.path,
+  }));
 
 const BrandSchema = z
   .object({
@@ -157,13 +151,11 @@ const BrandSchema = z
       url: z.string(),
     }),
   })
-  .transform(
-    (data): Brand => ({
-      id: data.id,
-      name: data.name,
-      path: data.custom_url.url,
-    }),
-  );
+  .transform((data): Brand => ({
+    id: data.id,
+    name: data.name,
+    path: data.custom_url.url,
+  }));
 
 const transformCreateVariantData = (data: CreateVariantData) =>
   VariantCreateSchema.parse({

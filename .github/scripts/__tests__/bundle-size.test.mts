@@ -30,7 +30,8 @@ mkdirSync(testDir, { recursive: true });
 const makeJs = (prefix: string) =>
   Array.from(
     { length: 30 },
-    (_, i) => `export const ${prefix}_${i} = ${JSON.stringify(`${prefix}_v${i}_pad${i * 37 + 13}`)};`,
+    (_, i) =>
+      `export const ${prefix}_${i} = ${JSON.stringify(`${prefix}_v${i}_pad${i * 37 + 13}`)};`,
   ).join('\n') + '\n';
 
 const makeCss = (prefix: string) =>
@@ -136,12 +137,7 @@ describe('computeRootLayout', () => {
       '/[locale]/layout': [],
       '/[locale]/about/deep/layout': [],
     };
-    const { rootLayoutPath } = computeRootLayout(
-      Object.keys(layouts),
-      layouts,
-      new Set(),
-      testDir,
-    );
+    const { rootLayoutPath } = computeRootLayout(Object.keys(layouts), layouts, new Set(), testDir);
 
     assert.equal(rootLayoutPath, '/[locale]/layout');
   });
@@ -163,12 +159,7 @@ describe('computeRootLayout', () => {
   it('excludes sharedChunks from rootLayoutChunks', () => {
     const layouts = { '/layout': ['shared.js', 'root-layout.js'] };
     const sharedChunks = new Set(['shared.js']);
-    const { rootLayoutChunks } = computeRootLayout(
-      ['/layout'],
-      layouts,
-      sharedChunks,
-      testDir,
-    );
+    const { rootLayoutChunks } = computeRootLayout(['/layout'], layouts, sharedChunks, testDir);
 
     assert.ok(!rootLayoutChunks.has('shared.js'), 'shared.js should be excluded');
     assert.ok(rootLayoutChunks.has('root-layout.js'), 'root-layout.js should be included');
@@ -176,12 +167,7 @@ describe('computeRootLayout', () => {
 
   it('rootLayoutChunks contains all non-shared layout chunks', () => {
     const layouts = { '/layout': ['root-layout.js', 'route.js'] };
-    const { rootLayoutChunks } = computeRootLayout(
-      ['/layout'],
-      layouts,
-      new Set(),
-      testDir,
-    );
+    const { rootLayoutChunks } = computeRootLayout(['/layout'], layouts, new Set(), testDir);
 
     assert.ok(rootLayoutChunks.has('root-layout.js'));
     assert.ok(rootLayoutChunks.has('route.js'));
@@ -190,12 +176,7 @@ describe('computeRootLayout', () => {
 
   it('computes non-zero sizes when real files exist', () => {
     const layouts = { '/layout': ['root-layout.js'] };
-    const { rootLayoutJs } = computeRootLayout(
-      ['/layout'],
-      layouts,
-      new Set(),
-      testDir,
-    );
+    const { rootLayoutJs } = computeRootLayout(['/layout'], layouts, new Set(), testDir);
 
     assert.ok(rootLayoutJs > 0, `Expected rootLayoutJs > 0, got ${rootLayoutJs}`);
   });
@@ -210,30 +191,14 @@ describe('computeRouteMetrics', () => {
 
   it('firstLoadJs equals firstLoadJs arg when all chunks are non-existent', () => {
     const pages = { '/app/page': [] };
-    const routes = computeRouteMetrics(
-      pages,
-      {},
-      new Set(),
-      null,
-      new Set(),
-      100,
-      testDir,
-    );
+    const routes = computeRouteMetrics(pages, {}, new Set(), null, new Set(), 100, testDir);
 
     assert.equal(routes['/app/page'].firstLoadJs, 100);
   });
 
   it('firstLoadJs is greater than firstLoadJs arg when real chunk files exist', () => {
     const pages = { '/app/page': ['route.js', 'route.css'] };
-    const routes = computeRouteMetrics(
-      pages,
-      {},
-      new Set(),
-      null,
-      new Set(),
-      0,
-      testDir,
-    );
+    const routes = computeRouteMetrics(pages, {}, new Set(), null, new Set(), 0, testDir);
 
     const { js, css, firstLoadJs } = routes['/app/page'];
 
@@ -358,15 +323,7 @@ describe('computeRouteMetrics', () => {
 
   it('applies round1 to all output values', () => {
     const pages = { '/app/page': [] };
-    const routes = computeRouteMetrics(
-      pages,
-      {},
-      new Set(),
-      null,
-      new Set(),
-      1.25,
-      testDir,
-    );
+    const routes = computeRouteMetrics(pages, {}, new Set(), null, new Set(), 1.25, testDir);
 
     // firstLoadJs = round1(1.25 + 0 + 0) = 1.3
     assert.equal(routes['/app/page'].firstLoadJs, 1.3);
@@ -410,8 +367,14 @@ describe('compareReport', () => {
 
   it('shows "No route changes detected." when only global metrics changed', () => {
     // Global metric differs but routes are identical → section shown with placeholder
-    const baseline = makeReport({ firstLoadJs: 100, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ firstLoadJs: 110, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
+    const baseline = makeReport({
+      firstLoadJs: 100,
+      routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } },
+    });
+    const current = makeReport({
+      firstLoadJs: 110,
+      routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } },
+    });
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes('_No route changes detected._'));
@@ -500,7 +463,9 @@ describe('compareReport', () => {
     const current = makeReport({ firstLoadJs: 128.8 });
     const report = compareReport(baseline, current);
 
-    assert.ok(report.includes(`| First Load JS | 117.7 kB | 128.8 kB | +11.1 kB (+9.4%) | ${WARN_EMOJI} |`));
+    assert.ok(
+      report.includes(`| First Load JS | 117.7 kB | 128.8 kB | +11.1 kB (+9.4%) | ${WARN_EMOJI} |`),
+    );
     assert.ok(report.includes('❌ **Over budget:** First Load JS.'));
   });
 
@@ -514,8 +479,14 @@ describe('compareReport', () => {
   });
 
   it('respects custom budgets', () => {
-    const baseline = makeReport({ firstLoadJs: 100, routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } } });
-    const current = makeReport({ firstLoadJs: 104, routes: { '/app/page': { firstLoadJs: 104, js: 54, css: 5 } } });
+    const baseline = makeReport({
+      firstLoadJs: 100,
+      routes: { '/app/page': { firstLoadJs: 100, js: 50, css: 5 } },
+    });
+    const current = makeReport({
+      firstLoadJs: 104,
+      routes: { '/app/page': { firstLoadJs: 104, js: 54, css: 5 } },
+    });
     const report = compareReport(baseline, current, { firstLoadJsBudget: 3, routeBudget: 5 });
 
     assert.ok(report.includes('❌ **Over budget:** First Load JS.'));
@@ -527,7 +498,9 @@ describe('compareReport', () => {
     const current = makeReport({ firstLoadJs: 101 });
     const report = compareReport(baseline, current);
 
-    assert.ok(report.includes('> Budget: First Load JS may grow by 10 kB and each route by 25 kB.'));
+    assert.ok(
+      report.includes('> Budget: First Load JS may grow by 10 kB and each route by 25 kB.'),
+    );
   });
 
   it('omits the verdict and footer when nothing changed', () => {
@@ -589,10 +562,7 @@ describe('compareReport', () => {
     const report = compareReport(baseline, current);
 
     assert.ok(report.includes('/products/page'), 'Should show /products/page (locale stripped)');
-    assert.ok(
-      !report.includes('/[locale]/products/page'),
-      'Should not show /[locale] prefix',
-    );
+    assert.ok(!report.includes('/[locale]/products/page'), 'Should not show /[locale] prefix');
   });
 
   it('omits near-zero deltas that round to 0.0', () => {
@@ -735,9 +705,15 @@ describe('readTurbopackEntries', () => {
     const entries = readTurbopackEntries(dir);
 
     assert.ok(entries['/products/page'], 'should have /products/page entry');
-    assert.ok(entries['/products/page'].includes('static/chunks/a.js'), 'should normalize /_next/ prefix');
+    assert.ok(
+      entries['/products/page'].includes('static/chunks/a.js'),
+      'should normalize /_next/ prefix',
+    );
     assert.ok(entries['/products/page'].includes('static/chunks/b.js'));
-    assert.ok(!entries['/products/page'].some((c) => c.startsWith('/_next/')), 'no chunk should start with /_next/');
+    assert.ok(
+      !entries['/products/page'].some((c) => c.startsWith('/_next/')),
+      'no chunk should start with /_next/',
+    );
   });
 
   it('filters out non-/page routes (layouts, route handlers)', () => {
@@ -818,7 +794,10 @@ describe('readTurbopackEntries', () => {
 
     const entries = readTurbopackEntries(dir);
 
-    assert.ok(entries['/valid/page'], 'should return valid entries even when another file is malformed');
+    assert.ok(
+      entries['/valid/page'],
+      'should return valid entries even when another file is malformed',
+    );
   });
 
   it('returns empty object when no manifest files exist', () => {
@@ -835,10 +814,7 @@ describe('readTurbopackEntries', () => {
     const dir = join(testDir, `turbopack-no-rsc-${Date.now()}`);
 
     mkdirSync(dir, { recursive: true });
-    writeFileSync(
-      join(dir, 'page_client-reference-manifest.js'),
-      'globalThis.somethingElse = {};',
-    );
+    writeFileSync(join(dir, 'page_client-reference-manifest.js'), 'globalThis.somethingElse = {};');
 
     const entries = readTurbopackEntries(dir);
 

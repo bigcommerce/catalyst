@@ -31,7 +31,10 @@ globalThis.fetch = async (url, init = {}) => {
     const desc = u.searchParams.get('direction') === 'desc';
     const ordered = desc ? openPulls : s.pulls.slice();
     const slice = ordered.slice((page - 1) * perPage, page * perPage);
-    return json(200, slice.map((n) => ({ number: n })));
+    return json(
+      200,
+      slice.map((n) => ({ number: n })),
+    );
   }
 
   let m = u.pathname.match(/\/issues\/(\d+)\/comments$/);
@@ -59,7 +62,10 @@ globalThis.fetch = async (url, init = {}) => {
       const body = JSON.parse(init.body).body;
       for (const pr of Object.keys(s.comments)) {
         const c = s.comments[pr].find((x) => x.id === id);
-        if (c) { c.body = body; s.calls.push({ op: 'patch', pr: Number(pr), id }); }
+        if (c) {
+          c.body = body;
+          s.calls.push({ op: 'patch', pr: Number(pr), id });
+        }
       }
       save(s);
       return json(200, { id, body });
