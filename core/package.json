@@ -116,7 +116,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "1.0.7",
     "tsrs": "0.18.0-ts7.1.0-dev.20260929",
-    "typescript": "^5.8.3",
+    "typescript": "^6.0.3",
     "vitest": "^3.2.4"
   }
 }
