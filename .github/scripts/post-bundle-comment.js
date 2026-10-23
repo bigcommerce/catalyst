@@ -12,7 +12,7 @@ module.exports = async ({ github, context, overBudget, reportPath = '/tmp/bundle
     per_page: 100,
   });
 
-  const existing = comments.find(c => c.body.includes(marker));
+  const existing = comments.find((c) => c.body.includes(marker));
 
   if (!overBudget) {
     if (existing) {

@@ -26,21 +26,19 @@ const WebPageSchema = z
     body: z.string().nullable().optional(),
     contact_fields: z.string().nullable().optional(),
   })
-  .transform(
-    (data): WebPage => ({
-      id: data.id,
-      parentId: data.parent_id,
-      name: data.name,
-      isVisibleInNavigation: data.is_visible,
-      isCustomersOnly: data.is_customers_only,
-      type: data.type,
-      path: data.url ?? undefined,
-      email: data.email ?? undefined,
-      link: data.link ?? undefined,
-      body: data.body ?? undefined,
-      contactFields: ContactFieldTypeSchema.parse(data.contact_fields?.split(',') ?? []),
-    }),
-  );
+  .transform((data): WebPage => ({
+    id: data.id,
+    parentId: data.parent_id,
+    name: data.name,
+    isVisibleInNavigation: data.is_visible,
+    isCustomersOnly: data.is_customers_only,
+    type: data.type,
+    path: data.url ?? undefined,
+    email: data.email ?? undefined,
+    link: data.link ?? undefined,
+    body: data.body ?? undefined,
+    contactFields: ContactFieldTypeSchema.parse(data.contact_fields?.split(',') ?? []),
+  }));
 
 const WebPageCreateSchema = z.object({
   name: z.string(),

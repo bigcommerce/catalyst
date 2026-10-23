@@ -99,10 +99,7 @@ describe('commit comment creation', () => {
     await postReport({ github, context: makeContext({ sha: 'deadbeef' }), reportPath, metaPath });
 
     assert.equal(calls.createCommitComment.length, 1);
-    assert.equal(
-      (calls.createCommitComment[0] as { commit_sha: string }).commit_sha,
-      'deadbeef',
-    );
+    assert.equal((calls.createCommitComment[0] as { commit_sha: string }).commit_sha, 'deadbeef');
   });
 
   it('passes the correct owner and repo', async () => {

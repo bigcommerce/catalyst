@@ -101,9 +101,10 @@ export function UpdateAccountForm({
 
   const customFieldsDefaultValue = customFields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
-    .reduce<
-      Record<string, unknown>
-    >((acc, f) => ({ ...acc, [f.name]: 'defaultValue' in f ? f.defaultValue : '' }), {});
+    .reduce<Record<string, unknown>>(
+      (acc, f) => ({ ...acc, [f.name]: 'defaultValue' in f ? f.defaultValue : '' }),
+      {},
+    );
 
   const [form, fields] = useForm({
     lastResult: state.lastResult,

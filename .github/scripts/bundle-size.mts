@@ -1,21 +1,15 @@
 #!/usr/bin/env node
 /* eslint-disable no-console, no-restricted-syntax, no-plusplus, no-continue */
 
-import {
-  appendFileSync,
-  existsSync,
-  readFileSync,
-  readdirSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
-import { parseArgs } from "node:util";
-import { gzipSync } from "node:zlib";
+import { appendFileSync, existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { parseArgs } from 'node:util';
+import { gzipSync } from 'node:zlib';
 
 // eslint-disable-next-line no-underscore-dangle
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const CORE_DIR = resolve(__dirname, "..", "..", "core");
+const CORE_DIR = resolve(__dirname, '..', '..', 'core');
 
 interface ChunkSizes {
   js: number;
@@ -78,7 +72,7 @@ function sumChunkSizes(chunks: Iterable<string>, dir: string): ChunkSizes {
   for (const chunk of chunks) {
     const size = getGzipSize(join(dir, chunk));
 
-    if (chunk.endsWith(".css")) {
+    if (chunk.endsWith('.css')) {
       css += size;
     } else {
       js += size;
@@ -96,9 +90,9 @@ function parseManifestEntries(entries: Record<string, string[]>): {
   const pages: Record<string, string[]> = {};
 
   for (const [route, chunks] of Object.entries(entries)) {
-    if (route.endsWith("/layout")) {
+    if (route.endsWith('/layout')) {
       layouts[route] = chunks;
-    } else if (route.endsWith("/page")) {
+    } else if (route.endsWith('/page')) {
       pages[route] = chunks;
     }
   }
@@ -117,18 +111,14 @@ function computeRootLayout(
   rootLayoutJs: number;
   rootLayoutCss: number;
 } {
-  const sorted = [...layoutPaths].sort(
-    (a, b) => a.split("/").length - b.split("/").length,
-  );
+  const sorted = [...layoutPaths].sort((a, b) => a.split('/').length - b.split('/').length);
   const rootLayoutPath = sorted[0] ?? null;
   const rootLayoutChunks = new Set<string>();
   let rootLayoutJs = 0;
   let rootLayoutCss = 0;
 
   if (rootLayoutPath) {
-    const uniqueChunks = layouts[rootLayoutPath].filter(
-      (c) => !sharedChunks.has(c),
-    );
+    const uniqueChunks = layouts[rootLayoutPath].filter((c) => !sharedChunks.has(c));
     const sizes = sumChunkSizes(uniqueChunks, nextDir);
 
     rootLayoutJs = sizes.js;
@@ -151,14 +141,14 @@ function computeRouteMetrics(
   const routes: Record<string, RouteMetric> = {};
 
   for (const [route, chunks] of Object.entries(pages)) {
-    const segments = route.split("/");
+    const segments = route.split('/');
 
     segments.pop(); // remove 'page'
 
     const ancestorLayouts: string[] = [];
 
     for (let i = segments.length; i >= 1; i--) {
-      const parentPath = `${segments.slice(0, i).join("/")}/layout`;
+      const parentPath = `${segments.slice(0, i).join('/')}/layout`;
 
       if (layouts[parentPath]) {
         ancestorLayouts.push(parentPath);
@@ -176,9 +166,7 @@ function computeRouteMetrics(
     for (const layoutPath of ancestorLayouts) {
       if (layoutPath === rootLayoutPath) continue;
 
-      for (const chunk of layouts[layoutPath].filter(
-        (c) => !sharedChunks.has(c),
-      )) {
+      for (const chunk of layouts[layoutPath].filter((c) => !sharedChunks.has(c))) {
         if (!rootLayoutChunks.has(chunk)) {
           routeChunks.add(chunk);
         }
@@ -208,12 +196,12 @@ function readTurbopackEntries(serverAppDir: string): Record<string, string[]> {
 
       if (item.isDirectory()) {
         scanDir(fullPath);
-      } else if (item.name.endsWith("_client-reference-manifest.js")) {
+      } else if (item.name.endsWith('_client-reference-manifest.js')) {
         try {
-          const content = readFileSync(fullPath, "utf-8");
+          const content = readFileSync(fullPath, 'utf-8');
           const g: Record<string, unknown> = {};
           // eslint-disable-next-line no-new-func
-          const fn = new Function("globalThis", "self", `${content}\nreturn globalThis;`);
+          const fn = new Function('globalThis', 'self', `${content}\nreturn globalThis;`);
           const result = fn(g, g) as {
             __RSC_MANIFEST?: Record<
               string,
@@ -225,14 +213,14 @@ function readTurbopackEntries(serverAppDir: string): Record<string, string[]> {
           if (!manifest) continue;
 
           for (const [routeKey, entry] of Object.entries(manifest)) {
-            if (!routeKey.endsWith("/page")) continue;
+            if (!routeKey.endsWith('/page')) continue;
 
             const chunks = new Set<string>();
 
             for (const mod of Object.values(entry.clientModules ?? {})) {
               for (const chunk of mod.chunks ?? []) {
                 // Normalize: "/_next/static/chunks/xxx.js" → "static/chunks/xxx.js"
-                chunks.add(chunk.replace(/^\/_next\//, ""));
+                chunks.add(chunk.replace(/^\/_next\//, ''));
               }
             }
 
@@ -258,7 +246,7 @@ function hasChanged(base: number, curr: number): boolean {
 }
 
 function displayRoute(route: string): string {
-  return route.replace(/^\/\[locale\]/, "");
+  return route.replace(/^\/\[locale\]/, '');
 }
 
 function exceeds(base: number, curr: number, budget: number): boolean {
@@ -275,7 +263,7 @@ function findOverBudget(
   const over: string[] = [];
 
   if (exceeds(baseline.firstLoadJs, current.firstLoadJs, firstLoadJsBudget)) {
-    over.push("First Load JS");
+    over.push('First Load JS');
   }
 
   const routes: string[] = [];
@@ -299,9 +287,9 @@ function compareReport(
   function formatDelta(base: number, curr: number): string {
     const delta = curr - base;
     const rounded = round1(delta);
-    const sign = delta >= 0 ? "+" : "";
+    const sign = delta >= 0 ? '+' : '';
     const pct = base > 0 ? (delta / base) * 100 : 0;
-    const pctStr = base > 0 ? ` (${sign}${round1(pct)}%)` : "";
+    const pctStr = base > 0 ? ` (${sign}${round1(pct)}%)` : '';
     return `${sign}${rounded} kB${pctStr}`;
   }
 
@@ -312,12 +300,10 @@ function compareReport(
 
   const lines: string[] = [];
 
-  lines.push("## Bundle Size Report");
-  lines.push("");
-  lines.push(
-    `Comparing against baseline from \`${baseline.commitSha}\` (${baseline.updatedAt}).`,
-  );
-  lines.push("");
+  lines.push('## Bundle Size Report');
+  lines.push('');
+  lines.push(`Comparing against baseline from \`${baseline.commitSha}\` (${baseline.updatedAt}).`);
+  lines.push('');
 
   const changedMetrics: Array<{
     name: string;
@@ -326,13 +312,13 @@ function compareReport(
     budget?: number;
   }> = [
     {
-      name: "First Load JS",
+      name: 'First Load JS',
       base: baseline.firstLoadJs,
       curr: current.firstLoadJs,
       budget: firstLoadJsBudget,
     },
-    { name: "Total JS", base: baseline.totalJs, curr: current.totalJs },
-    { name: "Total CSS", base: baseline.totalCss, curr: current.totalCss },
+    { name: 'Total JS', base: baseline.totalJs, curr: current.totalJs },
+    { name: 'Total CSS', base: baseline.totalCss, curr: current.totalCss },
   ].filter((m) => hasChanged(m.base, m.curr));
 
   const allRoutes = new Set([
@@ -349,18 +335,12 @@ function compareReport(
     const curr = current.routes?.[route];
 
     if (!base && curr) {
-      routeLines.push(
-        `| ${display} | -- | ${round1(curr.firstLoadJs)} kB | ✨ NEW | |`,
-      );
+      routeLines.push(`| ${display} | -- | ${round1(curr.firstLoadJs)} kB | ✨ NEW | |`);
     } else if (base && !curr) {
-      routeLines.push(
-        `| ${display} | ${round1(base.firstLoadJs)} kB | -- | REMOVED | |`,
-      );
+      routeLines.push(`| ${display} | ${round1(base.firstLoadJs)} kB | -- | REMOVED | |`);
     } else if (base && curr && hasChanged(base.firstLoadJs, curr.firstLoadJs)) {
       const d = formatDelta(base.firstLoadJs, curr.firstLoadJs);
-      const warn = exceeds(base.firstLoadJs, curr.firstLoadJs, routeBudget)
-        ? " ⚠️"
-        : "";
+      const warn = exceeds(base.firstLoadJs, curr.firstLoadJs, routeBudget) ? ' ⚠️' : '';
 
       routeLines.push(
         `| ${display} | ${round1(base.firstLoadJs)} kB | ${round1(curr.firstLoadJs)} kB | ${d} |${warn} |`,
@@ -369,81 +349,71 @@ function compareReport(
   }
 
   if (changedMetrics.length === 0 && routeLines.length === 0) {
-    lines.push("No bundle size changes detected.");
-    lines.push("");
-    return lines.join("\n");
+    lines.push('No bundle size changes detected.');
+    lines.push('');
+    return lines.join('\n');
   }
 
   if (overBudget.length > 0) {
     lines.push(
-      `❌ **Over budget:** ${overBudget.join(", ")}. If the increase is intended, add the \`bundle-size-ok\` label.`,
+      `❌ **Over budget:** ${overBudget.join(', ')}. If the increase is intended, add the \`bundle-size-ok\` label.`,
     );
   } else {
-    lines.push("✅ Within budget.");
+    lines.push('✅ Within budget.');
   }
 
-  lines.push("");
+  lines.push('');
 
   if (changedMetrics.length > 0) {
-    lines.push("| Metric | Baseline | Current | Delta | |");
-    lines.push("|:-------|:---------|:--------|:------|:-|");
+    lines.push('| Metric | Baseline | Current | Delta | |');
+    lines.push('|:-------|:---------|:--------|:------|:-|');
 
     for (const m of changedMetrics) {
       const d = formatDelta(m.base, m.curr);
-      const warn =
-        m.budget !== undefined && exceeds(m.base, m.curr, m.budget)
-          ? " ⚠️"
-          : "";
+      const warn = m.budget !== undefined && exceeds(m.base, m.curr, m.budget) ? ' ⚠️' : '';
 
-      lines.push(
-        `| ${m.name} | ${round1(m.base)} kB | ${round1(m.curr)} kB | ${d} |${warn} |`,
-      );
+      lines.push(`| ${m.name} | ${round1(m.base)} kB | ${round1(m.curr)} kB | ${d} |${warn} |`);
     }
 
-    lines.push("");
+    lines.push('');
   }
 
-  lines.push("### Per-Route First Load JS");
-  lines.push("");
+  lines.push('### Per-Route First Load JS');
+  lines.push('');
 
   if (routeLines.length > 0) {
-    lines.push("| Route | Baseline | Current | Delta | |");
-    lines.push("|:------|:---------|:--------|:------|:-|");
+    lines.push('| Route | Baseline | Current | Delta | |');
+    lines.push('|:------|:---------|:--------|:------|:-|');
     lines.push(...routeLines);
   } else {
-    lines.push("_No route changes detected._");
+    lines.push('_No route changes detected._');
   }
 
-  lines.push("");
+  lines.push('');
   lines.push(
     `> Budget: First Load JS may grow by ${firstLoadJsBudget} kB and each route by ${routeBudget} kB. Rows with ⚠️ exceed it.`,
   );
-  lines.push("");
+  lines.push('');
 
-  return lines.join("\n");
+  return lines.join('\n');
 }
 
-function generate(
-  nextDir: string,
-  values: Record<string, string | undefined>,
-): void {
-  const appManifestPath = join(nextDir, "app-build-manifest.json");
-  const buildManifestPath = join(nextDir, "build-manifest.json");
-  const serverAppDir = join(nextDir, "server", "app");
+function generate(nextDir: string, values: Record<string, string | undefined>): void {
+  const appManifestPath = join(nextDir, 'app-build-manifest.json');
+  const buildManifestPath = join(nextDir, 'build-manifest.json');
+  const serverAppDir = join(nextDir, 'server', 'app');
 
   const isWebpack = existsSync(appManifestPath);
   const isTurbopack = !isWebpack && existsSync(serverAppDir);
 
   if (!isWebpack && !isTurbopack) {
     console.error(
-      "Error: No build output found (.next/app-build-manifest.json or .next/server/app/). Run `next build` first.",
+      'Error: No build output found (.next/app-build-manifest.json or .next/server/app/). Run `next build` first.',
     );
     process.exit(1);
   }
 
-  const buildManifest = JSON.parse(
-    readFileSync(buildManifestPath, "utf-8"),
-  ) as {
+  const buildManifest = JSON.parse(readFileSync(buildManifestPath, 'utf-8')) as {
     rootMainFiles?: string[];
     polyfillFiles?: string[];
   };
@@ -455,7 +425,7 @@ function generate(
   let entries: Record<string, string[]>;
 
   if (isWebpack) {
-    const appManifest = JSON.parse(readFileSync(appManifestPath, "utf-8")) as {
+    const appManifest = JSON.parse(readFileSync(appManifestPath, 'utf-8')) as {
       pages?: Record<string, string[]>;
     };
 
@@ -470,8 +440,12 @@ function generate(
   const sharedJs = round1(sharedSizes.js);
 
   // Root layout
-  const { rootLayoutPath, rootLayoutChunks, rootLayoutJs, rootLayoutCss } =
-    computeRootLayout(Object.keys(layouts), layouts, sharedChunks, nextDir);
+  const { rootLayoutPath, rootLayoutChunks, rootLayoutJs, rootLayoutCss } = computeRootLayout(
+    Object.keys(layouts),
+    layouts,
+    sharedChunks,
+    nextDir,
+  );
 
   const sharedCss = round1(rootLayoutCss);
   const firstLoadJs = round1(sharedJs + rootLayoutJs + rootLayoutCss);
@@ -501,8 +475,8 @@ function generate(
   );
 
   const result: BundleReport = {
-    commitSha: values.sha ?? "unknown",
-    updatedAt: new Date().toISOString().split("T")[0],
+    commitSha: values.sha ?? 'unknown',
+    updatedAt: new Date().toISOString().split('T')[0],
     firstLoadJs,
     shared: { js: sharedJs, css: sharedCss },
     routes,
@@ -521,21 +495,16 @@ function generate(
   }
 }
 
-function compare(
-  nextDir: string,
-  values: Record<string, string | undefined>,
-): void {
-  const baselinePath = resolve(
-    values.baseline ?? join(CORE_DIR, "bundle-baseline.json"),
-  );
-  const currentPath = resolve(values.current ?? "");
+function compare(nextDir: string, values: Record<string, string | undefined>): void {
+  const baselinePath = resolve(values.baseline ?? join(CORE_DIR, 'bundle-baseline.json'));
+  const currentPath = resolve(values.current ?? '');
   const budgets: CompareOptions = {
-    firstLoadJsBudget: Number(values["first-load-budget"] ?? "10"),
-    routeBudget: Number(values["route-budget"] ?? "25"),
+    firstLoadJsBudget: Number(values['first-load-budget'] ?? '10'),
+    routeBudget: Number(values['route-budget'] ?? '25'),
   };
 
   if (!currentPath || !existsSync(currentPath)) {
-    console.error("Error: --current <path> is required and must exist");
+    console.error('Error: --current <path> is required and must exist');
     process.exit(1);
   }
 
@@ -544,12 +513,8 @@ function compare(
     process.exit(1);
   }
 
-  const baseline = JSON.parse(
-    readFileSync(baselinePath, "utf-8"),
-  ) as BundleReport;
-  const current = JSON.parse(
-    readFileSync(currentPath, "utf-8"),
-  ) as BundleReport;
+  const baseline = JSON.parse(readFileSync(baselinePath, 'utf-8')) as BundleReport;
+  const current = JSON.parse(readFileSync(currentPath, 'utf-8')) as BundleReport;
 
   process.stdout.write(compareReport(baseline, current, budgets));
 
@@ -581,45 +546,35 @@ if (isMain) {
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     options: {
-      output: { type: "string" },
-      baseline: { type: "string" },
-      current: { type: "string" },
-      "first-load-budget": { type: "string" },
-      "route-budget": { type: "string" },
-      sha: { type: "string" },
-      dir: { type: "string" },
+      output: { type: 'string' },
+      baseline: { type: 'string' },
+      current: { type: 'string' },
+      'first-load-budget': { type: 'string' },
+      'route-budget': { type: 'string' },
+      sha: { type: 'string' },
+      dir: { type: 'string' },
     },
   });
 
-  const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, ".next");
+  const NEXT_DIR = values.dir ? resolve(values.dir) : join(CORE_DIR, '.next');
   const command = positionals.at(0);
 
-  if (command === "generate") {
+  if (command === 'generate') {
     generate(NEXT_DIR, values);
-  } else if (command === "compare") {
+  } else if (command === 'compare') {
     compare(NEXT_DIR, values);
   } else {
-    console.error("Usage: bundle-size.mts <generate|compare> [options]");
-    console.error("");
-    console.error("Commands:");
-    console.error(
-      "  generate  Analyze .next/ build output and produce bundle size JSON",
-    );
-    console.error("    --output <path>  Write JSON to file instead of stdout");
-    console.error("");
-    console.error("  compare   Compare current bundle against a baseline");
-    console.error(
-      "    --baseline <path>  Path to baseline JSON (default: ./bundle-baseline.json)",
-    );
-    console.error(
-      "    --current <path>   Path to current bundle JSON (required)",
-    );
-    console.error(
-      "    --first-load-budget <kB>  Allowed First Load JS increase (default: 10)",
-    );
-    console.error(
-      "    --route-budget <kB>       Allowed per-route increase (default: 25)",
-    );
+    console.error('Usage: bundle-size.mts <generate|compare> [options]');
+    console.error('');
+    console.error('Commands:');
+    console.error('  generate  Analyze .next/ build output and produce bundle size JSON');
+    console.error('    --output <path>  Write JSON to file instead of stdout');
+    console.error('');
+    console.error('  compare   Compare current bundle against a baseline');
+    console.error('    --baseline <path>  Path to baseline JSON (default: ./bundle-baseline.json)');
+    console.error('    --current <path>   Path to current bundle JSON (required)');
+    console.error('    --first-load-budget <kB>  Allowed First Load JS increase (default: 10)');
+    console.error('    --route-budget <kB>       Allowed per-route increase (default: 25)');
     process.exit(1);
   }
 }

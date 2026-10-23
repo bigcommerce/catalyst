@@ -28,20 +28,18 @@ const RedirectSchema = z
     from_path: z.string(),
     to: RedirectToSchema,
   })
-  .transform(
-    (data): Redirect => ({
-      id: data.id,
-      siteId: data.site_id,
-      fromPath: data.from_path,
-      to:
-        data.to.type === 'url'
-          ? { type: 'url', url: data.to.url }
-          : {
-              type: data.to.type,
-              entityId: data.to.entity_id,
-            },
-    }),
-  );
+  .transform((data): Redirect => ({
+    id: data.id,
+    siteId: data.site_id,
+    fromPath: data.from_path,
+    to:
+      data.to.type === 'url'
+        ? { type: 'url', url: data.to.url }
+        : {
+            type: data.to.type,
+            entityId: data.to.entity_id,
+          },
+  }));
 
 const RedirectUpsertDataSchema = z.object({
   site_id: z.number(),

@@ -13,12 +13,10 @@ const CouponSchema = z
     id: z.number(),
     code: z.string(),
   })
-  .transform(
-    (data): Coupon => ({
-      id: data.id,
-      code: data.code,
-    }),
-  );
+  .transform((data): Coupon => ({
+    id: data.id,
+    code: data.code,
+  }));
 
 export const promotionsHttpClient: PromotionsApi = {
   createCouponCode: async () => {

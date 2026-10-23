@@ -12,12 +12,10 @@ const CurrencyAssignmentSchema = z
     enabled_currencies: z.array(z.string()),
     default_currency: z.string(),
   })
-  .transform(
-    (data): CurrencyAssignments => ({
-      enabledCurrencies: data.enabled_currencies,
-      defaultCurrency: data.default_currency,
-    }),
-  );
+  .transform((data): CurrencyAssignments => ({
+    enabledCurrencies: data.enabled_currencies,
+    defaultCurrency: data.default_currency,
+  }));
 
 const CurrencySchema = z
   .object({
@@ -28,16 +26,14 @@ const CurrencySchema = z
     currency_exchange_rate: z.coerce.number(),
     currency_code: z.string(),
   })
-  .transform(
-    (data): Currency => ({
-      id: data.id,
-      isDefault: data.is_default,
-      isEnabled: data.enabled,
-      decimalPlaces: data.decimal_places,
-      exchangeRate: data.currency_exchange_rate,
-      currencyCode: data.currency_code,
-    }),
-  );
+  .transform((data): Currency => ({
+    id: data.id,
+    isDefault: data.is_default,
+    isEnabled: data.enabled,
+    decimalPlaces: data.decimal_places,
+    exchangeRate: data.currency_exchange_rate,
+    currencyCode: data.currency_code,
+  }));
 
 export const currenciesHttpClient: CurrenciesApi = {
   getCurrencyAssignments: async (): Promise<CurrencyAssignments> => {

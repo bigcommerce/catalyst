@@ -31,24 +31,22 @@ const AddressSchema = z
     postal_code: z.string(),
     state_or_province: z.string().optional(),
   })
-  .transform(
-    (data): Address => ({
-      id: data.id,
-      address1: data.address1,
-      city: data.city,
-      country: data.country,
-      countryCode: data.country_code,
-      firstName: data.first_name,
-      lastName: data.last_name,
-      postalCode: data.postal_code,
-      customerId: data.customer_id,
-      addressType: data.address_type,
-      address2: data.address2,
-      company: data.company,
-      phone: data.phone,
-      stateOrProvince: data.state_or_province,
-    }),
-  );
+  .transform((data): Address => ({
+    id: data.id,
+    address1: data.address1,
+    city: data.city,
+    country: data.country,
+    countryCode: data.country_code,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    postalCode: data.postal_code,
+    customerId: data.customer_id,
+    addressType: data.address_type,
+    address2: data.address2,
+    company: data.company,
+    phone: data.phone,
+    stateOrProvince: data.state_or_province,
+  }));
 
 const AddressCreateSchema = z.object({
   customer_id: z.number().optional(),
@@ -79,22 +77,20 @@ const CustomerSchema = z
     origin_channel_id: z.number(),
     channel_ids: z.nullable(z.array(z.number())),
   })
-  .transform(
-    (data): Customer => ({
-      id: data.id,
-      email: data.email,
-      firstName: data.first_name,
-      lastName: data.last_name,
-      originChannelId: data.origin_channel_id,
-      channelIds: data.channel_ids,
-      addressCount: data.address_count ?? 0,
-      addresses: data.addresses,
-      company: data.company,
-      customerGroupId: data.customer_group_id ?? 0,
-      notes: data.notes,
-      phone: data.phone,
-    }),
-  );
+  .transform((data): Customer => ({
+    id: data.id,
+    email: data.email,
+    firstName: data.first_name,
+    lastName: data.last_name,
+    originChannelId: data.origin_channel_id,
+    channelIds: data.channel_ids,
+    addressCount: data.address_count ?? 0,
+    addresses: data.addresses,
+    company: data.company,
+    customerGroupId: data.customer_group_id ?? 0,
+    notes: data.notes,
+    phone: data.phone,
+  }));
 
 const CustomerCreateSchema = z.object({
   addresses: z.array(AddressCreateSchema).optional(),
@@ -129,20 +125,18 @@ const WishlistSchema = z
       }),
     ),
   })
-  .transform(
-    (data): Wishlist => ({
-      id: data.id,
-      customerId: data.customer_id,
-      name: data.name,
-      isPublic: data.is_public,
-      token: data.token,
-      items: data.items.map((item) => ({
-        id: item.id,
-        productId: item.product_id,
-        variantId: item.variant_id,
-      })),
-    }),
-  );
+  .transform((data): Wishlist => ({
+    id: data.id,
+    customerId: data.customer_id,
+    name: data.name,
+    isPublic: data.is_public,
+    token: data.token,
+    items: data.items.map((item) => ({
+      id: item.id,
+      productId: item.product_id,
+      variantId: item.variant_id,
+    })),
+  }));
 
 const WishlistCreateSchema = z.object({
   customer_id: z.number(),

@@ -1,26 +1,26 @@
-const fs = require("fs");
+const fs = require('fs');
 
 module.exports = async ({ core, exec }) => {
   try {
-    await exec.exec("git", [
-      "fetch",
-      "https://github.com/bigcommerce/catalyst.git",
-      "integrations/makeswift",
+    await exec.exec('git', [
+      'fetch',
+      'https://github.com/bigcommerce/catalyst.git',
+      'integrations/makeswift',
     ]);
 
-    const { stdout } = await exec.getExecOutput("git", [
-      "diff",
-      "--name-only",
+    const { stdout } = await exec.getExecOutput('git', [
+      'diff',
+      '--name-only',
       `origin/integrations/makeswift...HEAD`,
     ]);
 
-    const allFilenames = stdout.split("\n").filter((line) => line.trim());
+    const allFilenames = stdout.split('\n').filter((line) => line.trim());
     const changesetFilenames = allFilenames.filter(
-      (file) => file.startsWith(".changeset/") && file.endsWith(".md"),
+      (file) => file.startsWith('.changeset/') && file.endsWith('.md'),
     );
 
     if (changesetFilenames.length === 0) {
-      core.info("No changeset files found to validate");
+      core.info('No changeset files found to validate');
       return;
     }
 
@@ -37,8 +37,8 @@ module.exports = async ({ core, exec }) => {
 
       // extra defense against path traversal attacks
       if (
-        filename.includes("..") ||
-        (filename.includes("/") && !filename.startsWith(".changeset/"))
+        filename.includes('..') ||
+        (filename.includes('/') && !filename.startsWith('.changeset/'))
       ) {
         core.setFailed(`Suspicious file path: ${filename}`);
         return;
@@ -65,7 +65,7 @@ module.exports = async ({ core, exec }) => {
         return;
       }
 
-      const content = fs.readFileSync(filename, "utf8");
+      const content = fs.readFileSync(filename, 'utf8');
 
       // starts with "---", captures everything until the next "---"
       const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
@@ -94,16 +94,14 @@ module.exports = async ({ core, exec }) => {
             { file: filename },
           );
           core.setFailed(
-            `File ${filename} contains invalid packages: ${invalidPackages.join(
-              ", ",
-            )}`,
+            `File ${filename} contains invalid packages: ${invalidPackages.join(', ')}`,
           );
           return;
         }
       }
     }
 
-    core.info("All changeset files validated successfully");
+    core.info('All changeset files validated successfully');
   } catch (error) {
     core.setFailed(`Validation failed: ${error.message}`);
   }
