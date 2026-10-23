@@ -168,10 +168,7 @@ function gitInfo() {
   const branch = git(['rev-parse', '--abbrev-ref', 'HEAD']).stdout;
   // `next dev` rewrites agent docs (AGENTS.md) on startup; list changed files so a reviewer can
   // tell that apart from untested code.
-  const dirtyFiles = git(['status', '--porcelain', '--untracked-files=no'])
-    .stdout.split(/\r?\n/)
-    .filter(Boolean)
-    .map((line) => line.slice(3));
+  const dirtyFiles = git(['diff', '--name-only', 'HEAD']).stdout.split(/\r?\n/).filter(Boolean);
 
   return { sha, branch, dirty: dirtyFiles.length > 0, dirtyFiles };
 }
