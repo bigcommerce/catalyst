@@ -27,12 +27,12 @@
   },
   "peerDependencies": {
     "eslint": "^8.0.0",
-    "typescript": "^4.0.0 || ^5.0.0",
+    "typescript": "^4.0.0 || ^5.0.0 || ^6.0.0",
     "oxlint": "^1.89.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
-    "typescript": "^5.8.3"
+    "typescript": "^6.0.3"
   },
   "exports": {
     "./base": "./base.js",

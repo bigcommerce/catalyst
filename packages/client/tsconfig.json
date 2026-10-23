@@ -19,7 +19,8 @@
     "strict": true,
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "resolveJsonModule": true,
-    "lib": ["esnext"]
+    "lib": ["esnext"],
+    "types": ["node"]
   },
   "exclude": ["node_modules"]
 }
