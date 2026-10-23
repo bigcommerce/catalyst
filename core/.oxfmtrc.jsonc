@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  "sortTailwindcss": {
+    "functions": ["cn"],
+  },
+  // Only JS/TS is formatted for now. messages/*.json are synced from the translation service and
+  // must never be reformatted.
+  "ignorePatterns": [
+    "**/*.md",
+    "**/*.json",
+    "**/*.yml",
+    "**/*.yaml",
+    "bigcommerce.graphql",
+    "bigcommerce-graphql.d.ts",
+  ],
+}

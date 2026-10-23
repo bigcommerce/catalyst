@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-import { readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export interface CorePackageJson {
   name: string;
@@ -15,9 +15,10 @@ export interface CorePackageJson {
 // `catalyst.version` mirrors the released version; `catalyst.ref` is the git tag
 // (`@bigcommerce/catalyst-core@<version>`) the version corresponds to, consumed
 // by the future `catalyst upgrade` command.
-export function buildCatalystField(
-  pkg: Pick<CorePackageJson, "name" | "version">,
-): { version: string; ref: string } {
+export function buildCatalystField(pkg: Pick<CorePackageJson, 'name' | 'version'>): {
+  version: string;
+  ref: string;
+} {
   return { version: pkg.version, ref: `${pkg.name}@${pkg.version}` };
 }
 
@@ -36,19 +37,17 @@ export function syncCatalystField(packageJsonText: string): string {
 function main(): void {
   const corePackageJsonPath = resolve(
     dirname(fileURLToPath(import.meta.url)),
-    "../../core/package.json",
+    '../../core/package.json',
   );
 
-  const updated = syncCatalystField(readFileSync(corePackageJsonPath, "utf-8"));
+  const updated = syncCatalystField(readFileSync(corePackageJsonPath, 'utf-8'));
 
   writeFileSync(corePackageJsonPath, updated);
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const { catalyst } = JSON.parse(updated) as CorePackageJson;
 
-  console.log(
-    `Synced core/package.json catalyst field → ${catalyst?.version} (${catalyst?.ref})`,
-  );
+  console.log(`Synced core/package.json catalyst field → ${catalyst?.version} (${catalyst?.ref})`);
 }
 
 const isMain = process.argv[1] === fileURLToPath(import.meta.url);

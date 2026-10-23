@@ -26,12 +26,12 @@ const config = {
         ignoreMiddleExtensions: true,
       },
     ],
-    "check-file/folder-naming-convention": [
-      "error",
+    'check-file/folder-naming-convention': [
+      'error',
       {
-        "**": "KEBAB_CASE",
-      }
-    ]
+        '**': 'KEBAB_CASE',
+      },
+    ],
   },
 };
 

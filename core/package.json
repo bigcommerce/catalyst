@@ -18,8 +18,10 @@
     "start": "next start",
     "test": "vitest run",
     "prelint": "next typegen",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "typecheck": "tsc --noEmit"
+    "lint": "oxlint",
+    "typecheck": "node scripts/typecheck.mjs",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -87,7 +89,6 @@
   },
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.16",
-    "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^9.8.0",
     "@gql.tada/cli-utils": "^1.6.3",
@@ -97,7 +98,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@types/react-google-recaptcha": "^2.1.9",
@@ -106,15 +107,15 @@
     "autoprefixer": "^10.4.21",
     "dotenv": "^16.5.0",
     "dotenv-cli": "^8.0.0",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "15.5.10",
+    "oxfmt": "0.74.0",
+    "oxlint": "1.89.0",
+    "oxlint-tsgolint": "7.0.2005",
     "postcss": "^8.5.4",
     "postcss-preset-env": "^10.2.1",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "^5.8.3",
+    "tsrs": "0.18.0-ts7.1.0-dev.20260929",
+    "typescript": "^6.0.3",
     "vitest": "^3.2.4"
   }
 }

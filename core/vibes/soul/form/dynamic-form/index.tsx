@@ -174,7 +174,7 @@ export function DynamicForm<F extends Field>({
   });
 
   useEffect(() => {
-    if (lastResult && lastResult.status === 'success' && successMessage) {
+    if (lastResult?.status === 'success' && successMessage) {
       onSuccess?.(lastResult, successMessage);
     }
   }, [lastResult, successMessage, onSuccess]);

@@ -1,6 +1,11 @@
 const fs = require('fs');
 
-module.exports = async ({ github, context, reportPath = '/tmp/unlighthouse-report.md', metaPath = '/tmp/unlighthouse-meta.json' }) => {
+module.exports = async ({
+  github,
+  context,
+  reportPath = '/tmp/unlighthouse-report.md',
+  metaPath = '/tmp/unlighthouse-meta.json',
+}) => {
   const { failed } = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
 
   // Find PR from commit SHA (context.issue.number is 0 in deployment_status events;
@@ -29,7 +34,7 @@ module.exports = async ({ github, context, reportPath = '/tmp/unlighthouse-repor
     issue_number: prNumber,
   });
 
-  const existing = comments.find(c => c.body.includes(marker));
+  const existing = comments.find((c) => c.body.includes(marker));
 
   // Only open a new comment for failures, but keep an existing one current so
   // it shows when the regression is fixed.

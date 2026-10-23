@@ -126,7 +126,8 @@ check('the preflight labels each item as a secret or a variable', () => {
 
   // Store hash and channel id are configuration, not credentials.
   for (const name of ['BIGCOMMERCE_STORE_HASH', 'BIGCOMMERCE_CHANNEL_ID']) {
-    if (!labels.includes(`${name} (variable)`)) throw new Error(`${name} is not labelled a variable`);
+    if (!labels.includes(`${name} (variable)`))
+      throw new Error(`${name} is not labelled a variable`);
   }
   for (const name of ['BIGCOMMERCE_ACCESS_TOKEN', 'BIGCOMMERCE_STOREFRONT_TOKEN', 'AUTH_SECRET']) {
     if (!labels.includes(`${name} (secret)`)) throw new Error(`${name} is not labelled a secret`);
@@ -143,7 +144,9 @@ check('the reusable workflow only takes real credentials as secrets', () => {
 
 console.log('\nworkflows and examples');
 
-const examples = ['with-action.yml', 'with-reusable-workflow.yml'].map((f) => join(ROOT, 'examples', f));
+const examples = ['with-action.yml', 'with-reusable-workflow.yml'].map((f) =>
+  join(ROOT, 'examples', f),
+);
 
 for (const file of [reusable, ...examples]) {
   check(`parses: ${file.replace(REPO_ROOT + '/', '')}`, () => load(file));
@@ -166,9 +169,14 @@ check('every input the reusable workflow passes exists on the action', () => {
 
 check('the reusable workflow supplies configuration through job env', () => {
   const job = load(reusable).jobs.preview;
-  const expected = ['BIGCOMMERCE_PREVIEW_PROJECT_UUID', 'BIGCOMMERCE_STORE_HASH',
-                    'BIGCOMMERCE_CHANNEL_ID', 'BIGCOMMERCE_ACCESS_TOKEN',
-                    'BIGCOMMERCE_STOREFRONT_TOKEN', 'AUTH_SECRET'];
+  const expected = [
+    'BIGCOMMERCE_PREVIEW_PROJECT_UUID',
+    'BIGCOMMERCE_STORE_HASH',
+    'BIGCOMMERCE_CHANNEL_ID',
+    'BIGCOMMERCE_ACCESS_TOKEN',
+    'BIGCOMMERCE_STOREFRONT_TOKEN',
+    'AUTH_SECRET',
+  ];
   const missing = expected.filter((k) => !(k in (job.env || {})));
   if (missing.length) throw new Error(`missing job env: ${missing.join(', ')}`);
 });
@@ -196,12 +204,15 @@ check('the check-run lifecycle is opened and always closed', () => {
   const steps = action.runs.steps;
   const open = steps.find((s) => s.name === 'Open a check run');
   if (!open) throw new Error('no step opens a check run');
-  if (open.id !== 'check') throw new Error('the opening step needs id "check" for later steps to reference');
+  if (open.id !== 'check')
+    throw new Error('the opening step needs id "check" for later steps to reference');
 
   // Every exit path has to close it, or the pull request keeps a check
   // spinning forever.
   const closers = steps.filter((s) => (s.run || '').includes('check-runs/$CHECK_ID'));
-  const conclusions = closers.flatMap((s) => [...s.run.matchAll(/conclusion='([a-z]+)'/g)].map((m) => m[1]));
+  const conclusions = closers.flatMap((s) =>
+    [...s.run.matchAll(/conclusion='([a-z]+)'/g)].map((m) => m[1]),
+  );
 
   if (!conclusions.includes('success')) throw new Error('no success path closes the check run');
   if (!conclusions.includes('failure')) throw new Error('no failure path closes the check run');
@@ -263,7 +274,9 @@ check('a refused check-run request cannot be mistaken for an id', () => {
 });
 
 check('a check-run failure cannot fail a deploy that already succeeded', () => {
-  const closing = action.runs.steps.filter((s) => /^(Mark the command as done|Report command failure)$/.test(s.name));
+  const closing = action.runs.steps.filter((s) =>
+    /^(Mark the command as done|Report command failure)$/.test(s.name),
+  );
   if (closing.length !== 2) throw new Error(`expected 2 closing steps, found ${closing.length}`);
 
   const strict = closing
@@ -352,8 +365,9 @@ check('the release process is documented and linked', () => {
 });
 
 check('no reference still points at a standalone action repository', () => {
-  const stale = [reusable, ...examples, join(ROOT, 'README.md')]
-    .filter((f) => readFileSync(f, 'utf8').includes('catalyst-deployment-preview-action'));
+  const stale = [reusable, ...examples, join(ROOT, 'README.md')].filter((f) =>
+    readFileSync(f, 'utf8').includes('catalyst-deployment-preview-action'),
+  );
   if (stale.length) throw new Error(`stale refs in: ${stale.join(', ')}`);
 });
 
@@ -378,7 +392,8 @@ check('no step declares an empty env or with block', () => {
 
   for (const file of [reusable, ...examples]) {
     const doc = load(file);
-    for (const [name, job] of Object.entries(doc.jobs ?? {})) scan(job.steps, `${file} job ${name}`);
+    for (const [name, job] of Object.entries(doc.jobs ?? {}))
+      scan(job.steps, `${file} job ${name}`);
   }
 
   if (empties.length) throw new Error(`empty blocks: ${empties.join('; ')}`);

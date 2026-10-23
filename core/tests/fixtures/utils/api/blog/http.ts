@@ -11,12 +11,10 @@ const BlogSchema = z
     name: z.string(),
     url: z.string(),
   })
-  .transform(
-    (data): Blog => ({
-      name: data.name,
-      path: data.url,
-    }),
-  );
+  .transform((data): Blog => ({
+    name: data.name,
+    path: data.url,
+  }));
 
 const BlogPostSchema = z
   .object({
@@ -28,13 +26,11 @@ const BlogPostSchema = z
     tags: z.array(z.string()),
     url: z.string(),
   })
-  .transform(
-    ({ url, author, ...data }): BlogPost => ({
-      ...data,
-      author: author ?? undefined,
-      path: url,
-    }),
-  );
+  .transform(({ url, author, ...data }): BlogPost => ({
+    ...data,
+    author: author ?? undefined,
+    path: url,
+  }));
 
 const BlogPostCreateSchema = z.object({
   title: z.string(),

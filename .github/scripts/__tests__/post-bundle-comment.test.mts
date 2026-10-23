@@ -85,7 +85,11 @@ describe('post-bundle-comment', () => {
 
     assert.equal(calls.update.length, 1, 'Should update exactly one comment');
     assert.equal(calls.create.length, 0, 'Should not create a new comment');
-    assert.equal((calls.update[0] as { comment_id: number }).comment_id, 99, 'Should update the correct comment by id');
+    assert.equal(
+      (calls.update[0] as { comment_id: number }).comment_id,
+      99,
+      'Should update the correct comment by id',
+    );
   });
 
   it('body always starts with marker and newline', async () => {
@@ -94,7 +98,10 @@ describe('post-bundle-comment', () => {
 
     const body = (calls.create[0] as { body: string }).body;
 
-    assert.ok(body.startsWith(`${marker}\n`), `Body should start with marker, got: ${body.slice(0, 50)}`);
+    assert.ok(
+      body.startsWith(`${marker}\n`),
+      `Body should start with marker, got: ${body.slice(0, 50)}`,
+    );
   });
 
   it('updated comment body also starts with marker and newline', async () => {
@@ -123,9 +130,16 @@ describe('post-bundle-comment', () => {
     writeFileSync(customPath, 'Custom report content for testing!');
 
     const { github, calls } = makeGithub([]);
-    await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath: customPath });
+    await postBundleComment({
+      github,
+      context: makeContext(),
+      overBudget: true,
+      reportPath: customPath,
+    });
 
-    assert.ok((calls.create[0] as { body: string }).body.includes('Custom report content for testing!'));
+    assert.ok(
+      (calls.create[0] as { body: string }).body.includes('Custom report content for testing!'),
+    );
   });
 
   it('passes correct owner, repo, issue_number from context to listComments', async () => {
@@ -180,7 +194,11 @@ describe('post-bundle-comment', () => {
     await postBundleComment({ github, context: makeContext(), overBudget: true, reportPath });
 
     assert.equal(calls.update.length, 1);
-    assert.equal((calls.update[0] as { comment_id: number }).comment_id, 2, 'Should update the first matching comment');
+    assert.equal(
+      (calls.update[0] as { comment_id: number }).comment_id,
+      2,
+      'Should update the first matching comment',
+    );
   });
 
   it('creates comment when existing comments do not contain the marker', async () => {

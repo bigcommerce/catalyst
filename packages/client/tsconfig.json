@@ -10,7 +10,8 @@
     "inlineSources": false,
     "incremental": true,
     "isolatedModules": true,
-    "moduleResolution": "node",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "preserveWatchOutput": true,
@@ -18,7 +19,8 @@
     "strict": true,
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "resolveJsonModule": true,
-    "lib": ["esnext"]
+    "lib": ["esnext"],
+    "types": ["node"]
   },
   "exclude": ["node_modules"]
 }

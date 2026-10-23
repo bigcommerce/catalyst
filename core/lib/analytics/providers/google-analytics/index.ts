@@ -61,7 +61,11 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
 
     script.id = this.dataLayerScriptId;
     script.type = 'text/javascript';
-    script.nonce = this.config.nonce;
+
+    if (this.config.nonce) {
+      script.nonce = this.config.nonce;
+    }
+
     script.innerHTML = `
       window['${this.config.dataLayerName}'] = window['${this.config.dataLayerName}'] || [];
       function gtag(){window['${this.config.dataLayerName}'].push(arguments);}
@@ -113,7 +117,11 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
     const script = document.createElement('script');
 
     script.id = this.gtagScriptId;
-    script.nonce = this.config.nonce;
+
+    if (this.config.nonce) {
+      script.nonce = this.config.nonce;
+    }
+
     script.src = `https://www.googletagmanager.com/gtag/js?id=${this.config.gaId}`;
 
     document.head.appendChild(script);

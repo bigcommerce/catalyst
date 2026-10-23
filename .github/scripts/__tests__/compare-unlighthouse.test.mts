@@ -20,22 +20,24 @@ const DEFAULT_METRICS: CiResult['summary']['metrics'] = {
   interactive: { displayValue: '3.5 s' },
 };
 
-function makeCiResult(overrides: {
-  score?: number;
-  performance?: number;
-  accessibility?: number;
-  'best-practices'?: number;
-  seo?: number;
-  metrics?: CiResult['summary']['metrics'];
-} = {}): CiResult {
+function makeCiResult(
+  overrides: {
+    score?: number;
+    performance?: number;
+    accessibility?: number;
+    'best-practices'?: number;
+    seo?: number;
+    metrics?: CiResult['summary']['metrics'];
+  } = {},
+): CiResult {
   return {
     summary: {
       score: overrides.score ?? 0.85,
       categories: {
-        performance: { score: overrides.performance ?? 0.80 },
+        performance: { score: overrides.performance ?? 0.8 },
         accessibility: { score: overrides.accessibility ?? 0.92 },
         'best-practices': { score: overrides['best-practices'] ?? 1.0 },
-        seo: { score: overrides.seo ?? 0.90 },
+        seo: { score: overrides.seo ?? 0.9 },
       },
       metrics: overrides.metrics ?? { ...DEFAULT_METRICS },
     },
@@ -251,10 +253,7 @@ describe('report heading', () => {
   it('contains the comparison heading', () => {
     const { markdown } = compareResults(BASE, BASE, BASE, BASE);
 
-    assert.ok(
-      markdown.includes('## Unlighthouse Comparison'),
-      'Missing main heading',
-    );
+    assert.ok(markdown.includes('## Unlighthouse Comparison'), 'Missing main heading');
   });
 
   it('contains the description text', () => {
@@ -342,7 +341,7 @@ describe('Category Scores section', () => {
   });
 
   it('renders category scores as integers on a 1-100 scale', () => {
-    const prod = makeCiResult({ performance: 0.80 });
+    const prod = makeCiResult({ performance: 0.8 });
     const prev = makeCiResult({ performance: 0.93 });
     const { markdown } = compareResults(prod, prod, prev, prev);
 
@@ -446,10 +445,18 @@ describe('Core Web Vitals section', () => {
   });
 
   it('shows four displayValues per metric row', () => {
-    const prodDesktop = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '80 ms' } } });
-    const prodMobile = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '320 ms' } } });
-    const prevDesktop = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '75 ms' } } });
-    const prevMobile = makeCiResult({ metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '310 ms' } } });
+    const prodDesktop = makeCiResult({
+      metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '80 ms' } },
+    });
+    const prodMobile = makeCiResult({
+      metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '320 ms' } },
+    });
+    const prevDesktop = makeCiResult({
+      metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '75 ms' } },
+    });
+    const prevMobile = makeCiResult({
+      metrics: { ...DEFAULT_METRICS, 'total-blocking-time': { displayValue: '310 ms' } },
+    });
     const { markdown } = compareResults(prodDesktop, prodMobile, prevDesktop, prevMobile);
 
     assert.ok(markdown.includes('| TBT | 80 ms | 320 ms | 75 ms | 310 ms |'));
@@ -494,7 +501,9 @@ describe('hasBlockedRequests', () => {
   });
 
   it('ignores other error codes', () => {
-    const result = lighthouseResult([{ url: 'https://store.example/missing.png', statusCode: 404 }]);
+    const result = lighthouseResult([
+      { url: 'https://store.example/missing.png', statusCode: 404 },
+    ]);
 
     assert.equal(hasBlockedRequests(result), false);
   });
@@ -517,7 +526,12 @@ describe('dropBlockedRoutes', () => {
     writeReport(join(reports, 'blog'), lighthouseResult(blocked));
     writeReport(join(reports, 'cart'), lighthouseResult([]));
 
-    const result = withRoutes([{ path: '/' }, { path: '/blog/' }, { path: '/cart/' }, { path: '/login/' }]);
+    const result = withRoutes([
+      { path: '/' },
+      { path: '/blog/' },
+      { path: '/cart/' },
+      { path: '/login/' },
+    ]);
     const paths = dropBlockedRoutes(result, reports).routes?.map((route) => route.path);
 
     assert.deepEqual(paths, ['/cart/', '/login/']);

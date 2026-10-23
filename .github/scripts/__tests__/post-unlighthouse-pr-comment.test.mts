@@ -271,9 +271,6 @@ describe('sha lookup', () => {
       metaPath,
     });
 
-    assert.equal(
-      (calls.listPrs[0] as { commit_sha: string }).commit_sha,
-      'deadbeef',
-    );
+    assert.equal((calls.listPrs[0] as { commit_sha: string }).commit_sha, 'deadbeef');
   });
 });
