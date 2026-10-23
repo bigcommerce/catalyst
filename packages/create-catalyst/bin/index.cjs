@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const semver = require('semver');
+
 const { CATALYST_REQUIRED_NODE_VERSIONS } = require('./supported-node-versions.cjs');
 
 const catalystRequiredNodeVersions = CATALYST_REQUIRED_NODE_VERSIONS;

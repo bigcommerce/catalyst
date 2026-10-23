@@ -54,7 +54,7 @@ pnpm build        # Production build via tsup
 pnpm test         # Run tests (vitest)
 pnpm test:watch   # Watch mode tests
 pnpm typecheck    # tsc --noEmit
-pnpm lint         # eslint with 0 warnings threshold
+pnpm lint         # oxlint (type-aware) with 0 warnings threshold
 ```
 
 ## Testing Changes
@@ -101,7 +101,7 @@ Always run `pnpm typecheck` and `pnpm lint` after making code changes, and fix a
 ## Code Style Notes
 
 - **No `let` when avoidable** — prefer `const` with `while (true)` + `break` over mutable flags.
-- **No iterators/generators** — eslint `no-restricted-syntax` disallows `for...of` and generator functions. Use `.forEach()`, `.map()`, etc.
+- **No iterators/generators** — `catalyst/no-restricted-syntax` (oxlint) disallows `for...of` and generator functions. Use `.forEach()`, `.map()`, etc.
 - **Consola for logging** — use `consola` (from `../lib/logger`) instead of `console`. Use `colorize` from `consola/utils` for colored output.
 - **Shared CLI options** — commands that need `--store-hash`, `--access-token`, `--api-host`, and `--project-uuid` should use the shared option factories from `lib/shared-options.ts`. Chain `.makeOptionMandatory()` inline where needed to preserve commander's extra-typings inference.
 - **SSE stream pattern** — the fetch API's `ReadableStreamDefaultReader` doesn't support async iteration, so `while (true)` + `reader.read()` + `break` is the standard pattern. For long-lived streams, implement a TTL-based reconnect to free connection pool resources, and distinguish server-side disconnects (`TypeError: terminated`) from actual failures for retry logic.

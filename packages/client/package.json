@@ -13,8 +13,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
-    "lint-fix": "eslint . --ext .ts,.js,.cjs --fix",
+    "lint": "oxlint",
+    "lint-fix": "oxlint --fix",
     "test": "vitest run",
     "gen-types": "dotenv -e .env.local -- node scripts/types.js"
   },
@@ -26,11 +26,11 @@
     "std-env": "^3.9.0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^22.20.5",
     "dotenv-cli": "^8.0.0",
-    "eslint": "^8.57.1",
+    "oxlint": "1.89.0",
+    "oxlint-tsgolint": "7.0.2005",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",

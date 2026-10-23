@@ -35,7 +35,6 @@ export async function ContainerQueryPolyfill() {
 
   if (isUnsupported) {
     return (
-      // eslint-disable-next-line @next/next/no-before-interactive-script-outside-document
       <Script
         src="https://cdn.jsdelivr.net/npm/container-query-polyfill@1/dist/container-query-polyfill.modern.js"
         strategy="beforeInteractive"

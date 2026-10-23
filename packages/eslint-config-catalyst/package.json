@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/eslint-config-catalyst",
-  "description": "Eslint configs for catalyst",
+  "description": "ESLint and oxlint configs for catalyst",
   "version": "1.0.0",
   "repository": {
     "type": "git",
@@ -11,21 +11,45 @@
     "./base.js",
     "./next.js",
     "./prettier.js",
-    "./react.js"
+    "./react.js",
+    "./oxlint/"
   ],
   "dependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@next/eslint-plugin-next": "^15.3.3",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-check-file": "^2.8.0",
-    "eslint-plugin-prettier": "^5.4.1"
+    "eslint-plugin-prettier": "^5.4.1",
+    "@stylistic/eslint-plugin": "^2.1.0",
+    "eslint-plugin-gettext": "^1.2.0",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-import-resolver-typescript": "^3.8.3"
   },
   "peerDependencies": {
     "eslint": "^8.0.0",
-    "typescript": "^4.0.0 || ^5.0.0"
+    "typescript": "^4.0.0 || ^5.0.0",
+    "oxlint": "^1.89.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
     "typescript": "^5.8.3"
+  },
+  "exports": {
+    "./base": "./base.js",
+    "./next": "./next.js",
+    "./prettier": "./prettier.js",
+    "./react": "./react.js",
+    "./oxlint/base": "./oxlint/base.js",
+    "./oxlint/react": "./oxlint/react.js",
+    "./oxlint/next": "./oxlint/next.js",
+    "./package.json": "./package.json"
+  },
+  "peerDependenciesMeta": {
+    "eslint": {
+      "optional": true
+    },
+    "oxlint": {
+      "optional": true
+    }
   }
 }

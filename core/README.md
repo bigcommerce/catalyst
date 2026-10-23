@@ -79,7 +79,7 @@ copy of your store's GraphQL Storefront API schema. Two files at the project roo
 | `bigcommerce-graphql.d.ts` | The gql.tada introspection type that `client/graphql.ts` imports. |
 
 Both are build-time and editor-time artifacts. Nothing reads them while your storefront serves a
-request — they exist so `tsc`, ESLint, and your editor can check every query and mutation against
+request — they exist so the type checker, linter, and your editor can check every query and mutation against
 the real schema.
 
 ### Generating them
