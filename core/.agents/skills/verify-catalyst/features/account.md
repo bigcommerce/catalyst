@@ -26,7 +26,7 @@ Preconditions:
 - **Log in.** `page.goto('/login')`, fill `textbox` `Email` and `textbox` `Password`, then choose `button` `Log in`. The URL moves under `/account`.
 - **Registration form.** `page.goto('/register')`. The `heading` level 1 reads `New account`, followed by text fields (`First Name`, `Last Name`, `Email Address`, `Password`, `Confirm Password`, address fields) and a `combobox` `Country`.
 - **Choose a country.** Choose the `combobox` `Country`, then the `option` by name, for example `page.getByRole('option', { name: 'United States' })`. The list is long; typing the first letters narrows it.
-- **State/Province follows the country.** With a country that has states, the `State/Province` field is present. With a country that has none, the field is absent: assert `toHaveCount(0)` on the label `State/Province`. Switching back brings it back.
+- **State/Province follows the country.** With a country that has states, the `State/Province` field is present. With a country that has none, the field is absent: assert `toHaveCount(0)` on `page.getByLabel('State/Province', { exact: true })`. Switching back brings it back. Confirm the switch landed first (`expect(country).toContainText('Algeria')`) so an absent field is not a race. The field sits beside `Country`, so the step screenshot (scrolled to the focused combobox) shows both.
 - **Validation.** Choose `Create account` with empty required fields. Inline errors appear and no request leaves the form. This is safe because nothing is submitted.
 
 ## Gotchas

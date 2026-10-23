@@ -90,8 +90,9 @@ export default async function journey({ page, step, expect }) {
   });
 
   await step('Country without states hides State/Province', async () => {
-    // ...interact, then assert what the shopper sees
-    await expect(page.getByRole('textbox', { name: 'State/Province' })).toHaveCount(0);
+    // ...interact, then assert what the shopper sees. Match by label: the field can be a
+    // textbox or a dropdown, and a role-based "absent" check would pass on the wrong one.
+    await expect(page.getByLabel('State/Province', { exact: true })).toHaveCount(0);
   });
 }
 ```
@@ -118,6 +119,8 @@ Each run writes `.verification/runs/<timestamp>-<name>-<device>/` containing:
 - `manifest.json` (git SHA, dirty flag, OS, viewport, step results, console errors, same-origin 4xx/5xx responses)
 - `summary.md`
 
+`git.dirty` is true for any uncommitted change, including files `next dev` rewrites on start (such as `AGENTS.md`); check `git status` before reading it as untested code.
+
 Exit code 0 means every step passed. Read `manifest.json` → `consoleErrors` even when the run passes; a new hydration error is a finding.
 
 **Responsive changes:** capture both `--device desktop` and `--device mobile`.
@@ -136,7 +139,7 @@ verify publish .verification/runs/<run-dir> --to gist|branch|manual
 gh pr comment <number> --body-file <run-dir>/pr-evidence.md
 ```
 
-Or append it to the PR body with `gh pr edit <number> --body-file …`. Where `--to auto` (the default) uploads:
+Or append it to the PR body with `gh pr edit <number> --body-file …`. `publish` handles one run at a time: for desktop and mobile, publish each run directory and paste both `pr-evidence.md` files (the device is in each block's subtitle). Where `--to auto` (the default) uploads:
 
 | Repository (from `--remote`, default `origin`) | Destination                                                      | Why                                                                                                                  |
 | ---------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
