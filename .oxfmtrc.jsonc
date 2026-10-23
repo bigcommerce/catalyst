@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 100,
+  "singleQuote": true,
+  "trailingComma": "all",
+  "sortPackageJson": false,
+  // Prettier only ever formatted JS/TS (through ESLint), so non-code files stay out of scope for now.
+  // core/messages/*.json are synced from the translation service and must never be reformatted.
+  "ignorePatterns": [
+    "**/*.md",
+    "**/*.json",
+    "**/*.yml",
+    "**/*.yaml",
+    "pnpm-lock.yaml",
+    "**/dist/**",
+    "packages/client/src/generated/**",
+  ],
+}

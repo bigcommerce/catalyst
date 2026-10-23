@@ -61,7 +61,6 @@
     "msw": "^2.9.0",
     "oxlint": "1.89.0",
     "oxlint-tsgolint": "7.0.2005",
-    "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
