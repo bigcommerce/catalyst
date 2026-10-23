@@ -137,7 +137,7 @@ verify publish <run> --pr 123 --into body          # into the PR body instead of
 verify publish <run> --dry-run                     # write the markdown and print the gh command only
 ```
 
-`publish` writes the evidence markdown (recording, step table, screenshots, console errors), then posts it with `gh`. The PR defaults to the current branch's (`gh pr view`); pass `--pr <number|url>` otherwise. With `--into body`, it replaces a `<!-- verification-evidence -->` marker if the body has one (put it under **Testing**), or else appends a section.
+`publish` writes the evidence markdown (recording, step table, screenshots, console errors), then posts it with `gh`. Images are sized by orientation: landscape captures stack at 720px, portrait (mobile) captures sit side by side as a filmstrip, and GIFs are rendered to fit within 800×600 and start at the first page load rather than on a blank frame. The PR defaults to the current branch's (`gh pr view`); pass `--pr <number|url>` otherwise. With `--into body`, it replaces a `<!-- verification-evidence -->` marker if the body has one (put it under **Testing**), or else appends a section.
 
 GitHub only accepts `--attach` uploads from accounts with **write access** to the PR's repository. `--to auto` (the default) checks that and picks the route:
 

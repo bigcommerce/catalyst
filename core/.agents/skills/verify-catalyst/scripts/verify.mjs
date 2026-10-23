@@ -666,6 +666,15 @@ async function capture(values, positionals) {
   await context.tracing.start({ screenshots: true, snapshots: true });
 
   const page = await context.newPage();
+  // Recording starts on about:blank; note when the first page has loaded so the MP4 and GIF can
+  // skip the blank lead-in (otherwise their first frame, GitHub's poster, is pure white).
+  const recordingStarted = Date.now();
+  let firstLoad = null;
+
+  page.once('load', () => {
+    firstLoad = Date.now();
+  });
+
   const consoleErrors = [];
   const failedRequests = [];
   const steps = [];
@@ -747,12 +756,15 @@ async function capture(values, positionals) {
 
     if (has('ffmpeg')) {
       const input = join(runDir, 'video.webm');
+      const skip = firstLoad ? ((firstLoad - recordingStarted) / 1000).toFixed(2) : '0';
       const mp4 = run('ffmpeg', [
         '-y',
         '-loglevel',
         'error',
         '-i',
         input,
+        '-ss',
+        skip,
         '-c:v',
         'libx264',
         '-pix_fmt',
@@ -767,8 +779,11 @@ async function capture(values, positionals) {
         'error',
         '-i',
         input,
+        '-ss',
+        skip,
         '-vf',
-        'fps=8,scale=800:-1:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse',
+        // Fit inside 800×600 so portrait (mobile) recordings stay a reasonable size.
+        'fps=8,scale=800:600:force_original_aspect_ratio=decrease:flags=lanczos,split[a][b];[a]palettegen[p];[b][p]paletteuse',
         join(runDir, 'video.gif'),
       ]);
 
@@ -814,10 +829,24 @@ async function capture(values, positionals) {
   if (status !== 'passed') process.exitCode = 1;
 }
 
+// Display widths for the PR. GitHub scales images to the comment column (~880px), which blows a
+// portrait (mobile) capture up to several screens tall, so size by orientation instead.
+const DISPLAY = {
+  landscape: { recording: 720, screenshot: 720 },
+  portrait: { recording: 280, screenshot: 180 },
+};
+
+function img(src, alt, width) {
+  return `<img src="${src}" alt="${alt.replace(/"/g, '&quot;')}" width="${width}">`;
+}
+
 function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
   const lines = [];
   const icon = manifest.status === 'passed' ? '✅' : '❌';
   const sha = manifest.git.sha ? manifest.git.sha.slice(0, 10) : 'unknown';
+  const { width, height } = manifest.viewport;
+  const portrait = height > width;
+  const size = DISPLAY[portrait ? 'portrait' : 'landscape'];
 
   const tags = [manifest.device, manifest.label].filter(Boolean).join(', ');
   const dirtyFiles = manifest.git.dirtyFiles ?? [];
@@ -831,7 +860,7 @@ function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
   lines.push(`### ${icon} ${manifest.title} (${tags})`);
   lines.push('');
   lines.push(
-    `\`${sha}\`${dirtyNote} · ${manifest.device} ${manifest.viewport.width}×${manifest.viewport.height} · ${manifest.platform} · ${(manifest.durationMs / 1000).toFixed(1)}s`,
+    `\`${sha}\`${dirtyNote} · ${manifest.device} ${width}×${height} · ${manifest.platform} · ${(manifest.durationMs / 1000).toFixed(1)}s`,
   );
   lines.push('');
 
@@ -840,11 +869,11 @@ function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
   const videoFile = manifest.files.includes('video.mp4') ? 'video.mp4' : 'video.webm';
 
   if (attach) {
-    // `gh --attach` uploads the video as a native attachment, which GitHub renders as a player.
-    if (manifest.files.includes(videoFile)) lines.push(`![Recording](${urlFor(videoFile)})`, '');
+    // A bare attachment URL on its own line renders as GitHub's video player.
+    if (manifest.files.includes(videoFile)) lines.push(urlFor(videoFile), '');
   } else {
     if (manifest.files.includes('video.gif')) {
-      lines.push(`![Recording](${urlFor('video.gif')})`, '');
+      lines.push(img(urlFor('video.gif'), 'Recording', size.recording), '');
     }
 
     if (manifest.files.includes(videoFile)) {
@@ -866,8 +895,23 @@ function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
   lines.push('');
   lines.push('<details><summary>Screenshots</summary>', '');
 
-  for (const s of manifest.steps) {
-    lines.push(`**${s.n}. ${s.label}**`, '', `![${s.label}](${urlFor(s.screenshot)})`, '');
+  if (portrait) {
+    // Narrow captures read best side by side, as a filmstrip.
+    lines.push(
+      `| ${manifest.steps.map((s) => `${s.n}. ${s.label}`).join(' | ')} |`,
+      `|${manifest.steps.map(() => '---').join('|')}|`,
+      `| ${manifest.steps.map((s) => img(urlFor(s.screenshot), s.label, size.screenshot)).join(' | ')} |`,
+      '',
+    );
+  } else {
+    for (const s of manifest.steps) {
+      lines.push(
+        `**${s.n}. ${s.label}**`,
+        '',
+        img(urlFor(s.screenshot), s.label, size.screenshot),
+        '',
+      );
+    }
   }
 
   lines.push('</details>', '');
@@ -891,6 +935,8 @@ function renderMarkdown(manifest, urlFor, { attach = false } = {}) {
 const GH_ATTACH_MIN = [2, 99, 0];
 const ATTACH_LIMIT = 50;
 const EVIDENCE_MARKER = '<!-- verification-evidence -->';
+const UPLOAD_START = '<!-- verify-catalyst:uploading -->';
+const UPLOAD_END = '<!-- /verify-catalyst:uploading -->';
 
 function ghVersion() {
   const match = run('gh', ['--version']).stdout.match(/gh version (\d+)\.(\d+)\.(\d+)/);
@@ -1124,7 +1170,6 @@ function publish(values, positionals) {
   }
 
   const attach = to === 'attach';
-  // In attach mode, references are paths relative to `cwd` that `gh` rewrites to uploaded URLs.
   const local = (r) => (file) => `./${basename(r.dir)}/${file}`;
   const urlsFor =
     to === 'gist'
@@ -1132,14 +1177,25 @@ function publish(values, positionals) {
       : to === 'branch'
         ? uploadToBranch(runs, values.remote ?? 'origin')
         : local;
-  const evidence = runs
-    .map((r) => renderMarkdown(r.manifest, urlsFor(r), { attach }))
-    .join('\n')
-    .concat(
-      attach
-        ? '\n<sub>Recorded with the verify-catalyst skill. Playwright traces stay local: `npx playwright show-trace <run>/trace.zip`.</sub>\n'
-        : '\n<sub>Recorded with the verify-catalyst skill.</sub>\n',
-    );
+  const render = (urlFor) =>
+    runs
+      .map((r) => renderMarkdown(r.manifest, urlFor(r), { attach }))
+      .join('\n')
+      .concat(
+        attach
+          ? '\n<sub>Recorded with the verify-catalyst skill. Playwright traces stay local: `npx playwright show-trace <run>/trace.zip`.</sub>\n'
+          : '\n<sub>Recorded with the verify-catalyst skill.</sub>\n',
+      );
+  // `gh --attach` only rewrites markdown references (`![alt](./path)`), not sized `<img>` tags.
+  // So attach mode posts plain references first, then rewrites them into the final layout.
+  const refs = attach
+    ? runs.flatMap((r) =>
+        mediaFiles(r.manifest, { inlineVideo: true }).map((file) => local(r)(file)),
+      )
+    : [];
+  const evidence = attach
+    ? `${UPLOAD_START}\n\n${refs.map((ref) => `![${ref}](${ref})`).join('\n\n')}\n\n${UPLOAD_END}`
+    : render(urlsFor);
   const bodyFile = join(cwd, `pr-evidence-${timestamp()}.md`);
 
   if (to === 'manual') {
@@ -1171,17 +1227,13 @@ function publish(values, positionals) {
   }
 
   if (attach) {
-    const attachments = runs.flatMap((r) =>
-      mediaFiles(r.manifest, { inlineVideo: true }).map(local(r)),
-    );
-
-    if (attachments.length > ATTACH_LIMIT) {
+    if (refs.length > ATTACH_LIMIT) {
       fail(
-        `${attachments.length} files exceed gh's ${ATTACH_LIMIT}-attachment limit; publish fewer runs at once.`,
+        `${refs.length} files exceed gh's ${ATTACH_LIMIT}-attachment limit; publish fewer runs at once.`,
       );
     }
 
-    for (const file of attachments) args.push('--attach', file);
+    for (const file of refs) args.push('--attach', file);
   }
 
   const printable = `gh ${args.map((a) => (/[\s<>]/.test(a) ? `"${a}"` : a)).join(' ')}`;
@@ -1201,9 +1253,60 @@ function publish(values, positionals) {
     );
   }
 
+  if (attach) layOutAttachments({ pr, into, posted: result.stdout, refs, render, local, bodyFile });
+
   console.log(
     `Posted evidence to ${into === 'body' ? 'the body of' : 'a comment on'} ${pr}\n${result.stdout}`,
   );
+}
+
+// Second pass of attach mode: read back the URLs `gh` uploaded (in reference order) and replace
+// the plain references with the sized layout. Editing text needs no attachment rights.
+function layOutAttachments({ pr, into, posted, refs, render, local, bodyFile }) {
+  const repo = prRepo(pr);
+  const commentId = posted.match(/#issuecomment-(\d+)/)?.[1];
+  const read =
+    into === 'body'
+      ? run('gh', ['pr', 'view', pr, '--json', 'body', '--jq', '.body'])
+      : run('gh', [
+          'api',
+          `repos/${repo.owner}/${repo.repo}/issues/comments/${commentId}`,
+          '--jq',
+          '.body',
+        ]);
+  const text = read.stdout;
+  const start = text.indexOf(UPLOAD_START);
+  const end = text.indexOf(UPLOAD_END);
+  const warn = (why) =>
+    console.log(`⚠ Uploaded, but ${why}; the PR shows unsized images. Edit it by hand if needed.`);
+
+  if (!read.ok || start < 0 || end < 0) return warn('could not read the post back');
+
+  // Images keep their `![alt](url)` form; a video becomes a bare URL on its own line.
+  const urls = [
+    ...text.slice(start, end).matchAll(/!\[[^\]]*\]\((https:\/\/[^)\s]+)\)|^(https:\/\/\S+)$/gm),
+  ].map((m) => m[1] ?? m[2]);
+
+  if (urls.length !== refs.length) return warn(`found ${urls.length} of ${refs.length} uploads`);
+
+  const uploaded = new Map(refs.map((ref, i) => [ref, urls[i]]));
+  const final = render((r) => (file) => uploaded.get(local(r)(file)) ?? local(r)(file));
+
+  writeFileSync(bodyFile, `${text.slice(0, start)}${final}${text.slice(end + UPLOAD_END.length)}`);
+
+  const update =
+    into === 'body'
+      ? run('gh', ['pr', 'edit', pr, '--body-file', bodyFile])
+      : run('gh', [
+          'api',
+          '-X',
+          'PATCH',
+          `repos/${repo.owner}/${repo.repo}/issues/comments/${commentId}`,
+          '-F',
+          `body=@${bodyFile}`,
+        ]);
+
+  if (!update.ok) warn(`the layout edit failed (${update.stderr})`);
 }
 
 // ---------------------------------------------------------------------------------------------
