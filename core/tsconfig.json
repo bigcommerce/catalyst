@@ -16,6 +16,7 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    "types": ["node", "gtag.js"],
     "plugins": [
       {
         "name": "next"
@@ -33,7 +34,6 @@
         ]
       }
     ],
-    "baseUrl": ".",
     "paths": {
       "@/vibes/*": ["./vibes/*"],
       "~/*": ["./*"]

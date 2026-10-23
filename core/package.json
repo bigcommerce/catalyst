@@ -97,7 +97,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.20.5",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@types/react-google-recaptcha": "^2.1.9",
