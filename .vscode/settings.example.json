@@ -1,8 +1,6 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "eslint.workingDirectories": [
-    { "pattern": "core" },
-    { "pattern": "packages/*/" }
-  ]
+  "editor.defaultFormatter": "oxc.oxc-vscode",
+  "oxc.typeAware": true
 }
