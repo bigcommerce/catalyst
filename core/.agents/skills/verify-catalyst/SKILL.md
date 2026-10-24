@@ -30,7 +30,8 @@ The helper is plain Node, so the same command works in bash, zsh, PowerShell, an
 - **Read-only by default.** The storefront talks to a live BigCommerce store. Do not submit orders, register customers, or write reviews unless the store is a sandbox and the change requires it. Stop before the final submit button when the visible result is enough. Treat `TESTS_READ_ONLY=true` in `.env.test.local` as a hard stop.
 - **Never weaken a journey to make it pass.** If the store lacks a precondition (no product with variants, no country without states), report the run as blocked and name the missing data.
 - **Never drive or stop a server you did not start.** Point `--url` at a developer's own server only when asked to.
-- **Evidence is not secret-free by default.** Screenshots show the store's real catalog and prices. `publish` chooses where uploads go based on your access and the repository's visibility; see _Publish_.
+- **Synthetic data only.** Everything you type into a form ends up in the recording. Use obviously fake values (`Test Shopper`, `test@example.com`, a made-up street address, `555` phone numbers) and never the developer's own name, email, address, or payment details. Credentials come only from `.env.test.local`. Look at the step screenshots before publishing; if one shows something that should not leave the machine, do not publish it.
+- **Evidence is not secret-free by default.** Screenshots show the store's real catalog and prices. `publish` chooses where uploads go based on your access and the repository's visibility; see _Publish_. Evidence only ever goes to the repository that owns the PR, so a private storefront's PR never posts to a public repository.
 
 ## 1. Doctor
 
@@ -141,14 +142,14 @@ verify publish <run> --dry-run                     # write the markdown and prin
 
 GitHub only accepts `--attach` uploads from accounts with **write access** to the PR's repository. `--to auto` (the default) checks that and picks the route:
 
-| Situation                                                              | Route    | Result                                                                                                                                                               |
-| ---------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Write access, `gh` ≥ 2.99.0                                            | `attach` | Native attachments on the PR; video plays inline. Traces stay local (not a media type).                                                                              |
-| No write access (fork contribution to a public repo), or `gh` < 2.99.0 | `gist`   | Files go to a secret gist you own; the markdown, posted by `gh`, embeds the GIF and links the MP4 and trace.                                                         |
-| Same, but the repository is private                                    | `branch` | Files go to an orphan `verification-evidence/<branch>` on `--remote` (default `origin`; use your fork) so GitHub's access control applies. The PR diff is untouched. |
-| `gh` missing or signed out                                             | `manual` | Prints the files to drag into a PR comment on github.com, which hosts them and plays MP4 inline.                                                                     |
+| Situation                                                                            | Route    | Result                                                                                                                                                               |
+| ------------------------------------------------------------------------------------ | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Write access, `gh` ≥ 2.99.0                                                          | `attach` | Native attachments on the PR; video plays inline. Traces stay local (not a media type).                                                                              |
+| No write access (fork contribution to a **confirmed public** repo), or `gh` < 2.99.0 | `gist`   | Files go to a secret gist you own; the markdown, posted by `gh`, embeds the GIF and links the MP4 and trace.                                                         |
+| Same, but the repository is private                                                  | `branch` | Files go to an orphan `verification-evidence/<branch>` on `--remote` (default `origin`; use your fork) so GitHub's access control applies. The PR diff is untouched. |
+| `gh` missing or signed out, or the repository's visibility is unknown                | `manual` | Prints the files to drag into a PR comment on github.com, which hosts them and plays MP4 inline.                                                                     |
 
-Force a route with `--to attach|gist|branch|manual`. Secret gists are unlisted but readable by anyone with the link, so never use `gist` for a private storefront's evidence.
+Force a route with `--to attach|gist|branch|manual`. Secret gists are unlisted but readable by anyone with the link, so `auto` picks `gist` only when GitHub confirms the repository is public. If it cannot read the visibility, it falls back to `manual` rather than guess; pass `--to gist` yourself if you know the repository is public. Never use `gist` for a private storefront's evidence.
 
 **By hand.** The `attach` route is plain `gh`, so a person can do the same thing without the helper. Run it from the directory that holds the files. `gh` rewrites any `![alt](./path)` reference in the body that matches an `--attach` path to the uploaded URL, and appends files the body does not reference:
 

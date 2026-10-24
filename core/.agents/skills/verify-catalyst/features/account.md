@@ -22,6 +22,7 @@ Preconditions:
 
 - Log-in and account-area journeys need `env.TEST_CUSTOMER_EMAIL` and `env.TEST_CUSTOMER_PASSWORD` from `.env.test.local`.
 - Registration journeys stay read-only: fill in the form and assert the visible behavior, but do not choose `Create account` unless the store is a sandbox.
+- Fill registration and address forms with synthetic values only (`Test Shopper`, `test@example.com`, a made-up address). The recording captures every keystroke, so never type the developer's own details.
 
 - **Log in.** `page.goto('/login')`, fill `textbox` `Email` and `textbox` `Password`, then choose `button` `Log in`. The URL moves under `/account`.
 - **Registration form.** `page.goto('/register')`. The `heading` level 1 reads `New account`, followed by text fields (`First Name`, `Last Name`, `Email Address`, `Password`, `Confirm Password`, address fields) and a `combobox` `Country`.

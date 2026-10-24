@@ -1140,9 +1140,18 @@ function chooseDestination(values, prUrl) {
     );
   }
 
-  // Secret gists are unlisted but readable by anyone with the link, so evidence for a private
-  // repository goes to a branch, where GitHub's access control applies.
-  return access.visibility === 'PUBLIC' || !access.visibility ? 'gist' : 'branch';
+  // Secret gists are unlisted but readable by anyone with the link, so they are only used when
+  // GitHub confirms the repository is public. A private repository's evidence goes to a branch,
+  // where GitHub's access control applies. If the visibility lookup failed, fail closed: do not
+  // guess, and leave the upload to the user (or an explicit `--to gist`).
+  if (access.visibility === 'PUBLIC') return 'gist';
+  if (access.visibility) return 'branch';
+
+  console.log(
+    `Could not read the visibility of ${target ? `${target.owner}/${target.repo}` : 'the repository'}, so evidence is not uploaded automatically. Pass --to gist if you know it is public.`,
+  );
+
+  return 'manual';
 }
 
 function publish(values, positionals) {
