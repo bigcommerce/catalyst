@@ -3,6 +3,7 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
 import { unstable_cache } from 'next/cache';
 import { getLocale } from 'next-intl/server';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 import { getLocaleRouting } from '~/i18n/locale-config';
 
@@ -21,14 +22,31 @@ const MAKESWIFT_CACHE_TAG = '@@makeswift';
 // an uncached Makeswift API call. Found results are still served by the regular cached fetches.
 const NOT_FOUND_CACHE_OPTIONS = { tags: [MAKESWIFT_CACHE_TAG], revalidate: 300 };
 
-const isPageMissing = unstable_cache(
+function cacheNotFound<Args extends Array<string | undefined>>(
+  key: string,
+  isMissing: (...args: Args) => Promise<boolean>,
+) {
+  return (...args: Args) => {
+    // `unstable_cache` disables fetch caching inside its callback, so run the lookup in the
+    // caller's context to keep found snapshots served from (and stored in) the Data Cache.
+    const runInCallerContext = AsyncLocalStorage.snapshot();
+
+    return unstable_cache(
+      (...cacheArgs: Args) => runInCallerContext(() => isMissing(...cacheArgs)),
+      [key],
+      NOT_FOUND_CACHE_OPTIONS,
+    )(...args);
+  };
+}
+
+const isPageMissing = cacheNotFound(
+  'makeswift-page-missing',
   async (path: string, locale: string | undefined) =>
     (await client.getPageSnapshot(path, { siteVersion: null, locale })) == null,
-  ['makeswift-page-missing'],
-  NOT_FOUND_CACHE_OPTIONS,
 );
 
-const isComponentLocaleMissing = unstable_cache(
+const isComponentLocaleMissing = cacheNotFound(
+  'makeswift-component-locale-missing',
   async (snapshotId: string, locale: string) => {
     try {
       await client.getComponentSnapshot(snapshotId, { siteVersion: null, locale });
@@ -42,8 +60,6 @@ const isComponentLocaleMissing = unstable_cache(
       throw error;
     }
   },
-  ['makeswift-component-locale-missing'],
-  NOT_FOUND_CACHE_OPTIONS,
 );
 
 // Draft mode (the builder) must see new pages immediately, and Makeswift can't reach a local dev

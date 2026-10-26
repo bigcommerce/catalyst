@@ -1,9 +1,10 @@
+import { AsyncLocalStorage } from 'node:async_hooks';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
   process.env.MAKESWIFT_SITE_API_KEY = 'test-api-key';
 
-  const caches: Array<Map<string, unknown>> = [];
+  const cacheEntries = new Map<string, unknown>();
   const cacheOptions: unknown[] = [];
 
   return {
@@ -11,7 +12,7 @@ const mocks = vi.hoisted(() => {
     getComponentSnapshot: vi.fn<(id: string, options: { locale?: string }) => Promise<unknown>>(),
     getSiteVersion: vi.fn(),
     getLocale: vi.fn(),
-    caches,
+    cacheEntries,
     cacheOptions,
   };
 });
@@ -33,33 +34,23 @@ vi.mock('~/i18n/locale-config', () => ({
 
 vi.mock('./runtime', () => ({ runtime: {} }));
 
+// Stands in for the request's async context, which `unstable_cache` replaces in its callback.
+const context = new AsyncLocalStorage<string>();
+
 vi.mock('next/cache', () => ({
-  unstable_cache: <A extends unknown[], R>(
-    fn: (...args: A) => Promise<R>,
-    _keyParts: string[],
-    options: unknown,
-  ) => {
-    const entries = new Map<string, R>();
-
-    mocks.caches.push(entries);
-
-    return async (...args: A) => {
+  unstable_cache:
+    (fn: (...args: unknown[]) => Promise<unknown>, keyParts: string[], options: unknown) =>
+    async (...args: unknown[]) => {
       mocks.cacheOptions.push(options);
 
-      const key = JSON.stringify(args);
-      const cached = entries.get(key);
+      const key = JSON.stringify([keyParts, args]);
 
-      if (cached !== undefined) {
-        return cached;
+      if (!mocks.cacheEntries.has(key)) {
+        mocks.cacheEntries.set(key, await context.run('unstable-cache', () => fn(...args)));
       }
 
-      const result = await fn(...args);
-
-      entries.set(key, result);
-
-      return result;
-    };
-  },
+      return mocks.cacheEntries.get(key);
+    },
 }));
 
 const { getComponentSnapshot, getPageSnapshot } = await import('./client');
@@ -73,7 +64,7 @@ function notFoundError() {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mocks.caches.forEach((entries) => entries.clear());
+  mocks.cacheEntries.clear();
   mocks.cacheOptions.length = 0;
   mocks.getSiteVersion.mockResolvedValue(null);
   mocks.getLocale.mockResolvedValue('en');
@@ -107,7 +98,9 @@ describe('getPageSnapshot', () => {
   it('fetches found pages through the regular client call', async () => {
     mocks.getPageSnapshot.mockResolvedValue(pageSnapshot);
 
-    await expect(getPageSnapshot({ path: '/about', locale: 'en' })).resolves.toBe(pageSnapshot);
+    await expect(
+      context.run('request', () => getPageSnapshot({ path: '/about', locale: 'en' })),
+    ).resolves.toBe(pageSnapshot);
 
     expect(mocks.getPageSnapshot).toHaveBeenLastCalledWith('/about', {
       siteVersion: null,
@@ -127,6 +120,20 @@ describe('getPageSnapshot', () => {
       siteVersion: draftVersion,
       locale: undefined,
     });
+  });
+
+  it('looks up pages in the caller context so their fetches stay cached', async () => {
+    const contexts: Array<string | undefined> = [];
+
+    mocks.getPageSnapshot.mockImplementation(() => {
+      contexts.push(context.getStore());
+
+      return Promise.resolve(pageSnapshot);
+    });
+
+    await context.run('request', () => getPageSnapshot({ path: '/about', locale: 'en' }));
+
+    expect(contexts).toEqual(['request', 'request']);
   });
 });
 
@@ -162,7 +169,7 @@ describe('getComponentSnapshot', () => {
 
     await expect(getComponentSnapshot('site-header')).rejects.toThrow('boom');
 
-    expect(mocks.caches.every((entries) => entries.size === 0)).toBe(true);
+    expect(mocks.cacheEntries.size).toBe(0);
   });
 
   it('falls back to the default locale on a 404 in draft mode', async () => {
