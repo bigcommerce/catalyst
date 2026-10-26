@@ -1,6 +1,4 @@
-// Click IDs and campaign tags that marketing tools append to links. They never
-// affect which entity a URL resolves to, but each unique value would otherwise
-// be its own route cache entry and a blocking route lookup.
+// Never affect route resolution, but each unique value would be its own cache entry.
 const TRACKING_PARAMS = new Set([
   '_branch_match_id',
   '_ga',
@@ -48,9 +46,7 @@ const isTrackingParam = (key: string) => {
 
 const toSearch = (segments: string[]) => (segments.length > 0 ? `?${segments.join('&')}` : '');
 
-// Splits a query string into the part used for route resolution and the
-// tracking params removed from it. Order is kept because BigCommerce matches
-// redirect sources against the query as written. Segments are not re-encoded.
+// Keeps the original order, since BigCommerce matches redirect queries as written.
 export function splitRouteLookupSearch(search: string): { lookup: string; tracking: string } {
   const query = search.startsWith('?') ? search.slice(1) : search;
   const lookup: string[] = [];
@@ -68,8 +64,7 @@ export function splitRouteLookupSearch(search: string): { lookup: string; tracki
   return { lookup: toSearch(lookup), tracking: toSearch(tracking) };
 }
 
-// BigCommerce redirects can match on specific query params; those are consumed
-// by the redirect, so only the tracking params are carried over in that case.
+// Params matched by the redirect are consumed; only tracking params carry over.
 export function getRedirectSearch(fromPathSearch: string, requestSearch: string): string {
   return fromPathSearch.length > 0 ? splitRouteLookupSearch(requestSearch).tracking : requestSearch;
 }
