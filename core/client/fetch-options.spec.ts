@@ -4,14 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const ignoredDirs = new Set([
-  'node_modules',
-  '.next',
-  '.open-next',
-  'tests',
-  // Proxy fetches aren't stored in the Data Cache, so they can't be cached forever.
-  'proxies',
-]);
+const ignoredDirs = new Set(['node_modules', '.next', '.open-next', 'tests']);
 // Runs while Next.js loads its config, outside the Data Cache and any request scope.
 const ignoredFiles = new Set(['next.config.ts']);
 
