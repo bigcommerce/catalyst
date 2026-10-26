@@ -84,6 +84,8 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
   }
 }
 
+let warnedMemoryFallback = false;
+
 // Exported for tests: the adapter chosen here depends on ambient runtime
 // state (env vars, the Cloudflare context global) that can't be observed
 // through the memoized `kv` singleton below.
@@ -118,6 +120,15 @@ export async function createKVAdapter() {
   // would empty both layers together and leave `with-routes` with no cached
   // value, sending every request past the window into its blocking origin
   // fetch rather than its background refresh.
+  if (process.env.NODE_ENV === 'production' && !warnedMemoryFallback) {
+    warnedMemoryFallback = true;
+
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[BigCommerce] KV: no shared store configured, so route, store status and locale lookups are cached per instance and repeat on every cold start. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to share them.',
+    );
+  }
+
   return new MemoryKvAdapter();
 }
 

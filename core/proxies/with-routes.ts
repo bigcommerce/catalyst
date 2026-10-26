@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import {
   getProductViewsCookie,
   getVisitIdCookie,
@@ -77,7 +76,7 @@ const getRoute = async (path: string, channelId?: string, customerAccessToken?: 
     document: GetRouteQuery,
     variables: { path },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : undefined,
     channelId,
   });
 
@@ -99,7 +98,7 @@ const getRawWebPageContent = async (id: string, customerAccessToken?: string) =>
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : undefined,
     customerAccessToken,
   });
 
@@ -125,7 +124,6 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
     channelId,
   });
 
