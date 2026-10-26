@@ -1,9 +1,7 @@
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { NextResponse } from 'next/server';
 
-// Only the Makeswift builder reads this, and the draft mode cookie is checked against this
-// build's preview secret, so it can't be forged. Browsers may reuse the response briefly
-// because the builder's pickers call this on every keystroke.
+// Builder only. The picker calls this on every keystroke, hence the short browser cache.
 const CACHE_HEADERS = { 'Cache-Control': 'private, max-age=60', Vary: 'Cookie' };
 
 export async function GET(): Promise<NextResponse> {
