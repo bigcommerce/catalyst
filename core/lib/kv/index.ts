@@ -125,7 +125,7 @@ export async function createKVAdapter() {
 
     // eslint-disable-next-line no-console
     console.warn(
-      '[BigCommerce] KV: no shared store configured, so route, store status and locale lookups are cached per instance and repeat on every cold start. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to share them.',
+      '[BigCommerce] KV: no shared store configured, so route, store status and locale lookups are cached per instance and repeat on every cold start. Deploy on Vercel (Runtime Cache), bind a Cloudflare KV namespace as CATALYST_ROUTES_KV, or set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.',
     );
   }
 

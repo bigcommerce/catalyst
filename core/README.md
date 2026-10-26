@@ -131,11 +131,16 @@ there and fail the job when `git diff --exit-code` reports a change.
 ## Route cache (KV)
 
 The proxy resolves each URL, the store status and the locale settings through BigCommerce, and
-caches the results in a key-value store, since the Next.js Data Cache doesn't apply there. On Vercel
-(Runtime Cache) and on Storefront Hosting (Cloudflare KV) this is configured for you. On
-any other host, set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` to use
-[Upstash Redis](https://upstash.com/docs/redis); otherwise each instance caches in memory and repeats
-those lookups after every cold start, and a warning is logged in production.
+caches the results in a key-value store, since the Next.js Data Cache doesn't apply there. It uses
+the first one available:
+
+1. Vercel Runtime Cache, on Vercel.
+2. A Cloudflare KV namespace bound as `CATALYST_ROUTES_KV` (set up for you on Storefront Hosting).
+3. [Upstash Redis](https://upstash.com/docs/redis), when `UPSTASH_REDIS_REST_URL` and
+   `UPSTASH_REDIS_REST_TOKEN` are set.
+
+Otherwise each instance caches in memory and repeats those lookups after every cold start, and a
+warning is logged in production.
 
 ## Resources
 

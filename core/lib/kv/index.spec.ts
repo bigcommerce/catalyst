@@ -131,6 +131,7 @@ describe('memory fallback warning', () => {
     await create();
 
     expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0]?.[0]).toContain('CATALYST_ROUTES_KV');
     expect(warn.mock.calls[0]?.[0]).toContain('UPSTASH_REDIS_REST_URL');
   });
 
