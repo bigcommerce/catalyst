@@ -73,7 +73,6 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
             headers: {
               Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN ?? ''}`,
             },
-            // no-store so the shopper IP is forwarded.
             cache: 'no-store',
           },
         });
