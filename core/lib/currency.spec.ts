@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { revalidate } from '~/client/revalidate-target';
 
-import { getPreferredCurrencyCode } from './currency';
+import { getPreferredCurrencyCode, getSelectedCurrencyCode } from './currency';
 
 const { mockCookieValue, mockFetch } = vi.hoisted(() => ({
   mockCookieValue: vi.fn<() => string | undefined>(),
@@ -52,6 +52,13 @@ describe('getPreferredCurrencyCode', () => {
     mockCookieValue.mockReturnValue('EUR');
 
     await expect(getPreferredCurrencyCode()).resolves.toBe('EUR');
+  });
+
+  it('getSelectedCurrencyCode keeps the store default', async () => {
+    mockCookieValue.mockReturnValue('USD');
+
+    await expect(getSelectedCurrencyCode()).resolves.toBe('USD');
+    expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('keeps the cookie currency when the default lookup fails', async () => {
