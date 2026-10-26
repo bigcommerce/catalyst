@@ -1,11 +1,9 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import type { CurrencyCode } from '~/components/header/fragment';
 import { CurrencyCodeSchema } from '~/components/header/schema';
 import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
@@ -22,22 +20,16 @@ const DefaultCurrencyQuery = graphql(`
   }
 `);
 
-const getDefaultCurrencyCode = cache(async () => {
+const getDefaultCurrencyCode = async () => {
   const { data } = await client.fetch({
     document: DefaultCurrencyQuery,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
   });
 
   return data.site.settings?.currency.defaultCurrency;
-});
+};
 
-/**
- * The currency stored in the cookie, as chosen. Use for mutations, where the cached store default
- * used by `getPreferredCurrencyCode` could be stale.
- *
- * @returns {Promise<CurrencyCode | undefined>} `undefined` when the cookie is absent or invalid.
- */
-export async function getSelectedCurrencyCode(): Promise<CurrencyCode | undefined> {
+export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefined> {
   const cookieStore = await cookies();
   const currencyCode = cookieStore.get('currencyCode')?.value;
 
@@ -50,28 +42,23 @@ export async function getSelectedCurrencyCode(): Promise<CurrencyCode | undefine
   return result.success ? result.data : undefined;
 }
 
-export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefined> {
-  const currencyCode = await getSelectedCurrencyCode();
-
-  if (!currencyCode) {
-    return undefined;
-  }
-
-  // Queries resolve an omitted currency to the store default, so passing the default explicitly
-  // would only split the Data Cache into a second entry with the same prices.
+export async function setPreferredCurrencyCode(currencyCode: CurrencyCode): Promise<void> {
+  const cookieStore = await cookies();
   const defaultCurrencyCode = await getDefaultCurrencyCode().catch(() => undefined);
 
-  return currencyCode === defaultCurrencyCode ? undefined : currencyCode;
-}
+  // Queries resolve an omitted currency to the store default, so storing the default would only
+  // split the Data Cache into a second entry with the same prices.
+  if (currencyCode === defaultCurrencyCode) {
+    cookieStore.delete('currencyCode');
 
-export async function setPreferredCurrencyCode(currencyCode: CurrencyCode): Promise<void> {
+    return;
+  }
+
   // The currency preference is a functionality cookie; without consent the
   // selected currency still applies to the cart but the preference isn't stored.
   if (!(await hasConsentFor('functionality'))) {
     return;
   }
-
-  const cookieStore = await cookies();
 
   cookieStore.set('currencyCode', currencyCode, {
     httpOnly: true,

@@ -1,70 +1,61 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { revalidate } from '~/client/revalidate-target';
+import { setPreferredCurrencyCode } from './currency';
 
-import { getPreferredCurrencyCode, getSelectedCurrencyCode } from './currency';
-
-const { mockCookieValue, mockFetch } = vi.hoisted(() => ({
-  mockCookieValue: vi.fn<() => string | undefined>(),
+const { mockCookieStore, mockFetch, mockHasConsentFor } = vi.hoisted(() => ({
+  mockCookieStore: { delete: vi.fn(), set: vi.fn() },
   mockFetch: vi.fn(),
+  mockHasConsentFor: vi.fn(),
 }));
 
-vi.mock('next/headers', () => ({
-  cookies: () => {
-    const value = mockCookieValue();
-
-    return Promise.resolve({ get: () => (value ? { value } : undefined) });
-  },
-}));
-vi.mock('react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('react')>()),
-  cache: <T>(fn: T) => fn,
-}));
+vi.mock('next/headers', () => ({ cookies: () => Promise.resolve(mockCookieStore) }));
 vi.mock('~/client', () => ({ client: { fetch: mockFetch } }));
-vi.mock('~/lib/consent-manager/has-consent-for', () => ({ hasConsentFor: vi.fn() }));
+vi.mock('~/lib/consent-manager/has-consent-for', () => ({ hasConsentFor: mockHasConsentFor }));
 
 const defaultCurrencyResponse = (defaultCurrency: string) => ({
   data: { site: { settings: { currency: { defaultCurrency } } } },
 });
 
-describe('getPreferredCurrencyCode', () => {
+describe('setPreferredCurrencyCode', () => {
   beforeEach(() => {
-    mockCookieValue.mockReset();
+    mockCookieStore.delete.mockReset();
+    mockCookieStore.set.mockReset();
     mockFetch.mockReset();
     mockFetch.mockResolvedValue(defaultCurrencyResponse('USD'));
+    mockHasConsentFor.mockReset();
+    mockHasConsentFor.mockResolvedValue(true);
   });
 
-  it('returns undefined without a cookie', async () => {
-    await expect(getPreferredCurrencyCode()).resolves.toBeUndefined();
-    expect(mockFetch).not.toHaveBeenCalled();
-  });
+  it('clears the cookie when switching to the store default', async () => {
+    await setPreferredCurrencyCode('USD');
 
-  it('returns undefined when the cookie holds the store default', async () => {
-    mockCookieValue.mockReturnValue('USD');
-
-    await expect(getPreferredCurrencyCode()).resolves.toBeUndefined();
     expect(mockFetch).toHaveBeenCalledWith(
-      expect.objectContaining({ fetchOptions: { next: { revalidate } } }),
+      expect.objectContaining({ fetchOptions: { cache: 'no-store' } }),
     );
+    expect(mockCookieStore.delete).toHaveBeenCalledWith('currencyCode');
+    expect(mockCookieStore.set).not.toHaveBeenCalled();
   });
 
-  it('returns a non-default currency', async () => {
-    mockCookieValue.mockReturnValue('EUR');
+  it('stores a non-default currency', async () => {
+    await setPreferredCurrencyCode('EUR');
 
-    await expect(getPreferredCurrencyCode()).resolves.toBe('EUR');
+    expect(mockCookieStore.set).toHaveBeenCalledWith('currencyCode', 'EUR', expect.any(Object));
+    expect(mockCookieStore.delete).not.toHaveBeenCalled();
   });
 
-  it('getSelectedCurrencyCode keeps the store default', async () => {
-    mockCookieValue.mockReturnValue('USD');
+  it('does not store a non-default currency without consent', async () => {
+    mockHasConsentFor.mockResolvedValue(false);
 
-    await expect(getSelectedCurrencyCode()).resolves.toBe('USD');
-    expect(mockFetch).not.toHaveBeenCalled();
+    await setPreferredCurrencyCode('EUR');
+
+    expect(mockCookieStore.set).not.toHaveBeenCalled();
   });
 
-  it('keeps the cookie currency when the default lookup fails', async () => {
-    mockCookieValue.mockReturnValue('USD');
+  it('stores the currency when the default lookup fails', async () => {
     mockFetch.mockRejectedValue(new Error('fetch failed'));
 
-    await expect(getPreferredCurrencyCode()).resolves.toBe('USD');
+    await setPreferredCurrencyCode('USD');
+
+    expect(mockCookieStore.set).toHaveBeenCalledWith('currencyCode', 'USD', expect.any(Object));
   });
 });
