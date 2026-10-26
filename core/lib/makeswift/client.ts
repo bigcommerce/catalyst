@@ -1,6 +1,7 @@
-import { Makeswift } from '@makeswift/runtime/next';
+import { Makeswift, type SiteVersion } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
+import { unstable_cache } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 
 import { getLocaleRouting } from '~/i18n/locale-config';
@@ -13,15 +14,66 @@ export const client = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY, {
   runtime,
 });
 
-export const getPageSnapshot = async ({ path, locale }: { path: string; locale: string }) =>
-  await client.getPageSnapshot(path, {
-    siteVersion: await getSiteVersion(),
-    locale: await normalizeLocale(locale),
-  });
+// The tag the Makeswift publish webhook revalidates; `@makeswift/runtime` doesn't export it.
+const MAKESWIFT_CACHE_TAG = '@@makeswift';
+
+// Next.js only caches 200 responses, so without this every unknown path (e.g. bot probes) costs
+// an uncached Makeswift API call. Found results are still served by the regular cached fetches.
+const NOT_FOUND_CACHE_OPTIONS = { tags: [MAKESWIFT_CACHE_TAG], revalidate: 300 };
+
+const isPageMissing = unstable_cache(
+  async (path: string, locale: string | undefined) =>
+    (await client.getPageSnapshot(path, { siteVersion: null, locale })) == null,
+  ['makeswift-page-missing'],
+  NOT_FOUND_CACHE_OPTIONS,
+);
+
+const isComponentLocaleMissing = unstable_cache(
+  async (snapshotId: string, locale: string) => {
+    try {
+      await client.getComponentSnapshot(snapshotId, { siteVersion: null, locale });
+
+      return false;
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        return true;
+      }
+
+      throw error;
+    }
+  },
+  ['makeswift-component-locale-missing'],
+  NOT_FOUND_CACHE_OPTIONS,
+);
+
+// Draft mode (the builder) must see new pages immediately, and Makeswift can't reach a local dev
+// server to revalidate.
+function canCacheNotFound(siteVersion: SiteVersion | null): boolean {
+  return siteVersion == null && process.env.NODE_ENV !== 'development';
+}
+
+export const getPageSnapshot = async ({ path, locale }: { path: string; locale: string }) => {
+  const siteVersion = await getSiteVersion();
+  const normalizedLocale = await normalizeLocale(locale);
+
+  if (canCacheNotFound(siteVersion) && (await isPageMissing(path, normalizedLocale))) {
+    return null;
+  }
+
+  return await client.getPageSnapshot(path, { siteVersion, locale: normalizedLocale });
+};
 
 export const getComponentSnapshot = async (snapshotId: string) => {
   const siteVersion = await getSiteVersion();
   const locale = await normalizeLocale(await getLocale());
+
+  if (
+    locale !== undefined &&
+    canCacheNotFound(siteVersion) &&
+    (await isComponentLocaleMissing(snapshotId, locale))
+  ) {
+    return await client.getComponentSnapshot(snapshotId, { siteVersion, locale: undefined });
+  }
 
   try {
     return await client.getComponentSnapshot(snapshotId, { siteVersion, locale });
