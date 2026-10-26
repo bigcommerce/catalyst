@@ -1,10 +1,35 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 
+import { client } from '~/client';
+import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import type { CurrencyCode } from '~/components/header/fragment';
 import { CurrencyCodeSchema } from '~/components/header/schema';
 import { hasConsentFor } from '~/lib/consent-manager/has-consent-for';
+
+const DefaultCurrencyQuery = graphql(`
+  query DefaultCurrencyQuery {
+    site {
+      settings {
+        currency {
+          defaultCurrency
+        }
+      }
+    }
+  }
+`);
+
+const getDefaultCurrencyCode = cache(async () => {
+  const { data } = await client.fetch({
+    document: DefaultCurrencyQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return data.site.settings?.currency.defaultCurrency;
+});
 
 export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefined> {
   const cookieStore = await cookies();
@@ -16,7 +41,15 @@ export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefin
 
   const result = CurrencyCodeSchema.safeParse(currencyCode);
 
-  return result.success ? result.data : undefined;
+  if (!result.success) {
+    return undefined;
+  }
+
+  // Queries resolve an omitted currency to the store default, so passing the default explicitly
+  // would only split the Data Cache into a second entry with the same prices.
+  const defaultCurrencyCode = await getDefaultCurrencyCode().catch(() => undefined);
+
+  return result.data === defaultCurrencyCode ? undefined : result.data;
 }
 
 export async function setPreferredCurrencyCode(currencyCode: CurrencyCode): Promise<void> {

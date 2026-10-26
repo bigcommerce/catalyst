@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { Maintenance as MaintenanceSection } from '@/vibes/soul/sections/maintenance';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
@@ -55,6 +56,7 @@ export default async function Maintenance({ params }: Props) {
 
   const { data } = await client.fetch({
     document: MaintenancePageQuery,
+    fetchOptions: { next: { revalidate } },
   });
 
   const storeSettings = data.site.settings;
