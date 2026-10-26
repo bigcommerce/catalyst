@@ -14,6 +14,7 @@ import {
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
+import { isInteractiveRequest } from '~/lib/analytics/is-interactive-request';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
@@ -414,6 +415,7 @@ export const withRoutes: ProxyFactory = () => {
             !isAnalyticsDisabled() &&
             !isPrefetch &&
             !isRSC &&
+            isInteractiveRequest(req) &&
             (await isFirstViewInVisit(node.entityId))
           ) {
             event.waitUntil(recordProductVisit(req, node.entityId));
