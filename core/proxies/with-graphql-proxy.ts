@@ -37,7 +37,7 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
     let body: unknown;
 
     try {
-      // Read a clone so the body stays unconsumed for auth(), which may rebuild the request.
+      // Clone so auth() can still read the body.
       body = await request.clone().json();
     } catch {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
@@ -51,8 +51,7 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
 
     const { query, variables } = parsedBody.data;
 
-    // The requester header is client-controlled, so only relay the checkout-sdk-js wallet button
-    // operations rather than any query or mutation.
+    // The requester header can be spoofed, so only relay wallet operations.
     const document = parseAllowedWalletOperation(query);
 
     if (!document) {
@@ -74,7 +73,7 @@ export const withGraphqlProxy: ProxyFactory = (next) => {
             headers: {
               Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_UNAUTHENTICATED_TOKEN ?? ''}`,
             },
-            // Uncacheable so the client forwards the shopper's IP to BigCommerce.
+            // no-store so the shopper IP is forwarded.
             cache: 'no-store',
           },
         });

@@ -12,12 +12,11 @@ import {
 interface AllowedOperation {
   name: string;
   type: OperationTypeNode;
-  // Root field path the operation must select, one field per level.
+  // Root field path the operation must select.
   path: string[];
 }
 
-// The operations checkout-sdk-js's wallet-button-integration package sends to the storefront
-// `/graphql` endpoint (payment, billing and checkout request senders).
+// Operations sent by checkout-sdk-js wallet buttons.
 const ALLOWED_WALLET_OPERATIONS: AllowedOperation[] = [
   {
     name: 'CreatePaymentWalletIntentMutation',
@@ -41,8 +40,7 @@ const ALLOWED_WALLET_OPERATIONS: AllowedOperation[] = [
   },
 ];
 
-// Each level of the path must select exactly that one field, so nothing else (extra root fields,
-// aliases of other fields, fragment spreads) can ride along with an allowed operation.
+// One field per level, so nothing else can ride along with an allowed operation.
 function selectsOnlyPath(selectionSet: SelectionSetNode, path: string[]): boolean {
   const [fieldName, ...rest] = path;
 
@@ -76,8 +74,7 @@ function isAllowedOperation(operation: OperationDefinitionNode): boolean {
   );
 }
 
-// Returns the parsed document only if it is one of the wallet button operations the `/graphql`
-// relay may forward, and `null` for anything else (including documents that fail to parse).
+// Returns the parsed document if it's an allowed wallet operation, otherwise `null`.
 export function parseAllowedWalletOperation(
   query: string,
 ): TadaDocumentNode<unknown, Record<string, unknown>> | null {
