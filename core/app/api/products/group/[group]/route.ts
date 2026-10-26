@@ -7,7 +7,9 @@ import {
   getFeaturedProducts,
   getNewestProducts,
 } from '~/client/queries/get-products';
+import { revalidate } from '~/client/revalidate-target';
 import { getLocaleRouting } from '~/i18n/locale-config';
+import { getProductsCacheControl, parseProductsViewer } from '~/lib/makeswift/utils/products-api';
 
 export const GET = async (
   request: NextRequest,
@@ -26,6 +28,17 @@ export const GET = async (
     );
   }
 
+  const viewerResult = parseProductsViewer(searchParams);
+
+  if (!viewerResult.success) {
+    return NextResponse.json(
+      { status: 'error', error: 'Invalid currency parameter' },
+      { status: 400 },
+    );
+  }
+
+  const { viewer } = viewerResult;
+
   const querySchema = z.enum(['best-selling', 'featured', 'newest']);
 
   const parseResult = querySchema.safeParse(group);
@@ -41,17 +54,21 @@ export const GET = async (
 
   switch (parseResult.data) {
     case 'best-selling':
-      result = await getBestSellingProducts({ locale });
+      result = await getBestSellingProducts({ locale, viewer });
       break;
 
     case 'featured':
-      result = await getFeaturedProducts({ locale });
+      result = await getFeaturedProducts({ locale, viewer });
       break;
 
     case 'newest':
-      result = await getNewestProducts({ locale });
+      result = await getNewestProducts({ locale, viewer });
       break;
   }
 
-  return NextResponse.json(result);
+  return NextResponse.json(result, {
+    headers: {
+      'Cache-Control': getProductsCacheControl(viewer, result.status === 'success', revalidate),
+    },
+  });
 };

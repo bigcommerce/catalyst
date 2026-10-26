@@ -14,6 +14,7 @@ import '../../globals.css';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
+import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -26,8 +27,11 @@ import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
 import { getLocaleRouting } from '~/i18n/locale-config';
 import { LocaleRoutingProvider } from '~/i18n/locale-routing-provider';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 import { SiteTheme } from '~/lib/makeswift/components/site-theme';
+import { ProductsViewerProvider } from '~/lib/makeswift/products-viewer';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
+import type { ProductsViewer } from '~/lib/makeswift/utils/products-api';
 import { getToastNotification } from '~/lib/server-toast';
 
 import '~/lib/makeswift/components';
@@ -135,6 +139,9 @@ export default async function RootLayout({ params, children }: Props) {
   const rootData = await fetchRootLayoutMetadata();
   const toastNotificationCookieData = await getToastNotification();
   const siteVersion = await getSiteVersion();
+  const productsViewer: ProductsViewer = (await getSessionCustomerAccessToken())
+    ? { guest: false }
+    : { guest: true, currencyCode: await getPreferredCurrencyCode() };
 
   const localeRouting = await getLocaleRouting();
 
@@ -175,7 +182,9 @@ export default async function RootLayout({ params, children }: Props) {
                       {toastNotificationCookieData && (
                         <CookieNotifications {...toastNotificationCookieData} />
                       )}
-                      {children}
+                      <ProductsViewerProvider value={productsViewer}>
+                        {children}
+                      </ProductsViewerProvider>
                     </Providers>
                   </AnalyticsProvider>
                 </NuqsAdapter>

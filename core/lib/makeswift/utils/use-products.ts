@@ -3,6 +3,9 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { z } from 'zod';
 
+import { useProductsViewer } from '../products-viewer';
+
+import { getCollectionProductsUrl, getProductsByIdsUrl } from './products-api';
 import {
   BcProductSchema,
   Product,
@@ -31,20 +34,15 @@ export function useProducts({ collection, collectionLimit = 20, additionalProduc
   const bcProductToVibesProduct = useBcProductToVibesProduct();
   const locale = useLocale();
 
+  const viewer = useProductsViewer();
+
   const { data: collectionData, isLoading: isCollectionLoading } = useSWR(
-    collection !== 'none' ? `/api/products/group/${collection}?locale=${locale}` : null,
+    collection !== 'none' ? getCollectionProductsUrl(collection, locale, viewer) : null,
     fetcher,
   );
 
-  const searchParams = new URLSearchParams();
-
-  searchParams.append('ids', additionalProductIds.join(','));
-  searchParams.append('locale', locale);
-
-  const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}`;
-
   const { data: additionalData, isLoading: isAdditionalLoading } = useSWR(
-    additionalProductIds.length ? additionalProductsUrl : null,
+    getProductsByIdsUrl(additionalProductIds, locale, viewer),
     fetcher,
   );
   const additionalProducts = useMemo(

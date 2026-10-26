@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hasLocale } from 'next-intl';
 
 import { getProductsByIds } from '~/client/queries/get-products';
+import { revalidate } from '~/client/revalidate-target';
 import { getLocaleRouting } from '~/i18n/locale-config';
+import {
+  getProductsCacheControl,
+  normalizeProductIds,
+  parseProductsViewer,
+} from '~/lib/makeswift/utils/products-api';
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;
@@ -22,14 +28,26 @@ export const GET = async (request: NextRequest) => {
     return NextResponse.json({ status: 'error', error: 'ids query is required' }, { status: 400 });
   }
 
-  const idList = query.split(',');
+  const viewerResult = parseProductsViewer(searchParams);
 
-  const ids = idList.map((id) => (id ? parseInt(id, 10) : null)).filter((id) => id !== null);
+  if (!viewerResult.success) {
+    return NextResponse.json(
+      { status: 'error', error: 'Invalid currency parameter' },
+      { status: 400 },
+    );
+  }
+
+  const { viewer } = viewerResult;
+  const ids = normalizeProductIds(query.split(','));
 
   const result =
     ids.length > 0
-      ? await getProductsByIds({ entityIds: ids, locale })
+      ? await getProductsByIds({ entityIds: ids, locale, viewer })
       : { status: 'success', products: [] };
 
-  return NextResponse.json(result);
+  return NextResponse.json(result, {
+    headers: {
+      'Cache-Control': getProductsCacheControl(viewer, result.status === 'success', revalidate),
+    },
+  });
 };

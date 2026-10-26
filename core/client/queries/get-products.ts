@@ -8,6 +8,7 @@ import { graphql, ResultOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import type { ProductsViewer } from '~/lib/makeswift/utils/products-api';
 
 const GetBestSellingProductsQuery = graphql(
   `
@@ -115,9 +116,25 @@ export type GetProductsResponse = Array<
   >[number]['node']
 >;
 
-const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
+interface ProductsOptions {
+  locale?: string;
+  viewer?: ProductsViewer | null;
+}
+
+// A guest viewer comes from the request URL, so its responses don't depend on the session cookies.
+const resolveViewer = async (viewer?: ProductsViewer | null) => {
+  if (viewer?.guest) {
+    return { customerAccessToken: undefined, currencyCode: viewer.currencyCode };
+  }
+
+  return {
+    customerAccessToken: await getSessionCustomerAccessToken(),
+    currencyCode: await getPreferredCurrencyCode(),
+  };
+};
+
+const getBestSellingProducts = cache(async ({ locale, viewer }: ProductsOptions) => {
+  const { customerAccessToken, currencyCode } = await resolveViewer(viewer);
   const channelId = getChannelIdFromLocale(locale);
 
   try {
@@ -147,9 +164,8 @@ const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => 
   }
 });
 
-const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
+const getFeaturedProducts = cache(async ({ locale, viewer }: ProductsOptions) => {
+  const { customerAccessToken, currencyCode } = await resolveViewer(viewer);
   const channelId = getChannelIdFromLocale(locale);
 
   try {
@@ -179,9 +195,8 @@ const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
   }
 });
 
-const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
+const getNewestProducts = cache(async ({ locale, viewer }: ProductsOptions) => {
+  const { customerAccessToken, currencyCode } = await resolveViewer(viewer);
   const channelId = getChannelIdFromLocale(locale);
 
   try {
@@ -212,9 +227,8 @@ const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
 });
 
 const getProductsByIds = cache(
-  async ({ entityIds, locale }: { entityIds: number[]; locale?: string }) => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
+  async ({ entityIds, locale, viewer }: ProductsOptions & { entityIds: number[] }) => {
+    const { customerAccessToken, currencyCode } = await resolveViewer(viewer);
 
     try {
       const response = await client.fetch({
