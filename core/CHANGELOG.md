@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.13.1
+
+### Patch Changes
+
+- [#3294](https://github.com/bigcommerce/catalyst/pull/3294) [`7007163`](https://github.com/bigcommerce/catalyst/commit/70071638845805c02434035faf85037d431b8b0a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Only relay checkout-sdk-js wallet button operations through `/graphql`; reject anything else with a `403`.
+
+- [#3295](https://github.com/bigcommerce/catalyst/pull/3295) [`0bff6a9`](https://github.com/bigcommerce/catalyst/commit/0bff6a949ab91c495621b2a4dd8955bdb2b1408e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Strip tracking params (`utm_*`, `gclid`, `fbclid`, etc.) from the route lookup cache key. Redirects whose source matches on a tracking param no longer match.
+
+- [#3305](https://github.com/bigcommerce/catalyst/pull/3305) [`82ba996`](https://github.com/bigcommerce/catalyst/commit/82ba9961b17c7d8c08d552fcea6621d38cdc562e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Stop sending the `VisitStarted` and `ProductViewed` analytics events for requests that aren't page navigations from a browser, such as bots, crawlers, scripts and fetch or subresource requests. These clients rarely keep cookies, so each of their requests previously sent an uncached analytics mutation to BigCommerce.
+
+- [#3300](https://github.com/bigcommerce/catalyst/pull/3300) [`1e4e862`](https://github.com/bigcommerce/catalyst/commit/1e4e862cdc59e14df7f5dce16f6ffd88e7c20ab1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Give every `client.fetch` call an explicit cache option, so reads like the maintenance page message no longer sit in the Data Cache indefinitely and mutations always forward the shopper IP. Switching back to the store default currency now clears the currency cookie, so it no longer creates a second cache entry.
+
+- [#3287](https://github.com/bigcommerce/catalyst/pull/3287) [`2d1d9df`](https://github.com/bigcommerce/catalyst/commit/2d1d9dfe9e4f7b8fd013a5811ec60139222610ec) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - Fix the password reset email sent to customers flagged with "Request customer to set their password on next login". BigCommerce generates that link in the legacy Stencil format (`/login?action=change_password&c=<id>&t=<token>`), which the login page ignored. The login page now forwards it to `/change-password` so the customer can set a new password.
+
+- [#3298](https://github.com/bigcommerce/catalyst/pull/3298) [`1102cfb`](https://github.com/bigcommerce/catalyst/commit/1102cfb129eabd688ca6b98801bf55c052fb0457) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Forward the caller's IP as `X-Forwarded-For` and `True-Client-IP` on the UCP proxy, as the GraphQL client already does, so BigCommerce can apply per-IP limits to UCP requests.
+
+- [#3303](https://github.com/bigcommerce/catalyst/pull/3303) [`4a8752f`](https://github.com/bigcommerce/catalyst/commit/4a8752fe4ecf5cec8f9d8709658aab272ba6775a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Log a warning in production when the proxy's route cache falls back to per-instance memory because no shared KV store is configured, and document which hosts need one.
+
 ## 1.13.0
 
 ### Minor Changes
