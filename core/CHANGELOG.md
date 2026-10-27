@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.13.1
+
+### Patch Changes
+
+- [#3299](https://github.com/bigcommerce/catalyst/pull/3299) [`b9e4ce7`](https://github.com/bigcommerce/catalyst/commit/b9e4ce785dab7a71de35b7216b4a802c17209c48) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Cache `/api/products/[entityId]` for guest shoppers, and skip the BigCommerce customer group request in `/api/customer/group` when no shopper is logged in.
+
+- [#3301](https://github.com/bigcommerce/catalyst/pull/3301) [`63d20e7`](https://github.com/bigcommerce/catalyst/commit/63d20e76df844a568f1b0a4708a3730b150099a5) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Cache Makeswift "page not found" lookups (and missing-locale component lookups) for up to five minutes, cleared on publish, so requests for unknown paths no longer cost an uncached Makeswift API call each. Draft mode is unaffected.
+
+- [#3293](https://github.com/bigcommerce/catalyst/pull/3293) [`da4e5d6`](https://github.com/bigcommerce/catalyst/commit/da4e5d6da285e85128dafdb0f9fd95241650d0d6) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Only serve `/api/customer/groups` in a Makeswift builder session; return `403` otherwise.
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.13.1` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.13.1` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/6faa4b576a74097cec827a7fd5c0ec925f85d738/core/CHANGELOG.md#1131).
+
 ## 1.13.0
 
 ### Minor Changes
