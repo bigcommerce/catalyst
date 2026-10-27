@@ -109,7 +109,7 @@ export const buildUpstreamUrl = (requestUrl: URL): URL | null => {
   return upstreamUrl;
 };
 
-// Forwards only the headers the UCP spec defines. Credentials are among them, because UCP
+// Forwards only the headers the UCP spec defines, plus the client IP. Credentials are among them, because UCP
 // authenticates the calling agent at the platform rather than at Catalyst.
 export const buildUpstreamHeaders = (request: Request): Headers => {
   const headers = copyAllowedHeaders(
@@ -121,6 +121,14 @@ export const buildUpstreamHeaders = (request: Request): Headers => {
   // Disable compression so the response body still matches the forwarded digest and signature.
   headers.set('accept-encoding', 'identity');
   headers.set(UCP_PROXY_MARKER, '1');
+
+  // Same as the GraphQL client: lets the platform see the caller rather than this host.
+  const ipAddress = request.headers.get('x-forwarded-for');
+
+  if (ipAddress) {
+    headers.set('x-forwarded-for', ipAddress);
+    headers.set('true-client-ip', ipAddress);
+  }
 
   return headers;
 };
