@@ -128,6 +128,20 @@ A CI job that only lints, typechecks, or runs unit tests needs no credentials, b
 committed files. If you would rather have CI verify that they are current, run `pnpm run generate`
 there and fail the job when `git diff --exit-code` reports a change.
 
+## Route cache (KV)
+
+The proxy resolves each URL, the store status and the locale settings through BigCommerce, and
+caches the results in a key-value store, since the Next.js Data Cache doesn't apply there. It uses
+the first one available:
+
+1. Vercel Runtime Cache, on Vercel.
+2. A Cloudflare KV namespace bound as `CATALYST_ROUTES_KV` (set up for you on Storefront Hosting).
+3. [Upstash Redis](https://upstash.com/docs/redis), when `UPSTASH_REDIS_REST_URL` and
+   `UPSTASH_REDIS_REST_TOKEN` are set.
+
+Otherwise each instance caches in memory and repeats those lookups after every cold start, and a
+warning is logged in production.
+
 ## Resources
 
 - [Catalyst Documentation](https://catalyst.dev/docs/)

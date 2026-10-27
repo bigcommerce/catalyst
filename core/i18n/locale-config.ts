@@ -78,8 +78,8 @@ const isUsableLocaleNode = (localeNode: LocaleNode): boolean => {
 const fetchLocaleRouting = async (): Promise<LocaleRouting> => {
   const { data } = await client.fetch({
     document: LocaleSettingsQuery,
-    // Best effort: `fetch` isn't patched in the proxy runtime, and the Data Cache doesn't dedupe
-    // these POSTs across requests. Both callers below cache for themselves.
+    // Only takes effect for the render-time fallback: the Data Cache doesn't apply in the proxy,
+    // which relies on KV instead.
     fetchOptions: { next: { revalidate: LOCALE_CONFIG_TTL_SECONDS } },
     channelId: defaultChannelId(),
   });

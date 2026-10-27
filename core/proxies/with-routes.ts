@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import {
   getProductViewsCookie,
   getVisitIdCookie,
@@ -78,7 +77,8 @@ const getRoute = async (path: string, channelId?: string, customerAccessToken?: 
     document: GetRouteQuery,
     variables: { path },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    // Proxy fetches aren't Data-Cached (KV is the cache), and no-store forwards the shopper IP.
+    fetchOptions: { cache: 'no-store' },
     channelId,
   });
 
@@ -100,7 +100,7 @@ const getRawWebPageContent = async (id: string, customerAccessToken?: string) =>
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
     customerAccessToken,
   });
 
@@ -126,7 +126,7 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
+    fetchOptions: { cache: 'no-store' },
     channelId,
   });
 
