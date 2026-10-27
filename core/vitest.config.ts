@@ -5,7 +5,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     // Not `tests/`: those are Playwright specs.
-    include: ['lib/**/*.spec.ts', 'proxies/**/*.spec.ts'],
+    include: ['lib/**/*.spec.ts', 'proxies/**/*.spec.ts', 'client/**/*.spec.ts'],
     exclude: ['**/node_modules/**', '**/.next/**'],
   },
   resolve: {

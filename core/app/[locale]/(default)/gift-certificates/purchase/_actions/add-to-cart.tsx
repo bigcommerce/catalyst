@@ -11,6 +11,7 @@ import { DynamicFormActionArgs } from '@/vibes/soul/form/dynamic-form';
 import { Field } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { ExistingResultType } from '~/client/util';
 import { Link } from '~/components/link';
 import { addToOrCreateCart } from '~/lib/cart';
@@ -111,10 +112,12 @@ export async function addGiftCertificateToCart<F extends Field>(
   const settingsResp = await client.fetch({
     document: GiftCertificateSettingsQuery,
     variables: { currencyCode },
+    fetchOptions: { next: { revalidate } },
   });
+  const giftCertificateSettings = settingsResp.data.site.settings?.giftCertificates ?? undefined;
 
   const submission = parseWithZod(formData, {
-    schema: schema(settingsResp.data.site.settings?.giftCertificates ?? undefined, t),
+    schema: schema(giftCertificateSettings, t),
   });
 
   if (submission.status !== 'success') {
@@ -123,7 +126,8 @@ export async function addGiftCertificateToCart<F extends Field>(
 
   const amountFormatted = format.number(submission.value.amount, {
     style: 'currency',
-    currency: currencyCode,
+    // No preferred currency means the store default, which the settings resolve to.
+    currency: currencyCode ?? giftCertificateSettings?.currencyCode,
   });
 
   try {

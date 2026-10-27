@@ -40,6 +40,7 @@ export const switchLocale = async (locale: string): Promise<void> => {
     const result = await client.fetch({
       document: UpdateCartLocaleMutation,
       variables: { input: { cartEntityId: cartId, data: { locale } } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     const updateCartLocale = result.data.cart.updateCartLocale;
