@@ -18,6 +18,7 @@ export async function getCustomerGroupId() {
   const { data, errors } = await client.fetch({
     document: GetCustomerGroup,
     customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
   });
 
   if (errors) {

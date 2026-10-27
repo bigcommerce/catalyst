@@ -6,6 +6,7 @@ import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
 import { buildConfig } from '~/build-config/reader';
 import { ForceRefresh } from '~/components/force-refresh';
+import { redirect } from '~/i18n/navigation-server';
 import { Slot } from '~/lib/makeswift/slot';
 
 import { login } from './_actions/login';
@@ -15,6 +16,9 @@ interface Props {
   searchParams: Promise<{
     redirectTo?: string;
     error?: string;
+    action?: string;
+    c?: string;
+    t?: string;
   }>;
 }
 
@@ -30,9 +34,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Login({ params, searchParams }: Props) {
   const { locale } = await params;
-  const { redirectTo = '/account/orders', error } = await searchParams;
+  const {
+    redirectTo = '/account/orders',
+    error,
+    action,
+    c: customerEntityId,
+    t: token,
+  } = await searchParams;
 
   setRequestLocale(locale);
+
+  // BigCommerce emails the "set your password on next login" link in the legacy Stencil format
+  // (`/login?action=change_password&c=<id>&t=<token>`), so forward it to the change password page.
+  if (action === 'change_password' && customerEntityId && token) {
+    const query = new URLSearchParams({ c: customerEntityId, t: token });
+
+    return await redirect({ href: `/change-password?${query.toString()}`, locale });
+  }
 
   const t = await getTranslations('Auth.Login');
 

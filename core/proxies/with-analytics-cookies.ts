@@ -13,6 +13,7 @@ import {
 } from '~/lib/analytics/bigcommerce';
 import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
+import { isInteractiveRequest } from '~/lib/analytics/is-interactive-request';
 import { getConsentDecision } from '~/lib/consent-manager/has-consent-for';
 
 import { ProxyFactory } from './compose-proxies';
@@ -67,17 +68,18 @@ export const withAnalyticsCookies: ProxyFactory = (next) => {
       if (existingProductViews != null) {
         await setProductViewsCookie(existingProductViews);
       }
-    } else if (!isPrefetch && !isRSC && !isServerAction) {
+    } else if (!isPrefetch && !isRSC && !isServerAction && isInteractiveRequest(request)) {
       // New visit on a real navigation: create cookie and fire event
       const visitId = uuidv4();
 
       await setVisitIdCookie(visitId);
       event.waitUntil(recordNewVisit(request, visitorId, visitId));
     }
-    // Prefetch/RSC/server-action with no valid visit: skip entirely so the
-    // subsequent real navigation properly detects a new visit. Server actions
-    // must not start visits: cookies set here aren't visible to the action
-    // handler, so the startVisit action would otherwise fire a duplicate event.
+    // Prefetch/RSC/server-action or non-interactive (bot, script, fetch,
+    // subresource) request with no valid visit: skip entirely so the subsequent
+    // real navigation properly detects a new visit. Server actions must not
+    // start visits: cookies set here aren't visible to the action handler, so
+    // the startVisit action would otherwise fire a duplicate event.
 
     return next(request, event);
   };

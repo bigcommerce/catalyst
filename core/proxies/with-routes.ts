@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { auth } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import {
   getProductViewsCookie,
   getVisitIdCookie,
@@ -14,7 +13,9 @@ import {
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
+import { isInteractiveRequest } from '~/lib/analytics/is-interactive-request';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { getRedirectSearch, splitRouteLookupSearch } from '~/lib/routes/route-lookup-search';
 
 import { kv } from '../lib/kv';
 
@@ -77,7 +78,8 @@ const getRoute = async (path: string, channelId?: string, customerAccessToken?: 
     document: GetRouteQuery,
     variables: { path },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    // Proxy fetches aren't Data-Cached (KV is the cache), and no-store forwards the shopper IP.
+    fetchOptions: { cache: 'no-store' },
     channelId,
   });
 
@@ -99,7 +101,7 @@ const getRawWebPageContent = async (id: string, customerAccessToken?: string) =>
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
     customerAccessToken,
   });
 
@@ -125,7 +127,7 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
+    fetchOptions: { cache: 'no-store' },
     channelId,
   });
 
@@ -265,9 +267,9 @@ const getRouteInfo = async (
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
-    // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
+    // Redirects can match on query params, so keep them, minus tracking params.
     const pathname = clearLocaleFromPath(
-      request.nextUrl.pathname + request.nextUrl.search,
+      request.nextUrl.pathname + splitRouteLookupSearch(request.nextUrl.search).lookup,
       localePrefix,
     );
 
@@ -346,9 +348,8 @@ export const withRoutes: ProxyFactory = () => {
       };
 
       if (route?.redirect) {
-        // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
         const fromPathSearchParams = new URL(route.redirect.fromPath, req.url).search;
-        const searchParams = fromPathSearchParams.length > 0 ? '' : req.nextUrl.search;
+        const searchParams = getRedirectSearch(fromPathSearchParams, req.nextUrl.search);
 
         switch (route.redirect.to.__typename) {
           case 'BlogPostRedirect':
@@ -414,6 +415,7 @@ export const withRoutes: ProxyFactory = () => {
             !isAnalyticsDisabled() &&
             !isPrefetch &&
             !isRSC &&
+            isInteractiveRequest(req) &&
             (await isFirstViewInVisit(node.entityId))
           ) {
             event.waitUntil(recordProductVisit(req, node.entityId));
