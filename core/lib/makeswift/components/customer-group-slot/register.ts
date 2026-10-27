@@ -10,7 +10,7 @@ async function getAllCustomerGroups(): Promise<CustomerGroupsType | null> {
 
   if (!response.ok) {
     if (response.status === 403) {
-      // 403 indicates the store-level API token is not configured, which is the default OCC setup
+      // 403: no store-level API token (the default OCC setup), or not a builder session
       return null;
     }
 

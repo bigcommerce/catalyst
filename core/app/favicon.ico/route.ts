@@ -12,6 +12,7 @@
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 
 const GetFaviconQuery = graphql(`
   query GetFaviconQuery {
@@ -28,6 +29,7 @@ export const GET = async () => {
     document: GetFaviconQuery,
     // Outside the proxy, so there is no request locale: a bare call resolves the default channel.
     channelId: getChannelIdFromLocale(),
+    fetchOptions: { next: { revalidate } },
   });
 
   const faviconUrl = data.site.settings?.faviconUrl;

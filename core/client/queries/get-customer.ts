@@ -15,9 +15,14 @@ export type GetCustomerGroupResponse = ResultOf<typeof GetCustomerGroup>;
 export async function getCustomerGroupId() {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
+  if (!customerAccessToken) {
+    return { data: { customer: null } satisfies GetCustomerGroupResponse };
+  }
+
   const { data, errors } = await client.fetch({
     document: GetCustomerGroup,
     customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
   });
 
   if (errors) {

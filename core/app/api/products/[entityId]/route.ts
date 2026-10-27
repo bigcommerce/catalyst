@@ -4,6 +4,7 @@ import { hasLocale } from 'next-intl';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { getLocaleRouting } from '~/i18n/locale-config';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { MakeswiftProductFragment } from '~/lib/makeswift/utils/use-bc-product-to-vibes-product/fragment';
@@ -48,6 +49,7 @@ export const GET = async (
     customerAccessToken,
     variables: { entityId: parseInt(entityId, 10), currencyCode },
     fetchOptions: {
+      ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
       headers: {
         'Accept-Language': locale,
       },

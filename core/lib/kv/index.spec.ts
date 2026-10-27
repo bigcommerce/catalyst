@@ -109,6 +109,57 @@ describe('createKVAdapter', () => {
   });
 });
 
+describe('memory fallback warning', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.resetModules();
+  });
+
+  const loadFreshModule = async () => {
+    vi.resetModules();
+
+    return import('./index');
+  };
+
+  it('warns once per process when falling back to memory in production', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { createKVAdapter: create } = await loadFreshModule();
+
+    await create();
+    await create();
+
+    expect(warn).toHaveBeenCalledOnce();
+    expect(warn.mock.calls[0]?.[0]).toContain('CATALYST_ROUTES_KV');
+    expect(warn.mock.calls[0]?.[0]).toContain('UPSTASH_REDIS_REST_URL');
+  });
+
+  it('does not warn outside production', async () => {
+    vi.stubEnv('NODE_ENV', 'development');
+
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { createKVAdapter: create } = await loadFreshModule();
+
+    await create();
+
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('does not warn when a shared store is configured', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('UPSTASH_REDIS_REST_URL', UPSTASH_ENV.UPSTASH_REDIS_REST_URL);
+    vi.stubEnv('UPSTASH_REDIS_REST_TOKEN', UPSTASH_ENV.UPSTASH_REDIS_REST_TOKEN);
+
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const { createKVAdapter: create } = await loadFreshModule();
+
+    await create();
+
+    expect(warn).not.toHaveBeenCalled();
+  });
+});
+
 const CLOCK_BASE_MS = 1_000_000;
 const SIXTY_ONE_SECONDS = 61_000;
 

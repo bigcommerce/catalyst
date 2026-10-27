@@ -60,6 +60,7 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
         input,
       },
       customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
     });
 
     const result = response.data.customer.changePassword;

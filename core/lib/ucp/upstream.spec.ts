@@ -202,8 +202,6 @@ describe('buildUpstreamHeaders', () => {
     'proxy-authorization',
     'referer',
     'rsc',
-    'true-client-ip',
-    'x-forwarded-for',
     'x-forwarded-host',
     'x-forwarded-proto',
     'x-middleware-preflight',
@@ -217,6 +215,38 @@ describe('buildUpstreamHeaders', () => {
       ).has(name),
     ).toBe(false);
   });
+
+  it('forwards the client IP as x-forwarded-for and true-client-ip', () => {
+    const headers = buildUpstreamHeaders(
+      storefrontRequest('/api/ucp/checkout-sessions', { 'x-forwarded-for': '203.0.113.7' }),
+    );
+
+    expect(headers.get('x-forwarded-for')).toBe('203.0.113.7');
+    expect(headers.get('true-client-ip')).toBe('203.0.113.7');
+  });
+
+  it('derives true-client-ip from x-forwarded-for, ignoring a client-supplied value', () => {
+    const headers = buildUpstreamHeaders(
+      storefrontRequest('/api/ucp/checkout-sessions', {
+        'x-forwarded-for': '203.0.113.7',
+        'true-client-ip': '198.51.100.1',
+      }),
+    );
+
+    expect(headers.get('true-client-ip')).toBe('203.0.113.7');
+  });
+
+  it.each(['true-client-ip', 'cf-connecting-ip'])(
+    'sends no client IP when x-forwarded-for is absent, even with %s set',
+    (name) => {
+      const headers = buildUpstreamHeaders(
+        storefrontRequest('/api/ucp/checkout-sessions', { [name]: '198.51.100.1' }),
+      );
+
+      expect(headers.has('x-forwarded-for')).toBe(false);
+      expect(headers.has('true-client-ip')).toBe(false);
+    },
+  );
 
   it('sets the loop guard marker and ignores any client-supplied value', () => {
     const headers = buildUpstreamHeaders(
