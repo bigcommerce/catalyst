@@ -15,6 +15,7 @@ import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events'
 import { addProductView } from '~/lib/analytics/bigcommerce/product-views';
 import { isAnalyticsDisabled } from '~/lib/analytics/is-analytics-disabled';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { getRedirectSearch, splitRouteLookupSearch } from '~/lib/routes/route-lookup-search';
 
 import { kv } from '../lib/kv';
 
@@ -265,9 +266,9 @@ const getRouteInfo = async (
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
-    // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
+    // Redirects can match on query params, so keep them, minus tracking params.
     const pathname = clearLocaleFromPath(
-      request.nextUrl.pathname + request.nextUrl.search,
+      request.nextUrl.pathname + splitRouteLookupSearch(request.nextUrl.search).lookup,
       localePrefix,
     );
 
@@ -346,9 +347,8 @@ export const withRoutes: ProxyFactory = () => {
       };
 
       if (route?.redirect) {
-        // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
         const fromPathSearchParams = new URL(route.redirect.fromPath, req.url).search;
-        const searchParams = fromPathSearchParams.length > 0 ? '' : req.nextUrl.search;
+        const searchParams = getRedirectSearch(fromPathSearchParams, req.nextUrl.search);
 
         switch (route.redirect.to.__typename) {
           case 'BlogPostRedirect':
