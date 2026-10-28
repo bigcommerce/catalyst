@@ -3,6 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 import { z } from 'zod';
@@ -162,6 +163,8 @@ export async function addGiftCertificateToCart<F extends Field>(
       }),
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

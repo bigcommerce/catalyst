@@ -3,6 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { AuthError } from 'next-auth';
 import { getLocale, getTranslations } from 'next-intl/server';
 
@@ -36,6 +37,8 @@ export const login = async (
       redirect: false,
     });
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

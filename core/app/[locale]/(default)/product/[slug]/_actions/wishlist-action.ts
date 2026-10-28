@@ -8,6 +8,7 @@ import {
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -237,6 +238,8 @@ export async function wishlistAction(payload: FormData): Promise<void> {
 
     revalidateTag(TAGS.customer, { expire: 0 });
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

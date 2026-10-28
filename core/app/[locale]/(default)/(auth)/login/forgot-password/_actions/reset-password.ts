@@ -3,6 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/forgot-password-section/schema';
@@ -64,6 +65,8 @@ export const resetPassword = async (
       successMessage: t('confirmResetPassword', { email: submission.value.email }),
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

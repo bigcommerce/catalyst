@@ -1,6 +1,7 @@
 import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -248,6 +249,8 @@ export async function createAddress(
       defaultAddress: prevState.defaultAddress,
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

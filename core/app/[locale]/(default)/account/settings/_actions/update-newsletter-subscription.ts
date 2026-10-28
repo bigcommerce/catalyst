@@ -4,6 +4,7 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -129,6 +130,8 @@ export const updateNewsletterSubscription = async (
       successMessage: t('marketingPreferencesUpdated'),
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 
