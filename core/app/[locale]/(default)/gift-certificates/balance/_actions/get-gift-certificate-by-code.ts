@@ -2,6 +2,7 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { GiftCertificateData } from '@/vibes/soul/sections/gift-certificate-balance-section';
@@ -101,6 +102,8 @@ export async function getGiftCertificateByCode(
       data: giftCertificate,
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 
