@@ -29,6 +29,9 @@ env:
 jobs:
   lint-typecheck:
     name: Lint, Typecheck, and gql.tada
+    # Fork PRs get no secrets, so this can't run. A skipped job passes the required check, and
+    # canary's merge queue reruns it with secrets. Other branches have no queue, so it still runs.
+    if: ${{ !(github.event.pull_request.head.repo.fork && github.base_ref == 'canary') }}
 
     runs-on: ubuntu-latest
 
