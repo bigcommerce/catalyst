@@ -9,6 +9,8 @@ export class Analytics implements IAnalytics {
   readonly navigation = this.bindNavigationEvents();
   readonly consent = this.bindConsentEvents();
 
+  #initialized = false;
+
   constructor(private readonly config: AnalyticsConfig) {
     if (!Analytics.#instance) {
       Analytics.#instance = this;
@@ -17,7 +19,13 @@ export class Analytics implements IAnalytics {
     return Analytics.#instance;
   }
 
+  // Child components fire events from effects that run before the provider's own effect calls
+  // this, so events initialize lazily and repeat calls are no-ops.
   initialize() {
+    if (this.#initialized) return;
+
+    this.#initialized = true;
+
     this.config.providers.forEach((provider) => {
       provider.initialize();
     });
@@ -26,6 +34,8 @@ export class Analytics implements IAnalytics {
   private bindCartEvents() {
     return {
       cartViewed: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.cart.cartViewed(payload, {
             channelId: this.config.channelId,
@@ -34,6 +44,8 @@ export class Analytics implements IAnalytics {
         });
       },
       productAdded: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.cart.productAdded(payload, {
             channelId: this.config.channelId,
@@ -42,6 +54,8 @@ export class Analytics implements IAnalytics {
         });
       },
       productRemoved: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.cart.productRemoved(payload, {
             channelId: this.config.channelId,
@@ -55,6 +69,8 @@ export class Analytics implements IAnalytics {
   private bindNavigationEvents() {
     return {
       categoryViewed: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.navigation.categoryViewed(payload, {
             channelId: this.config.channelId,
@@ -63,6 +79,8 @@ export class Analytics implements IAnalytics {
         });
       },
       productViewed: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.navigation.productViewed(payload, {
             channelId: this.config.channelId,
@@ -76,6 +94,8 @@ export class Analytics implements IAnalytics {
   private bindConsentEvents() {
     return {
       consentUpdated: (payload) => {
+        this.initialize();
+
         this.config.providers.forEach((provider) => {
           provider.consent.consentUpdated(payload, {
             channelId: this.config.channelId,
