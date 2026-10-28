@@ -18,6 +18,8 @@
 
 - [#3303](https://github.com/bigcommerce/catalyst/pull/3303) [`4a8752f`](https://github.com/bigcommerce/catalyst/commit/4a8752fe4ecf5cec8f9d8709658aab272ba6775a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Log a warning in production when the proxy's route cache falls back to per-instance memory because no shared KV store is configured, and document which hosts need one.
 
+- [#3302](https://github.com/bigcommerce/catalyst/pull/3302) [`8e4a393`](https://github.com/bigcommerce/catalyst/commit/8e4a3939af7981043c84d0b89abcf337f88032ff) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Run the E2E `tests-chromium` Playwright project in full Chromium headless mode (`channel: 'chromium'`). The headless shell sends `HeadlessChrome` in `sec-ch-ua`, which BigCommerce treats as a crawler and rejects on checkout session sync, so the checkout E2E tests failed.
+
 ## 1.13.0
 
 ### Minor Changes
