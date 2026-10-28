@@ -385,7 +385,8 @@ export const PublicToPrivateParams = PublicSearchParamsSchema.catchall(SearchPar
         categoryEntityIds: categoryIn,
         // Without this, `categoryEntityIds` only matches products assigned directly to the selected
         // categories, while the Category facet's options and counts include their sub-categories.
-        searchSubCategories: true,
+        // Only set for the facet filter so category pages keep listing their own products.
+        searchSubCategories: categoryIn?.length ? true : undefined,
         hideOutOfStock: stock?.includes('in_stock'),
         isFreeShipping: shipping?.includes('free_shipping'),
         isFeatured,
