@@ -38,6 +38,7 @@ const updateCartCurrency = async (cartId: string, currencyCode: CurrencyCode) =>
   const result = await client.fetch({
     document: UpdateCartCurrencyMutation,
     variables: { input: { data: { currencyCode }, cartEntityId: cartId } },
+    fetchOptions: { cache: 'no-store' },
   });
   const newCartId = result.data.cart.updateCartCurrency?.cart?.entityId;
 

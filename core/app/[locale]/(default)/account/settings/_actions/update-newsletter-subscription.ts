@@ -94,6 +94,7 @@ export const updateNewsletterSubscription = async (
             lastName: customerInfo.lastName,
           },
         },
+        fetchOptions: { cache: 'no-store' },
       });
 
       errors = response.data.newsletter.subscribe.errors;
@@ -105,6 +106,7 @@ export const updateNewsletterSubscription = async (
             email: customerInfo.email,
           },
         },
+        fetchOptions: { cache: 'no-store' },
       });
 
       errors = response.data.newsletter.unsubscribe.errors;
