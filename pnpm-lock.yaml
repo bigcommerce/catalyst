@@ -43,7 +43,7 @@ importers:
         version: link:../packages/client
       '@c15t/nextjs':
         specifier: ^1.8.2
-        version: 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(next@16.3.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.20.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0)
+        version: 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(next@16.3.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.20.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0)
       '@conform-to/react':
         specifier: ^1.6.1
         version: 1.6.1(react@19.1.7)
@@ -304,8 +304,8 @@ importers:
         specifier: 1.0.7
         version: 1.0.7(tailwindcss@3.4.17(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))
       tsrs:
-        specifier: 0.18.0-ts7.1.0-dev.20260929
-        version: 0.18.0-ts7.1.0-dev.20260929
+        specifier: 0.20.0-ts7.1.0-beta
+        version: 0.20.0-ts7.1.0-beta
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -416,8 +416,8 @@ importers:
         specifier: 7.0.2005
         version: 7.0.2005
       tsrs:
-        specifier: 0.18.0-ts7.1.0-dev.20260929
-        version: 0.18.0-ts7.1.0-dev.20260929
+        specifier: 0.20.0-ts7.1.0-beta
+        version: 0.20.0-ts7.1.0-beta
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@swc/core@1.15.18(@swc/helpers@0.5.23))(jiti@2.4.2)(postcss@8.5.23)(typescript@6.0.3)(yaml@2.8.1)
@@ -453,8 +453,8 @@ importers:
         specifier: 7.0.2005
         version: 7.0.2005
       tsrs:
-        specifier: 0.18.0-ts7.1.0-dev.20260929
-        version: 0.18.0-ts7.1.0-dev.20260929
+        specifier: 0.20.0-ts7.1.0-beta
+        version: 0.20.0-ts7.1.0-beta
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@swc/core@1.15.18(@swc/helpers@0.5.23))(jiti@2.4.2)(postcss@8.5.23)(typescript@6.0.3)(yaml@2.8.1)
@@ -502,8 +502,8 @@ importers:
         specifier: 7.0.2005
         version: 7.0.2005
       tsrs:
-        specifier: 0.18.0-ts7.1.0-dev.20260929
-        version: 0.18.0-ts7.1.0-dev.20260929
+        specifier: 0.20.0-ts7.1.0-beta
+        version: 0.20.0-ts7.1.0-beta
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@swc/core@1.11.31(@swc/helpers@0.5.23))(jiti@2.4.2)(postcss@8.5.23)(typescript@6.0.3)(yaml@2.8.1)
@@ -4660,35 +4660,47 @@ packages:
   '@tsconfig/node18@1.0.3':
     resolution: {integrity: sha512-RbwvSJQsuN9TB04AQbGULYfOGE/RnSFk/FLQ5b0NmDf5Kx2q/lABZbHQPKCO1vZ6Fiwkplu+yb9pGdLy1iGseQ==}
 
-  '@tsrs/darwin-arm64@0.18.0-ts7.1.0-dev.20260929':
-    resolution: {integrity: sha512-sAirMpaGA9uRQm2W+t4zC7PjnijNuFa4PCSIfLKKo0JyAUCRfnMeev0UGBQ9F3g+9Nz187tvikUs5Irh5+eajA==}
+  '@tsrs/darwin-arm64@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-mhHj8QGUmdJDBvJEnMXx5P/jvAKXYU3hy/z3qxrWBo8XHlbLES32PgC0ZpTRbJA960ReTpVqqvCOYaC6EL32/Q==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@tsrs/linux-arm64-gnu@0.18.0-ts7.1.0-dev.20260929':
-    resolution: {integrity: sha512-zm9/z9yylig68JiZF4Aq0Cm26n09KEU8YoQRlG7tdDWTBNAIViYw8knxnWYsjMWVZ2XiU4mYq1xdrOKuOgABHg==}
+  '@tsrs/darwin-x64@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-CsRUnyYRLrhmChS7ol7LgmdqMXTu+mVlDU+7JgbW8RpkJRGLZ/zgEDEOeD8qrndt8rpP9oW1T1SJ36HSzB3/sg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@tsrs/linux-arm64-gnu@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-VNwpdI/iICwQMMlS/MoSZCvKFByEn2+g7D0HREWG+3r3GRayXgbLv8iaNSHKT3QGcu8pXr3lH9170ghJQi2zRg==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@tsrs/linux-arm64-musl@0.18.0-ts7.1.0-dev.20260929':
-    resolution: {integrity: sha512-Lw7VVU/YQ9JcarODICEiwzMLdFqZprqh5RGTgbS5Uc6I95P635/g5xA1pOC8RVs4efBvAR30J54iDG3l5JEYiw==}
+  '@tsrs/linux-arm64-musl@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-cXnqPpmj5gzeGi4u1OV0ctd5df5t4ivwyeToCa4pBrKtjYodu0EeAo5Y76SHbJwggbiA1gzEJVj1vvuciQm5mQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@tsrs/linux-x64-gnu@0.18.0-ts7.1.0-dev.20260929':
-    resolution: {integrity: sha512-EdBwBgNICGu1r1h23ixdcKwsMo6E9ll7ZsY3mNERNYqE1Pwdtcat99d5E7zB1J+oy/Xk6YqiizaB6nolIjpDTw==}
+  '@tsrs/linux-x64-gnu@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-jlhJSrO9lxNh0TF5EU1i+Frok5sRWsBvCuQhmdqMZKIN2pSHsDZl3CSmKUsJ4tNr50np9USCPpkkxwby2Eiqhg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@tsrs/linux-x64-musl@0.18.0-ts7.1.0-dev.20260929':
-    resolution: {integrity: sha512-LHk+AOAtXuTlhJhOJ2+elriEIX17ycXljojeNxrrzckOipTG1LksoVWuCSas2nu00EnWAzrdKpt9oqPylUKZfQ==}
+  '@tsrs/linux-x64-musl@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-pestGEPplhEPzIERc7zwuQ5zhh9ZwMSvAPNQy5TM0je/QuaizmM1zKoPYJ4NiaPzLh2M25HtP4HcpumTqmF3KQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
+
+  '@tsrs/win32-x64@0.20.0-ts7.1.0-beta':
+    resolution: {integrity: sha512-sstxBfhjjOSYvSHFfSmROau2oGAVNLwAnj+H0h+ywLo7N7ueFKIDk14HAkIYa/F9iVboiICCpHDY/pmBO71sSg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [win32]
 
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
@@ -7706,8 +7718,8 @@ packages:
   launch-editor@2.10.0:
     resolution: {integrity: sha512-D7dBRJo/qcGX9xlvt/6wUYzQxjh5G1RvZPgPv8vi4KRU99DVQL/oW7tnVOCCTm2HGeo3C5HvGE5Yrh6UBoZ0vA==}
 
-  legacy-javascript@0.0.3:
-    resolution: {integrity: sha512-1r6MT4dVaJyXt4G07Cm2cQ0AUaLJdefiEp4SmIAylA++gnEQ82YvmzE58RkM5EP0fk5hROLCslUPGnwIYdZQVA==}
+  legacy-javascript@0.0.4:
+    resolution: {integrity: sha512-UTmeKBVxnfJcpmpOvzzNnLsQT99BXHpPlc/ZKddIRmWmrR0fw6335I3lq4+sJoP60UTbBNaYsGYVPc65YB1x3A==}
 
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
@@ -9799,8 +9811,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsrs@0.18.0-ts7.1.0-dev.20260929:
-    resolution: {integrity: sha512-9T0b4Uam/yMFIK16GUx0fUrJqYZnJ/gvSmV9JB8NTyDePvwCI45WFWxyEV/UMV3KfdNRJG/PBsm3fSIB9WmWsA==}
+  tsrs@0.20.0-ts7.1.0-beta:
+    resolution: {integrity: sha512-8NifAn2tcna3t/nluu1yFvp0fYE28vElDpnD4jiWik69+MDjiHgxdjH8sUYUEFmf/2hl6QIE5ExVGpJzQbBDPw==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -11435,7 +11447,7 @@ snapshots:
       '@types/tough-cookie': 4.0.5
       tough-cookie: 4.1.4
 
-  '@c15t/backend@1.8.0(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@upstash/redis@1.35.0)(crossws@0.3.5)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(ws@8.21.0)':
+  '@c15t/backend@1.8.0(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@upstash/redis@1.35.0)(crossws@0.3.5)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(ws@8.22.0)':
     dependencies:
       '@c15t/logger': 1.0.1
       '@c15t/translations': 1.8.0
@@ -11444,10 +11456,10 @@ snapshots:
       '@opentelemetry/sdk-node': 0.203.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-base': 2.2.0(@opentelemetry/api@1.9.0)
       '@orpc/contract': 1.8.1(@opentelemetry/api@1.9.0)
-      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
+      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
       '@orpc/otel': 1.10.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))
-      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
-      '@orpc/zod': 1.8.1(@opentelemetry/api@1.9.0)(@orpc/contract@1.8.1(@opentelemetry/api@1.9.0))(@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0))(crossws@0.3.5)(ws@8.21.0)(zod@4.1.12)
+      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
+      '@orpc/zod': 1.8.1(@opentelemetry/api@1.9.0)(@orpc/contract@1.8.1(@opentelemetry/api@1.9.0))(@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0))(crossws@0.3.5)(ws@8.22.0)(zod@4.1.12)
       base-x: 5.0.1
       defu: 6.1.4
       drizzle-orm: 0.44.7(@opentelemetry/api@1.9.0)(@upstash/redis@1.35.0)(kysely@0.27.6)
@@ -11498,9 +11510,9 @@ snapshots:
       neverthrow: 8.2.0
       picocolors: 1.1.1
 
-  '@c15t/nextjs@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(next@16.3.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.20.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0)':
+  '@c15t/nextjs@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(next@16.3.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.20.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7))(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0)':
     dependencies:
-      '@c15t/react': 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0)
+      '@c15t/react': 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0)
       '@c15t/translations': 1.8.0
       next: 16.3.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(@types/node@22.20.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       react: 19.1.7
@@ -11546,12 +11558,12 @@ snapshots:
       - use-sync-external-store
       - ws
 
-  '@c15t/react@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0)':
+  '@c15t/react@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0)':
     dependencies:
       '@radix-ui/react-accordion': 1.2.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
       '@radix-ui/react-slot': 1.2.0(@types/react@19.2.7)(react@19.1.7)
       '@radix-ui/react-switch': 1.1.4(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.1.7(react@19.1.7))(react@19.1.7)
-      c15t: 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0)
+      c15t: 1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0)
       clsx: 2.1.1
       react: 19.1.7
       react-dom: 19.1.7(react@19.1.7)
@@ -13565,12 +13577,12 @@ snapshots:
 
   '@orpc/interop@1.8.1': {}
 
-  '@orpc/json-schema@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)':
+  '@orpc/json-schema@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)':
     dependencies:
       '@orpc/contract': 1.8.1(@opentelemetry/api@1.9.0)
       '@orpc/interop': 1.8.1
-      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
-      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
+      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
+      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
       '@orpc/shared': 1.8.1(@opentelemetry/api@1.9.0)
     transitivePeerDependencies:
       - '@opentelemetry/api'
@@ -13586,13 +13598,13 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  '@orpc/openapi@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)':
+  '@orpc/openapi@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)':
     dependencies:
       '@orpc/client': 1.8.1(@opentelemetry/api@1.9.0)
       '@orpc/contract': 1.8.1(@opentelemetry/api@1.9.0)
       '@orpc/interop': 1.8.1
       '@orpc/openapi-client': 1.8.1(@opentelemetry/api@1.9.0)
-      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
+      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
       '@orpc/shared': 1.8.1(@opentelemetry/api@1.9.0)
       '@orpc/standard-server': 1.8.1(@opentelemetry/api@1.9.0)
       rou3: 0.7.8
@@ -13607,7 +13619,7 @@ snapshots:
       '@opentelemetry/instrumentation': 0.208.0(@opentelemetry/api@1.9.0)
       '@orpc/shared': 1.10.0(@opentelemetry/api@1.9.0)
 
-  '@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)':
+  '@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)':
     dependencies:
       '@orpc/client': 1.8.1(@opentelemetry/api@1.9.0)
       '@orpc/contract': 1.8.1(@opentelemetry/api@1.9.0)
@@ -13621,7 +13633,7 @@ snapshots:
       cookie: 1.0.2
     optionalDependencies:
       crossws: 0.3.5
-      ws: 8.21.0
+      ws: 8.22.0
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
@@ -13676,12 +13688,12 @@ snapshots:
     transitivePeerDependencies:
       - '@opentelemetry/api'
 
-  '@orpc/zod@1.8.1(@opentelemetry/api@1.9.0)(@orpc/contract@1.8.1(@opentelemetry/api@1.9.0))(@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0))(crossws@0.3.5)(ws@8.21.0)(zod@4.1.12)':
+  '@orpc/zod@1.8.1(@opentelemetry/api@1.9.0)(@orpc/contract@1.8.1(@opentelemetry/api@1.9.0))(@orpc/server@1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0))(crossws@0.3.5)(ws@8.22.0)(zod@4.1.12)':
     dependencies:
       '@orpc/contract': 1.8.1(@opentelemetry/api@1.9.0)
-      '@orpc/json-schema': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
-      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
-      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
+      '@orpc/json-schema': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
+      '@orpc/openapi': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
+      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
       '@orpc/shared': 1.8.1(@opentelemetry/api@1.9.0)
       escape-string-regexp: 5.0.0
       wildcard-match: 5.1.4
@@ -13898,7 +13910,7 @@ snapshots:
 
   '@paulirish/trace_engine@0.0.53':
     dependencies:
-      legacy-javascript: 0.0.3
+      legacy-javascript: 0.0.4
       third-party-web: 0.30.0
 
   '@pkgjs/parseargs@0.11.0':
@@ -15158,19 +15170,25 @@ snapshots:
 
   '@tsconfig/node18@1.0.3': {}
 
-  '@tsrs/darwin-arm64@0.18.0-ts7.1.0-dev.20260929':
+  '@tsrs/darwin-arm64@0.20.0-ts7.1.0-beta':
     optional: true
 
-  '@tsrs/linux-arm64-gnu@0.18.0-ts7.1.0-dev.20260929':
+  '@tsrs/darwin-x64@0.20.0-ts7.1.0-beta':
     optional: true
 
-  '@tsrs/linux-arm64-musl@0.18.0-ts7.1.0-dev.20260929':
+  '@tsrs/linux-arm64-gnu@0.20.0-ts7.1.0-beta':
     optional: true
 
-  '@tsrs/linux-x64-gnu@0.18.0-ts7.1.0-dev.20260929':
+  '@tsrs/linux-arm64-musl@0.20.0-ts7.1.0-beta':
     optional: true
 
-  '@tsrs/linux-x64-musl@0.18.0-ts7.1.0-dev.20260929':
+  '@tsrs/linux-x64-gnu@0.20.0-ts7.1.0-beta':
+    optional: true
+
+  '@tsrs/linux-x64-musl@0.20.0-ts7.1.0-beta':
+    optional: true
+
+  '@tsrs/win32-x64@0.20.0-ts7.1.0-beta':
     optional: true
 
   '@tybys/wasm-util@0.9.0':
@@ -16210,12 +16228,12 @@ snapshots:
     optionalDependencies:
       magicast: 0.3.5
 
-  c15t@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.21.0):
+  c15t@1.8.2(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@types/react@19.2.7)(@upstash/redis@1.35.0)(crossws@0.3.5)(react@19.1.7)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(use-sync-external-store@1.6.0(react@19.1.7))(ws@8.22.0):
     dependencies:
-      '@c15t/backend': 1.8.0(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@upstash/redis@1.35.0)(crossws@0.3.5)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(ws@8.21.0)
+      '@c15t/backend': 1.8.0(@opentelemetry/instrumentation@0.208.0(@opentelemetry/api@1.9.0))(@upstash/redis@1.35.0)(crossws@0.3.5)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.15.18(@swc/helpers@0.5.23))(@types/node@22.20.5)(typescript@6.0.3)))(ws@8.22.0)
       '@c15t/translations': 1.8.0
       '@orpc/client': 1.8.1(@opentelemetry/api@1.9.0)
-      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.21.0)
+      '@orpc/server': 1.8.1(@opentelemetry/api@1.9.0)(crossws@0.3.5)(ws@8.22.0)
       zustand: 5.0.8(@types/react@19.2.7)(react@19.1.7)(use-sync-external-store@1.6.0(react@19.1.7))
     transitivePeerDependencies:
       - '@aws-sdk/client-rds-data'
@@ -18901,7 +18919,7 @@ snapshots:
       picocolors: 1.1.1
       shell-quote: 1.8.3
 
-  legacy-javascript@0.0.3: {}
+  legacy-javascript@0.0.4: {}
 
   leven@3.1.0: {}
 
@@ -21269,13 +21287,15 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsrs@0.18.0-ts7.1.0-dev.20260929:
+  tsrs@0.20.0-ts7.1.0-beta:
     optionalDependencies:
-      '@tsrs/darwin-arm64': 0.18.0-ts7.1.0-dev.20260929
-      '@tsrs/linux-arm64-gnu': 0.18.0-ts7.1.0-dev.20260929
-      '@tsrs/linux-arm64-musl': 0.18.0-ts7.1.0-dev.20260929
-      '@tsrs/linux-x64-gnu': 0.18.0-ts7.1.0-dev.20260929
-      '@tsrs/linux-x64-musl': 0.18.0-ts7.1.0-dev.20260929
+      '@tsrs/darwin-arm64': 0.20.0-ts7.1.0-beta
+      '@tsrs/darwin-x64': 0.20.0-ts7.1.0-beta
+      '@tsrs/linux-arm64-gnu': 0.20.0-ts7.1.0-beta
+      '@tsrs/linux-arm64-musl': 0.20.0-ts7.1.0-beta
+      '@tsrs/linux-x64-gnu': 0.20.0-ts7.1.0-beta
+      '@tsrs/linux-x64-musl': 0.20.0-ts7.1.0-beta
+      '@tsrs/win32-x64': 0.20.0-ts7.1.0-beta
 
   tsup@8.5.0(@swc/core@1.11.31(@swc/helpers@0.5.23))(jiti@2.4.2)(postcss@8.5.23)(typescript@6.0.3)(yaml@2.8.1):
     dependencies:
