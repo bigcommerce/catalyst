@@ -411,6 +411,176 @@ describe('runChannelSiteUrlFlow', () => {
     expect(consola.info).toHaveBeenCalledWith(expect.stringContaining('site URL is already'));
   });
 
+  describe('checkout URL on a site URL change', () => {
+    const siteWithCheckout = (checkoutUrl: string) =>
+      HttpResponse.json({
+        data: {
+          id: 1,
+          url: 'https://store.example.com',
+          channel_id: 2,
+          is_checkout_url_customized: true,
+          urls: [
+            { url: 'https://store.example.com', type: 'primary' },
+            { url: checkoutUrl, type: 'checkout' },
+          ],
+        },
+      });
+
+    const trackCheckoutPuts = () => {
+      const bodies: unknown[] = [];
+
+      server.use(
+        http.put(
+          'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+          async ({ request }) => {
+            bodies.push(await request.json());
+
+            return siteWithCheckout('https://cart.example.com');
+          },
+        ),
+      );
+
+      return bodies;
+    };
+
+    // sites-service deletes it on every site URL update.
+    test('restores a checkout URL on the same main domain', async () => {
+      server.use(
+        http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+          siteWithCheckout('https://cart.example.com'),
+        ),
+      );
+
+      const bodies = trackCheckoutPuts();
+
+      await runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname: 'shop.example.com',
+      });
+
+      expect(bodies).toEqual([{ url: 'https://cart.example.com' }]);
+      expect(consola.success).toHaveBeenCalledWith(
+        expect.stringContaining('checkout URL https://cart.example.com'),
+      );
+    });
+
+    test.each([
+      ['on another main domain', 'https://cart.example.com', 'project-one.catalyst-sandbox.store'],
+      [
+        'on a managed zone',
+        'https://c.project-two.catalyst-sandbox.store',
+        'project-one.catalyst-sandbox.store',
+      ],
+    ])('leaves a checkout URL %s', async (_, checkoutUrl, hostname) => {
+      server.use(
+        http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+          siteWithCheckout(checkoutUrl),
+        ),
+      );
+
+      const bodies = trackCheckoutPuts();
+
+      await runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname,
+      });
+
+      expect(bodies).toEqual([]);
+    });
+
+    test('leaves the default checkout URL', async () => {
+      server.use(
+        http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+          HttpResponse.json({
+            data: {
+              id: 1,
+              url: 'https://store.example.com',
+              channel_id: 2,
+              is_checkout_url_customized: false,
+              urls: [
+                { url: 'https://store.example.com', type: 'primary' },
+                { url: 'https://www.example.com', type: 'checkout' },
+              ],
+            },
+          }),
+        ),
+      );
+
+      const bodies = trackCheckoutPuts();
+
+      await runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname: 'shop.example.com',
+      });
+
+      expect(bodies).toEqual([]);
+    });
+
+    test('leaves it when the caller sets the checkout URL itself', async () => {
+      server.use(
+        http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+          siteWithCheckout('https://cart.example.com'),
+        ),
+      );
+
+      const bodies = trackCheckoutPuts();
+
+      await runChannelSiteUrlFlow({
+        storeHash,
+        accessToken,
+        apiHost,
+        projectUuid: linkedProjectUuid,
+        channelId: 2,
+        hostname: 'shop.example.com',
+        preserveCheckoutUrl: false,
+      });
+
+      expect(bodies).toEqual([]);
+    });
+
+    test('warns with the command to re-set it when the restore fails', async () => {
+      server.use(
+        http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
+          siteWithCheckout('https://cart.example.com'),
+        ),
+        http.put(
+          'https://:apiHost/stores/:storeHash/v3/channels/:channelId/site/checkout-url',
+          () => HttpResponse.json({}, { status: 422 }),
+        ),
+      );
+
+      await expect(
+        runChannelSiteUrlFlow({
+          storeHash,
+          accessToken,
+          apiHost,
+          projectUuid: linkedProjectUuid,
+          channelId: 2,
+          hostname: 'shop.example.com',
+        }),
+      ).resolves.toEqual({ channelId: 2, hostname: 'shop.example.com' });
+
+      expect(consola.warn).toHaveBeenCalledWith(
+        expect.stringContaining("Couldn't restore channel 2 checkout URL"),
+      );
+      expect(consola.log).toHaveBeenCalledWith(
+        expect.stringContaining('--checkout-url https://cart.example.com'),
+      );
+    });
+  });
+
   test('still reports success when the follow-up diagnostic fetch fails', async () => {
     server.use(
       http.get('https://:apiHost/stores/:storeHash/v3/channels/:channelId/site', () =>
