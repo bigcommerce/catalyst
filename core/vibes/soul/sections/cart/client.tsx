@@ -44,6 +44,13 @@ interface CartLineIteminventoryMessages {
   backorderMessage?: string;
 }
 
+export interface CartIncludedItem {
+  id: string;
+  title: string;
+  subtitle?: string;
+  quantity?: number;
+}
+
 export interface CartLineItem {
   typename: string;
   id: string;
@@ -54,6 +61,7 @@ export interface CartLineItem {
   price: Price;
   href?: string;
   inventoryMessages?: CartLineIteminventoryMessages;
+  includedItems?: CartIncludedItem[];
 }
 
 export interface CartGiftCertificateLineItem extends CartLineItem {
@@ -173,6 +181,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   giftCertificate?: GiftCertificate;
   shipping?: Shipping;
   lineItemActionPendingLabel?: string;
+  includedItemsLabel?: string;
 }
 
 const defaultEmptyState = {
@@ -219,6 +228,7 @@ export function CartClient<LineItem extends CartLineItem>({
   deleteLineItemLabel,
   lineItemAction,
   lineItemActionPendingLabel = 'You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.',
+  includedItemsLabel = 'Included',
   checkoutAction,
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
@@ -611,6 +621,27 @@ export function CartClient<LineItem extends CartLineItem>({
                   <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-400)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
                     {lineItem.subtitle}
                   </span>
+                  {lineItem.includedItems != null && lineItem.includedItems.length > 0 && (
+                    <div className="mt-2 text-sm">
+                      <span className="font-medium">{includedItemsLabel}</span>
+                      <ul className="mt-1 space-y-1">
+                        {lineItem.includedItems.map((includedItem) => (
+                          <li key={includedItem.id}>
+                            <span>
+                              {includedItem.title}
+                              {includedItem.quantity != null && ` × ${includedItem.quantity}`}
+                              {includedItem.subtitle != null && (
+                                <span className="text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
+                                  {' '}
+                                  ({includedItem.subtitle})
+                                </span>
+                              )}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 <CounterForm
                   action={formAction}
