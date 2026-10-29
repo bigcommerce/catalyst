@@ -51,16 +51,21 @@ export const toDeploymentSecrets = (envVars: Record<string, string>): Deployment
   return Object.entries(envVars).map(([key, value]) => ({ type: 'secret', key, value }));
 };
 
-// Merge persisted secrets with inline `--secret` flag secrets, keyed by name.
-// Inline flags win on conflict so users can override a stored value per-run.
-export const mergeDeploymentSecrets = (
-  persisted: DeploymentSecret[],
-  flagSecrets: DeploymentSecret[],
-): DeploymentSecret[] => {
+// Convert an `--env-path` file's vars into deployment secrets. Empty values and
+// names that aren't valid env vars are skipped, matching what `--secret` and
+// `catalyst env add` accept.
+export const toEnvFileSecrets = (envVars: Record<string, string>): DeploymentSecret[] => {
+  return toDeploymentSecrets(envVars).filter(
+    ({ key, value }) => value !== '' && ENV_KEY_PATTERN.test(key),
+  );
+};
+
+// Merge layers of secrets keyed by name, lowest precedence first: a later
+// layer wins on conflict (e.g. persisted, then `--env-path`, then `--secret`).
+export const mergeDeploymentSecrets = (...layers: DeploymentSecret[][]): DeploymentSecret[] => {
   const byKey = new Map<string, DeploymentSecret>();
 
-  persisted.forEach((secret) => byKey.set(secret.key, secret));
-  flagSecrets.forEach((secret) => byKey.set(secret.key, secret));
+  layers.flat().forEach((secret) => byKey.set(secret.key, secret));
 
   return Array.from(byKey.values());
 };
