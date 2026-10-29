@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.14.0
+
+### Minor Changes
+
+- [#3323](https://github.com/bigcommerce/catalyst/pull/3323) [`58fbb6e`](https://github.com/bigcommerce/catalyst/commit/58fbb6ecaafe36bf3510f49943e48ad6b822a120) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Show the products a pick list option adds to the cart under their parent line item, instead of hiding them. Each one keeps its pick list option's label and shows its own selected options, and its quantity only when it differs from the parent's. The parent's price already includes them, so they have no price of their own.
+
+  Migration: `CartLineItem` gains an optional `includedItems` array and the `Cart` section an optional `includedItemsLabel` prop. Add the `Cart.includedItems` message if you maintain your own translations.
+
+### Patch Changes
+
+- [#3319](https://github.com/bigcommerce/catalyst/pull/3319) [`f44387e`](https://github.com/bigcommerce/catalyst/commit/f44387e86f3d45e70671783934d08d157d1b4b57) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Initialize analytics providers before the first event. Events like `productViewed` fire from child effects that run before `AnalyticsProvider` calls `initialize()`, so the Google Analytics provider called `gtag` before it was defined.
+
+- [#3060](https://github.com/bigcommerce/catalyst/pull/3060) [`4793d51`](https://github.com/bigcommerce/catalyst/commit/4793d5136218b4ac37fed16ef37003c7469c3357) Thanks [@apostoliukG](https://github.com/apostoliukG)! - Keep the cart quantity column at a fixed width so long backorder/inventory messages wrap to the next line instead of stretching the column.
+
+- [#3317](https://github.com/bigcommerce/catalyst/pull/3317) [`a988a9c`](https://github.com/bigcommerce/catalyst/commit/a988a9c8fac5f00d450ff380b66b8c187ccd105d) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Include sub-categories when filtering by the Category facet on brand and search pages. Selecting a parent category previously returned no products when they were assigned only to its sub-categories, even though the facet's counts included them.
+
+- [#3318](https://github.com/bigcommerce/catalyst/pull/3318) [`e90ea0c`](https://github.com/bigcommerce/catalyst/commit/e90ea0c26a8aec8288d68294c49a90c6bb72e8df) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Hide the desktop filters column on product list pages when there are no filters, so products use the full width instead of leaving an empty column.
+
+- [#3320](https://github.com/bigcommerce/catalyst/pull/3320) [`a00008e`](https://github.com/bigcommerce/catalyst/commit/a00008e6029d144dcdb01639060424e37060288c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Rethrow Next.js redirects from server action `catch` blocks. When a session is invalidated, the GraphQL client redirects to sign out, but actions such as add to cart caught that redirect and showed it as a form error instead.
+
+- [#3296](https://github.com/bigcommerce/catalyst/pull/3296) [`b1a6cd8`](https://github.com/bigcommerce/catalyst/commit/b1a6cd8bdba92733cc542941c18f96f1393cb425) Thanks [@bookernath](https://github.com/bookernath)! - Add the `verify-catalyst` agent skill (`.agents/skills/verify-catalyst`), which drives the storefront in a real browser to prove UI changes and attaches screenshot, video, and trace evidence to pull requests. It works in the monorepo and in projects created with `create catalyst`, on macOS, Linux, and Windows.
+
 ## 1.13.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @bigcommerce/catalyst
 
+## 1.5.1
+
+### Patch Changes
+
+- [#3322](https://github.com/bigcommerce/catalyst/pull/3322) [`3e5e3d5`](https://github.com/bigcommerce/catalyst/commit/3e5e3d50924ca2e8255fb3ade60ed7268221dcf8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels update` now keeps a channel's custom checkout URL when the new storefront URL shares its main domain, instead of letting it fall back to the default channel's domain.
+
 ## 1.5.0
 
 ### Minor Changes
