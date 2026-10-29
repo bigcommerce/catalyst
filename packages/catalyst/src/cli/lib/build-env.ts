@@ -1,5 +1,6 @@
 import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
+import { expand } from 'dotenv-expand';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 
@@ -51,9 +52,13 @@ export function loadBuildEnv({
       throw new UserActionableError(message);
     }
 
+    // Next.js won't read env files (and so won't expand `$VAR` references) when
+    // `--env-path` is given, so expand them here, matching what it would do.
+    const { parsed = {} } = expand({ parsed: result.parsed ?? {} });
+
     consola.log(colorize('cyanBright', `Loaded environment variables from ${envFilePath}\n`));
 
-    return result.parsed ?? {};
+    return parsed;
   }
 
   // Auto-load the conventional files. `.env.local` is loaded first so it takes

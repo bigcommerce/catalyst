@@ -28,6 +28,26 @@ describe('loadBuildEnv', () => {
     }
   });
 
+  test('expands variable references in an explicit --env-path', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    await writeFile(
+      join(tmpDir, '.env.custom'),
+      'BUILD_ENV_TEST_A=cdn.example.com\nBUILD_ENV_TEST_B=https://$BUILD_ENV_TEST_A',
+      'utf-8',
+    );
+
+    try {
+      expect(loadBuildEnv({ envPath: '.env.custom', cwd: tmpDir })).toEqual({
+        BUILD_ENV_TEST_A: 'cdn.example.com',
+        BUILD_ENV_TEST_B: 'https://cdn.example.com',
+      });
+      expect(process.env.BUILD_ENV_TEST_B).toBe('https://cdn.example.com');
+    } finally {
+      await cleanup();
+    }
+  });
+
   test('throws a UserActionableError when --env-path does not exist', async () => {
     const [tmpDir, cleanup] = await mkTempDir('build-env-');
 
