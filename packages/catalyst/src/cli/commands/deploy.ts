@@ -556,9 +556,9 @@ Example:
       // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
       // env file(s) before building so both the build and any pre-build checks
       // see them. Skipped for --prebuilt above, which doesn't run the build.
-      loadBuildEnv({ envPath: options.envPath });
+      const envFileVars = loadBuildEnv({ envPath: options.envPath });
 
-      await buildCatalystProject(projectUuid, options.wranglerVersion);
+      await buildCatalystProject(projectUuid, options.wranglerVersion, envFileVars);
     }
 
     await generateBundleZip();

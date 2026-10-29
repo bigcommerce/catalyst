@@ -1,9 +1,10 @@
 import { Command } from 'commander';
 import { execa } from 'execa';
-import { copyFile } from 'node:fs/promises';
+import { copyFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
+import { loadBuildEnv } from '../lib/build-env';
 import { reconcileOpenNextVersion } from '../lib/commerce-hosting';
 import { installDependencies } from '../lib/install-dependencies';
 import { consola } from '../lib/logger';
@@ -237,4 +238,55 @@ test('does not install when the adapter pin is already current', async () => {
   await program.parseAsync(['node', 'catalyst', 'build']);
 
   expect(installDependencies).not.toHaveBeenCalled();
+});
+
+test('with --env-path, bakes only that file into the worker and stops Next.js reading .env files', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+  vi.mocked(loadBuildEnv).mockReturnValueOnce({ BIGCOMMERCE_STORE_HASH: 'staging' });
+
+  await program.parseAsync(['node', 'catalyst', 'build', '--env-path', '.env.staging']);
+
+  expect(loadBuildEnv).toHaveBeenCalledWith({ envPath: '.env.staging' });
+  expect(execa).toHaveBeenCalledWith(
+    'pnpm',
+    expect.arrayContaining(['opennextjs-cloudflare', 'build']),
+    expect.objectContaining({ env: { __NEXT_PROCESSED_ENV: 'true' } }),
+  );
+  expect(writeFile).toHaveBeenCalledWith(
+    expect.stringContaining(join('.open-next', 'cloudflare', 'next-env.mjs')),
+    [
+      'export const production = {"BIGCOMMERCE_STORE_HASH":"staging"};\n',
+      'export const development = {"BIGCOMMERCE_STORE_HASH":"staging"};\n',
+      'export const test = {"BIGCOMMERCE_STORE_HASH":"staging"};\n',
+    ].join(''),
+  );
+});
+
+test('without --env-path, leaves the OpenNext env bake and Next.js env loading alone', async () => {
+  vi.mocked(getProjectState).mockReturnValue(transformedState);
+
+  await program.parseAsync(['node', 'catalyst', 'build']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'pnpm',
+    expect.arrayContaining(['opennextjs-cloudflare', 'build']),
+    expect.objectContaining({ env: {} }),
+  );
+  expect(writeFile).not.toHaveBeenCalledWith(
+    expect.stringContaining('next-env.mjs'),
+    expect.anything(),
+  );
+});
+
+test('with --env-path, stops `next build` reading .env files on an untransformed project', async () => {
+  vi.mocked(getProjectState).mockReturnValue(untransformedState);
+  vi.mocked(loadBuildEnv).mockReturnValueOnce({ BIGCOMMERCE_STORE_HASH: 'staging' });
+
+  await program.parseAsync(['node', 'catalyst', 'build', '--env-path', '.env.staging']);
+
+  expect(execa).toHaveBeenCalledWith(
+    'pnpm',
+    ['exec', 'next', 'build'],
+    expect.objectContaining({ env: { __NEXT_PROCESSED_ENV: 'true' } }),
+  );
 });

@@ -496,7 +496,7 @@ test('passes --wrangler-version through to the build', async () => {
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3');
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3', undefined);
 });
 
 test('builds with the default Wrangler version when --wrangler-version is omitted', async () => {
@@ -515,7 +515,39 @@ test('builds with the default Wrangler version when --wrangler-version is omitte
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined);
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, undefined);
+});
+
+test('passes the --env-path file to the build so only it is baked into the worker', async () => {
+  const envPath = join(tmpDir, '.env.staging');
+
+  await writeFile(envPath, 'DEPLOY_ENV_PATH_TEST=staging', 'utf-8');
+
+  try {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--env-path',
+      '.env.staging',
+      '--dry-run',
+    ]);
+
+    expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, {
+      DEPLOY_ENV_PATH_TEST: 'staging',
+    });
+  } finally {
+    delete process.env.DEPLOY_ENV_PATH_TEST;
+    await rm(envPath);
+  }
 });
 
 test('rejects an invalid --wrangler-version value', async () => {

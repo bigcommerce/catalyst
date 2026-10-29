@@ -27,7 +27,13 @@ interface LoadBuildEnvOptions {
 // it) can see them. This is intentionally scoped to `build` and `deploy`: no
 // other command loads env files, so running the CLI can't be surprised by a
 // stray `.env.local` on disk.
-export function loadBuildEnv({ envPath, cwd = process.cwd() }: LoadBuildEnvOptions): void {
+//
+// Returns the `--env-path` file's variables so the build can use that file
+// alone; returns undefined when the conventional files were auto-loaded.
+export function loadBuildEnv({
+  envPath,
+  cwd = process.cwd(),
+}: LoadBuildEnvOptions): Record<string, string> | undefined {
   if (envPath !== undefined) {
     const envFilePath = resolve(cwd, envPath);
     const result = config({ path: envFilePath, override: true });
@@ -47,7 +53,7 @@ export function loadBuildEnv({ envPath, cwd = process.cwd() }: LoadBuildEnvOptio
 
     consola.log(colorize('cyanBright', `Loaded environment variables from ${envFilePath}\n`));
 
-    return;
+    return result.parsed ?? {};
   }
 
   // Auto-load the conventional files. `.env.local` is loaded first so it takes
@@ -66,4 +72,6 @@ export function loadBuildEnv({ envPath, cwd = process.cwd() }: LoadBuildEnvOptio
   if (loaded.length > 0) {
     consola.log(colorize('cyanBright', `Loaded environment variables from ${loaded.join(', ')}\n`));
   }
+
+  return undefined;
 }
