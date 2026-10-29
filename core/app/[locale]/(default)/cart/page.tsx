@@ -165,6 +165,58 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.digitalItems,
   ].filter((item) => !('parentEntityId' in item) || !item.parentEntityId);
 
+  // Pick list options add their products as child line items. Show them under their parent.
+  const childItemsByParentId = Map.groupBy(
+    [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems].filter(
+      (item) => item.parentEntityId,
+    ),
+    (item) => item.parentEntityId,
+  );
+
+  const formatSelectedOption = (
+    option: (typeof cart.lineItems.physicalItems)[number]['selectedOptions'][number],
+  ) => {
+    switch (option.__typename) {
+      case 'CartSelectedMultipleChoiceOption':
+      case 'CartSelectedCheckboxOption':
+        return `${option.name}: ${option.value}`;
+
+      case 'CartSelectedNumberFieldOption':
+        return `${option.name}: ${option.number}`;
+
+      case 'CartSelectedMultiLineTextFieldOption':
+      case 'CartSelectedTextFieldOption':
+        return `${option.name}: ${option.text}`;
+
+      case 'CartSelectedDateFieldOption':
+        return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+
+      default:
+        return '';
+    }
+  };
+
+  const getChildItems = (parentEntityId: string) => childItemsByParentId.get(parentEntityId) ?? [];
+
+  // The parent's price already includes its pick list items, so they're listed without prices.
+  const formatIncludedItem = (
+    child:
+      | (typeof cart.lineItems.physicalItems)[number]
+      | (typeof cart.lineItems.digitalItems)[number],
+    parent: Pick<(typeof cart.lineItems.physicalItems)[number], 'quantity' | 'selectedOptions'>,
+  ) => {
+    const addedBy = parent.selectedOptions.find(
+      (option) => option.attributeId === child.addedByAttributeId,
+    );
+
+    return {
+      id: child.entityId,
+      title: addedBy ? formatSelectedOption(addedBy) : child.name,
+      subtitle: child.selectedOptions.map(formatSelectedOption).join(', ') || undefined,
+      quantity: child.quantity !== parent.quantity ? child.quantity : undefined,
+    };
+  };
+
   const formattedLineItems = lineItems.map((item) => {
     if (item.__typename === 'CartGiftCertificate') {
       return {
@@ -237,33 +289,20 @@ export default async function Cart({ params }: Props) {
         currency: item.listPrice.currencyCode,
       });
 
+    const childItems = getChildItems(item.entityId);
+    const addedByAttributeIds = new Set(childItems.map((child) => child.addedByAttributeId));
+
     return {
       typename: item.__typename,
       id: item.entityId,
       quantity: item.quantity,
       price,
       subtitle: item.selectedOptions
-        .map((option) => {
-          switch (option.__typename) {
-            case 'CartSelectedMultipleChoiceOption':
-            case 'CartSelectedCheckboxOption':
-              return `${option.name}: ${option.value}`;
-
-            case 'CartSelectedNumberFieldOption':
-              return `${option.name}: ${option.number}`;
-
-            case 'CartSelectedMultiLineTextFieldOption':
-            case 'CartSelectedTextFieldOption':
-              return `${option.name}: ${option.text}`;
-
-            case 'CartSelectedDateFieldOption':
-              return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
-
-            default:
-              return '';
-          }
-        })
+        // Pick list options move to the items they added, listed below.
+        .filter((option) => !addedByAttributeIds.has(option.attributeId))
+        .map(formatSelectedOption)
         .join(', '),
+      includedItems: childItems.map((child) => formatIncludedItem(child, item)),
       title: item.name,
       image: item.image?.url ? { src: item.image.url, alt: item.name } : undefined,
       href: new URL(item.url).pathname,
@@ -422,6 +461,7 @@ export default async function Cart({ params }: Props) {
                 }
               : undefined
           }
+          includedItemsLabel={t('includedItems')}
           incrementLineItemLabel={t('increment')}
           // Keyed by entityId only; keying by version too would remount the section on
           // every mutation (see the pending-intent dispatcher notes in the Cart section).

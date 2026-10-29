@@ -25,6 +25,7 @@ export const PhysicalItemFragment = graphql(
       productEntityId
       variantEntityId
       parentEntityId
+      addedByAttributeId
       listPrice {
         currencyCode
         value
@@ -43,6 +44,7 @@ export const PhysicalItemFragment = graphql(
       selectedOptions {
         __typename
         entityId
+        attributeId
         name
         ... on CartSelectedMultipleChoiceOption {
           value
@@ -94,6 +96,7 @@ export const DigitalItemFragment = graphql(
       productEntityId
       variantEntityId
       parentEntityId
+      addedByAttributeId
       listPrice {
         currencyCode
         value
@@ -112,6 +115,7 @@ export const DigitalItemFragment = graphql(
       selectedOptions {
         __typename
         entityId
+        attributeId
         name
         ... on CartSelectedMultipleChoiceOption {
           value
