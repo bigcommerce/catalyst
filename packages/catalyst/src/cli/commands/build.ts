@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { valid as validSemver } from 'semver';
 
 import { loadBuildEnv } from '../lib/build-env';
-import { reconcileOpenNextVersion } from '../lib/commerce-hosting';
+import { reconcileOpenNextVersion, removeLegacyMiddleware } from '../lib/commerce-hosting';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { installDependencies } from '../lib/install-dependencies';
@@ -16,7 +16,7 @@ import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-export const WRANGLER_VERSION = '4.128.0';
+export const WRANGLER_VERSION = '4.156.0';
 
 // npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
 // through a narrow character allowlist. This also guards the value before
@@ -44,6 +44,8 @@ export async function buildCatalystProject(
   assertRequiredBuildEnv();
 
   const coreDir = process.cwd();
+
+  await removeLegacyMiddleware(coreDir);
 
   // The build invokes the project's own adapter, so offer to move a stale pin
   // before compiling against it. Reinstall when it moves.

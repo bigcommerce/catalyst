@@ -11,6 +11,7 @@ import {
   promptAndCreateCommerceHostingProject,
   promptForCommerceHostingProject,
   reconcileOpenNextVersion,
+  removeLegacyMiddleware,
   setupCommerceHosting,
 } from './commerce-hosting';
 import { consola } from './logger';
@@ -882,7 +883,7 @@ describe('setupCommerceHosting', () => {
     await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).rejects.toThrow();
   });
 
-  describe('proxy.ts → middleware.ts conversion', () => {
+  describe('proxy.ts', () => {
     const proxyFixture = [
       "import { composeProxies } from './proxies/compose-proxies';",
       '',
@@ -894,38 +895,17 @@ describe('setupCommerceHosting', () => {
       '',
     ].join('\n');
 
-    it('renames proxy.ts to middleware.ts, renames the export, and injects the edge runtime', async () => {
+    it('leaves proxy.ts in place', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
       writeCoreProxyFile(proxyFixture);
 
       await setupCommerceHosting({ projectDir, projectUuid: 'u' });
 
-      const middlewarePath = join(projectDir, 'middleware.ts');
-      const proxyPath = join(projectDir, 'proxy.ts');
-
-      expect(existsSync(middlewarePath)).toBe(true);
-      expect(existsSync(proxyPath)).toBe(false);
-
-      const middleware = readFileSync(middlewarePath, 'utf-8');
-
-      expect(middleware).toContain('export const middleware = composeProxies()');
-      expect(middleware).not.toContain('export const proxy');
-      expect(middleware).toContain("runtime: 'experimental-edge'");
+      expect(readFileSync(join(projectDir, 'proxy.ts'), 'utf-8')).toBe(proxyFixture);
+      expect(existsSync(join(projectDir, 'middleware.ts'))).toBe(false);
     });
 
-    it('preserves the rest of the file contents', async () => {
-      writeCorePackageJson({ scripts: { dev: 'next dev' } });
-      writeCoreProxyFile(proxyFixture);
-
-      await setupCommerceHosting({ projectDir, projectUuid: 'u' });
-
-      const middleware = readFileSync(join(projectDir, 'middleware.ts'), 'utf-8');
-
-      expect(middleware).toContain("import { composeProxies } from './proxies/compose-proxies';");
-      expect(middleware).toContain("matcher: ['/((?!api).*)']");
-    });
-
-    it('is a no-op when proxy.ts does not exist', async () => {
+    it('does not create middleware.ts when proxy.ts does not exist', async () => {
       writeCorePackageJson({ scripts: { dev: 'next dev' } });
 
       await expect(setupCommerceHosting({ projectDir, projectUuid: 'u' })).resolves.not.toThrow();
@@ -1070,6 +1050,76 @@ describe('cleanupCloudflareIncompatibilities', () => {
   });
 });
 
+describe('removeLegacyMiddleware', () => {
+  let projectDir: string;
+  let restoreTty: () => void;
+
+  beforeEach(() => {
+    projectDir = mkdtempSync(join(tmpdir(), 'catalyst-legacy-middleware-test-'));
+    restoreTty = withInteractiveTty();
+    confirmMock.mockResolvedValue(true);
+  });
+
+  afterEach(() => {
+    rmSync(projectDir, { recursive: true, force: true });
+    restoreTty();
+  });
+
+  const middlewarePath = () => join(projectDir, 'middleware.ts');
+  const proxyPath = () => join(projectDir, 'proxy.ts');
+
+  function writeBoth() {
+    writeFileSync(middlewarePath(), 'export const middleware = () => {};\n');
+    writeFileSync(proxyPath(), 'export const proxy = () => {};\n');
+  }
+
+  it('deletes middleware.ts and keeps proxy.ts when the user accepts', async () => {
+    writeBoth();
+
+    await removeLegacyMiddleware(projectDir);
+
+    expect(existsSync(middlewarePath())).toBe(false);
+    expect(existsSync(proxyPath())).toBe(true);
+  });
+
+  it('throws and keeps both files when the user declines', async () => {
+    writeBoth();
+    confirmMock.mockResolvedValueOnce(false);
+
+    await expect(removeLegacyMiddleware(projectDir)).rejects.toThrow(
+      /proxy\.ts and middleware\.ts/,
+    );
+
+    expect(existsSync(middlewarePath())).toBe(true);
+    expect(existsSync(proxyPath())).toBe(true);
+  });
+
+  it('throws without prompting or deleting in a non-interactive environment', async () => {
+    restoreTty();
+    restoreTty = withNonInteractiveTty();
+    writeBoth();
+
+    await expect(removeLegacyMiddleware(projectDir)).rejects.toThrow(
+      /proxy\.ts and middleware\.ts/,
+    );
+
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(existsSync(middlewarePath())).toBe(true);
+  });
+
+  it.each([
+    ['only proxy.ts', ['proxy.ts']],
+    ['only middleware.ts', ['middleware.ts']],
+  ])('does nothing with %s', async (_label, files) => {
+    files.forEach((file) => writeFileSync(join(projectDir, file), ''));
+
+    await expect(removeLegacyMiddleware(projectDir)).resolves.toBeUndefined();
+
+    expect(confirmMock).not.toHaveBeenCalled();
+    files.forEach((file) => expect(existsSync(join(projectDir, file))).toBe(true));
+  });
+});
+
 describe('reconcileOpenNextVersion', () => {
   let dir: string;
   let warnSpy: MockInstance;
@@ -1101,7 +1151,7 @@ describe('reconcileOpenNextVersion', () => {
   };
 
   // A compatible Next version, so the peer gate is not what is under test.
-  const compatibleNext = { next: '~16.3.4' };
+  const compatibleNext = { next: '~16.4.3' };
 
   describe('cases it must stay out of', () => {
     it('does nothing when the project has no package.json', async () => {

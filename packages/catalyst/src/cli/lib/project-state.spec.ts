@@ -99,7 +99,7 @@ describe('getProjectState', () => {
     expect(getProjectState(tmpDir).hasOpenNextDep).toBe(false);
   });
 
-  test('isTransformed requires middleware present, proxy absent, and OpenNext dep installed', async () => {
+  test('isTransformed is true with middleware.ts and the OpenNext dep installed', async () => {
     await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
     await writePackageJson(tmpDir, {
       dependencies: { '@opennextjs/cloudflare': '1.17.3' },
@@ -108,14 +108,13 @@ describe('getProjectState', () => {
     expect(getProjectState(tmpDir).isTransformed).toBe(true);
   });
 
-  test('isTransformed is false if proxy.ts still exists', async () => {
-    await writeFileEnsured(join(tmpDir, 'middleware.ts'), '// middleware');
+  test('isTransformed is true with proxy.ts and the OpenNext dep installed', async () => {
     await writeFileEnsured(join(tmpDir, 'proxy.ts'), '// proxy');
     await writePackageJson(tmpDir, {
       dependencies: { '@opennextjs/cloudflare': '1.17.3' },
     });
 
-    expect(getProjectState(tmpDir).isTransformed).toBe(false);
+    expect(getProjectState(tmpDir).isTransformed).toBe(true);
   });
 
   test('isTransformed is false if OpenNext dep missing', async () => {
