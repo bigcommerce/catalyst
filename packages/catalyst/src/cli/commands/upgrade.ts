@@ -19,7 +19,10 @@ import { minVersion, satisfies, lt as semverLt, validRange, valid as validSemver
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
-import { cleanupCloudflareIncompatibilities } from '../lib/commerce-hosting';
+import {
+  cleanupCloudflareIncompatibilities,
+  removeLegacyMiddleware,
+} from '../lib/commerce-hosting';
 import { detectLockfileManager, PackageManager } from '../lib/detect-package-manager';
 import { consola } from '../lib/logger';
 import { getProjectState } from '../lib/project-state';
@@ -1202,6 +1205,15 @@ function printSummary({
   }
 }
 
+// A file the reconcile removed has to be recorded as deleted, or the upgrade
+// stages the merge without the removal.
+function recordDeletion(result: MergeResult, rel: string) {
+  result.conflicted = result.conflicted.filter((path) => path !== rel);
+  result.applied = result.applied.filter((path) => path !== rel);
+  result.added = result.added.filter((path) => path !== rel);
+  result.deleted = [...new Set([...result.deleted, rel])];
+}
+
 export async function reconcileNativeHosting(
   catalystRoot: string,
   result: MergeResult,
@@ -1223,9 +1235,21 @@ export async function reconcileNativeHosting(
   }
 
   if (hadInstrumentation && !(await pathExists(instrumentationPath))) {
-    result.conflicted = result.conflicted.filter((rel) => rel !== instrumentationRel);
-    result.applied = result.applied.filter((rel) => rel !== instrumentationRel);
-    result.added = result.added.filter((rel) => rel !== instrumentationRel);
+    recordDeletion(result, instrumentationRel);
+  }
+
+  const middlewareRel = 'middleware.ts';
+  const middlewarePath = join(catalystRoot, middlewareRel);
+  const hadMiddleware = await pathExists(middlewarePath);
+
+  try {
+    await removeLegacyMiddleware(catalystRoot);
+  } catch (err) {
+    consola.warn(err instanceof Error ? err.message : String(err));
+  }
+
+  if (hadMiddleware && !(await pathExists(middlewarePath))) {
+    recordDeletion(result, middlewareRel);
   }
 }
 
