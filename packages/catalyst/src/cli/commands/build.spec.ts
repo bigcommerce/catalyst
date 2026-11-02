@@ -50,6 +50,7 @@ vi.mock('../lib/project-config', () => ({
 // command routing, so keep it a no-op regardless of the ambient environment.
 vi.mock('../lib/commerce-hosting', () => ({
   reconcileOpenNextVersion: vi.fn(() => Promise.resolve(false)),
+  removeLegacyMiddleware: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock('../lib/install-dependencies', () => ({

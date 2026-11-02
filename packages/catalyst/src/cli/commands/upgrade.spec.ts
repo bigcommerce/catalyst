@@ -1114,6 +1114,8 @@ describe('reconcileNativeHosting', () => {
 
     expect(await exists(join(dir, 'instrumentation.ts'))).toBe(false);
     expect(result.conflicted).not.toContain('instrumentation.ts');
+    // Recorded so `applyIndexState` stages the deletion.
+    expect(result.deleted).toEqual(['instrumentation.ts']);
     expect(await readFile(join(dir, 'package.json'), 'utf-8')).not.toContain('@vercel/otel');
   });
 
@@ -1153,12 +1155,39 @@ describe('reconcileNativeHosting', () => {
     expect(result.conflicted).not.toContain('instrumentation.ts');
   });
 
+  test('removes the legacy middleware.ts when the merge brings proxy.ts back', async () => {
+    confirmMock.mockResolvedValue(true);
+
+    const dir = await seedTransformedProject(false);
+
+    await write(join(dir, 'proxy.ts'), 'export const proxy = () => {};\n');
+
+    const result = {
+      applied: ['middleware.ts'],
+      added: ['proxy.ts'],
+      deleted: [],
+      conflicted: ['middleware.ts'],
+    };
+
+    await reconcileNativeHosting(dir, result);
+
+    expect(await exists(join(dir, 'middleware.ts'))).toBe(false);
+    expect(await exists(join(dir, 'proxy.ts'))).toBe(true);
+    // Recorded so `applyIndexState` stages the deletion.
+    expect(result).toEqual({
+      applied: [],
+      added: ['proxy.ts'],
+      deleted: ['middleware.ts'],
+      conflicted: [],
+    });
+  });
+
   test('leaves the project alone when it is not set up for native hosting', async () => {
     confirmMock.mockResolvedValue(true);
 
     const dir = await seedTransformedProject(true);
 
-    await write(join(dir, 'proxy.ts'), 'export const proxy = () => {};\n');
+    await write(join(dir, 'package.json'), JSON.stringify({ name: 'my-store' }));
 
     const result = { applied: [], added: [], deleted: [], conflicted: ['instrumentation.ts'] };
 
