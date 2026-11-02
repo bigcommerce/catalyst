@@ -351,6 +351,9 @@ importers:
       dotenv:
         specifier: ^16.5.0
         version: 16.5.0
+      dotenv-expand:
+        specifier: ^10.0.0
+        version: 10.0.0
       execa:
         specifier: ^9.6.0
         version: 9.6.0

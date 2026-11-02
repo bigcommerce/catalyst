@@ -22,10 +22,12 @@ import { deployedChannelId, offerChannelUrlUpdates } from '../lib/deploy-channel
 import { getDeploymentErrorMessage } from '../lib/deployment-errors';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import {
+  type DeploymentSecret,
   getStoredEnv,
   mergeDeploymentSecrets,
   parseEnvAssignment,
   toDeploymentSecrets,
+  toEnvFileSecrets,
 } from '../lib/env-config';
 import { httpError } from '../lib/http-errors';
 import { installDependencies } from '../lib/install-dependencies';
@@ -348,6 +350,30 @@ export const getDeploymentStatus = async (
   return deploymentHostname;
 };
 
+// Precedence: `--secret` > `--env-path` file > `catalyst env add`. The
+// `--env-path` file is sent as bindings, not just baked into the bundle,
+// because bindings override baked values at runtime.
+const resolveDeploymentSecrets = (
+  storedEnv: Record<string, string>,
+  envFileVars: Record<string, string> | undefined,
+  flagSecrets: DeploymentSecret[],
+): DeploymentSecret[] => {
+  const envFileSecrets = toEnvFileSecrets(envFileVars ?? {});
+
+  const overriddenKeys = envFileSecrets
+    .filter(({ key, value }) => key in storedEnv && storedEnv[key] !== value)
+    .filter(({ key }) => !flagSecrets.some((secret) => secret.key === key))
+    .map(({ key }) => key);
+
+  if (overriddenKeys.length > 0) {
+    consola.info(
+      `--env-path overrides values saved with \`catalyst env add\`: ${overriddenKeys.join(', ')}`,
+    );
+  }
+
+  return mergeDeploymentSecrets(toDeploymentSecrets(storedEnv), envFileSecrets, flagSecrets);
+};
+
 export const fetchProject = async (
   projectUuid: string,
   storeHash: string,
@@ -386,7 +412,8 @@ export const deploy = new Command('deploy')
     'after',
     `
 Environment variables saved with \`catalyst env add\` are sent automatically on every deploy.
-Use \`--secret\` to set or override a variable for a single run.
+\`--env-path <file>\` overrides them with that file's variables, and \`--secret\` sets or
+overrides a single variable for this run (it wins over both).
 
 Without \`--update-site-url\` or \`--update-checkout-url\`, an interactive deploy offers to
 point the channel's site URL at the deployment and to move its checkout onto the same domain.
@@ -532,6 +559,8 @@ Example:
       }
     }
 
+    let envFileVars: Record<string, string> | undefined;
+
     if (options.prebuilt) {
       const distDir = join(process.cwd(), '.bigcommerce', 'dist');
 
@@ -552,14 +581,26 @@ Example:
       }
 
       consola.info('Using existing build output (--prebuilt).');
+
+      // Nothing is built, but `--env-path` still sets the runtime values below.
+      if (options.envPath !== undefined) {
+        envFileVars = loadBuildEnv({ envPath: options.envPath });
+      }
     } else {
       // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
       // env file(s) before building so both the build and any pre-build checks
       // see them. Skipped for --prebuilt above, which doesn't run the build.
-      loadBuildEnv({ envPath: options.envPath });
+      envFileVars = loadBuildEnv({ envPath: options.envPath });
 
-      await buildCatalystProject(projectUuid, options.wranglerVersion);
+      await buildCatalystProject(projectUuid, options.wranglerVersion, envFileVars);
     }
+
+    const mergedSecrets = resolveDeploymentSecrets(
+      getStoredEnv(config),
+      envFileVars,
+      parseEnvironmentVariables(options.secret) ?? [],
+    );
+    const environmentVariables = [...mergedSecrets, NATIVE_HOSTING_ENV];
 
     await generateBundleZip();
 
@@ -576,14 +617,6 @@ Example:
     const uploadSignature = await generateUploadSignature(storeHash, accessToken, apiHost);
 
     await uploadBundleZip(uploadSignature.upload_url);
-
-    // Merge persisted env vars (`catalyst env add`) with any inline `--secret`
-    // flags. Inline flags win on conflict, letting users override a stored
-    // value for a single run.
-    const flagSecrets = parseEnvironmentVariables(options.secret) ?? [];
-    const persistedSecrets = toDeploymentSecrets(getStoredEnv(config));
-    const mergedSecrets = mergeDeploymentSecrets(persistedSecrets, flagSecrets);
-    const environmentVariables = [...mergedSecrets, NATIVE_HOSTING_ENV];
 
     const { deployment_uuid: deploymentUuid } = await createDeployment(
       projectUuid,

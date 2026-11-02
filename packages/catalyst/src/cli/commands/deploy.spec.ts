@@ -496,7 +496,7 @@ test('passes --wrangler-version through to the build', async () => {
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3');
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3', undefined);
 });
 
 test('builds with the default Wrangler version when --wrangler-version is omitted', async () => {
@@ -515,7 +515,39 @@ test('builds with the default Wrangler version when --wrangler-version is omitte
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined);
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, undefined);
+});
+
+test('passes the --env-path file to the build so only it is baked into the worker', async () => {
+  const envPath = join(tmpDir, '.env.staging');
+
+  await writeFile(envPath, 'DEPLOY_ENV_PATH_TEST=staging', 'utf-8');
+
+  try {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--env-path',
+      '.env.staging',
+      '--dry-run',
+    ]);
+
+    expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, {
+      DEPLOY_ENV_PATH_TEST: 'staging',
+    });
+  } finally {
+    delete process.env.DEPLOY_ENV_PATH_TEST;
+    await rm(envPath);
+  }
 });
 
 test('rejects an invalid --wrangler-version value', async () => {
@@ -672,6 +704,63 @@ describe('persisted env vars', () => {
     expect(body?.environment_variables?.filter((e) => e.key === 'SHARED')).toHaveLength(1);
 
     config.delete('env');
+  });
+
+  test('--env-path overrides stored env vars, and --secret overrides both', async () => {
+    const config = getProjectConfig();
+    const envPath = join(tmpDir, '.env.staging');
+
+    config.set('projectUuid', projectUuid);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+    config.set('env', { STORED_ONLY: 'keep', SHARED: 'stored', FILE_VS_FLAG: 'stored' });
+    await writeFile(envPath, 'SHARED=file\nFILE_VS_FLAG=file\nFILE_ONLY=file', 'utf-8');
+
+    let body: DeploymentBody | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
+        async ({ request }) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          body = (await request.json()) as DeploymentBody;
+
+          return HttpResponse.json({ data: { deployment_uuid: deploymentUuid } });
+        },
+      ),
+    );
+
+    try {
+      await program.parseAsync([
+        'node',
+        'catalyst',
+        'deploy',
+        '--api-host',
+        apiHost,
+        '--prebuilt',
+        '--env-path',
+        '.env.staging',
+        '--secret',
+        'FILE_VS_FLAG=flag',
+      ]);
+
+      expect(body?.environment_variables).toEqual([
+        { type: 'secret', key: 'STORED_ONLY', value: 'keep' },
+        { type: 'secret', key: 'SHARED', value: 'file' },
+        { type: 'secret', key: 'FILE_VS_FLAG', value: 'flag' },
+        { type: 'secret', key: 'FILE_ONLY', value: 'file' },
+        { type: 'plain_text', key: 'CATALYST_HOSTING', value: 'native' },
+      ]);
+      expect(consola.info).toHaveBeenCalledWith(
+        '--env-path overrides values saved with `catalyst env add`: SHARED',
+      );
+    } finally {
+      config.delete('env');
+      delete process.env.SHARED;
+      delete process.env.FILE_VS_FLAG;
+      delete process.env.FILE_ONLY;
+      await rm(envPath);
+    }
   });
 
   test('sends only the CATALYST_HOSTING marker when nothing is stored or passed', async () => {
