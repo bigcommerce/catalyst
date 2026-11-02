@@ -370,6 +370,7 @@
         "cartCombined": "Nous avons remarqué que votre panier précédent contenait des articles enregistrés. Nous avons donc ajouté ces articles à votre panier actuel.",
         "cartRestored": "Vous avez débuté vos achats sur un autre appareil. Nous avons restauré votre panier ici pour que vous puissiez reprendre là où vous en étiez.",
         "cartUpdateInProgress": "Une mise à jour de votre panier est en cours. Voulez-vous vraiment quitter cette page ? Vos modifications pourraient être perdues.",
+        "includedItems": "Inclus",
         "originalPrice": "Le prix initial était de {price}.",
         "currentPrice": "Le prix actuel est de {price}.",
         "quantityReadyToShip": "{quantity, number} prêts à être expédiés",
