@@ -370,6 +370,7 @@
         "cartCombined": "Abbiamo notato che avevi salvato degli articoli in un carrello precedente, quindi li abbiamo aggiunti al carrello attuale.",
         "cartRestored": "Hai avviato un carrello su un altro dispositivo e lo abbiamo ripristinato qui, così puoi riprendere da dove avevi lasciato.",
         "cartUpdateInProgress": "Hai un aggiornamento del carrello attivo in corso. Uscire dalla pagina? Le modifiche potrebbero andare perse.",
+        "includedItems": "Incluso",
         "originalPrice": "Il prezzo originale era {price}.",
         "currentPrice": "Il prezzo corrente è {price}.",
         "quantityReadyToShip": "{quantity, number} pronto per la spedizione",
