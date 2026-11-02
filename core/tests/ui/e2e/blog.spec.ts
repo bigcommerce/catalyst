@@ -25,6 +25,8 @@ test('Blog is accessible and displays posts', async ({ page, blog }) => {
 });
 
 test('Blog can be filtered by tags', async ({ page, blog }) => {
+  test.setTimeout(90000);
+
   const t = await getTranslations('Blog');
   const { name, path } = await blog.getBlog();
   const tag = faker.string.alpha(10);
@@ -32,7 +34,12 @@ test('Blog can be filtered by tags', async ({ page, blog }) => {
     tags: [tag],
   });
 
-  await page.goto(`${path}?tag=${tag}`);
+  // A new post can take a few seconds to reach the storefront, so reload until it shows.
+  await expect(async () => {
+    await page.goto(`${path}?tag=${tag}`);
+    await expect(page.getByRole('link', { name: post.title })).toBeVisible();
+  }).toPass({ timeout: 60000, intervals: [2000] });
+
   await expect(page.getByRole('heading', { name })).toBeVisible();
 
   // Streamed content sits in a hidden copy until React reveals it, so match visible text only.
@@ -41,13 +48,14 @@ test('Blog can be filtered by tags', async ({ page, blog }) => {
   await expect(breadcrumbs.getByText(t('home')).filter({ visible: true })).toBeVisible();
   await expect(breadcrumbs.getByText(name).filter({ visible: true })).toBeVisible();
   await expect(breadcrumbs.getByText(tag).filter({ visible: true })).toBeVisible();
-  await expect(page.getByRole('link', { name: post.title })).toBeVisible();
 });
 
 test('Blog post page displays content, breadcrumbs, tags, and author info', async ({
   page,
   blog,
 }) => {
+  test.setTimeout(90000);
+
   const t = await getTranslations('Blog');
   const { name } = await blog.getBlog();
   const post = await blog.createPost({
@@ -61,8 +69,11 @@ test('Blog post page displays content, breadcrumbs, tags, and author info', asyn
     tags: ['Tag 1', 'Tag 2'],
   });
 
-  await page.goto(post.path);
-  await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
+  // A new post can take a few seconds to reach the storefront, so reload until it shows.
+  await expect(async () => {
+    await page.goto(post.path);
+    await expect(page.getByRole('heading', { name: post.title })).toBeVisible();
+  }).toPass({ timeout: 60000, intervals: [2000] });
 
   // Streamed content sits in a hidden copy until React reveals it, so match visible text only.
   const breadcrumbs = page.getByLabel('breadcrumb');
