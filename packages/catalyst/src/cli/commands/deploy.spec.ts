@@ -430,6 +430,48 @@ describe('deployment and event streaming', () => {
     expect(consola.warn).not.toHaveBeenCalled();
   });
 
+  test('parses CRLF-delimited events, including a CRLF split across reads', async () => {
+    const chunks = [
+      `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\r`,
+      '\n\r\n',
+      `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}\r\n\r\n`,
+    ];
+
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              async start(controller) {
+                await chunks.reduce(
+                  (previous, chunk) =>
+                    previous.then(async () => {
+                      controller.enqueue(new TextEncoder().encode(chunk));
+                      await new Promise((resolve) => setTimeout(resolve, 5));
+                    }),
+                  Promise.resolve(),
+                );
+                controller.close();
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(textHistory).toEqual([
+      'Fetching...',
+      'Processing...',
+      'Deployment completed successfully.',
+    ]);
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
   test('keeps a completed status when the stream drops afterwards', async () => {
     let connections = 0;
 

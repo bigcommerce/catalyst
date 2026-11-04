@@ -271,6 +271,11 @@ const timeoutError = () =>
     'Timed out waiting for the deployment to finish. It may still complete in the background.',
   );
 
+// SSE lines can end in CRLF, LF or CR. A trailing CR may be the first half of a CRLF
+// split across reads, so it is left for the next read.
+const normalizeLineEndings = (text: string, { keepTrailingCr = false } = {}) =>
+  text.replace(keepTrailingCr ? /\r\n|\r(?!$)/g : /\r\n?/g, '\n');
+
 // Joins the `data:` lines of one SSE frame; keep-alive comments have none.
 const frameData = (frame: string) =>
   frame
@@ -352,12 +357,14 @@ const readDeploymentEvents = async (
     const { value, done } = await reader.read();
 
     if (done) {
-      processFrame(buffer + decoder.decode());
+      processFrame(normalizeLineEndings(buffer + decoder.decode()));
       break;
     }
 
     // A frame can span reads, so only complete frames are parsed.
-    const frames = (buffer + decoder.decode(value, { stream: true })).split('\n\n');
+    const frames = normalizeLineEndings(buffer + decoder.decode(value, { stream: true }), {
+      keepTrailingCr: true,
+    }).split('\n\n');
 
     buffer = frames.pop() ?? '';
     frames.forEach(processFrame);
