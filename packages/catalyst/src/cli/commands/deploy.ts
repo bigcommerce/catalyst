@@ -257,16 +257,23 @@ export const createDeployment = async (
   return data;
 };
 
-export const getDeploymentStatus = async (
+// The events stream closes after 30s, and the deploy job can run for 10 minutes.
+const DEPLOYMENT_STATUS_TIMEOUT_MS = 15 * 60 * 1000;
+const RECONNECT_DELAY_MS = 1000;
+
+type DeploymentStatus = z.infer<typeof DeploymentStatusSchema>['deployment_status'];
+
+// undici rejects with a TypeError ("terminated", "fetch failed") when the socket drops.
+const isNetworkError = (error: unknown) => error instanceof TypeError;
+
+// Reads one connection of the event stream and returns the last status it saw.
+const readDeploymentEvents = async (
   deploymentUuid: string,
   storeHash: string,
   accessToken: string,
   apiHost: string,
-): Promise<string | undefined> => {
-  consola.info('Fetching deployment status...');
-
-  const spinner = yoctoSpinner().start('Fetching...');
-
+  onEvent: (data: z.infer<typeof DeploymentStatusSchema>) => void,
+): Promise<DeploymentStatus | undefined> => {
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/infrastructure/deployments/${deploymentUuid}/events`,
     {
@@ -294,7 +301,7 @@ export const getDeploymentStatus = async (
 
   const decoder = new TextDecoder();
   let done = false;
-  let deploymentHostname: string | undefined;
+  let status: DeploymentStatus | undefined;
 
   while (!done) {
     // eslint-disable-next-line no-await-in-loop
@@ -320,23 +327,80 @@ export const getDeploymentStatus = async (
 
         const data = DeploymentStatusSchema.parse(json);
 
-        if (data.error) {
-          throw new Error(
-            `Deployment failed (error code ${data.error.code}): ${getDeploymentErrorMessage(data.error.code)}`,
-          );
-        }
-
-        if (data.event && STEPS[data.event.step] !== spinner.text) {
-          spinner.text = STEPS[data.event.step];
-        }
-
-        if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
-          deploymentHostname = data.deployment_hostnames[0];
-        }
+        status = data.deployment_status;
+        onEvent(data);
       });
     }
 
     done = streamDone;
+  }
+
+  return status;
+};
+
+export const getDeploymentStatus = async (
+  deploymentUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+  { timeoutMs = DEPLOYMENT_STATUS_TIMEOUT_MS, reconnectDelayMs = RECONNECT_DELAY_MS } = {},
+): Promise<string | undefined> => {
+  consola.info('Fetching deployment status...');
+
+  const spinner = yoctoSpinner().start('Fetching...');
+  const deadline = Date.now() + timeoutMs;
+  let deploymentHostname: string | undefined;
+
+  const onEvent = (data: z.infer<typeof DeploymentStatusSchema>) => {
+    if (data.error) {
+      throw new Error(
+        `Deployment failed (error code ${data.error.code}): ${getDeploymentErrorMessage(data.error.code)}`,
+      );
+    }
+
+    if (data.deployment_status === 'failed') {
+      throw new Error('Deployment failed.');
+    }
+
+    if (data.event && STEPS[data.event.step] !== spinner.text) {
+      spinner.text = STEPS[data.event.step];
+    }
+
+    if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
+      deploymentHostname = data.deployment_hostnames[0];
+    }
+  };
+
+  // Each new connection starts with the current state, so reconnecting loses nothing.
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    let status: DeploymentStatus | undefined;
+
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      status = await readDeploymentEvents(deploymentUuid, storeHash, accessToken, apiHost, onEvent);
+    } catch (error) {
+      if (!isNetworkError(error)) {
+        throw error;
+      }
+
+      consola.debug('Deployment event stream disconnected.', error);
+    }
+
+    if (status === 'completed') {
+      break;
+    }
+
+    if (Date.now() >= deadline) {
+      throw new Error(
+        'Timed out waiting for the deployment to finish. It may still complete in the background.',
+      );
+    }
+
+    consola.debug('Reconnecting to the deployment event stream...');
+
+    // eslint-disable-next-line no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, reconnectDelayMs));
   }
 
   spinner.success('Deployment completed successfully.');

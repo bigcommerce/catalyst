@@ -252,7 +252,7 @@ describe('deployment and event streaming', () => {
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                    `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
                   ),
                 );
                 controller.close();
@@ -283,6 +283,121 @@ describe('deployment and event streaming', () => {
       expect.stringContaining('Failed to parse event, dropping from stream.'),
       expect.any(Error),
     );
+  });
+
+  const eventStream = (...events: string[]) =>
+    new HttpResponse(
+      new ReadableStream({
+        start(controller) {
+          events.forEach((event) =>
+            controller.enqueue(new TextEncoder().encode(`data: ${event}\n\n`)),
+          );
+          controller.close();
+        },
+      }),
+      { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+    );
+
+  const eventsUrl =
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/:deploymentUuid/events';
+
+  test('reconnects when the stream closes or drops before the deployment finishes', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        if (connections === 1) {
+          return eventStream(
+            `{"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+          );
+        }
+
+        if (connections === 2) {
+          return HttpResponse.error();
+        }
+
+        return eventStream(
+          `{"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}`,
+        );
+      }),
+    );
+
+    const hostname = await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(3);
+    expect(hostname).toBe('example.com');
+    expect(textHistory).toEqual([
+      'Fetching...',
+      'Processing...',
+      'Deployment completed successfully.',
+    ]);
+  });
+
+  test('reconnects when the server terminates the stream mid-read', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        if (connections === 1) {
+          return new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.error(new TypeError('terminated'));
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          );
+        }
+
+        return eventStream(
+          `{"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}`,
+        );
+      }),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(2);
+    expect(textHistory).toContain('Deployment completed successfully.');
+  });
+
+  test('times out if the deployment never finishes', async () => {
+    server.use(
+      http.get(eventsUrl, () =>
+        eventStream(
+          `{"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+        ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 0,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
+  test('fails when the deployment status is failed without an error code', async () => {
+    server.use(
+      http.get(eventsUrl, () =>
+        eventStream(
+          `{"deployment_status":"failed","deployment_uuid":"${deploymentUuid}","event":null}`,
+        ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Deployment failed.');
   });
 
   test('handles deployment errors', async () => {
