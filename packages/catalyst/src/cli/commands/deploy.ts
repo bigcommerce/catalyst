@@ -261,19 +261,33 @@ export const createDeployment = async (
 const DEPLOYMENT_STATUS_TIMEOUT_MS = 15 * 60 * 1000;
 const RECONNECT_DELAY_MS = 1000;
 
-type DeploymentStatus = z.infer<typeof DeploymentStatusSchema>['deployment_status'];
-
 // undici rejects with a TypeError ("terminated", "fetch failed") when the socket drops.
 const isNetworkError = (error: unknown) => error instanceof TypeError;
 
-// Reads one connection of the event stream and returns the last status it saw.
+type DeploymentStatusEvent = z.infer<typeof DeploymentStatusSchema>;
+
+const timeoutError = () =>
+  new Error(
+    'Timed out waiting for the deployment to finish. It may still complete in the background.',
+  );
+
+// Joins the `data:` lines of one SSE frame; keep-alive comments have none.
+const frameData = (frame: string) =>
+  frame
+    .split('\n')
+    .filter((line) => line.startsWith('data:'))
+    .map((line) => line.slice('data:'.length).trim())
+    .join('\n');
+
+// Reads one connection of the event stream until the server closes it.
 const readDeploymentEvents = async (
   deploymentUuid: string,
   storeHash: string,
   accessToken: string,
   apiHost: string,
-  onEvent: (data: z.infer<typeof DeploymentStatusSchema>) => void,
-): Promise<DeploymentStatus | undefined> => {
+  signal: AbortSignal,
+  onEvent: (data: DeploymentStatusEvent) => void,
+) => {
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/infrastructure/deployments/${deploymentUuid}/events`,
     {
@@ -284,6 +298,7 @@ const readDeploymentEvents = async (
         Connection: 'keep-alive',
         'X-Correlation-Id': getTelemetry().correlationId,
       },
+      signal,
     },
   );
 
@@ -299,43 +314,54 @@ const readDeploymentEvents = async (
     throw new Error('Failed to read event stream.');
   }
 
+  // Ends a stream that stays open past the deadline.
+  signal.addEventListener(
+    'abort',
+    () => {
+      reader.cancel().catch(() => undefined);
+    },
+    { once: true },
+  );
+
   const decoder = new TextDecoder();
-  let done = false;
-  let status: DeploymentStatus | undefined;
+  let buffer = '';
 
-  while (!done) {
-    // eslint-disable-next-line no-await-in-loop
-    const { value, done: streamDone } = await reader.read();
-    let json: unknown;
+  const processFrame = (frame: string) => {
+    const event = frameData(frame);
 
-    if (value) {
-      const chunk = decoder.decode(value, { stream: true }).trim();
-      const split = chunk
-        .split('\n\n')
-        .map((s) => s.replace('data:', '').trim())
-        .filter(Boolean);
-
-      // eslint-disable-next-line no-loop-func
-      split.forEach((event) => {
-        try {
-          json = JSON.parse(event);
-        } catch (error) {
-          consola.warn(`Failed to parse event, dropping from stream. Event: ${event}`, error);
-
-          return;
-        }
-
-        const data = DeploymentStatusSchema.parse(json);
-
-        status = data.deployment_status;
-        onEvent(data);
-      });
+    if (!event) {
+      return;
     }
 
-    done = streamDone;
-  }
+    let json: unknown;
 
-  return status;
+    try {
+      json = JSON.parse(event);
+    } catch (error) {
+      consola.warn(`Failed to parse event, dropping from stream. Event: ${event}`, error);
+
+      return;
+    }
+
+    onEvent(DeploymentStatusSchema.parse(json));
+  };
+
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const { value, done } = await reader.read();
+
+    if (done) {
+      processFrame(buffer + decoder.decode());
+      break;
+    }
+
+    // A frame can span reads, so only complete frames are parsed.
+    const frames = (buffer + decoder.decode(value, { stream: true })).split('\n\n');
+
+    buffer = frames.pop() ?? '';
+    frames.forEach(processFrame);
+  }
 };
 
 export const getDeploymentStatus = async (
@@ -349,9 +375,10 @@ export const getDeploymentStatus = async (
 
   const spinner = yoctoSpinner().start('Fetching...');
   const deadline = Date.now() + timeoutMs;
+  let status: DeploymentStatusEvent['deployment_status'] | undefined;
   let deploymentHostname: string | undefined;
 
-  const onEvent = (data: z.infer<typeof DeploymentStatusSchema>) => {
+  const onEvent = (data: DeploymentStatusEvent) => {
     if (data.error) {
       throw new Error(
         `Deployment failed (error code ${data.error.code}): ${getDeploymentErrorMessage(data.error.code)}`,
@@ -369,22 +396,30 @@ export const getDeploymentStatus = async (
     if (data.deployment_hostnames && data.deployment_hostnames.length > 0) {
       deploymentHostname = data.deployment_hostnames[0];
     }
+
+    status = data.deployment_status;
   };
 
   // Each new connection starts with the current state, so reconnecting loses nothing.
   // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
   while (true) {
-    let status: DeploymentStatus | undefined;
+    const signal = AbortSignal.timeout(Math.max(deadline - Date.now(), 0));
 
     try {
       // eslint-disable-next-line no-await-in-loop
-      status = await readDeploymentEvents(deploymentUuid, storeHash, accessToken, apiHost, onEvent);
+      await readDeploymentEvents(deploymentUuid, storeHash, accessToken, apiHost, signal, onEvent);
     } catch (error) {
-      if (!isNetworkError(error)) {
-        throw error;
-      }
+      if (status !== 'completed') {
+        if (signal.aborted) {
+          throw timeoutError();
+        }
 
-      consola.debug('Deployment event stream disconnected.', error);
+        if (!isNetworkError(error)) {
+          throw error;
+        }
+
+        consola.debug('Deployment event stream disconnected.', error);
+      }
     }
 
     if (status === 'completed') {
@@ -392,9 +427,7 @@ export const getDeploymentStatus = async (
     }
 
     if (Date.now() >= deadline) {
-      throw new Error(
-        'Timed out waiting for the deployment to finish. It may still complete in the background.',
-      );
+      throw timeoutError();
     }
 
     consola.debug('Reconnecting to the deployment event stream...');

@@ -242,17 +242,17 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\n\n`,
                 ),
               );
               setTimeout(() => {
                 // Incomplete stream data
-                controller.enqueue(encoder.encode(`data: {"deployment_status":"in_progress",`));
+                controller.enqueue(encoder.encode(`data: {"deployment_status":"in_progress",\n\n`));
               }, 10);
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                    `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}\n\n`,
                   ),
                 );
                 controller.close();
@@ -400,6 +400,112 @@ describe('deployment and event streaming', () => {
     ).rejects.toThrow('Deployment failed.');
   });
 
+  test('parses an event split across reads', async () => {
+    const frame = `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}\n\n`;
+
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.enqueue(new TextEncoder().encode(frame.slice(0, 40)));
+                setTimeout(() => {
+                  controller.enqueue(new TextEncoder().encode(frame.slice(40)));
+                  controller.close();
+                }, 10);
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    const hostname = await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(hostname).toBe('example.com');
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
+  test('keeps a completed status when the stream drops afterwards', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        return new HttpResponse(
+          new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                new TextEncoder().encode(
+                  `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}\n\n`,
+                ),
+              );
+              setTimeout(() => controller.error(new TypeError('terminated')), 10);
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+        );
+      }),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(1);
+    expect(textHistory).toContain('Deployment completed successfully.');
+  });
+
+  test('times out while a stream stays open', async () => {
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.enqueue(
+                  new TextEncoder().encode(
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"deploying","progress":50}}\n\n`,
+                  ),
+                );
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 50,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
+  test('times out while the stream is still connecting', async () => {
+    server.use(
+      http.get(eventsUrl, async () => {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        return HttpResponse.text('');
+      }),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 20,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
   test('handles deployment errors', async () => {
     const encoder = new TextEncoder();
 
@@ -411,13 +517,13 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\n\n`,
                 ),
               );
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}\n\n`,
                   ),
                 );
               }, 10);
