@@ -29,14 +29,15 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 
 type PrimitiveAttribute = string | number | boolean;
 
+// Older workerd releases ship spans without the optional methods.
 interface WorkersSpan {
   readonly isTraced: boolean;
   setAttribute(key: string, value: PrimitiveAttribute): this;
   setAttributes(attributes: Record<string, PrimitiveAttribute | undefined>): this;
-  recordException(exception: string | { name?: string; message?: string; stack?: string }): void;
-  setStatus(status: { code: 'unset' | 'ok' | 'error'; message?: string }): this;
-  updateName(name: string): this;
-  spanContext(): { traceId: string; spanId: string; traceFlags: number };
+  recordException?(exception: string | { name?: string; message?: string; stack?: string }): void;
+  setStatus?(status: { code: 'unset' | 'ok' | 'error'; message?: string }): this;
+  updateName?(name: string): this;
+  spanContext?(): { traceId: string; spanId: string; traceFlags: number };
   end(): void;
 }
 
@@ -94,7 +95,7 @@ class WorkersSpanAdapter implements Span {
   constructor(private readonly span: WorkersSpan) {}
 
   spanContext(): SpanContext {
-    return this.span.spanContext();
+    return this.span.spanContext?.() ?? INVALID_SPAN_CONTEXT;
   }
 
   setAttribute(key: string, value: AttributeValue): this {
@@ -129,13 +130,13 @@ class WorkersSpanAdapter implements Span {
   }
 
   setStatus({ code, message }: SpanStatus): this {
-    this.span.setStatus({ code: STATUS_CODES[code], message });
+    this.span.setStatus?.({ code: STATUS_CODES[code], message });
 
     return this;
   }
 
   updateName(name: string): this {
-    this.span.updateName(name);
+    this.span.updateName?.(name);
 
     return this;
   }
@@ -149,7 +150,7 @@ class WorkersSpanAdapter implements Span {
   }
 
   recordException(exception: Exception): void {
-    this.span.recordException(
+    this.span.recordException?.(
       typeof exception === 'string'
         ? exception
         : { name: exception.name, message: exception.message, stack: exception.stack },
@@ -244,10 +245,14 @@ class AsyncLocalStorageContextManager implements ContextManager {
   bind<T>(ctx: Context, target: T): T {
     if (typeof target !== 'function') return target;
 
+    const run = this.with.bind(this);
+
+    // A plain function, so callers' `this` (e.g. Next.js's `.apply`) reaches `target`.
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return ((...args: unknown[]) =>
+    return function bound(this: unknown, ...args: unknown[]) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      this.with(ctx, () => Reflect.apply(target, undefined, args))) as T;
+      return run(ctx, () => Reflect.apply(target, this, args));
+    } as T;
   }
 
   enable(): this {

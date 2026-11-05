@@ -144,6 +144,40 @@ describe('registerWorkersTracing', () => {
     ]);
   });
 
+  it('tolerates runtimes whose spans lack the optional methods', () => {
+    const recorded = { ended: false };
+    const span = {
+      isTraced: true,
+      setAttribute: () => span,
+      setAttributes: () => span,
+      end: () => {
+        recorded.ended = true;
+      },
+    };
+
+    setCloudflareContext({
+      ctx: { tracing: { startSpan: () => span, startActiveSpan: () => undefined } },
+    });
+
+    const adapted = trace.getTracer('test').startSpan('fetch');
+
+    adapted.setStatus({ code: SpanStatusCode.ERROR });
+    adapted.recordException(new Error('boom'));
+    adapted.updateName('renamed');
+    adapted.end();
+
+    expect(adapted.spanContext().traceId).toBe('00000000000000000000000000000000');
+    expect(recorded.ended).toBe(true);
+  });
+
+  it('keeps the receiver of context-bound callbacks', () => {
+    const bound = context.bind(context.active(), function name(this: { name: string }) {
+      return this.name;
+    });
+
+    expect(bound.call({ name: 'request' })).toBe('request');
+  });
+
   it('runs the callback with a non-recording span outside a Workers request', () => {
     const result = trace.getTracer('test').startActiveSpan('render', (span) => {
       expect(span.isRecording()).toBe(false);
