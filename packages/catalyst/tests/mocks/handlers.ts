@@ -131,14 +131,14 @@ export const handlers = [
           controller.enqueue(
             encoder.encode(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_hostnames":[]}`,
+              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_hostnames":[]}\n\n`,
             ),
           );
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_hostnames":[]}`,
+                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_hostnames":[]}\n\n`,
               ),
             );
           }, 10);
@@ -146,7 +146,7 @@ export const handlers = [
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}`,
+                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}\n\n`,
               ),
             );
             controller.close();
