@@ -1,5 +1,3 @@
-import { registerOTel } from '@vercel/otel';
-
 // eslint-disable-next-line valid-jsdoc
 /**
  * Initializes OpenTelemetry instrumentation for the Next.js application.
@@ -12,6 +10,7 @@ import { registerOTel } from '@vercel/otel';
  *
  * Configuration:
  * - Uses @vercel/otel for simplified OpenTelemetry setup
+ * - On Cloudflare Workers, spans go to Workers tracing instead (see ~/lib/otel/cloudflare)
  * - Automatically instruments Next.js internals (requests, rendering, fetches)
  * - Service name is read from OTEL_SERVICE_NAME environment variable
  * - If OTEL_SERVICE_NAME is not set, defaults to 'next-app'
@@ -50,7 +49,22 @@ import { registerOTel } from '@vercel/otel';
  * - OPENTELEMETRY.md in this directory
  * - Official Next.js guide: https://nextjs.org/docs/app/guides/open-telemetry
  */
-export function register() {
+export async function register() {
+  // On Cloudflare Workers, hand spans to the runtime's native tracing instead.
+  // `@vercel/otel` must stay out of this branch: its Node build throws when
+  // workerd evaluates it, so it is only ever imported lazily below.
+  // `navigator` is undefined on Node 20, despite what the DOM types say.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (globalThis.navigator?.userAgent === 'Cloudflare-Workers') {
+    const { registerWorkersTracing } = await import('./lib/otel/cloudflare');
+
+    registerWorkersTracing();
+
+    return;
+  }
+
+  const { registerOTel } = await import('@vercel/otel');
+
   // Service name is pulled from the OTEL_SERVICE_NAME env var.
   // If you wish to manually set it, you can remove the env var and set it here:
   // registerOTel({ serviceName: 'catalyst-storefront' });

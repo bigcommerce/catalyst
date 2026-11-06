@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/catalyst",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -36,6 +36,7 @@
     "consola": "^3.4.2",
     "cross-spawn": "^7.0.6",
     "dotenv": "^16.5.0",
+    "dotenv-expand": "^10.0.0",
     "execa": "^9.6.0",
     "fs-extra": "^11.3.0",
     "lodash.kebabcase": "^4.1.1",
@@ -67,7 +68,7 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "^1.17.3"
+    "@opennextjs/cloudflare": "^1.20.15"
   },
   "peerDependenciesMeta": {
     "@opennextjs/cloudflare": {

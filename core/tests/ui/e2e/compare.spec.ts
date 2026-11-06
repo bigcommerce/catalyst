@@ -130,6 +130,8 @@ test("Product with variants 'View options' redirect to product page", async ({ p
 });
 
 test('Disabled add to cart for out of stock products', async ({ page, catalog }) => {
+  test.setTimeout(90000);
+
   const t = await getTranslations('Compare');
 
   const product = await catalog.createSimpleProduct({
@@ -142,10 +144,13 @@ test('Disabled add to cart for out of stock products', async ({ page, catalog })
     inventoryLevel: 0,
   });
 
-  await page.goto(`/compare/?ids=${product.id},${productWithVariants.id}`);
-
+  // New products can take a few seconds to reach the storefront, so reload until they show.
   // Simple products should have the add to cart button disabled
-  await expect(page.getByRole('button', { name: t('addToCart') })).toBeDisabled();
+  await expect(async () => {
+    await page.goto(`/compare/?ids=${product.id},${productWithVariants.id}`);
+    await expect(page.getByRole('button', { name: t('addToCart') })).toBeDisabled();
+  }).toPass({ timeout: 60000, intervals: [2000] });
+
   // Product with variants should have the view options link even when OOS
   await expect(page.getByRole('link', { name: t('viewOptions') })).toBeVisible();
 });

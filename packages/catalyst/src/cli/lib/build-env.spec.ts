@@ -19,9 +19,30 @@ describe('loadBuildEnv', () => {
     process.env.BUILD_ENV_TEST_A = 'from-process';
 
     try {
-      loadBuildEnv({ envPath: '.env.custom', cwd: tmpDir });
-
+      expect(loadBuildEnv({ envPath: '.env.custom', cwd: tmpDir })).toEqual({
+        BUILD_ENV_TEST_A: 'from-file',
+      });
       expect(process.env.BUILD_ENV_TEST_A).toBe('from-file');
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test('expands variable references in an explicit --env-path', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    await writeFile(
+      join(tmpDir, '.env.custom'),
+      'BUILD_ENV_TEST_A=cdn.example.com\nBUILD_ENV_TEST_B=https://$BUILD_ENV_TEST_A',
+      'utf-8',
+    );
+
+    try {
+      expect(loadBuildEnv({ envPath: '.env.custom', cwd: tmpDir })).toEqual({
+        BUILD_ENV_TEST_A: 'cdn.example.com',
+        BUILD_ENV_TEST_B: 'https://cdn.example.com',
+      });
+      expect(process.env.BUILD_ENV_TEST_B).toBe('https://cdn.example.com');
     } finally {
       await cleanup();
     }
@@ -53,8 +74,7 @@ describe('loadBuildEnv', () => {
     await writeFile(join(tmpDir, '.env.local'), 'BUILD_ENV_TEST_A=from-env-local', 'utf-8');
 
     try {
-      loadBuildEnv({ cwd: tmpDir });
-
+      expect(loadBuildEnv({ cwd: tmpDir })).toBeUndefined();
       expect(process.env.BUILD_ENV_TEST_A).toBe('from-env-local');
       expect(process.env.BUILD_ENV_TEST_B).toBe('only-in-env');
     } finally {

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.0.9
+
+### Patch Changes
+
+- Updated dependencies [[`1eb332b`](https://github.com/bigcommerce/catalyst/commit/1eb332b856a3c9ac9a8965624f74850735447552), [`5328817`](https://github.com/bigcommerce/catalyst/commit/53288177cf771d77b451104dde54c8f14142c851), [`16d0c07`](https://github.com/bigcommerce/catalyst/commit/16d0c07392836cc077ebbb6ef254756b78d3b93f), [`3e5e3d5`](https://github.com/bigcommerce/catalyst/commit/3e5e3d50924ca2e8255fb3ade60ed7268221dcf8), [`ef210dd`](https://github.com/bigcommerce/catalyst/commit/ef210dde564a1c0ca3dc7822d6e07b34e57cbab1)]:
+  - @bigcommerce/catalyst@1.6.0
+
 ## 2.0.8
 
 ### Patch Changes
