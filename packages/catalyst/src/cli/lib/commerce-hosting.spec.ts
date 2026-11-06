@@ -1032,6 +1032,19 @@ describe('cleanupCloudflareIncompatibilities', () => {
     expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
   });
 
+  it('keeps a Workers-aware instrumentation.ts and @vercel/otel without prompting', async () => {
+    writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
+    writeCoreInstrumentationFile(
+      "const { registerWorkersTracing } = await import('./lib/otel/cloudflare');\n",
+    );
+
+    await cleanupCloudflareIncompatibilities(projectDir);
+
+    expect(confirmMock).not.toHaveBeenCalled();
+    expect(existsSync(join(projectDir, 'instrumentation.ts'))).toBe(true);
+    expect(readCorePackageJson().dependencies).toHaveProperty('@vercel/otel', '^2.1.0');
+  });
+
   it('is a silent no-op when instrumentation.ts does not exist', async () => {
     writeCorePackageJson({ dependencies: { next: '^15.0.0', '@vercel/otel': '^2.1.0' } });
 

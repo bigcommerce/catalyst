@@ -70,6 +70,10 @@ export const cleanupCloudflareIncompatibilities = async (projectDir: string) => 
 
   if (!existsSync(instrumentationPath)) return;
 
+  // Newer Catalyst hooks branch to Workers tracing and only import
+  // `@vercel/otel` lazily off Workers, so they are safe to keep.
+  if (readFileSync(instrumentationPath, 'utf-8').includes('registerWorkersTracing')) return;
+
   if (!process.stdin.isTTY) {
     consola.warn(
       'instrumentation.ts is present and may be incompatible with the Cloudflare Workers ' +
