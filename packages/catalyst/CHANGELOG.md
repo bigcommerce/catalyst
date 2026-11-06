@@ -1,5 +1,25 @@
 # @bigcommerce/catalyst
 
+## 1.6.0
+
+### Minor Changes
+
+- [#3325](https://github.com/bigcommerce/catalyst/pull/3325) [`ef210dd`](https://github.com/bigcommerce/catalyst/commit/ef210dde564a1c0ca3dc7822d6e07b34e57cbab1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Storefront Hosting setup no longer renames `proxy.ts` to `middleware.ts`. `@opennextjs/cloudflare` 1.20.15 bundles `proxy.ts` directly, so setup now pins it (up from 1.20.6) and `catalyst build` defaults to Wrangler 4.156.0.
+
+  Migration: projects set up by an older CLI keep their generated `middleware.ts` and continue to work. If `catalyst upgrade` brings `proxy.ts` back beside it, the CLI offers to delete `middleware.ts`; move any changes you made in it into `proxy.ts` first. `catalyst upgrade` now also stages the files it removes, `middleware.ts` and `instrumentation.ts`.
+
+### Patch Changes
+
+- [#3328](https://github.com/bigcommerce/catalyst/pull/3328) [`1eb332b`](https://github.com/bigcommerce/catalyst/commit/1eb332b856a3c9ac9a8965624f74850735447552) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst deploy` no longer crashes with `TypeError: terminated` when the deployment status stream disconnects. It reconnects until the deployment completes or fails, and no longer reports success when the stream closes before the deployment finishes.
+
+- [#3324](https://github.com/bigcommerce/catalyst/pull/3324) [`5328817`](https://github.com/bigcommerce/catalyst/commit/53288177cf771d77b451104dde54c8f14142c851) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst build` and `catalyst deploy --env-path <file>` now use only that file. A `.env.local` or `.env` on disk is no longer read by the build or baked into the deployed worker as a runtime fallback.
+
+  `catalyst deploy --env-path <file>` also sends the file's variables to the deployment, overriding values saved with `catalyst env add`. `--secret` still wins over both. Previously, saved values overrode the `--env-path` file at runtime.
+
+- [#3329](https://github.com/bigcommerce/catalyst/pull/3329) [`16d0c07`](https://github.com/bigcommerce/catalyst/commit/16d0c07392836cc077ebbb6ef254756b78d3b93f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Keep `instrumentation.ts` and `@vercel/otel` during Storefront Hosting setup when the hook already sends spans to Workers tracing, instead of prompting to remove them.
+
+- [#3322](https://github.com/bigcommerce/catalyst/pull/3322) [`3e5e3d5`](https://github.com/bigcommerce/catalyst/commit/3e5e3d50924ca2e8255fb3ade60ed7268221dcf8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - `catalyst channels update` now keeps a channel's custom checkout URL when the new storefront URL shares its main domain, instead of letting it fall back to the default channel's domain.
+
 ## 1.5.0
 
 ### Minor Changes

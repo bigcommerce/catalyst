@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -61,6 +62,8 @@ export const switchLocale = async (locale: string): Promise<void> => {
 
     revalidateTag(TAGS.cart, { expire: 0 });
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error('Error updating cart locale', error);
   }

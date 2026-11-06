@@ -1,6 +1,11 @@
 import { describe, expect, test } from 'vitest';
 
-import { mergeDeploymentSecrets, parseEnvAssignment, toDeploymentSecrets } from './env-config';
+import {
+  mergeDeploymentSecrets,
+  parseEnvAssignment,
+  toDeploymentSecrets,
+  toEnvFileSecrets,
+} from './env-config';
 
 describe('parseEnvAssignment', () => {
   test('parses a basic KEY=VALUE assignment', () => {
@@ -46,7 +51,29 @@ describe('toDeploymentSecrets', () => {
   });
 });
 
+describe('toEnvFileSecrets', () => {
+  test('skips empty values and names that are not valid env vars', () => {
+    expect(toEnvFileSecrets({ FOO: 'bar', EMPTY: '', 'my.key': 'x' })).toEqual([
+      { type: 'secret', key: 'FOO', value: 'bar' },
+    ]);
+  });
+});
+
 describe('mergeDeploymentSecrets', () => {
+  test('applies layers lowest precedence first, so later layers win', () => {
+    const merged = mergeDeploymentSecrets(
+      toDeploymentSecrets({ STORED: 'stored', SHARED: 'stored' }),
+      toDeploymentSecrets({ FILE: 'file', SHARED: 'file' }),
+      toDeploymentSecrets({ SHARED: 'flag' }),
+    );
+
+    expect(merged).toEqual([
+      { type: 'secret', key: 'STORED', value: 'stored' },
+      { type: 'secret', key: 'SHARED', value: 'flag' },
+      { type: 'secret', key: 'FILE', value: 'file' },
+    ]);
+  });
+
   test('merges both sets with flag secrets overriding persisted on conflict', () => {
     const persisted = toDeploymentSecrets({ PERSISTED_ONLY: 'keep', SHARED: 'stored' });
     const flagSecrets = toDeploymentSecrets({ SHARED: 'override', FLAG_ONLY: 'flag' });

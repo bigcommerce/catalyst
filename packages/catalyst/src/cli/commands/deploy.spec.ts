@@ -242,17 +242,17 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\n\n`,
                 ),
               );
               setTimeout(() => {
                 // Incomplete stream data
-                controller.enqueue(encoder.encode(`data: {"deployment_status":"in_progress",`));
+                controller.enqueue(encoder.encode(`data: {"deployment_status":"in_progress",\n\n`));
               }, 10);
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                    `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}\n\n`,
                   ),
                 );
                 controller.close();
@@ -285,6 +285,269 @@ describe('deployment and event streaming', () => {
     );
   });
 
+  const eventStream = (...events: string[]) =>
+    new HttpResponse(
+      new ReadableStream({
+        start(controller) {
+          events.forEach((event) =>
+            controller.enqueue(new TextEncoder().encode(`data: ${event}\n\n`)),
+          );
+          controller.close();
+        },
+      }),
+      { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+    );
+
+  const eventsUrl =
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/:deploymentUuid/events';
+
+  test('reconnects when the stream closes or drops before the deployment finishes', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        if (connections === 1) {
+          return eventStream(
+            `{"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+          );
+        }
+
+        if (connections === 2) {
+          return HttpResponse.error();
+        }
+
+        return eventStream(
+          `{"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}`,
+        );
+      }),
+    );
+
+    const hostname = await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(3);
+    expect(hostname).toBe('example.com');
+    expect(textHistory).toEqual([
+      'Fetching...',
+      'Processing...',
+      'Deployment completed successfully.',
+    ]);
+  });
+
+  test('reconnects when the server terminates the stream mid-read', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        if (connections === 1) {
+          return new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.error(new TypeError('terminated'));
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          );
+        }
+
+        return eventStream(
+          `{"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}`,
+        );
+      }),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(2);
+    expect(textHistory).toContain('Deployment completed successfully.');
+  });
+
+  test('times out if the deployment never finishes', async () => {
+    server.use(
+      http.get(eventsUrl, () =>
+        eventStream(
+          `{"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+        ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 0,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
+  test('fails when the deployment status is failed without an error code', async () => {
+    server.use(
+      http.get(eventsUrl, () =>
+        eventStream(
+          `{"deployment_status":"failed","deployment_uuid":"${deploymentUuid}","event":null}`,
+        ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Deployment failed.');
+  });
+
+  test('parses an event split across reads', async () => {
+    const frame = `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null,"deployment_hostnames":["example.com"]}\n\n`;
+
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.enqueue(new TextEncoder().encode(frame.slice(0, 40)));
+                setTimeout(() => {
+                  controller.enqueue(new TextEncoder().encode(frame.slice(40)));
+                  controller.close();
+                }, 10);
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    const hostname = await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(hostname).toBe('example.com');
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
+  test('parses CRLF-delimited events, including a CRLF split across reads', async () => {
+    const chunks = [
+      `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\r`,
+      '\n\r\n',
+      `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}\r\n\r\n`,
+    ];
+
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              async start(controller) {
+                await chunks.reduce(
+                  (previous, chunk) =>
+                    previous.then(async () => {
+                      controller.enqueue(new TextEncoder().encode(chunk));
+                      await new Promise((resolve) => setTimeout(resolve, 5));
+                    }),
+                  Promise.resolve(),
+                );
+                controller.close();
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(textHistory).toEqual([
+      'Fetching...',
+      'Processing...',
+      'Deployment completed successfully.',
+    ]);
+    expect(consola.warn).not.toHaveBeenCalled();
+  });
+
+  test('keeps a completed status when the stream drops afterwards', async () => {
+    let connections = 0;
+
+    server.use(
+      http.get(eventsUrl, () => {
+        connections += 1;
+
+        return new HttpResponse(
+          new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                new TextEncoder().encode(
+                  `data: {"deployment_status":"completed","deployment_uuid":"${deploymentUuid}","event":null}\n\n`,
+                ),
+              );
+              setTimeout(() => controller.error(new TypeError('terminated')), 10);
+            },
+          }),
+          { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+        );
+      }),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+      reconnectDelayMs: 0,
+    });
+
+    expect(connections).toBe(1);
+    expect(textHistory).toContain('Deployment completed successfully.');
+  });
+
+  test('times out while a stream stays open', async () => {
+    server.use(
+      http.get(
+        eventsUrl,
+        () =>
+          new HttpResponse(
+            new ReadableStream({
+              start(controller) {
+                controller.enqueue(
+                  new TextEncoder().encode(
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"deploying","progress":50}}\n\n`,
+                  ),
+                );
+              },
+            }),
+            { status: 200, headers: { 'Content-Type': 'text/event-stream' } },
+          ),
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 50,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
+  test('times out while the stream is still connecting', async () => {
+    server.use(
+      http.get(eventsUrl, async () => {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        return HttpResponse.text('');
+      }),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost, {
+        timeoutMs: 20,
+        reconnectDelayMs: 0,
+      }),
+    ).rejects.toThrow('Timed out waiting for the deployment to finish.');
+  });
+
   test('handles deployment errors', async () => {
     const encoder = new TextEncoder();
 
@@ -296,13 +559,13 @@ describe('deployment and event streaming', () => {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}\n\n`,
                 ),
               );
               setTimeout(() => {
                 controller.enqueue(
                   encoder.encode(
-                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}\n\n`,
                   ),
                 );
               }, 10);
@@ -496,7 +759,7 @@ test('passes --wrangler-version through to the build', async () => {
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3');
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, '4.24.3', undefined);
 });
 
 test('builds with the default Wrangler version when --wrangler-version is omitted', async () => {
@@ -515,7 +778,39 @@ test('builds with the default Wrangler version when --wrangler-version is omitte
     '--dry-run',
   ]);
 
-  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined);
+  expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, undefined);
+});
+
+test('passes the --env-path file to the build so only it is baked into the worker', async () => {
+  const envPath = join(tmpDir, '.env.staging');
+
+  await writeFile(envPath, 'DEPLOY_ENV_PATH_TEST=staging', 'utf-8');
+
+  try {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--api-host',
+      apiHost,
+      '--project-uuid',
+      projectUuid,
+      '--env-path',
+      '.env.staging',
+      '--dry-run',
+    ]);
+
+    expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, {
+      DEPLOY_ENV_PATH_TEST: 'staging',
+    });
+  } finally {
+    delete process.env.DEPLOY_ENV_PATH_TEST;
+    await rm(envPath);
+  }
 });
 
 test('rejects an invalid --wrangler-version value', async () => {
@@ -672,6 +967,63 @@ describe('persisted env vars', () => {
     expect(body?.environment_variables?.filter((e) => e.key === 'SHARED')).toHaveLength(1);
 
     config.delete('env');
+  });
+
+  test('--env-path overrides stored env vars, and --secret overrides both', async () => {
+    const config = getProjectConfig();
+    const envPath = join(tmpDir, '.env.staging');
+
+    config.set('projectUuid', projectUuid);
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+    config.set('env', { STORED_ONLY: 'keep', SHARED: 'stored', FILE_VS_FLAG: 'stored' });
+    await writeFile(envPath, 'SHARED=file\nFILE_VS_FLAG=file\nFILE_ONLY=file', 'utf-8');
+
+    let body: DeploymentBody | undefined;
+
+    server.use(
+      http.post(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments',
+        async ({ request }) => {
+          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+          body = (await request.json()) as DeploymentBody;
+
+          return HttpResponse.json({ data: { deployment_uuid: deploymentUuid } });
+        },
+      ),
+    );
+
+    try {
+      await program.parseAsync([
+        'node',
+        'catalyst',
+        'deploy',
+        '--api-host',
+        apiHost,
+        '--prebuilt',
+        '--env-path',
+        '.env.staging',
+        '--secret',
+        'FILE_VS_FLAG=flag',
+      ]);
+
+      expect(body?.environment_variables).toEqual([
+        { type: 'secret', key: 'STORED_ONLY', value: 'keep' },
+        { type: 'secret', key: 'SHARED', value: 'file' },
+        { type: 'secret', key: 'FILE_VS_FLAG', value: 'flag' },
+        { type: 'secret', key: 'FILE_ONLY', value: 'file' },
+        { type: 'plain_text', key: 'CATALYST_HOSTING', value: 'native' },
+      ]);
+      expect(consola.info).toHaveBeenCalledWith(
+        '--env-path overrides values saved with `catalyst env add`: SHARED',
+      );
+    } finally {
+      config.delete('env');
+      delete process.env.SHARED;
+      delete process.env.FILE_VS_FLAG;
+      delete process.env.FILE_ONLY;
+      await rm(envPath);
+    }
   });
 
   test('sends only the CATALYST_HOSTING marker when nothing is stored or passed', async () => {

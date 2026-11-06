@@ -3,6 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
@@ -164,6 +165,8 @@ export async function updateCustomer(
       lastResult: submission.reply(),
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

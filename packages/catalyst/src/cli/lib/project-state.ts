@@ -18,8 +18,7 @@ export interface ProjectState {
 
   // Derived signals — `isLinked` reflects intent (UUID registered via
   // `catalyst projects create` or commerce-hosting setup); `isTransformed`
-  // reflects on-disk readiness (middleware.ts swapped in, OpenNext dep
-  // installed). A deploy needs both, but `catalyst build` only cares about
+  // reflects on-disk readiness (OpenNext dep installed). A deploy needs both, but `catalyst build` only cares about
   // `isTransformed` so it can dispatch to OpenNext vs `next build`.
   isLinked: boolean;
   isTransformed: boolean;
@@ -52,7 +51,7 @@ export function getProjectState(cwd: string = process.cwd()): ProjectState {
     : false;
 
   const isLinked = Boolean(projectUuid);
-  const isTransformed = hasMiddleware && !hasProxy && hasOpenNextDep;
+  const isTransformed = hasOpenNextDep;
   const isFullySetUp = isLinked && isTransformed;
 
   return {

@@ -2,6 +2,7 @@
 
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { shippingActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
@@ -101,6 +102,8 @@ export const updateShippingInfo = async (
           };
         }
       } catch (error) {
+        rethrow(error);
+
         // eslint-disable-next-line no-console
         console.error(error);
 
@@ -141,6 +144,8 @@ export const updateShippingInfo = async (
           shippingOptionEntityId: submission.value.shippingOption,
         });
       } catch (error) {
+        rethrow(error);
+
         // eslint-disable-next-line no-console
         console.error(error);
 
