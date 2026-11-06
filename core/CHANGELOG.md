@@ -1,5 +1,35 @@
 # Changelog
 
+## 1.14.0
+
+### Minor Changes
+
+- [#3323](https://github.com/bigcommerce/catalyst/pull/3323) [`58fbb6e`](https://github.com/bigcommerce/catalyst/commit/58fbb6ecaafe36bf3510f49943e48ad6b822a120) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Show the products a pick list option adds to the cart under their parent line item, instead of hiding them. Each one keeps its pick list option's label and shows its own selected options, and its quantity only when it differs from the parent's. The parent's price already includes them, so they have no price of their own.
+
+  Migration: `CartLineItem` gains an optional `includedItems` array and the `Cart` section an optional `includedItemsLabel` prop. Add the `Cart.includedItems` message if you maintain your own translations.
+
+- [#3329](https://github.com/bigcommerce/catalyst/pull/3329) [`16d0c07`](https://github.com/bigcommerce/catalyst/commit/16d0c07392836cc077ebbb6ef254756b78d3b93f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Send OpenTelemetry spans to Cloudflare Workers tracing when running on Workers. `instrumentation.ts` now detects the Workers runtime and registers a bridge that hands spans from Next.js and `~/lib/otel/tracer` to the runtime's native tracing, instead of loading `@vercel/otel`, which fails on Workers. Other runtimes keep using `@vercel/otel`.
+
+  Migration: if you customized `instrumentation.ts`, keep your `registerOTel()` call behind the new Workers check and import `@vercel/otel` lazily, so it never loads on Workers.
+
+### Patch Changes
+
+- [#3319](https://github.com/bigcommerce/catalyst/pull/3319) [`f44387e`](https://github.com/bigcommerce/catalyst/commit/f44387e86f3d45e70671783934d08d157d1b4b57) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Initialize analytics providers before the first event. Events like `productViewed` fire from child effects that run before `AnalyticsProvider` calls `initialize()`, so the Google Analytics provider called `gtag` before it was defined.
+
+- [#3060](https://github.com/bigcommerce/catalyst/pull/3060) [`4793d51`](https://github.com/bigcommerce/catalyst/commit/4793d5136218b4ac37fed16ef37003c7469c3357) Thanks [@apostoliukG](https://github.com/apostoliukG)! - Keep the cart quantity column at a fixed width so long backorder/inventory messages wrap to the next line instead of stretching the column.
+
+- [#3317](https://github.com/bigcommerce/catalyst/pull/3317) [`a988a9c`](https://github.com/bigcommerce/catalyst/commit/a988a9c8fac5f00d450ff380b66b8c187ccd105d) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Include sub-categories when filtering by the Category facet on brand and search pages. Selecting a parent category previously returned no products when they were assigned only to its sub-categories, even though the facet's counts included them.
+
+- [#3318](https://github.com/bigcommerce/catalyst/pull/3318) [`e90ea0c`](https://github.com/bigcommerce/catalyst/commit/e90ea0c26a8aec8288d68294c49a90c6bb72e8df) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Hide the desktop filters column on product list pages when there are no filters, so products use the full width instead of leaving an empty column.
+
+- [#3325](https://github.com/bigcommerce/catalyst/pull/3325) [`ef210dd`](https://github.com/bigcommerce/catalyst/commit/ef210dde564a1c0ca3dc7822d6e07b34e57cbab1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade Next.js to 16.4.3, which `@opennextjs/cloudflare` 1.20.15 requires and which moves off the versions affected by the `next/og` vulnerability (CVE-2026-94545).
+
+- [#3320](https://github.com/bigcommerce/catalyst/pull/3320) [`a00008e`](https://github.com/bigcommerce/catalyst/commit/a00008e6029d144dcdb01639060424e37060288c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Rethrow Next.js redirects from server action `catch` blocks. When a session is invalidated, the GraphQL client redirects to sign out, but actions such as add to cart caught that redirect and showed it as a form error instead.
+
+- [#3326](https://github.com/bigcommerce/catalyst/pull/3326) [`d0ee559`](https://github.com/bigcommerce/catalyst/commit/d0ee559913e644624c1f78a82f92292b585d8d90) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#3296](https://github.com/bigcommerce/catalyst/pull/3296) [`b1a6cd8`](https://github.com/bigcommerce/catalyst/commit/b1a6cd8bdba92733cc542941c18f96f1393cb425) Thanks [@bookernath](https://github.com/bookernath)! - Add the `verify-catalyst` agent skill (`.agents/skills/verify-catalyst`), which drives the storefront in a real browser to prove UI changes and attaches screenshot, video, and trace evidence to pull requests. It works in the monorepo and in projects created with `create catalyst`, on macOS, Linux, and Windows.
+
 ## 1.13.1
 
 ### Patch Changes
