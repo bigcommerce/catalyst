@@ -168,6 +168,64 @@ describe('readBuildEnv', () => {
     }
   });
 
+  test('prefers a defined reference over its default, like loadBuildEnv', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.READ_ENV_REF = 'target';
+
+    try {
+      await writeFile(
+        join(tmpDir, '.env.staging'),
+        // eslint-disable-next-line no-template-curly-in-string
+        'READ_ENV_TEST=${READ_ENV_REF:-fallback}',
+        'utf-8',
+      );
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).READ_ENV_TEST).toBe('target');
+      expect(process.env.READ_ENV_TEST).toBeUndefined();
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test("follows the file's BIGCOMMERCE_STORE_HASH over an aliased shell store hash", async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.BIGCOMMERCE_STORE_HASH = 'old';
+    process.env.CATALYST_STORE_HASH = 'old';
+
+    try {
+      await writeFile(join(tmpDir, '.env.staging'), 'BIGCOMMERCE_STORE_HASH=new', 'utf-8');
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).CATALYST_STORE_HASH).toBe(
+        'new',
+      );
+      expect(process.env.CATALYST_STORE_HASH).toBe('old');
+    } finally {
+      delete process.env.BIGCOMMERCE_STORE_HASH;
+      delete process.env.CATALYST_STORE_HASH;
+      await cleanup();
+    }
+  });
+
+  test('keeps an explicit shell CATALYST_STORE_HASH', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.CATALYST_STORE_HASH = 'explicit';
+
+    try {
+      await writeFile(join(tmpDir, '.env.staging'), 'BIGCOMMERCE_STORE_HASH=new', 'utf-8');
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).CATALYST_STORE_HASH).toBe(
+        'explicit',
+      );
+    } finally {
+      delete process.env.BIGCOMMERCE_STORE_HASH;
+      delete process.env.CATALYST_STORE_HASH;
+      await cleanup();
+    }
+  });
+
   test('throws a UserActionableError when --env-path does not exist', () => {
     expect(() => readBuildEnv({ envPath: '.env.missing', cwd: '/nonexistent' })).toThrow(
       UserActionableError,
@@ -215,14 +273,5 @@ describe('applyEnvFileOptions', () => {
     applyEnvFileOptions(command, { CATALYST_PROJECT_UUID: 'from-file' });
 
     expect(command.opts().projectUuid).toBe('from-flag');
-  });
-
-  test('falls back to BIGCOMMERCE_STORE_HASH for the store hash', async () => {
-    const command = makeCommand();
-
-    await command.parseAsync([], { from: 'user' });
-    applyEnvFileOptions(command, { BIGCOMMERCE_STORE_HASH: 'from-file' });
-
-    expect(command.opts().storeHash).toBe('from-file');
   });
 });

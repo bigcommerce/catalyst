@@ -84,18 +84,21 @@ function readEnvFile(envFilePath: string, envPath: string): Record<string, strin
   }
 }
 
-// The environment `loadBuildEnv` would produce, without touching
-// `process.env`. Auto-loaded values are expanded here too, since only
-// Next.js expands them during the build.
+function stringEntries(env: NodeJS.ProcessEnv): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined),
+  );
+}
+
+// The environment `loadBuildEnv` would produce, without keeping changes to
+// `process.env`: dotenv-expand v10 only resolves references against it, so
+// expand against it and restore it after. Auto-loaded values are expanded
+// here too, since only Next.js expands them during the build.
 export function readBuildEnv({
   envPath,
   cwd = process.cwd(),
 }: LoadBuildEnvOptions): Record<string, string> {
-  const shell = Object.fromEntries(
-    Object.entries(process.env).filter(
-      (entry): entry is [string, string] => entry[1] !== undefined,
-    ),
-  );
+  const shell = stringEntries(process.env);
   const fileVars =
     envPath !== undefined
       ? readEnvFile(resolve(cwd, envPath), envPath)
@@ -106,26 +109,39 @@ export function readBuildEnv({
             .flatMap((file) => Object.entries(parse(readFileSync(file))))
             .filter(([key]) => !(key in shell)),
         );
-  const { parsed = {} } = expand({ parsed: { ...shell, ...fileVars }, ignoreProcessEnv: true });
 
-  return {
-    ...shell,
-    ...Object.fromEntries(Object.keys(fileVars).map((key) => [key, parsed[key] ?? ''])),
-  };
+  try {
+    Object.assign(process.env, fileVars);
+    expand({ parsed: { ...fileVars } });
+
+    const env = stringEntries(process.env);
+
+    // `program.ts` aliases CATALYST_STORE_HASH to the shell's
+    // BIGCOMMERCE_STORE_HASH; follow the file's value instead when it has one.
+    const aliased =
+      !('CATALYST_STORE_HASH' in shell) ||
+      shell.CATALYST_STORE_HASH === shell.BIGCOMMERCE_STORE_HASH;
+
+    if (aliased && !('CATALYST_STORE_HASH' in fileVars) && env.BIGCOMMERCE_STORE_HASH) {
+      env.CATALYST_STORE_HASH = env.BIGCOMMERCE_STORE_HASH;
+    }
+
+    return env;
+  } finally {
+    Object.keys(process.env)
+      .filter((key) => !(key in shell))
+      .forEach((key) => Reflect.deleteProperty(process.env, key));
+    Object.assign(process.env, shell);
+  }
 }
 
 // Commander resolves `.env()` option fallbacks (CATALYST_PROJECT_UUID, ...)
 // while parsing, before the action reads the env file. Re-resolve them from
 // `readBuildEnv` so values from the file apply. Flags still win.
 export function applyEnvFileOptions(command: Command, env: Record<string, string>): void {
-  const values: Record<string, string | undefined> = {
-    CATALYST_STORE_HASH: env.BIGCOMMERCE_STORE_HASH,
-    ...env,
-  };
-
   command.options.forEach((option) => {
     const key = option.attributeName();
-    const value = option.envVar ? values[option.envVar] : undefined;
+    const value = option.envVar ? env[option.envVar] : undefined;
 
     if (value && command.getOptionValueSource(key) !== 'cli') {
       command.setOptionValueWithSource(key, value, 'env');
