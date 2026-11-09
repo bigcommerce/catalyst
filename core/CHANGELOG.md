@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.14.0
+
+### Minor Changes
+
+- Pulls in changes from the `@bigcommerce/catalyst-core@1.14.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.14.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/45627f2180a1055ce2e8a4c30bea8dcd6f7d0e99/core/CHANGELOG.md#1140).
+
+### Patch Changes
+
+- [#3313](https://github.com/bigcommerce/catalyst/pull/3313) [`e969404`](https://github.com/bigcommerce/catalyst/commit/e969404e85034e32618a4c7fd242b4b4197352e7) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Sort the `ProductsCarousel` additional product IDs in the request URL so the same products always hit the same cache entry, regardless of their order in the editor.
+
 ## 1.13.1
 
 ### Patch Changes
