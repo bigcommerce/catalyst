@@ -251,6 +251,44 @@ describe('readBuildEnv', () => {
     }
   });
 
+  test('resolves references to other keys in the same file before defaults', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    try {
+      await writeFile(
+        join(tmpDir, '.env.staging'),
+        // eslint-disable-next-line no-template-curly-in-string
+        'READ_ENV_REF=2\nREAD_ENV_TEST=${READ_ENV_REF:-1}',
+        'utf-8',
+      );
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).READ_ENV_TEST).toBe('2');
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test('resolves a self-reference to the shell value', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.READ_ENV_TEST = 'from-shell';
+
+    try {
+      await writeFile(
+        join(tmpDir, '.env.staging'),
+        // eslint-disable-next-line no-template-curly-in-string
+        'READ_ENV_TEST=${READ_ENV_TEST:-fallback}',
+        'utf-8',
+      );
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).READ_ENV_TEST).toBe(
+        'from-shell',
+      );
+    } finally {
+      await cleanup();
+    }
+  });
+
   test('throws a UserActionableError when --env-path does not exist', () => {
     expect(() => readBuildEnv({ envPath: '.env.missing', cwd: '/nonexistent' })).toThrow(
       UserActionableError,

@@ -95,10 +95,15 @@ export function aliasStoreHash(): void {
 }
 
 // Expands `vars` into `process.env`, overriding existing values. dotenv-expand
-// keeps a value already in `process.env`, and a self-reference such as
-// `X=${X:-default}` preloaded there recurses forever, so drop the keys first.
+// resolves references against `process.env` first, so preload the values, but
+// not a self-reference such as `X=${X:-default}`: preloaded, it recurses
+// forever. Left out, it resolves to the shell value or the default.
 function expandOverriding(vars: Record<string, string>) {
-  Object.keys(vars).forEach((key) => Reflect.deleteProperty(process.env, key));
+  Object.entries(vars)
+    .filter(([key, value]) => !new RegExp(`\\$\\{?${key}(?!\\w)`).test(value))
+    .forEach(([key, value]) => {
+      process.env[key] = value;
+    });
 
   return expand({ parsed: vars });
 }
