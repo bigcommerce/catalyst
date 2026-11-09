@@ -35,16 +35,9 @@ jobs:
 
       # Keep the adapter version in sync with OPENNEXT_CLOUDFLARE_VERSION in
       # packages/catalyst/src/cli/lib/commerce-hosting.ts
-      - name: Install Catalyst CLI
-        run: pnpm add @bigcommerce/catalyst@alpha @opennextjs/cloudflare@1.20.6
+      - name: Install OpenNext adapter
+        run: pnpm add @opennextjs/cloudflare@1.20.15
         working-directory: core
-
-      - name: Convert proxy.ts to middleware.ts
-        working-directory: core
-        run: |
-          mv proxy.ts middleware.ts
-          sed -i 's/export const proxy/export const middleware/' middleware.ts
-          sed -i "s/export const config = {/export const config = {\n  runtime: 'experimental-edge',/" middleware.ts
 
       - name: Build monorepo packages
         run: pnpm --filter "./packages/*" build
@@ -57,8 +50,9 @@ jobs:
           BIGCOMMERCE_STOREFRONT_TOKEN: ${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }}
           BIGCOMMERCE_CHANNEL_ID: ${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }}
 
+      # The CLI built from this commit, so its project checks match this core.
       - name: Build
-        run: pnpm exec catalyst build
+        run: node ../packages/catalyst/dist/cli.js build
         working-directory: core
         env:
           # CLI env vars
@@ -71,7 +65,7 @@ jobs:
 
       - name: Deploy
         run: |
-          pnpm exec catalyst deploy --prebuilt \
+          node ../packages/catalyst/dist/cli.js deploy --prebuilt \
             --secret BIGCOMMERCE_STORE_HASH=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_STORE_HASH }} \
             --secret BIGCOMMERCE_STOREFRONT_TOKEN=${{ secrets.NATIVE_HOSTING_BIGCOMMERCE_STOREFRONT_TOKEN }} \
             --secret BIGCOMMERCE_CHANNEL_ID=${{ vars.NATIVE_HOSTING_BIGCOMMERCE_CHANNEL_ID }} \

@@ -187,6 +187,7 @@ Examples:
           channelId: options.channelId,
           hostname: options.hostname,
           diagnoseCheckout: !offersCheckout,
+          preserveCheckoutUrl: !touchesCheckout,
         }));
       } catch (error) {
         if (error instanceof NoLinkedProjectError) {

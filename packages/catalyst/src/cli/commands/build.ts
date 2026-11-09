@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { valid as validSemver } from 'semver';
 
 import { loadBuildEnv } from '../lib/build-env';
-import { reconcileOpenNextVersion } from '../lib/commerce-hosting';
+import { reconcileOpenNextVersion, removeLegacyMiddleware } from '../lib/commerce-hosting';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { installDependencies } from '../lib/install-dependencies';
@@ -16,7 +16,7 @@ import { assertRequiredBuildEnv } from '../lib/required-build-env';
 import { envPathOption } from '../lib/shared-options';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-export const WRANGLER_VERSION = '4.128.0';
+export const WRANGLER_VERSION = '4.156.0';
 
 // npm dist-tags (e.g. latest, beta) aren't valid semver, so they're allowed
 // through a narrow character allowlist. This also guards the value before
@@ -34,9 +34,16 @@ export const parseWranglerVersion = (value: string): string => {
   return value;
 };
 
+// Next.js skips reading `.env*` files from disk when this is set. With
+// `--env-path`, the file is already in process.env and should be the only
+// source, so a stray `.env.local` can't fill in keys it leaves out.
+export const skipNextEnvFiles = (envFileVars?: Record<string, string>) =>
+  envFileVars ? { __NEXT_PROCESSED_ENV: 'true' } : {};
+
 export async function buildCatalystProject(
   projectUuid: string,
   wranglerVersion: string = WRANGLER_VERSION,
+  envFileVars?: Record<string, string>,
 ): Promise<void> {
   // Fail fast with an actionable message if the vars the build reads aren't
   // loaded — otherwise the missing values surface as a raw stack trace deep in
@@ -44,6 +51,8 @@ export async function buildCatalystProject(
   assertRequiredBuildEnv();
 
   const coreDir = process.cwd();
+
+  await removeLegacyMiddleware(coreDir);
 
   // The build invokes the project's own adapter, so offer to move a stale pin
   // before compiling against it. Reinstall when it moves.
@@ -100,8 +109,23 @@ export async function buildCatalystProject(
     {
       stdout: ['pipe', 'inherit'],
       cwd: coreDir,
+      env: skipNextEnvFiles(envFileVars),
     },
   );
+
+  // OpenNext bakes the on-disk `.env*` files into the worker as runtime
+  // fallbacks and ignores `--env-path`. Swap in the `--env-path` file before
+  // Wrangler bundles the worker.
+  if (envFileVars) {
+    const vars = JSON.stringify(envFileVars);
+
+    await writeFile(
+      join(openNextOutDir, 'cloudflare', 'next-env.mjs'),
+      ['production', 'development', 'test']
+        .map((mode) => `export const ${mode} = ${vars};\n`)
+        .join(''),
+    );
+  }
 
   // Workers Assets serves `/_next/static/*` directly, bypassing the Next.js
   // server that would normally set the immutable Cache-Control on it. Its
@@ -179,7 +203,7 @@ Examples:
     // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
     // env file(s) before building so both the build and any pre-build checks
     // see them.
-    loadBuildEnv({ envPath: options.envPath });
+    const envFileVars = loadBuildEnv({ envPath: options.envPath });
 
     // Project must be transformed (middleware swapped in, OpenNext dep installed)
     // before the OpenNext build pipeline can run. If it isn't, fall through to
@@ -198,6 +222,7 @@ Examples:
       await execa('pnpm', ['exec', 'next', 'build'], {
         stdio: 'inherit',
         cwd: process.cwd(),
+        env: skipNextEnvFiles(envFileVars),
       });
 
       return;
@@ -212,5 +237,5 @@ Examples:
       );
     }
 
-    await buildCatalystProject(projectUuid, options.wranglerVersion);
+    await buildCatalystProject(projectUuid, options.wranglerVersion, envFileVars);
   });

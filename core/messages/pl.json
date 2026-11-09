@@ -426,6 +426,7 @@
         "cartCombined": "Zauważyliśmy, że w poprzednim koszyku były zapisane produkty, więc dodaliśmy je do bieżącego koszyka.",
         "cartRestored": "Dodano produkty do koszyka na innym urządzeniu. Przywróciliśmy koszyk tutaj, aby umożliwić kontynuowanie zakupów.",
         "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
+        "includedItems": "W zestawie",
         "originalPrice": "Original price was {price}.",
         "currentPrice": "Current price is {price}.",
         "quantityReadyToShip": "{quantity, number} ready to ship",

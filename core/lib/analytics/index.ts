@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from 'uuid';
 
-import type { AnalyticsConfig, Analytics as IAnalytics } from './types';
+import type { AnalyticsConfig, AnalyticsProvider, Analytics as IAnalytics } from './types';
 
 export class Analytics implements IAnalytics {
   static #instance: Analytics | null = null;
@@ -8,6 +8,8 @@ export class Analytics implements IAnalytics {
   readonly cart = this.bindCartEvents();
   readonly navigation = this.bindNavigationEvents();
   readonly consent = this.bindConsentEvents();
+
+  #initializedProviders = new Set<AnalyticsProvider>();
 
   constructor(private readonly config: AnalyticsConfig) {
     if (!Analytics.#instance) {
@@ -17,16 +19,35 @@ export class Analytics implements IAnalytics {
     return Analytics.#instance;
   }
 
+  // Child components fire events from effects that run before the provider's own effect calls
+  // this, so events also initialize providers. A provider counts as ready only once its
+  // initialize() succeeds, so a failure is retried on the next event.
   initialize() {
-    this.config.providers.forEach((provider) => {
-      provider.initialize();
+    this.readyProviders();
+  }
+
+  private readyProviders() {
+    return this.config.providers.filter((provider) => {
+      if (this.#initializedProviders.has(provider)) return true;
+
+      try {
+        provider.initialize();
+        this.#initializedProviders.add(provider);
+
+        return true;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to initialize analytics provider', error);
+
+        return false;
+      }
     });
   }
 
   private bindCartEvents() {
     return {
       cartViewed: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.cart.cartViewed(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),
@@ -34,7 +55,7 @@ export class Analytics implements IAnalytics {
         });
       },
       productAdded: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.cart.productAdded(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),
@@ -42,7 +63,7 @@ export class Analytics implements IAnalytics {
         });
       },
       productRemoved: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.cart.productRemoved(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),
@@ -55,7 +76,7 @@ export class Analytics implements IAnalytics {
   private bindNavigationEvents() {
     return {
       categoryViewed: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.navigation.categoryViewed(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),
@@ -63,7 +84,7 @@ export class Analytics implements IAnalytics {
         });
       },
       productViewed: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.navigation.productViewed(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),
@@ -76,7 +97,7 @@ export class Analytics implements IAnalytics {
   private bindConsentEvents() {
     return {
       consentUpdated: (payload) => {
-        this.config.providers.forEach((provider) => {
+        this.readyProviders().forEach((provider) => {
           provider.consent.consentUpdated(payload, {
             channelId: this.config.channelId,
             eventUuid: uuidV4(),

@@ -3,6 +3,7 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { unstable_rethrow as rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/primitives/inline-email-form/schema';
@@ -96,6 +97,8 @@ export const subscribe = async (
       successMessage: t('subscribedToNewsletter'),
     };
   } catch (error) {
+    rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 

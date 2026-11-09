@@ -2,12 +2,19 @@ import { select } from '@inquirer/prompts';
 
 import {
   type Channel,
+  type ChannelSiteDetails,
   fetchAvailableChannels,
   findChannelSiteUrl,
   getChannelSite,
+  updateChannelCheckoutUrl,
   updateChannelSiteUrl,
 } from './channels';
-import { warnOnCrossDomainCheckout } from './checkout-url';
+import {
+  hostnameOf,
+  isManagedHostingHostname,
+  sharesMainDomain,
+  warnOnCrossDomainCheckout,
+} from './checkout-url';
 import { selectOrCreateInfrastructureProject } from './commerce-hosting';
 import { consola } from './logger';
 import { fetchProjects, type ProjectListItem } from './project';
@@ -31,6 +38,23 @@ export interface ChannelSiteFlowOptions {
   preferHostname?: string;
   // Warn if checkout is left on another domain. Off when the caller offers a fix next.
   diagnoseCheckout?: boolean;
+  // Put back a checkout URL the site URL update drops. Off when the caller sets
+  // or removes the checkout URL itself.
+  preserveCheckoutUrl?: boolean;
+}
+
+// The custom checkout URL to restore after moving the site URL to `hostname`:
+// one on the same main domain still works there. A managed-zone `c.` hostname
+// belongs to its old deployment hostname, so it is left for the managed offer.
+function preservableCheckoutUrl(site: ChannelSiteDetails, hostname: string): string | undefined {
+  if (!site.isCheckoutUrlCustomized) return undefined;
+
+  const checkoutUrl = findChannelSiteUrl(site, 'checkout');
+  const checkoutHost = checkoutUrl ? hostnameOf(checkoutUrl) : undefined;
+
+  if (!checkoutUrl || !checkoutHost || isManagedHostingHostname(checkoutHost)) return undefined;
+
+  return sharesMainDomain(checkoutHost, hostname) ? checkoutUrl : undefined;
 }
 
 async function resolveProject(options: ChannelSiteFlowOptions): Promise<ProjectListItem> {
@@ -176,6 +200,31 @@ export async function runChannelSiteUrlFlow(
     );
 
     consola.success(`Updated channel ${channelLabel} site URL to ${siteUrl}.`);
+
+    const checkoutUrl =
+      current && options.preserveCheckoutUrl !== false
+        ? preservableCheckoutUrl(current, hostnameOf(siteUrl) ?? hostname)
+        : undefined;
+
+    if (checkoutUrl) {
+      try {
+        await updateChannelCheckoutUrl(
+          channel.id,
+          checkoutUrl,
+          options.storeHash,
+          options.accessToken,
+          options.apiHost,
+        );
+
+        consola.success(`Kept channel ${channelLabel} checkout URL ${checkoutUrl}.`);
+      } catch {
+        // The site URL write succeeded, so don't fail the command over it.
+        consola.warn(`Couldn't restore channel ${channelLabel} checkout URL ${checkoutUrl}.`);
+        consola.log(
+          `  catalyst channels update --channel-id ${channel.id} --checkout-url ${checkoutUrl}`,
+        );
+      }
+    }
   }
 
   // Moving the site URL is when checkout is most likely left behind. The PUT

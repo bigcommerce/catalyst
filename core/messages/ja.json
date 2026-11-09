@@ -426,6 +426,7 @@
         "cartCombined": "以前のカートに商品が保存されていたので、それを現在のカートに追加しました。",
         "cartRestored": "別のデバイスでカートに商品が追加されていたため、中断されたところからお買い物を再開できるよう、こちらにカートの内容を復元しました。",
         "cartUpdateInProgress": "カートの更新が進行中です。このページを離れてもよろしいですか?変更内容が失われる可能性があります。",
+        "includedItems": "含まれる",
         "originalPrice": "元の価格は{price}でした。",
         "currentPrice": "現在の価格は{price}です。",
         "quantityReadyToShip": "{quantity, number} 個、発送準備完了",
