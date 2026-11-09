@@ -41,7 +41,7 @@ export const projectUuidOption = () =>
 export const envPathOption = () =>
   new Option(
     '--env-path <path>',
-    'Path to an environment file to load for the build (relative to the current working directory). When omitted, .env.local and .env are auto-loaded from the current directory. Only storefront variables are read from it: CLI options such as --project-uuid are not. Other commands never load env files.',
+    'Path to an environment file to load (relative to the current working directory). Its variables are used by the build and the deployed storefront. When omitted, .env.local and .env are auto-loaded from the current directory. CLI options such as --project-uuid are not read from it. Other commands never load env files.',
   );
 
 export const resolveProjectUuid = (options: { projectUuid?: string }) => {
