@@ -289,6 +289,22 @@ describe('readBuildEnv', () => {
     }
   });
 
+  test('keeps an escaped self-reference literal', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.READ_ENV_TEST = 'from-shell';
+
+    try {
+      await writeFile(join(tmpDir, '.env.staging'), 'READ_ENV_TEST=\\$READ_ENV_TEST', 'utf-8');
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).READ_ENV_TEST).toBe(
+        '$READ_ENV_TEST',
+      );
+    } finally {
+      await cleanup();
+    }
+  });
+
   test('throws a UserActionableError when --env-path does not exist', () => {
     expect(() => readBuildEnv({ envPath: '.env.missing', cwd: '/nonexistent' })).toThrow(
       UserActionableError,

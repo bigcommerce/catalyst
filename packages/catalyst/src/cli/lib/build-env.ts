@@ -100,7 +100,7 @@ export function aliasStoreHash(): void {
 // forever. Left out, it resolves to the shell value or the default.
 function expandOverriding(vars: Record<string, string>) {
   Object.entries(vars)
-    .filter(([key, value]) => !new RegExp(`\\$\\{?${key}(?!\\w)`).test(value))
+    .filter(([key, value]) => !new RegExp(`(?<!\\\\)\\$\\{?${key}(?!\\w)`).test(value))
     .forEach(([key, value]) => {
       process.env[key] = value;
     });
