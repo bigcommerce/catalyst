@@ -9,13 +9,13 @@ export const DEFAULT_API_HOST = 'api.bigcommerce.com';
 export const storeHashOption = () =>
   new Option(
     '--store-hash <hash>',
-    'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from .bigcommerce/project.json or .env when not provided.',
+    'BigCommerce store hash. Can be found in the URL of your store Control Panel. Read from CATALYST_STORE_HASH or .bigcommerce/project.json when not provided.',
   ).env('CATALYST_STORE_HASH');
 
 export const accessTokenOption = () =>
   new Option(
     '--access-token <token>',
-    'BigCommerce access token. Can be found after creating a store-level API account. Read from .bigcommerce/project.json or .env when not provided.',
+    'BigCommerce access token. Can be found after creating a store-level API account. Read from CATALYST_ACCESS_TOKEN or .bigcommerce/project.json when not provided.',
   ).env('CATALYST_ACCESS_TOKEN');
 
 export const apiHostOption = () =>
@@ -35,13 +35,13 @@ export const loginUrlOption = () =>
 export const projectUuidOption = () =>
   new Option(
     '--project-uuid <uuid>',
-    'BigCommerce infrastructure project UUID. Read from .bigcommerce/project.json or .env when not provided.',
+    'BigCommerce infrastructure project UUID. Read from CATALYST_PROJECT_UUID or .bigcommerce/project.json when not provided.',
   ).env('CATALYST_PROJECT_UUID');
 
 export const envPathOption = () =>
   new Option(
     '--env-path <path>',
-    'Path to an environment file to load for the build (relative to the current working directory). When omitted, .env.local and .env are auto-loaded from the current directory. Other commands never load env files.',
+    'Path to an environment file to load for the build (relative to the current working directory). When omitted, .env.local and .env are auto-loaded from the current directory. Only storefront variables are read from it: CLI options such as --project-uuid are not. Other commands never load env files.',
   );
 
 export const resolveProjectUuid = (options: { projectUuid?: string }) => {
