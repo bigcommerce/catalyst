@@ -4,7 +4,7 @@ import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { valid as validSemver } from 'semver';
 
-import { applyEnvFileOptions, loadBuildEnv } from '../lib/build-env';
+import { applyEnvFileOptions, loadBuildEnv, readBuildEnv } from '../lib/build-env';
 import { reconcileOpenNextVersion, removeLegacyMiddleware } from '../lib/commerce-hosting';
 import { detectProjectPackageManager } from '../lib/detect-package-manager';
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -203,9 +203,9 @@ Examples:
     // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
     // env file(s) before building so both the build and any pre-build checks
     // see them.
-    const envFileVars = loadBuildEnv({ envPath: options.envPath });
+    applyEnvFileOptions(command, readBuildEnv({ envPath: options.envPath }));
 
-    applyEnvFileOptions(command);
+    const envFileVars = loadBuildEnv({ envPath: options.envPath });
 
     // Project must be transformed (middleware swapped in, OpenNext dep installed)
     // before the OpenNext build pipeline can run. If it isn't, fall through to

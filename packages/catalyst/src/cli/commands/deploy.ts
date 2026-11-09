@@ -8,7 +8,7 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { assertAuthorized } from '../lib/auth-errors';
-import { applyEnvFileOptions, loadBuildEnv } from '../lib/build-env';
+import { applyEnvFileOptions, loadBuildEnv, readBuildEnv } from '../lib/build-env';
 import { runChannelCheckoutUrlFlow } from '../lib/channel-checkout-url-flow';
 import { runChannelSiteUrlFlow } from '../lib/channel-site-flow';
 import {
@@ -509,21 +509,15 @@ export const fetchProject = async (
   return data.find((project) => project.uuid === projectUuid);
 };
 
-// Load the env file before resolving config so its CATALYST_* values pick the
-// store and project. `--prebuilt` builds nothing, so it only reads an explicit
-// file.
-function loadDeployEnv(
+// Resolve CATALYST_* options from the env file before using them. `--prebuilt`
+// builds nothing, so it only reads an explicit file.
+function applyDeployEnvOptions(
   options: { prebuilt?: boolean; envPath?: string },
   command: Command,
-): Record<string, string> | undefined {
-  const envFileVars =
-    options.prebuilt && options.envPath === undefined
-      ? undefined
-      : loadBuildEnv({ envPath: options.envPath });
-
-  applyEnvFileOptions(command);
-
-  return envFileVars;
+): void {
+  if (!options.prebuilt || options.envPath !== undefined) {
+    applyEnvFileOptions(command, readBuildEnv({ envPath: options.envPath }));
+  }
 }
 
 export const deploy = new Command('deploy')
@@ -576,7 +570,7 @@ Example:
   )
   .addOption(envPathOption())
   .action(async (options, command: Command) => {
-    const envFileVars = loadDeployEnv(options, command);
+    applyDeployEnvOptions(options, command);
 
     const config = getProjectConfig();
     const apiHost = resolveApiHost(options, config);
@@ -682,6 +676,8 @@ Example:
       }
     }
 
+    let envFileVars: Record<string, string> | undefined;
+
     if (options.prebuilt) {
       const distDir = join(process.cwd(), '.bigcommerce', 'dist');
 
@@ -702,7 +698,17 @@ Example:
       }
 
       consola.info('Using existing build output (--prebuilt).');
+
+      // Nothing is built, but `--env-path` still sets the runtime values below.
+      if (options.envPath !== undefined) {
+        envFileVars = loadBuildEnv({ envPath: options.envPath });
+      }
     } else {
+      // The build reads storefront env vars (BIGCOMMERCE_*). Load them from the
+      // env file(s) before building so both the build and any pre-build checks
+      // see them. Skipped for --prebuilt above, which doesn't run the build.
+      envFileVars = loadBuildEnv({ envPath: options.envPath });
+
       await buildCatalystProject(projectUuid, options.wranglerVersion, envFileVars);
     }
 

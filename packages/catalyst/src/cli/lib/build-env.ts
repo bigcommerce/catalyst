@@ -1,8 +1,8 @@
 import type { Command } from 'commander';
 import { colorize } from 'consola/utils';
-import { config } from 'dotenv';
+import { config, parse } from 'dotenv';
 import { expand } from 'dotenv-expand';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 import { UserActionableError } from './errors';
@@ -38,24 +38,13 @@ export function loadBuildEnv({
 }: LoadBuildEnvOptions): Record<string, string> | undefined {
   if (envPath !== undefined) {
     const envFilePath = resolve(cwd, envPath);
-    const result = config({ path: envFilePath, override: true });
+    const fileVars = readEnvFile(envFilePath, envPath);
 
-    if (result.error) {
-      const errCode =
-        'code' in result.error && typeof result.error.code === 'string'
-          ? result.error.code
-          : undefined;
-      const message =
-        errCode === 'ENOENT'
-          ? `Env file not found: ${envFilePath}`
-          : `Failed to load --env-path ${envPath}: ${result.error.message}`;
-
-      throw new UserActionableError(message);
-    }
+    Object.assign(process.env, fileVars);
 
     // Next.js won't read env files (and so won't expand `$VAR` references) when
     // `--env-path` is given, so expand them here, matching what it would do.
-    const { parsed = {} } = expand({ parsed: result.parsed ?? {} });
+    const { parsed = {} } = expand({ parsed: fileVars });
 
     consola.log(colorize('cyanBright', `Loaded environment variables from ${envFilePath}\n`));
 
@@ -82,17 +71,61 @@ export function loadBuildEnv({
   return undefined;
 }
 
-// Commander resolves `.env()` option fallbacks (CATALYST_PROJECT_UUID, ...)
-// while parsing, before the action loads the env file. Re-resolve them after
-// `loadBuildEnv` so values from the file apply. Flags still win.
-export function applyEnvFileOptions(command: Command): void {
-  if (!process.env.CATALYST_STORE_HASH && process.env.BIGCOMMERCE_STORE_HASH) {
-    process.env.CATALYST_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
+function readEnvFile(envFilePath: string, envPath: string): Record<string, string> {
+  try {
+    return parse(readFileSync(envFilePath));
+  } catch (error) {
+    const message =
+      error instanceof Error && 'code' in error && error.code === 'ENOENT'
+        ? `Env file not found: ${envFilePath}`
+        : `Failed to load --env-path ${envPath}: ${error instanceof Error ? error.message : String(error)}`;
+
+    throw new UserActionableError(message);
   }
+}
+
+// The environment `loadBuildEnv` would produce, without touching
+// `process.env`. Auto-loaded values are expanded here too, since only
+// Next.js expands them during the build.
+export function readBuildEnv({
+  envPath,
+  cwd = process.cwd(),
+}: LoadBuildEnvOptions): Record<string, string> {
+  const shell = Object.fromEntries(
+    Object.entries(process.env).filter(
+      (entry): entry is [string, string] => entry[1] !== undefined,
+    ),
+  );
+  const fileVars =
+    envPath !== undefined
+      ? readEnvFile(resolve(cwd, envPath), envPath)
+      : Object.fromEntries(
+          AUTO_ENV_FILES.toReversed()
+            .map((file) => resolve(cwd, file))
+            .filter((file) => existsSync(file))
+            .flatMap((file) => Object.entries(parse(readFileSync(file))))
+            .filter(([key]) => !(key in shell)),
+        );
+  const { parsed = {} } = expand({ parsed: { ...shell, ...fileVars }, ignoreProcessEnv: true });
+
+  return {
+    ...shell,
+    ...Object.fromEntries(Object.keys(fileVars).map((key) => [key, parsed[key] ?? ''])),
+  };
+}
+
+// Commander resolves `.env()` option fallbacks (CATALYST_PROJECT_UUID, ...)
+// while parsing, before the action reads the env file. Re-resolve them from
+// `readBuildEnv` so values from the file apply. Flags still win.
+export function applyEnvFileOptions(command: Command, env: Record<string, string>): void {
+  const values: Record<string, string | undefined> = {
+    CATALYST_STORE_HASH: env.BIGCOMMERCE_STORE_HASH,
+    ...env,
+  };
 
   command.options.forEach((option) => {
     const key = option.attributeName();
-    const value = option.envVar ? process.env[option.envVar] : undefined;
+    const value = option.envVar ? values[option.envVar] : undefined;
 
     if (value && command.getOptionValueSource(key) !== 'cli') {
       command.setOptionValueWithSource(key, value, 'env');

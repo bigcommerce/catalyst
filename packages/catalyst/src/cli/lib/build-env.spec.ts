@@ -3,7 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
 
-import { applyEnvFileOptions, loadBuildEnv } from './build-env';
+import { applyEnvFileOptions, loadBuildEnv, readBuildEnv } from './build-env';
 import { UserActionableError } from './errors';
 import { mkTempDir } from './mk-temp-dir';
 
@@ -110,6 +110,71 @@ describe('loadBuildEnv', () => {
   });
 });
 
+describe('readBuildEnv', () => {
+  afterEach(() => {
+    delete process.env.READ_ENV_TEST;
+    delete process.env.READ_ENV_REF;
+  });
+
+  test('lets an explicit --env-path override the shell, without touching process.env', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.READ_ENV_TEST = 'from-shell';
+
+    try {
+      await writeFile(join(tmpDir, '.env.staging'), 'READ_ENV_TEST=from-file', 'utf-8');
+
+      expect(readBuildEnv({ envPath: '.env.staging', cwd: tmpDir }).READ_ENV_TEST).toBe(
+        'from-file',
+      );
+      expect(process.env.READ_ENV_TEST).toBe('from-shell');
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test('keeps the shell over auto-loaded files, and .env.local over .env', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    process.env.READ_ENV_TEST = 'from-shell';
+
+    try {
+      await writeFile(join(tmpDir, '.env'), 'READ_ENV_TEST=env\nREAD_ENV_REF=env', 'utf-8');
+      await writeFile(join(tmpDir, '.env.local'), 'READ_ENV_REF=local', 'utf-8');
+
+      expect(readBuildEnv({ cwd: tmpDir })).toMatchObject({
+        READ_ENV_TEST: 'from-shell',
+        READ_ENV_REF: 'local',
+      });
+      expect(process.env.READ_ENV_REF).toBeUndefined();
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test('expands references in auto-loaded files', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    try {
+      await writeFile(
+        join(tmpDir, '.env.local'),
+        'READ_ENV_REF=abc\nREAD_ENV_TEST=$READ_ENV_REF',
+        'utf-8',
+      );
+
+      expect(readBuildEnv({ cwd: tmpDir }).READ_ENV_TEST).toBe('abc');
+    } finally {
+      await cleanup();
+    }
+  });
+
+  test('throws a UserActionableError when --env-path does not exist', () => {
+    expect(() => readBuildEnv({ envPath: '.env.missing', cwd: '/nonexistent' })).toThrow(
+      UserActionableError,
+    );
+  });
+});
+
 describe('applyEnvFileOptions', () => {
   const makeCommand = () =>
     new Command('test')
@@ -121,16 +186,13 @@ describe('applyEnvFileOptions', () => {
 
   afterEach(() => {
     delete process.env.CATALYST_PROJECT_UUID;
-    delete process.env.CATALYST_STORE_HASH;
-    delete process.env.BIGCOMMERCE_STORE_HASH;
   });
 
-  test('applies env values loaded after parsing', async () => {
+  test('applies values from the env file', async () => {
     const command = makeCommand();
 
     await command.parseAsync([], { from: 'user' });
-    process.env.CATALYST_PROJECT_UUID = 'from-file';
-    applyEnvFileOptions(command);
+    applyEnvFileOptions(command, { CATALYST_PROJECT_UUID: 'from-file' });
 
     expect(command.opts()).toEqual({ projectUuid: 'from-file' });
   });
@@ -141,8 +203,7 @@ describe('applyEnvFileOptions', () => {
     const command = makeCommand();
 
     await command.parseAsync([], { from: 'user' });
-    process.env.CATALYST_PROJECT_UUID = 'from-file';
-    applyEnvFileOptions(command);
+    applyEnvFileOptions(command, { CATALYST_PROJECT_UUID: 'from-file' });
 
     expect(command.opts().projectUuid).toBe('from-file');
   });
@@ -151,8 +212,7 @@ describe('applyEnvFileOptions', () => {
     const command = makeCommand();
 
     await command.parseAsync(['--project-uuid', 'from-flag'], { from: 'user' });
-    process.env.CATALYST_PROJECT_UUID = 'from-file';
-    applyEnvFileOptions(command);
+    applyEnvFileOptions(command, { CATALYST_PROJECT_UUID: 'from-file' });
 
     expect(command.opts().projectUuid).toBe('from-flag');
   });
@@ -161,8 +221,7 @@ describe('applyEnvFileOptions', () => {
     const command = makeCommand();
 
     await command.parseAsync([], { from: 'user' });
-    process.env.BIGCOMMERCE_STORE_HASH = 'from-file';
-    applyEnvFileOptions(command);
+    applyEnvFileOptions(command, { BIGCOMMERCE_STORE_HASH: 'from-file' });
 
     expect(command.opts().storeHash).toBe('from-file');
   });

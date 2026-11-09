@@ -34,6 +34,7 @@ vi.mock('node:fs/promises', () => ({
 vi.mock('../lib/build-env', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../lib/build-env')>()),
   loadBuildEnv: vi.fn(),
+  readBuildEnv: vi.fn(() => ({})),
 }));
 
 vi.mock('../lib/wrangler-config', () => ({
