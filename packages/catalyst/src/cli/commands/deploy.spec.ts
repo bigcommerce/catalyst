@@ -1138,6 +1138,25 @@ describe('--prebuilt flag', () => {
     expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
   });
 
+  test('deploys to the CATALYST_PROJECT_UUID in an auto-loaded .env.local', async () => {
+    const config = getProjectConfig();
+    const envPath = join(tmpDir, '.env.local');
+
+    config.set('projectUuid', '00000000-0000-0000-0000-000000000000');
+    config.set('storeHash', storeHash);
+    config.set('accessToken', accessToken);
+    await writeFile(envPath, `CATALYST_PROJECT_UUID=${projectUuid}`, 'utf-8');
+
+    try {
+      await program.parseAsync(['node', 'catalyst', 'deploy', '--prebuilt', '--dry-run']);
+
+      expect(consola.warn).not.toHaveBeenCalledWith(expect.stringContaining('no longer exists'));
+      expect(process.env.CATALYST_PROJECT_UUID).toBeUndefined();
+    } finally {
+      await rm(envPath);
+    }
+  });
+
   test('fails when dist directory is missing', async () => {
     const [missingDistDir, missingDistCleanup] = await mkTempDir();
     const resolvedDir = await realpath(missingDistDir);

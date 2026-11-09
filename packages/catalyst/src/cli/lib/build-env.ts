@@ -84,6 +84,18 @@ function readEnvFile(envFilePath: string, envPath: string): Record<string, strin
   }
 }
 
+// Whether `aliasStoreHash` set CATALYST_STORE_HASH, as opposed to the user.
+export const storeHashAlias = { applied: false };
+
+// CATALYST_STORE_HASH falls back to BIGCOMMERCE_STORE_HASH so freshly-scaffolded
+// projects work without duplicating the same value under two names.
+export function aliasStoreHash(): void {
+  if (!process.env.CATALYST_STORE_HASH && process.env.BIGCOMMERCE_STORE_HASH) {
+    process.env.CATALYST_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
+    storeHashAlias.applied = true;
+  }
+}
+
 function stringEntries(env: NodeJS.ProcessEnv): Record<string, string> {
   return Object.fromEntries(
     Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined),
@@ -116,11 +128,9 @@ export function readBuildEnv({
 
     const env = stringEntries(process.env);
 
-    // `program.ts` aliases CATALYST_STORE_HASH to the shell's
-    // BIGCOMMERCE_STORE_HASH; follow the file's value instead when it has one.
-    const aliased =
-      !('CATALYST_STORE_HASH' in shell) ||
-      shell.CATALYST_STORE_HASH === shell.BIGCOMMERCE_STORE_HASH;
+    // Follow the file's BIGCOMMERCE_STORE_HASH unless CATALYST_STORE_HASH was
+    // set by the user rather than by `aliasStoreHash`.
+    const aliased = !('CATALYST_STORE_HASH' in shell) || storeHashAlias.applied;
 
     if (aliased && !('CATALYST_STORE_HASH' in fileVars) && env.BIGCOMMERCE_STORE_HASH) {
       env.CATALYST_STORE_HASH = env.BIGCOMMERCE_STORE_HASH;

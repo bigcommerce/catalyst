@@ -20,6 +20,7 @@ import { upgrade } from './commands/upgrade';
 import { version } from './commands/version';
 import { surveyPostHook } from './hooks/survey';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+import { aliasStoreHash } from './lib/build-env';
 import { recordActiveCommand } from './lib/crash-report';
 import { consola } from './lib/logger';
 
@@ -31,9 +32,7 @@ import { consola } from './lib/logger';
 // projects work without duplicating the same value under two names. Aliasing
 // here means every command's `.env('CATALYST_STORE_HASH')` binding picks it up
 // without per-command changes.
-if (!process.env.CATALYST_STORE_HASH && process.env.BIGCOMMERCE_STORE_HASH) {
-  process.env.CATALYST_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
-}
+aliasStoreHash();
 
 export const program = new Command();
 

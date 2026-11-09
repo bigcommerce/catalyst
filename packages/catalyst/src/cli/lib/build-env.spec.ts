@@ -3,7 +3,13 @@ import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
 
-import { applyEnvFileOptions, loadBuildEnv, readBuildEnv } from './build-env';
+import {
+  aliasStoreHash,
+  applyEnvFileOptions,
+  loadBuildEnv,
+  readBuildEnv,
+  storeHashAlias,
+} from './build-env';
 import { UserActionableError } from './errors';
 import { mkTempDir } from './mk-temp-dir';
 
@@ -192,7 +198,7 @@ describe('readBuildEnv', () => {
     const [tmpDir, cleanup] = await mkTempDir('build-env-');
 
     process.env.BIGCOMMERCE_STORE_HASH = 'old';
-    process.env.CATALYST_STORE_HASH = 'old';
+    aliasStoreHash();
 
     try {
       await writeFile(join(tmpDir, '.env.staging'), 'BIGCOMMERCE_STORE_HASH=new', 'utf-8');
@@ -204,13 +210,15 @@ describe('readBuildEnv', () => {
     } finally {
       delete process.env.BIGCOMMERCE_STORE_HASH;
       delete process.env.CATALYST_STORE_HASH;
+      storeHashAlias.applied = false;
       await cleanup();
     }
   });
 
-  test('keeps an explicit shell CATALYST_STORE_HASH', async () => {
+  test('keeps an explicit shell CATALYST_STORE_HASH, even when it matches', async () => {
     const [tmpDir, cleanup] = await mkTempDir('build-env-');
 
+    process.env.BIGCOMMERCE_STORE_HASH = 'explicit';
     process.env.CATALYST_STORE_HASH = 'explicit';
 
     try {

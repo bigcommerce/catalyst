@@ -509,17 +509,6 @@ export const fetchProject = async (
   return data.find((project) => project.uuid === projectUuid);
 };
 
-// Resolve CATALYST_* options from the env file before using them. `--prebuilt`
-// builds nothing, so it only reads an explicit file.
-function applyDeployEnvOptions(
-  options: { prebuilt?: boolean; envPath?: string },
-  command: Command,
-): void {
-  if (!options.prebuilt || options.envPath !== undefined) {
-    applyEnvFileOptions(command, readBuildEnv({ envPath: options.envPath }));
-  }
-}
-
 export const deploy = new Command('deploy')
   .configureHelp({ showGlobalOptions: true })
   .description('Deploy your application to Cloudflare.')
@@ -570,7 +559,8 @@ Example:
   )
   .addOption(envPathOption())
   .action(async (options, command: Command) => {
-    applyDeployEnvOptions(options, command);
+    // Resolve CATALYST_* options from the env file before using them.
+    applyEnvFileOptions(command, readBuildEnv({ envPath: options.envPath }));
 
     const config = getProjectConfig();
     const apiHost = resolveApiHost(options, config);
