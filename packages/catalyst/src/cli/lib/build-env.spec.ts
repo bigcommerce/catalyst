@@ -234,6 +234,23 @@ describe('readBuildEnv', () => {
     }
   });
 
+  test('uses the default for a self-reference missing from the shell', async () => {
+    const [tmpDir, cleanup] = await mkTempDir('build-env-');
+
+    try {
+      await writeFile(
+        join(tmpDir, '.env.local'),
+        // eslint-disable-next-line no-template-curly-in-string
+        'READ_ENV_TEST=${READ_ENV_TEST:-fallback}',
+        'utf-8',
+      );
+
+      expect(readBuildEnv({ cwd: tmpDir }).READ_ENV_TEST).toBe('fallback');
+    } finally {
+      await cleanup();
+    }
+  });
+
   test('throws a UserActionableError when --env-path does not exist', () => {
     expect(() => readBuildEnv({ envPath: '.env.missing', cwd: '/nonexistent' })).toThrow(
       UserActionableError,

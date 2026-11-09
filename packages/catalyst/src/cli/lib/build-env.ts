@@ -40,11 +40,9 @@ export function loadBuildEnv({
     const envFilePath = resolve(cwd, envPath);
     const fileVars = readEnvFile(envFilePath, envPath);
 
-    Object.assign(process.env, fileVars);
-
     // Next.js won't read env files (and so won't expand `$VAR` references) when
     // `--env-path` is given, so expand them here, matching what it would do.
-    const { parsed = {} } = expand({ parsed: fileVars });
+    const { parsed = {} } = expandOverriding(fileVars);
 
     consola.log(colorize('cyanBright', `Loaded environment variables from ${envFilePath}\n`));
 
@@ -96,6 +94,15 @@ export function aliasStoreHash(): void {
   }
 }
 
+// Expands `vars` into `process.env`, overriding existing values. dotenv-expand
+// keeps a value already in `process.env`, and a self-reference such as
+// `X=${X:-default}` preloaded there recurses forever, so drop the keys first.
+function expandOverriding(vars: Record<string, string>) {
+  Object.keys(vars).forEach((key) => Reflect.deleteProperty(process.env, key));
+
+  return expand({ parsed: vars });
+}
+
 function stringEntries(env: NodeJS.ProcessEnv): Record<string, string> {
   return Object.fromEntries(
     Object.entries(env).filter((entry): entry is [string, string] => entry[1] !== undefined),
@@ -123,8 +130,7 @@ export function readBuildEnv({
         );
 
   try {
-    Object.assign(process.env, fileVars);
-    expand({ parsed: { ...fileVars } });
+    expandOverriding({ ...fileVars });
 
     const env = stringEntries(process.env);
 
