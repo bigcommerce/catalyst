@@ -1,8 +1,9 @@
+import { Command, Option } from 'commander';
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterEach, describe, expect, test } from 'vitest';
 
-import { loadBuildEnv } from './build-env';
+import { applyEnvFileOptions, loadBuildEnv } from './build-env';
 import { UserActionableError } from './errors';
 import { mkTempDir } from './mk-temp-dir';
 
@@ -106,5 +107,63 @@ describe('loadBuildEnv', () => {
     } finally {
       await cleanup();
     }
+  });
+});
+
+describe('applyEnvFileOptions', () => {
+  const makeCommand = () =>
+    new Command('test')
+      .exitOverride()
+      .addOption(new Option('--project-uuid <uuid>').env('CATALYST_PROJECT_UUID'))
+      .addOption(new Option('--store-hash <hash>').env('CATALYST_STORE_HASH'))
+      .option('--other <value>')
+      .action(() => undefined);
+
+  afterEach(() => {
+    delete process.env.CATALYST_PROJECT_UUID;
+    delete process.env.CATALYST_STORE_HASH;
+    delete process.env.BIGCOMMERCE_STORE_HASH;
+  });
+
+  test('applies env values loaded after parsing', async () => {
+    const command = makeCommand();
+
+    await command.parseAsync([], { from: 'user' });
+    process.env.CATALYST_PROJECT_UUID = 'from-file';
+    applyEnvFileOptions(command);
+
+    expect(command.opts()).toEqual({ projectUuid: 'from-file' });
+  });
+
+  test('replaces a shell value Commander already applied', async () => {
+    process.env.CATALYST_PROJECT_UUID = 'from-shell';
+
+    const command = makeCommand();
+
+    await command.parseAsync([], { from: 'user' });
+    process.env.CATALYST_PROJECT_UUID = 'from-file';
+    applyEnvFileOptions(command);
+
+    expect(command.opts().projectUuid).toBe('from-file');
+  });
+
+  test('keeps a value passed as a flag', async () => {
+    const command = makeCommand();
+
+    await command.parseAsync(['--project-uuid', 'from-flag'], { from: 'user' });
+    process.env.CATALYST_PROJECT_UUID = 'from-file';
+    applyEnvFileOptions(command);
+
+    expect(command.opts().projectUuid).toBe('from-flag');
+  });
+
+  test('falls back to BIGCOMMERCE_STORE_HASH for the store hash', async () => {
+    const command = makeCommand();
+
+    await command.parseAsync([], { from: 'user' });
+    process.env.BIGCOMMERCE_STORE_HASH = 'from-file';
+    applyEnvFileOptions(command);
+
+    expect(command.opts().storeHash).toBe('from-file');
   });
 });

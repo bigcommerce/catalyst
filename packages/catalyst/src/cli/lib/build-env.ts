@@ -1,3 +1,4 @@
+import type { Command } from 'commander';
 import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
 import { expand } from 'dotenv-expand';
@@ -79,4 +80,22 @@ export function loadBuildEnv({
   }
 
   return undefined;
+}
+
+// Commander resolves `.env()` option fallbacks (CATALYST_PROJECT_UUID, ...)
+// while parsing, before the action loads the env file. Re-resolve them after
+// `loadBuildEnv` so values from the file apply. Flags still win.
+export function applyEnvFileOptions(command: Command): void {
+  if (!process.env.CATALYST_STORE_HASH && process.env.BIGCOMMERCE_STORE_HASH) {
+    process.env.CATALYST_STORE_HASH = process.env.BIGCOMMERCE_STORE_HASH;
+  }
+
+  command.options.forEach((option) => {
+    const key = option.attributeName();
+    const value = option.envVar ? process.env[option.envVar] : undefined;
+
+    if (value && command.getOptionValueSource(key) !== 'cli') {
+      command.setOptionValueWithSource(key, value, 'env');
+    }
+  });
 }

@@ -813,6 +813,65 @@ test('passes the --env-path file to the build so only it is baked into the worke
   }
 });
 
+test('deploys to the CATALYST_PROJECT_UUID in the --env-path file over the linked project', async () => {
+  const config = getProjectConfig();
+  const envPath = join(tmpDir, '.env.storefront2');
+
+  config.set('projectUuid', '00000000-0000-0000-0000-000000000000');
+  config.set('storeHash', storeHash);
+  config.set('accessToken', accessToken);
+  await writeFile(envPath, `CATALYST_PROJECT_UUID=${projectUuid}`, 'utf-8');
+
+  try {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--env-path',
+      '.env.storefront2',
+      '--dry-run',
+    ]);
+
+    expect(consola.warn).not.toHaveBeenCalledWith(expect.stringContaining('no longer exists'));
+    expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, {
+      CATALYST_PROJECT_UUID: projectUuid,
+    });
+  } finally {
+    delete process.env.CATALYST_PROJECT_UUID;
+    await rm(envPath);
+  }
+});
+
+test('a --project-uuid flag wins over CATALYST_PROJECT_UUID in the --env-path file', async () => {
+  const envPath = join(tmpDir, '.env.storefront2');
+
+  await writeFile(envPath, 'CATALYST_PROJECT_UUID=00000000-0000-0000-0000-000000000000', 'utf-8');
+
+  try {
+    await program.parseAsync([
+      'node',
+      'catalyst',
+      'deploy',
+      '--store-hash',
+      storeHash,
+      '--access-token',
+      accessToken,
+      '--project-uuid',
+      projectUuid,
+      '--env-path',
+      '.env.storefront2',
+      '--dry-run',
+    ]);
+
+    expect(buildCatalystProject).toHaveBeenCalledWith(projectUuid, undefined, {
+      CATALYST_PROJECT_UUID: '00000000-0000-0000-0000-000000000000',
+    });
+  } finally {
+    delete process.env.CATALYST_PROJECT_UUID;
+    await rm(envPath);
+  }
+});
+
 test('rejects an invalid --wrangler-version value', async () => {
   await expect(
     program.parseAsync([

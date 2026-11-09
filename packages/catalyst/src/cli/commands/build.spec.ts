@@ -31,7 +31,8 @@ vi.mock('node:fs/promises', () => ({
   writeFile: vi.fn(() => Promise.resolve()),
 }));
 
-vi.mock('../lib/build-env', () => ({
+vi.mock('../lib/build-env', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/build-env')>()),
   loadBuildEnv: vi.fn(),
 }));
 
