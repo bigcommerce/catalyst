@@ -1,10 +1,10 @@
 'use client';
 
-import { PropsWithChildren, Suspense } from 'react';
+import { PropsWithChildren } from 'react';
 import { z } from 'zod';
 
-import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { EventsProvider } from '~/components/analytics/events';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { StreamableEventsProvider } from '~/components/analytics/events';
 import { useAnalytics } from '~/lib/analytics/react';
 
 interface AddToCartContext {
@@ -20,28 +20,18 @@ const AddToCartSchema = z.object({
   quantity: z.number({ coerce: true }).default(1),
 });
 
-export function ProductAnalyticsProvider(
-  props: PropsWithChildren<{ data: Streamable<AddToCartContext> }>,
-) {
-  return (
-    <Suspense fallback={props.children}>
-      <ProductAnalyticsProviderResolved {...props} />
-    </Suspense>
-  );
-}
-
-function ProductAnalyticsProviderResolved({
+export function ProductAnalyticsProvider({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext> }>) {
   const analytics = useAnalytics();
-  const { id, name, brand, sku, currency, price } = useStreamable(data);
 
-  const onAddToCart = (payload?: FormData) => {
+  const onAddToCart = (product: AddToCartContext, payload?: FormData) => {
     const parsedPayload = AddToCartSchema.safeParse(Object.fromEntries(payload?.entries() ?? []));
 
     if (parsedPayload.success) {
       const { quantity } = parsedPayload.data;
+      const { id, name, brand, sku, currency, price } = product;
 
       analytics?.cart.productAdded({
         currency,
@@ -60,5 +50,9 @@ function ProductAnalyticsProviderResolved({
     }
   };
 
-  return <EventsProvider onAddToCart={onAddToCart}>{children}</EventsProvider>;
+  return (
+    <StreamableEventsProvider data={data} onAddToCart={onAddToCart}>
+      {children}
+    </StreamableEventsProvider>
+  );
 }
