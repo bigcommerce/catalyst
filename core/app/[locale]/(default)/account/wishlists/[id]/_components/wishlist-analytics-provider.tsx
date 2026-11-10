@@ -1,10 +1,10 @@
 'use client';
 
-import { PropsWithChildren, Suspense } from 'react';
+import { PropsWithChildren } from 'react';
 import { z } from 'zod';
 
-import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { EventsProvider } from '~/components/analytics/events';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { StreamableEventsProvider } from '~/components/analytics/events';
 import { useAnalytics } from '~/lib/analytics/react';
 
 interface AddToCartContext {
@@ -21,24 +21,13 @@ const AddToCartSchema = z.object({
   variantId: z.number({ coerce: true }),
 });
 
-export function WishlistAnalyticsProvider(
-  props: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>,
-) {
-  return (
-    <Suspense fallback={props.children}>
-      <WishlistAnalyticsProviderResolved {...props} />
-    </Suspense>
-  );
-}
-
-function WishlistAnalyticsProviderResolved({
+export function WishlistAnalyticsProvider({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>) {
   const analytics = useAnalytics();
-  const products = useStreamable(data);
 
-  const onAddToCart = (payload?: FormData) => {
+  const onAddToCart = (products: AddToCartContext[], payload?: FormData) => {
     const parsedPayload = AddToCartSchema.safeParse(Object.fromEntries(payload?.entries() ?? []));
 
     if (parsedPayload.success) {
@@ -67,5 +56,9 @@ function WishlistAnalyticsProviderResolved({
     }
   };
 
-  return <EventsProvider onAddToCart={onAddToCart}>{children}</EventsProvider>;
+  return (
+    <StreamableEventsProvider data={data} onAddToCart={onAddToCart}>
+      {children}
+    </StreamableEventsProvider>
+  );
 }

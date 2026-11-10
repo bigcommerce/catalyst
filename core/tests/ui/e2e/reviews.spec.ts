@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
+import { completeRecaptchaIfEnabled } from '~/tests/lib/recaptcha';
 import { TAGS } from '~/tests/tags';
 
 test(
@@ -44,14 +45,7 @@ test(
     await expect(modal.getByLabel(t('nameLabel'))).toBeEnabled();
     await expect(modal.getByLabel(t('emailLabel'))).toBeEnabled();
 
-    // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
-    const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
-    const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
-
-    if (await recaptchaCheckbox.isVisible()) {
-      await recaptchaCheckbox.click();
-      await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
-    }
+    await completeRecaptchaIfEnabled(page);
 
     await modal.getByRole('button', { name: t('submit') }).click();
 
