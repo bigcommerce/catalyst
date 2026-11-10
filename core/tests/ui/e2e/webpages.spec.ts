@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
+import { completeRecaptchaIfEnabled } from '~/tests/lib/recaptcha';
 
 test('Normal web page works and displays the HTML content', async ({ page, webPage }) => {
   const t = await getTranslations('WebPages.Normal');
@@ -88,14 +89,7 @@ test('Contact page works with all fields and submits successfully', async ({ pag
   await page.getByLabel(t('Form.rma')).fill(faker.string.numeric(10));
   await page.getByLabel(t('Form.comments')).fill(faker.lorem.paragraph());
 
-  // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
-  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
-  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
-
-  if (await recaptchaCheckbox.isVisible()) {
-    await recaptchaCheckbox.click();
-    await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
-  }
+  await completeRecaptchaIfEnabled(page);
 
   await page.getByRole('button', { name: t('Form.cta') }).click();
   await page.waitForLoadState('networkidle');
