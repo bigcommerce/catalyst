@@ -344,7 +344,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       >
         {/* Mobile Menu */}
         <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
-          <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Trigger asChild>
             <MobileMenuButton
               aria-label={mobileMenuTriggerLabel}
@@ -353,6 +352,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               open={isMobileMenuOpen}
             />
           </Popover.Trigger>
+          {/* Must follow the trigger: newer Radix poppers otherwise keep the trigger's detached node as the anchor. */}
+          <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Portal>
             <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
               <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
@@ -559,7 +560,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           {searchAction ? (
             <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-              <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Trigger asChild>
                 <button
                   aria-label={openSearchPopupLabel}
@@ -571,6 +571,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   <Search size={20} strokeWidth={1} />
                 </button>
               </Popover.Trigger>
+              <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Portal>
                 <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
                   <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
