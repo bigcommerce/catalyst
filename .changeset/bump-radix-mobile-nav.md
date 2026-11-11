@@ -2,4 +2,4 @@
 '@bigcommerce/catalyst-core': patch
 ---
 
-Fix the mobile navigation menu opening at zero width, with unclickable links, on `@radix-ui/react-popover` 1.1.15 and later: the navigation's popover anchors now render after their triggers. Bump the direct `@radix-ui/*` dependencies to their latest releases.
+Bump the direct `@radix-ui/*` dependencies to their latest releases, and fix the navigation on them: the mobile menu no longer opens at zero width with unclickable links, and on touch screens, tapping outside the open language or currency dropdown now only closes it instead of also activating what is under the tap.

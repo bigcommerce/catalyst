@@ -915,6 +915,25 @@ const useSwitchLocale = () => {
   );
 };
 
+type PointerDownOutsideHandler = NonNullable<
+  DropdownMenu.DropdownMenuContentProps['onPointerDownOutside']
+>;
+
+// Radix Menu dismisses on a touch's pointerdown, which re-enables the page before that tap's
+// click lands, so the tap also activates whatever is under it. Close on the click instead.
+function useTouchSafeDropdown() {
+  const [open, setOpen] = useState(false);
+
+  const onPointerDownOutside = useCallback<PointerDownOutsideHandler>((event) => {
+    if (event.detail.originalEvent.pointerType !== 'touch') return;
+
+    event.preventDefault();
+    document.addEventListener('click', () => setOpen(false), { once: true });
+  }, []);
+
+  return { open, onOpenChange: setOpen, onPointerDownOutside };
+}
+
 function LocaleSwitcher({
   locales,
   activeLocaleId,
@@ -929,10 +948,11 @@ function LocaleSwitcher({
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
   const [isPending, startTransition] = useTransition();
   const switchLocale = useSwitchLocale();
+  const { onPointerDownOutside, ...dropdown } = useTouchSafeDropdown();
 
   return (
     <div className={className}>
-      <DropdownMenu.Root>
+      <DropdownMenu.Root {...dropdown}>
         <DropdownMenu.Trigger
           className={clsx(
             'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
@@ -947,6 +967,7 @@ function LocaleSwitcher({
           <DropdownMenu.Content
             align="end"
             className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            onPointerDownOutside={onPointerDownOutside}
             sideOffset={16}
           >
             {locales.map(({ id, label }) => (
@@ -995,6 +1016,7 @@ function CurrencyForm({
   const [isPending, startTransition] = useTransition();
   const [lastResult, formAction] = useActionState(action, null);
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
+  const { onPointerDownOutside, ...dropdown } = useTouchSafeDropdown();
 
   useEffect(() => {
     // eslint-disable-next-line no-console
@@ -1003,7 +1025,7 @@ function CurrencyForm({
 
   return (
     <div className={className}>
-      <DropdownMenu.Root>
+      <DropdownMenu.Root {...dropdown}>
         <DropdownMenu.Trigger
           className={clsx(
             'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
@@ -1020,6 +1042,7 @@ function CurrencyForm({
           <DropdownMenu.Content
             align="end"
             className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            onPointerDownOutside={onPointerDownOutside}
             sideOffset={16}
           >
             {currencies.map((currency) => (
