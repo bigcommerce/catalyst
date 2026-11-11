@@ -356,7 +356,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Portal>
             <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))] px-2">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
@@ -575,7 +575,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <Popover.Portal>
                 {/* Portaled outside the nav, so 912px stands in for its @4xl (896px plus the header's padding): edge to edge below it, like the mobile menu. */}
                 <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 [@media(min-width:912px)]:w-[var(--radix-popper-anchor-width)] [@media(min-width:912px)]:py-2">
-                  <div className="flex max-h-[inherit] flex-col bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0 [@media(min-width:912px)]:rounded-2xl">
+                  <div className="flex max-h-[inherit] flex-col bg-[var(--nav-search-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0 [@media(min-width:912px)]:rounded-2xl [@media(min-width:912px)]:px-0">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
