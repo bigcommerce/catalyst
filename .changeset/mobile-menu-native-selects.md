@@ -2,7 +2,7 @@
 '@bigcommerce/catalyst-core': minor
 ---
 
-Replace the language and currency dropdowns in the mobile menu with labelled native selects, which open the device's own picker. The currency select now also shows on stores with a single language. Desktop keeps the dropdowns.
+Replace the language and currency dropdowns in the mobile menu with labelled native selects, which open the device's own picker, and make the mobile menu fill the screen below the nav, with the links scrolling above the selects pinned at the bottom. The currency select now also shows on stores with a single language. Desktop keeps the dropdowns.
 
 ## Migration
 

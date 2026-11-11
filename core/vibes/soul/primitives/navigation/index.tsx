@@ -361,7 +361,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Portal>
             <Popover.Content
-              className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              className="h-[var(--radix-popover-content-available-height)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
               // Radix skips links when autofocusing, which would land on the language select.
               onOpenAutoFocus={(event) => {
                 event.preventDefault();
@@ -369,55 +369,58 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 if (event.currentTarget instanceof HTMLElement) event.currentTarget.focus();
               }}
             >
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))] px-2">
-                <Stream
-                  fallback={
-                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
-                      <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                      </li>
-                    </ul>
-                  }
-                  value={streamableLinks}
-                >
-                  {(links) =>
-                    links.map((item, i) => (
-                      <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
-                        {item.label !== '' && (
-                          <li>
-                            <Link
-                              className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                              href={item.href}
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        )}
-                        {item.groups
-                          ?.flatMap((group) => group.links)
-                          .map((link, j) => (
-                            <li key={j}>
+              {/* Fills the screen below the nav: the links scroll, and the selects stay at the bottom. */}
+              <div className="flex h-full flex-col bg-[var(--nav-mobile-background,hsl(var(--background)))] px-2">
+                <div className="min-h-0 flex-1 divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto overscroll-contain">
+                  <Stream
+                    fallback={
+                      <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
+                        <li>
+                          <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                        </li>
+                      </ul>
+                    }
+                    value={streamableLinks}
+                  >
+                    {(links) =>
+                      links.map((item, i) => (
+                        <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
+                          {item.label !== '' && (
+                            <li>
                               <Link
-                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                                href={link.href}
+                                className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                href={item.href}
                               >
-                                {link.label}
+                                {item.label}
                               </Link>
                             </li>
-                          ))}
-                      </ul>
-                    ))
-                  }
-                </Stream>
+                          )}
+                          {item.groups
+                            ?.flatMap((group) => group.links)
+                            .map((link, j) => (
+                              <li key={j}>
+                                <Link
+                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                  href={link.href}
+                                >
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      ))
+                    }
+                  </Stream>
+                </div>
                 {/* Mobile Locale / Currency Selects */}
                 <Stream
                   fallback={null}
@@ -431,7 +434,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     if (!showLocales && !showCurrencies) return null;
 
                     return (
-                      <div className="flex flex-col p-2">
+                      <div className="flex shrink-0 flex-col border-t border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
                         {showLocales && (
                           <MobileLocaleSelect
                             action={localeAction}
