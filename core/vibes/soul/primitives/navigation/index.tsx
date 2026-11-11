@@ -573,8 +573,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               </Popover.Trigger>
               <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Portal>
-                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+                {/* Portaled outside the nav, so 912px stands in for its @4xl (896px plus the header's padding): edge to edge below it, like the mobile menu. */}
+                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 [@media(min-width:912px)]:w-[var(--radix-popper-anchor-width)] [@media(min-width:912px)]:py-2">
+                  <div className="flex max-h-[inherit] flex-col bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0 [@media(min-width:912px)]:rounded-2xl">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
