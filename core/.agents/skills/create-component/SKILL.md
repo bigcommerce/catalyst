@@ -37,7 +37,7 @@ node .agents/skills/create-component/scripts/check.mjs <your files>
    - The codebase map shows a standard Catalyst. A fork can be different. Check each path in the two maps before you use it. Search for each need that the maps do not show.
    - Add what you find to `project-map.md`. Write only rows with a need, a path, and a short note. Do not write store data, tokens, or commands.
    - Read the theme tokens and the fonts. List the existing components.
-   - Read the two components that are nearest to the new one. Use components that git tracks. Copy their corners, borders, and shadows.
+   - Read the two components that are nearest to the new one. Copy their corners, borders, and shadows.
    - Find out if the feature exists already. Look also for unused props and slots, such as the `banner` slot of `HeaderSection`.
    - If the feature does most of the request, offer the smallest change to it first.
 4. **Get the data.** Check the page first. One request for each page is faster than many requests.
