@@ -9,8 +9,6 @@ compatibility: Needs Node.js 24+ and the storefront's installed dependencies. Ne
 
 This skill builds a component for a live store. The component uses real store data. It matches the merchant's theme.
 
-Forks of Catalyst merge updates from upstream. Thus, the code must be correct and easy to review.
-
 ## Scripts
 
 Run the scripts from the storefront folder. This is the folder with `next.config.ts`. In the Catalyst monorepo, it is `core/`.
@@ -36,13 +34,14 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - Stop if the data is missing, the same on each item, or wrong for the product. Tell the user what to add.
    - If only part of the request has data, offer to build that part.
    - If BigCommerce has no type for the idea, propose a model that exists. Examples are blog posts with tags, custom fields, and metafields.
-   - For other cases, read [references/data-check.md](references/data-check.md). Examples are signed-in data, locales, and scheduled content.
+   - For other cases, such as signed-in data or locales, read [references/notes.md](references/notes.md).
 3. **Learn the project.** Run `brand.mjs`. Read [references/codebase-map.md](references/codebase-map.md).
    - Read the two components that are nearest to the new one. Use components that git tracks.
    - Find out if the feature exists already. Look also for unused props and slots, such as the `banner` slot of `HeaderSection`.
    - If the feature does most of the request, offer the smallest change to it first.
 4. **Get the data.** Check the page first. One request for each page is faster than many requests.
-   - The page already uses one shared request (a query in its `page-data.ts`): add the new data to that request. Write a fragment in `components/<name>/fragment.ts`. Add it to the query in `page-data.ts`. Give the new section its part of the result. `components/featured-products-list/fragment.ts` is an example.
+   - The page already uses one shared request (a query in its `page-data.ts`): write a fragment in `components/<name>/fragment.ts`, and add it to that query. Give the new section its part of the result.
+   - The store rejects a query with a complexity score above 10000. Each list of product cards adds a lot. If the shared request fails with "too complex", make a separate request.
    - The page does not: make a separate request in `components/<name>/data.ts`. Use `graphql()`, `client.fetch`, and `cache()`. Copy the fetch options from `app/[locale]/(default)/page-data.ts`.
 5. **Build the section** in `vibes/soul/sections/<name>/index.tsx`.
    - Make a Server Component. It gets `Streamable` props.
@@ -50,8 +49,10 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - When the data is empty, render nothing.
    - Put a client part in a separate file. Use a client part only for state or browser APIs.
 6. **Put the section on a page.** Use the page that the user names. If the user names no page, or the page does not exist, ask. A header part or a footer part goes in the layout.
-7. **Check the code.** Run `pnpm typecheck`. Run `pnpm exec eslint --fix <your files>`. Run `check.mjs <your files>`. It finds common mistakes, but it does not prove that the code is safe. Fix the cause of each finding. [references/build-notes.md](references/build-notes.md) explains the usual errors.
-8. **Check the page** on the dev server. Use the dev server that runs for this folder. [references/check-the-page.md](references/check-the-page.md) gives the procedure.
+7. **Check the code.** Run `pnpm typecheck`. Run `pnpm exec eslint --fix <your files>`. Run `check.mjs <your files>`. It finds common mistakes, but it does not prove that the code is safe. Fix the cause of each finding.
+8. **Check the page** on the dev server that runs for this folder.
+
+[references/notes.md](references/notes.md) has notes for each step. [references/example.md](references/example.md) shows the steps for one component.
 
 ## Rules and their reasons
 
@@ -78,5 +79,3 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
   - The files and the page that you used.
   - The items that you could not check.
   - Each change from the request.
-
-[references/example.md](references/example.md) has a checked example.

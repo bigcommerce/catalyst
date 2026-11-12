@@ -2,4 +2,4 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Add the `create-component` agent skill (`.agents/skills/create-component`). It checks the store's GraphQL schema, the store's data, and the project's theme, then builds a component that uses real fields and matches the merchant's brand. Its helper scripts look up fields (`schema.mjs`), run read-only data checks (`query.mjs`), read the theme (`brand.mjs`), and check the new code for shopper-safety mistakes (`check.mjs`).
+Add the `create-component` agent skill (`.agents/skills/create-component`). An agent uses it to build a component from real store data in the project's theme. Its scripts look up schema fields, check store data, and read the theme. They also find common mistakes in new code.
