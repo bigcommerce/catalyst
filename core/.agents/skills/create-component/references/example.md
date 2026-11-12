@@ -57,7 +57,7 @@ const HomePageQuery = graphql(
 
 ## Step 5: the section
 
-In `vibes/soul/sections/brand-strip/index.tsx`. Each color and font is a theme class. `rounded-lg` and `border-contrast-100` come from the habits that `brand.mjs` printed.
+In `vibes/soul/sections/brand-strip/index.tsx`. Each color and font is a theme class. `rounded-lg` and `border-contrast-100` come from the nearest components.
 
 ```tsx
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -153,7 +153,3 @@ const streamableBrands = Streamable.from(async () => {
 ```
 
 Add `BrandStrip.title` under `Home` in `messages/en.json`.
-
-## Step 7: a wrong field
-
-If the fragment has `nme`, not `name`, typecheck fails where the page reads `name`. Change the fragment to the field name that `schema.mjs type Brand` prints.

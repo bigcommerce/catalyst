@@ -18,11 +18,8 @@ node .agents/skills/create-component/scripts/schema.mjs info          # checks t
 node .agents/skills/create-component/scripts/schema.mjs type <Name> [<Name> ...]
 node .agents/skills/create-component/scripts/schema.mjs search <text>
 node .agents/skills/create-component/scripts/query.mjs [--locale <code>] '<read-only query>' ['<variables JSON>']
-node .agents/skills/create-component/scripts/brand.mjs        # theme tokens, fonts, and existing components
 node .agents/skills/create-component/scripts/check.mjs <your files>
 ```
-
-Type each command as it is shown. Do not put a command in a shell variable. The zsh shell does not split it.
 
 ## Steps
 
@@ -36,10 +33,11 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - If BigCommerce has no type for the idea, propose a model that exists. Examples are blog posts with tags, custom fields, and metafields.
    - `query.mjs` runs as a guest, so it cannot see signed-in data, such as `customer`. Check those fields with `schema.mjs`. Tell the user that you did not check the data.
    - If the user wants the build before the data exists, mark the sample data with `SAMPLE-DATA`. `check.mjs` fails until you remove it.
-3. **Learn the project.** Run `brand.mjs`. Read `references/project-map.md` in this skill folder, if it exists. Then read [references/codebase-map.md](references/codebase-map.md).
+3. **Learn the project.** Read `references/project-map.md` in this skill folder, if it exists. Then read [references/codebase-map.md](references/codebase-map.md).
    - The codebase map shows a standard Catalyst. A fork can be different. Check each path in the two maps before you use it. Search for each need that the maps do not show.
    - Add what you find to `project-map.md`. Write only rows with a need, a path, and a short note. Do not write store data, tokens, or commands.
-   - Read the two components that are nearest to the new one. Use components that git tracks.
+   - Read the theme tokens and the fonts. List the existing components.
+   - Read the two components that are nearest to the new one. Use components that git tracks. Copy their corners, borders, and shadows.
    - Find out if the feature exists already. Look also for unused props and slots, such as the `banner` slot of `HeaderSection`.
    - If the feature does most of the request, offer the smallest change to it first.
 4. **Get the data.** Check the page first. One request for each page is faster than many requests.
