@@ -2,7 +2,7 @@
 // Finds common mistakes in new component code that typecheck and eslint do not catch: values
 // outside the theme, shopper data in a shared cache, storage without consent, unsafe HTML or
 // links, outside code, and leftover sample data. Each finding says why it matters.
-// These are simple text checks. No finding does not prove that the code is safe.
+// These are simple text checks. A clean result does not mean that the code is safe.
 // Run from the storefront directory (the folder with next.config.ts).
 //
 //   node .agents/skills/create-component/scripts/check.mjs <file> [<file> ...]
@@ -135,4 +135,7 @@ files.forEach((path) => {
 });
 
 console.log(`\n${errors} error(s), ${warnings} warning(s) in ${files.length} file(s).`);
+console.log(
+  'A clean result does not mean that the code is safe. Review the code before it goes live.',
+);
 process.exit(errors > 0 ? 1 : 0);

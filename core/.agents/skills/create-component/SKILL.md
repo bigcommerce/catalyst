@@ -49,7 +49,7 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - When the data is empty, render nothing.
    - Put a client part in a separate file. Use a client part only for state or browser APIs.
 6. **Put the section on a page.** Use the page that the user names. If the user names no page, or the page does not exist, ask. A header part or a footer part goes in the layout.
-7. **Check the code.** Run `pnpm typecheck`. Run `pnpm exec eslint --fix <your files>`. Run `check.mjs <your files>`. It finds common mistakes, but it does not prove that the code is safe. Fix the cause of each finding.
+7. **Check the code.** Run `pnpm typecheck`. Run `pnpm exec eslint --fix <your files>`. Run `check.mjs <your files>`. Fix the cause of each finding. `check.mjs` is a simple checklist, not proof. A clean result does not mean that the code is safe.
 8. **Check the page** on the dev server that runs for this folder.
 
 [references/notes.md](references/notes.md) has notes for each step. [references/example.md](references/example.md) shows the steps for one component.
@@ -79,3 +79,4 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
   - The files and the page that you used.
   - The items that you could not check.
   - Each change from the request.
+- You tell the user to review all the code before it goes live. The checks in this skill do not replace that review.
