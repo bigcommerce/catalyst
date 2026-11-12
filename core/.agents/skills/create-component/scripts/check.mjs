@@ -33,7 +33,7 @@ const RULES = [
   {
     id: 'outside-code',
     level: 'error',
-    line: /<iframe\b|<script\b/,
+    line: /<iframe\b|<script\b|next\/script/i,
     why: "Outside code runs with the shopper's session and can track them. Reuse a tracked component (for example `LiteYouTube`) or ask the user.",
   },
   {
@@ -79,12 +79,9 @@ const RULES = [
   },
   {
     id: 'storage-without-consent',
-    level: 'error',
-    file: (text) =>
-      /localStorage\.setItem|sessionStorage\.setItem|document\.cookie\s*=|(cookies\(\)|cookieStore)\.set\(/.test(
-        text,
-      ) && !/consent|persist/i.test(text),
-    why: 'Storing data for the shopper needs `functionality` consent. Check it with `hasConsentFor` (server) or `useConsentManager` (client), or take a boolean prop from a caller that does.',
+    level: 'warning',
+    line: /localStorage\.setItem|sessionStorage\.setItem|document\.cookie\s*=|(cookies\(\)|cookieStore)\.set\(/,
+    why: "This saves data on the shopper's device, which needs consent. Find the consent check of the project and use it. Tell the user where the code checks consent.",
   },
   {
     id: 'html-not-rewritten',

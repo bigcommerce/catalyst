@@ -96,7 +96,7 @@ export function BrandStrip({ title, brands }: Props) {
                   >
                     {image ? (
                       <Image
-                        alt={image.alt}
+                        alt={image.alt || name}
                         className="object-contain"
                         height={64}
                         src={image.src}
