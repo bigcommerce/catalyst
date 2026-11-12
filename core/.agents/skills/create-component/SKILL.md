@@ -34,7 +34,8 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - Stop if the data is missing, the same on each item, or wrong for the product. Tell the user what to add.
    - If only part of the request has data, offer to build that part.
    - If BigCommerce has no type for the idea, propose a model that exists. Examples are blog posts with tags, custom fields, and metafields.
-   - For other cases, such as signed-in data or locales, read [references/notes.md](references/notes.md).
+   - `query.mjs` runs as a guest, so it cannot see signed-in data, such as `customer`. Check those fields with `schema.mjs`. Tell the user that you did not check the data.
+   - If the user wants the build before the data exists, mark the sample data with `SAMPLE-DATA`. `check.mjs` fails until you remove it.
 3. **Learn the project.** Run `brand.mjs`. Read `references/project-map.md` in this skill folder, if it exists. Then read [references/codebase-map.md](references/codebase-map.md).
    - The codebase map shows a standard Catalyst. A fork can be different. Check each path in the two maps before you use it. Search for each need that the maps do not show.
    - Add what you find to `project-map.md`. Write only rows with a need, a path, and a short note. Do not write store data, tokens, or commands.
@@ -54,7 +55,7 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
 7. **Check the code.** Run `pnpm typecheck`. Run `pnpm exec eslint --fix <your files>`. Run `check.mjs <your files>`. Fix the cause of each finding. `check.mjs` is a simple checklist, not proof. A clean result does not mean that the code is safe.
 8. **Check the page** on the dev server that runs for this folder.
 
-[references/notes.md](references/notes.md) has notes for each step. [references/example.md](references/example.md) shows the steps for one component.
+[references/example.md](references/example.md) shows the steps for one component.
 
 ## Rules and their reasons
 
