@@ -31,7 +31,7 @@ node .agents/skills/create-component/scripts/check.mjs <your files>
    - Stop if the data is missing, the same on each item, or wrong for the product. Tell the user what to add.
    - If only part of the request has data, offer to build that part.
    - If BigCommerce has no type for the idea, propose a model that exists. Examples are blog posts with tags, custom fields, and metafields.
-   - `query.mjs` runs as a guest, so it cannot see signed-in data, such as `customer`. Check those fields with `schema.mjs`. Tell the user that you did not check the data.
+   - `query.mjs` runs as a guest, so it cannot see signed-in data, such as `customer`. Check those fields with `schema.mjs`.
    - If the user wants the build before the data exists, mark the sample data with `SAMPLE-DATA`. `check.mjs` fails until you remove it.
 3. **Learn the project.** Read `references/project-map.md` in this skill folder, if it exists. Then read [references/codebase-map.md](references/codebase-map.md).
    - The codebase map shows a standard Catalyst. A fork can be different. Check each path in the two maps before you use it. Search for each need that the maps do not show.
