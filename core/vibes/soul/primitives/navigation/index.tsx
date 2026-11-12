@@ -23,6 +23,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useOptimistic,
   useState,
   useTransition,
 } from 'react';
@@ -129,6 +130,8 @@ interface Props<S extends SearchResult> {
   searchLabel?: string;
   mobileMenuTriggerLabel?: string;
   switchCurrencyLabel?: string;
+  localeLabel?: string;
+  currencyLabel?: string;
   giftCertificatesLabel?: string;
   giftCertificatesHref: string;
   giftCertificatesEnabled?: Streamable<boolean>;
@@ -300,6 +303,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
     switchCurrencyLabel,
+    localeLabel = 'Language',
+    currencyLabel = 'Currency',
     giftCertificatesLabel = 'Gift Certificates',
     giftCertificatesHref,
     giftCertificatesEnabled: streamableGiftCertificatesEnabled,
@@ -344,7 +349,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       >
         {/* Mobile Menu */}
         <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
-          <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Trigger asChild>
             <MobileMenuButton
               aria-label={mobileMenuTriggerLabel}
@@ -353,90 +357,104 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               open={isMobileMenuOpen}
             />
           </Popover.Trigger>
+          {/* Must follow the trigger: newer Radix poppers otherwise keep the trigger's detached node as the anchor. */}
+          <Popover.Anchor className="absolute left-0 right-0 top-full" />
           <Popover.Portal>
-            <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
-                <Stream
-                  fallback={
-                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
-                      <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                      </li>
-                    </ul>
-                  }
-                  value={streamableLinks}
-                >
-                  {(links) =>
-                    links.map((item, i) => (
-                      <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
-                        {item.label !== '' && (
-                          <li>
-                            <Link
-                              className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                              href={item.href}
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        )}
-                        {item.groups
-                          ?.flatMap((group) => group.links)
-                          .map((link, j) => (
-                            <li key={j}>
+            <Popover.Content
+              className="h-[var(--radix-popover-content-available-height)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+              // Radix skips links when autofocusing, which would land on the language select.
+              onOpenAutoFocus={(event) => {
+                event.preventDefault();
+
+                if (event.currentTarget instanceof HTMLElement) event.currentTarget.focus();
+              }}
+            >
+              {/* Fills the screen below the nav: the links scroll, and the selects stay at the bottom. */}
+              <div className="flex h-full flex-col bg-[var(--nav-mobile-background,hsl(var(--background)))] px-2">
+                <div className="min-h-0 flex-1 divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto overscroll-contain">
+                  <Stream
+                    fallback={
+                      <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
+                        <li>
+                          <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                        </li>
+                        <li>
+                          <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                        </li>
+                      </ul>
+                    }
+                    value={streamableLinks}
+                  >
+                    {(links) =>
+                      links.map((item, i) => (
+                        <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
+                          {item.label !== '' && (
+                            <li>
                               <Link
-                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                                href={link.href}
+                                className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                href={item.href}
                               >
-                                {link.label}
+                                {item.label}
                               </Link>
                             </li>
-                          ))}
-                      </ul>
-                    ))
-                  }
-                </Stream>
-                {/* Mobile Locale / Currency Dropdown */}
-                {locales && locales.length > 1 && streamableCurrencies && (
-                  <div className="p-2 @4xl:p-5">
-                    <div className="flex items-center px-3 py-1 @4xl:py-2">
-                      {/* Locale / Language Dropdown */}
-                      {locales.length > 1 ? (
-                        <LocaleSwitcher
-                          action={localeAction}
-                          activeLocaleId={activeLocaleId}
-                          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                          locales={locales as [Locale, Locale, ...Locale[]]}
-                        />
-                      ) : null}
+                          )}
+                          {item.groups
+                            ?.flatMap((group) => group.links)
+                            .map((link, j) => (
+                              <li key={j}>
+                                <Link
+                                  className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                  href={link.href}
+                                >
+                                  {link.label}
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      ))
+                    }
+                  </Stream>
+                </div>
+                {/* Mobile Locale / Currency Selects */}
+                <Stream
+                  fallback={null}
+                  value={Streamable.all([streamableCurrencies, streamableActiveCurrencyId])}
+                >
+                  {([currencies, activeCurrencyId]) => {
+                    const showLocales = locales != null && locales.length > 1;
+                    const showCurrencies =
+                      currencies != null && currencies.length > 1 && currencyAction != null;
 
-                      {/* Currency Dropdown */}
-                      <Stream
-                        fallback={null}
-                        value={Streamable.all([streamableCurrencies, streamableActiveCurrencyId])}
-                      >
-                        {([currencies, activeCurrencyId]) =>
-                          currencies.length > 1 && currencyAction ? (
-                            <CurrencyForm
-                              action={currencyAction}
-                              activeCurrencyId={activeCurrencyId}
-                              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-                              currencies={currencies as [Currency, ...Currency[]]}
-                            />
-                          ) : null
-                        }
-                      </Stream>
-                    </div>
-                  </div>
-                )}
+                    if (!showLocales && !showCurrencies) return null;
+
+                    return (
+                      <div className="flex shrink-0 flex-col border-t border-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+                        {showLocales && (
+                          <MobileLocaleSelect
+                            action={localeAction}
+                            activeLocaleId={activeLocaleId}
+                            label={localeLabel}
+                            locales={locales}
+                          />
+                        )}
+                        {showCurrencies && (
+                          <MobileCurrencySelect
+                            action={currencyAction}
+                            activeCurrencyId={activeCurrencyId}
+                            currencies={currencies}
+                            label={currencyLabel}
+                          />
+                        )}
+                      </div>
+                    );
+                  }}
+                </Stream>
               </div>
             </Popover.Content>
           </Popover.Portal>
@@ -559,7 +577,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           {searchAction ? (
             <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-              <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Trigger asChild>
                 <button
                   aria-label={openSearchPopupLabel}
@@ -571,9 +588,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   <Search size={20} strokeWidth={1} />
                 </button>
               </Popover.Trigger>
+              <Popover.Anchor className="absolute left-0 right-0 top-full" />
               <Popover.Portal>
-                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+                {/* Portaled outside the nav, so 912px stands in for its @4xl (896px plus the header's padding): edge to edge below it, like the mobile menu. */}
+                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popover-content-available-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 [@media(min-width:912px)]:w-[var(--radix-popper-anchor-width)] [@media(min-width:912px)]:py-2">
+                  <div className="flex max-h-[inherit] flex-col bg-[var(--nav-search-background,hsl(var(--background)))] px-2 shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0 [@media(min-width:912px)]:rounded-2xl [@media(min-width:912px)]:px-0">
                     <SearchForm
                       searchAction={searchAction}
                       searchHref={searchHref}
@@ -914,6 +933,25 @@ const useSwitchLocale = () => {
   );
 };
 
+type PointerDownOutsideHandler = NonNullable<
+  DropdownMenu.DropdownMenuContentProps['onPointerDownOutside']
+>;
+
+// Radix Menu dismisses on a touch's pointerdown, which re-enables the page before that tap's
+// click lands, so the tap also activates whatever is under it. Close on the click instead.
+function useTouchSafeDropdown() {
+  const [open, setOpen] = useState(false);
+
+  const onPointerDownOutside = useCallback<PointerDownOutsideHandler>((event) => {
+    if (event.detail.originalEvent.pointerType !== 'touch') return;
+
+    event.preventDefault();
+    document.addEventListener('click', () => setOpen(false), { once: true });
+  }, []);
+
+  return { open, onOpenChange: setOpen, onPointerDownOutside };
+}
+
 function LocaleSwitcher({
   locales,
   activeLocaleId,
@@ -926,12 +964,12 @@ function LocaleSwitcher({
   className?: string;
 }) {
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
-  const [isPending, startTransition] = useTransition();
-  const switchLocale = useSwitchLocale();
+  const { isPending, selectLocale } = useLocaleSelection(action);
+  const { onPointerDownOutside, ...dropdown } = useTouchSafeDropdown();
 
   return (
     <div className={className}>
-      <DropdownMenu.Root>
+      <DropdownMenu.Root {...dropdown}>
         <DropdownMenu.Trigger
           className={clsx(
             'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
@@ -946,6 +984,7 @@ function LocaleSwitcher({
           <DropdownMenu.Content
             align="end"
             className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            onPointerDownOutside={onPointerDownOutside}
             sideOffset={16}
           >
             {locales.map(({ id, label }) => (
@@ -958,14 +997,7 @@ function LocaleSwitcher({
                   },
                 )}
                 key={id}
-                onSelect={() =>
-                  startTransition(async () => {
-                    // Sync the cart's locale first so the shopper lands on the
-                    // new locale with an already-updated cart.
-                    await action?.(id);
-                    switchLocale(id);
-                  })
-                }
+                onSelect={() => selectLocale(id)}
               >
                 {label}
               </DropdownMenu.Item>
@@ -990,19 +1022,13 @@ function CurrencyForm({
   switchCurrencyLabel?: string;
   className?: string;
 }) {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [lastResult, formAction] = useActionState(action, null);
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult?.error]);
+  const { isPending, selectCurrency } = useCurrencySelection(action);
+  const { onPointerDownOutside, ...dropdown } = useTouchSafeDropdown();
 
   return (
     <div className={className}>
-      <DropdownMenu.Root>
+      <DropdownMenu.Root {...dropdown}>
         <DropdownMenu.Trigger
           className={clsx(
             'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
@@ -1019,6 +1045,7 @@ function CurrencyForm({
           <DropdownMenu.Content
             align="end"
             className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            onPointerDownOutside={onPointerDownOutside}
             sideOffset={16}
           >
             {currencies.map((currency) => (
@@ -1031,19 +1058,7 @@ function CurrencyForm({
                   },
                 )}
                 key={currency.id}
-                onSelect={() => {
-                  // eslint-disable-next-line @typescript-eslint/require-await
-                  startTransition(async () => {
-                    const formData = new FormData();
-
-                    formData.append('id', currency.id);
-                    formAction(formData);
-
-                    // This is needed to refresh the Data Cache after the product has been added to the cart.
-                    // The cart id is not picked up after the first time the cart is created/updated.
-                    router.refresh();
-                  });
-                }}
+                onSelect={() => selectCurrency(currency.id)}
               >
                 {currency.label}
               </DropdownMenu.Item>
@@ -1052,5 +1067,140 @@ function CurrencyForm({
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
     </div>
+  );
+}
+
+function useLocaleSelection(action?: LocaleAction) {
+  const [isPending, startTransition] = useTransition();
+  const switchLocale = useSwitchLocale();
+
+  const selectLocale = (id: string, onStart?: () => void) =>
+    startTransition(async () => {
+      onStart?.();
+      // Sync the cart's locale first so the shopper lands on the
+      // new locale with an already-updated cart.
+      await action?.(id);
+      switchLocale(id);
+    });
+
+  return { isPending, selectLocale };
+}
+
+function useCurrencySelection(action: CurrencyAction) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [lastResult, formAction] = useActionState(action, null);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    if (lastResult?.error) console.log(lastResult.error);
+  }, [lastResult?.error]);
+
+  const selectCurrency = (id: string, onStart?: () => void) => {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    startTransition(async () => {
+      onStart?.();
+
+      const formData = new FormData();
+
+      formData.append('id', id);
+      formAction(formData);
+
+      // This is needed to refresh the Data Cache after the product has been added to the cart.
+      // The cart id is not picked up after the first time the cart is created/updated.
+      router.refresh();
+    });
+  };
+
+  return { isPending, selectCurrency };
+}
+
+function MobileSelect({
+  label,
+  value,
+  options,
+  disabled,
+  onChange,
+}: {
+  label: string;
+  value?: string;
+  options: Array<{ id: string; label: string }>;
+  disabled?: boolean;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="relative flex items-center justify-between gap-4 rounded-lg px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] focus-within:ring-2 has-[:disabled]:opacity-50">
+      {label}
+      <span
+        aria-hidden
+        className="flex min-w-0 items-center gap-1 text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]"
+      >
+        <span className="truncate">{options.find((option) => option.id === value)?.label}</span>
+        <ChevronDown className="shrink-0" size={16} strokeWidth={1.5} />
+      </span>
+      {/* Invisible but tappable across the whole row, so the platform picker does the rest. */}
+      <select
+        className="absolute inset-0 cursor-pointer appearance-none opacity-0 focus:outline-none"
+        disabled={disabled}
+        onChange={(event) => onChange(event.currentTarget.value)}
+        value={value}
+      >
+        {options.map((option) => (
+          <option key={option.id} value={option.id}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function MobileLocaleSelect({
+  label,
+  locales,
+  activeLocaleId,
+  action,
+}: {
+  label: string;
+  locales: Locale[];
+  activeLocaleId?: string;
+  action?: LocaleAction;
+}) {
+  const [value, setValue] = useOptimistic(activeLocaleId ?? locales[0]?.id);
+  const { isPending, selectLocale } = useLocaleSelection(action);
+
+  return (
+    <MobileSelect
+      disabled={isPending}
+      label={label}
+      onChange={(id) => selectLocale(id, () => setValue(id))}
+      options={locales}
+      value={value}
+    />
+  );
+}
+
+function MobileCurrencySelect({
+  label,
+  currencies,
+  activeCurrencyId,
+  action,
+}: {
+  label: string;
+  currencies: Currency[];
+  activeCurrencyId?: string;
+  action: CurrencyAction;
+}) {
+  const [value, setValue] = useOptimistic(activeCurrencyId ?? currencies[0]?.id);
+  const { isPending, selectCurrency } = useCurrencySelection(action);
+
+  return (
+    <MobileSelect
+      disabled={isPending}
+      label={label}
+      onChange={(id) => selectCurrency(id, () => setValue(id))}
+      options={currencies}
+      value={value}
+    />
   );
 }

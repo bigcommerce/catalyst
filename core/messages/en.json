@@ -577,6 +577,8 @@
     "Header": {
       "home": "Home",
       "toggleNavigation": "Toggle navigation",
+      "localeLabel": "Language",
+      "currencyLabel": "Currency",
       "Icons": {
         "account": "Profile",
         "cart": "Cart",
