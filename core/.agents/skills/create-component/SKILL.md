@@ -35,7 +35,9 @@ Type each command as it is shown. Do not put a command in a shell variable. The 
    - If only part of the request has data, offer to build that part.
    - If BigCommerce has no type for the idea, propose a model that exists. Examples are blog posts with tags, custom fields, and metafields.
    - For other cases, such as signed-in data or locales, read [references/notes.md](references/notes.md).
-3. **Learn the project.** Run `brand.mjs`. Read [references/codebase-map.md](references/codebase-map.md).
+3. **Learn the project.** Run `brand.mjs`. Read `references/project-map.md` if it exists. Then read [references/codebase-map.md](references/codebase-map.md).
+   - The codebase map shows a standard Catalyst. A fork can be different. Check each path, and search for each need that the map does not show.
+   - Write what you find in `project-map.md`. When the two maps do not agree, use `project-map.md`.
    - Read the two components that are nearest to the new one. Use components that git tracks.
    - Find out if the feature exists already. Look also for unused props and slots, such as the `banner` slot of `HeaderSection`.
    - If the feature does most of the request, offer the smallest change to it first.
