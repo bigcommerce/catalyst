@@ -1,10 +1,10 @@
 'use client';
 
-import { PropsWithChildren, Suspense } from 'react';
+import { PropsWithChildren } from 'react';
 import { z } from 'zod';
 
-import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { EventsProvider } from '~/components/analytics/events';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { StreamableEventsProvider } from '~/components/analytics/events';
 import { useAnalytics } from '~/lib/analytics/react';
 
 interface AddToCartContext {
@@ -22,24 +22,13 @@ const AddToCartSchema = z.object({
   quantity: z.number({ coerce: true }).default(1),
 });
 
-export function CartAnalyticsProvider(
-  props: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>,
-) {
-  return (
-    <Suspense fallback={props.children}>
-      <CartAnalyticsProviderResolved {...props} />
-    </Suspense>
-  );
-}
-
-function CartAnalyticsProviderResolved({
+export function CartAnalyticsProvider({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>) {
   const analytics = useAnalytics();
-  const products = useStreamable(data);
 
-  const onAddToCart = (payload?: FormData) => {
+  const onAddToCart = (products: AddToCartContext[], payload?: FormData) => {
     const parsedPayload = AddToCartSchema.safeParse(Object.fromEntries(payload?.entries() ?? []));
 
     if (parsedPayload.success) {
@@ -68,7 +57,7 @@ function CartAnalyticsProviderResolved({
     }
   };
 
-  const onRemoveFromCart = (payload?: FormData) => {
+  const onRemoveFromCart = (products: AddToCartContext[], payload?: FormData) => {
     const parsedPayload = AddToCartSchema.safeParse(Object.fromEntries(payload?.entries() ?? []));
 
     if (parsedPayload.success) {
@@ -98,8 +87,12 @@ function CartAnalyticsProviderResolved({
   };
 
   return (
-    <EventsProvider onAddToCart={onAddToCart} onRemoveFromCart={onRemoveFromCart}>
+    <StreamableEventsProvider
+      data={data}
+      onAddToCart={onAddToCart}
+      onRemoveFromCart={onRemoveFromCart}
+    >
       {children}
-    </EventsProvider>
+    </StreamableEventsProvider>
   );
 }

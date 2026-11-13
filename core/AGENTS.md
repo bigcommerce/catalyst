@@ -277,6 +277,14 @@ export default async function ProductPage({ params, searchParams }: Props) {
 
 Before opening or updating a pull request that changes anything a shopper can see or do, prove it in a real browser and attach the evidence. Follow the [`verify-catalyst`](.agents/skills/verify-catalyst/SKILL.md) skill: it launches the storefront, drives it with Playwright, records video, screenshots, and a trace, and publishes them to the PR. The helper is plain Node, so it runs on macOS, Linux, and Windows.
 
+## Secrets
+
+`.env.local` and `.bigcommerce/project.json` hold store tokens. A leaked token lets a stranger read or change the store.
+
+- Never read, print, or log these files, or any token or secret.
+- Never put a secret in a command flag or a commit.
+- To check that a variable is set, ask the user.
+
 ## Notes
 
 This codebase differs significantly from typical Next.js applications due to the custom routing proxy and e-commerce-specific patterns. The `with-routes` proxy (composed within `proxy.ts`) essentially turns Next.js into a headless CMS router, where content structure is determined by the BigCommerce backend rather than the filesystem. Understanding this fundamental difference is crucial for working effectively with the codebase.
