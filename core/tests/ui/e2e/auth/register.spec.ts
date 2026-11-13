@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
+import { completeRecaptchaIfEnabled } from '~/tests/lib/recaptcha';
 import { TAGS } from '~/tests/tags';
 
 test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page, customer }) => {
@@ -38,14 +39,7 @@ test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
 
-  // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
-  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
-  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
-
-  if (await recaptchaCheckbox.isVisible()) {
-    await recaptchaCheckbox.click();
-    await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
-  }
+  await completeRecaptchaIfEnabled(page);
 
   await page.getByRole('button', { name: t('Auth.Register.cta') }).click();
 
@@ -94,14 +88,7 @@ test('Registration fails if email is already in use', async ({ page, customer })
   await page.keyboard.type('United States');
   await page.keyboard.press('Enter');
 
-  // Click reCAPTCHA if enabled (uses test key — no challenge, always passes)
-  const recaptchaFrame = page.frameLocator('iframe[title="reCAPTCHA"]');
-  const recaptchaCheckbox = recaptchaFrame.locator('.recaptcha-checkbox-border');
-
-  if (await recaptchaCheckbox.isVisible()) {
-    await recaptchaCheckbox.click();
-    await recaptchaFrame.locator('.recaptcha-checkbox-checked').waitFor();
-  }
+  await completeRecaptchaIfEnabled(page);
 
   await page.getByRole('button', { name: t('cta') }).click();
 
