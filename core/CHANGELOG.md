@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.15.0
+
+### Minor Changes
+
+- [#3341](https://github.com/bigcommerce/catalyst/pull/3341) [`4cce7bc`](https://github.com/bigcommerce/catalyst/commit/4cce7bc3d05be54a449140644eb2119dd8d8c821) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Replace the language and currency dropdowns in the mobile menu with labelled native selects, which open the device's own picker, and make the mobile menu fill the screen below the nav, with the links scrolling above the selects pinned at the bottom. The currency select now also shows on stores with a single language. Desktop keeps the dropdowns.
+
+  ## Migration
+
+  The mobile menu's locale and currency controls in `core/vibes/soul/primitives/navigation/index.tsx` are now `MobileLocaleSelect` and `MobileCurrencySelect`. The `Navigation` component takes two new optional label props, `localeLabel` (default `Language`) and `currencyLabel` (default `Currency`), and `core/components/header/index.tsx` passes the new `Header.localeLabel` and `Header.currencyLabel` messages to them. If you customized the mobile dropdowns, port those changes to the new selects.
+
+### Patch Changes
+
+- [#3339](https://github.com/bigcommerce/catalyst/pull/3339) [`2820e1c`](https://github.com/bigcommerce/catalyst/commit/2820e1c07752b9f9247c8917524074e7b79de02c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix the cart, product, compare and wishlist sections remounting when their analytics data finishes streaming, which could discard queued cart changes and add-to-cart results. Add-to-cart and remove-from-cart analytics events fired before that data arrives are now sent once it does, instead of being dropped.
+
+- [#3340](https://github.com/bigcommerce/catalyst/pull/3340) [`a34fc6a`](https://github.com/bigcommerce/catalyst/commit/a34fc6ae76c1598bd6417486293b5692f35ae4a4) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump the direct `@radix-ui/*` dependencies to their latest releases, and fix the navigation on them: the mobile menu no longer opens at zero width with unclickable links, the mobile menu and search popover now span the full screen width, and on touch screens, tapping outside the open language or currency dropdown now only closes it instead of also activating what is under the tap.
+
+- [#3343](https://github.com/bigcommerce/catalyst/pull/3343) [`d5c9424`](https://github.com/bigcommerce/catalyst/commit/d5c9424376611451cb2c48188533ad080396c54a) Thanks [@mfaris9](https://github.com/mfaris9)! - Add the `create-component` agent skill (`.agents/skills/create-component`). An agent uses it to build a component from real store data in the project's theme. Its scripts look up schema fields and check store data. They also find common mistakes in new code.
+
+- [#3342](https://github.com/bigcommerce/catalyst/pull/3342) [`8c4dc1b`](https://github.com/bigcommerce/catalyst/commit/8c4dc1bcaf527ea4da458b003e235e5ee0cdbee8) Thanks [@mfaris9](https://github.com/mfaris9)! - Add the `setup-catalyst` agent skill (`.agents/skills/setup-catalyst`). It sends the agent to the official Catalyst docs to set up a storefront, and it never reads or prints store secrets. Add a Secrets section to `AGENTS.md` with three rules that apply to every agent task.
+
 ## 1.14.0
 
 ### Minor Changes
