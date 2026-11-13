@@ -74,7 +74,12 @@ const cloudflareConfig = defineCloudflareConfig({
   tagCache: doShardedTagCache({
     baseShardSize: 12,
     regionalCache: true,
-    regionalCacheTtlSec: 5,
+    // Every cache hit checks its tags, so once this expires the next hit goes
+    // to the Durable Object shards. At 5s, nearly every request on a
+    // low-traffic store paid that round trip, adding about 1s. `revalidateTag`
+    // clears this entry in the data center that calls it, so only other data
+    // centers can see a revalidated tag up to this many seconds late.
+    regionalCacheTtlSec: 60,
     regionalCacheDangerouslyPersistMissingTags: true,
     shardReplication: {
       numberOfSoftReplicas: 4,
