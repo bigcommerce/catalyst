@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.15.0
+
+### Minor Changes
+
+- [#3346](https://github.com/bigcommerce/catalyst/pull/3346) [`15bd748`](https://github.com/bigcommerce/catalyst/commit/15bd748408d2f72d4fa847f3013465acb35f0b4a) Thanks [@mfaris9](https://github.com/mfaris9)! - Pulls in changes from the `@bigcommerce/catalyst-core@1.15.0` release. For more information about what was included in the `@bigcommerce/catalyst-core@1.15.0` release, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/22de59ae265ab754d7105c67a769e6015bcf6ce1/core/CHANGELOG.md#1150).
+
+### Patch Changes
+
+- [#3344](https://github.com/bigcommerce/catalyst/pull/3344) [`912d791`](https://github.com/bigcommerce/catalyst/commit/912d791fced32c796d5591f57c7e752b13d836e9) Thanks [@rodrigomf24](https://github.com/rodrigomf24)! - Upgrade `@makeswift/runtime` to `0.29.3`.
+
 ## 1.14.0
 
 ### Minor Changes
