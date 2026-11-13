@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.15.0
+
+### Minor Changes
+
+- [#3348](https://github.com/bigcommerce/catalyst/pull/3348) [`56782d5`](https://github.com/bigcommerce/catalyst/commit/56782d55490a5249790759a1d11f111f51c5778f) Thanks [@mfaris9](https://github.com/mfaris9)! - Pulls in changes from the `@bigcommerce/catalyst-makeswift@1.15.0` release. For more information, see the [changelog entry](https://github.com/bigcommerce/catalyst/blob/3e9d9fb681d16b992234384ee251fb7cb8583c79/core/CHANGELOG.md#1150).
+
 ## 1.14.0
 
 ### Minor Changes
