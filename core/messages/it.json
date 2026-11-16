@@ -577,6 +577,8 @@
         "Header": {
             "home": "Home",
             "toggleNavigation": "Attiva/Disattiva navigazione",
+            "localeLabel": "Lingua",
+            "currencyLabel": "Valuta",
             "Icons": {
                 "account": "Profilo",
                 "cart": "Carrello",

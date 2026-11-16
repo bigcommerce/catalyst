@@ -577,6 +577,8 @@
         "Header": {
             "home": "Strona główna",
             "toggleNavigation": "Przełącz nawigację",
+            "localeLabel": "Język",
+            "currencyLabel": "Waluta",
             "Icons": {
                 "account": "Profil",
                 "cart": "Koszyk",

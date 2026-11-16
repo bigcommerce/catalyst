@@ -577,6 +577,8 @@
         "Header": {
             "home": "Home",
             "toggleNavigation": "Navigatie in- of uitschakelen",
+            "localeLabel": "Taal",
+            "currencyLabel": "Valuta",
             "Icons": {
                 "account": "Profiel",
                 "cart": "Winkelmandje",

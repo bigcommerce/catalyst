@@ -577,6 +577,8 @@
         "Header": {
             "home": "ホーム",
             "toggleNavigation": "トグルナビゲーション",
+            "localeLabel": "言語",
+            "currencyLabel": "通貨",
             "Icons": {
                 "account": "プロフィール",
                 "cart": "ショッピングカート",
