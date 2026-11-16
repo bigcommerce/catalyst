@@ -577,6 +577,8 @@
         "Header": {
             "home": "Startseite",
             "toggleNavigation": "Navigation ein-/ausschalten",
+            "localeLabel": "Sprache",
+            "currencyLabel": "Währung",
             "Icons": {
                 "account": "Profil",
                 "cart": "Warenkorb",

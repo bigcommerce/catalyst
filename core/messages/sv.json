@@ -577,6 +577,8 @@
         "Header": {
             "home": "Hem",
             "toggleNavigation": "Växla navigering",
+            "localeLabel": "Språk",
+            "currencyLabel": "Valuta",
             "Icons": {
                 "account": "Profil",
                 "cart": "Kundvagn",

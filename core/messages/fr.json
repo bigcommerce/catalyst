@@ -577,6 +577,8 @@
         "Header": {
             "home": "Accueil",
             "toggleNavigation": "Basculer la navigation",
+            "localeLabel": "Langue",
+            "currencyLabel": "Devise",
             "Icons": {
                 "account": "Profil",
                 "cart": "Panier",
