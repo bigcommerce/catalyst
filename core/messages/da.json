@@ -577,6 +577,8 @@
         "Header": {
             "home": "Hjem",
             "toggleNavigation": "Skift navigation",
+            "localeLabel": "Sprog",
+            "currencyLabel": "Valuta",
             "Icons": {
                 "account": "Profil",
                 "cart": "Indkøbskurv",
