@@ -153,7 +153,10 @@ const cloudflareConfig = defineCloudflareConfig({
   routePreloadingBehavior: 'withWaitUntil',
   tagCache: shareConcurrentTagReads(
     doShardedTagCache({
-      baseShardSize: 12,
+      // Few shards on purpose: an idle Durable Object takes 0.5-1s to answer,
+      // and spreading a store's tag reads over more objects leaves each one
+      // idle more often.
+      baseShardSize: 4,
       regionalCache: true,
       // Every cache hit checks its tags, so once this expires the next hit goes
       // to the Durable Object shards. At 5s, nearly every request on a
@@ -163,8 +166,8 @@ const cloudflareConfig = defineCloudflareConfig({
       regionalCacheTtlSec: 30,
       regionalCacheDangerouslyPersistMissingTags: true,
       shardReplication: {
-        numberOfSoftReplicas: 4,
-        numberOfHardReplicas: 2,
+        numberOfSoftReplicas: 1,
+        numberOfHardReplicas: 1,
         regionalReplication: {
           defaultRegion: 'enam',
         },
