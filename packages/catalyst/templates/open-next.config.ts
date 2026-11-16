@@ -52,6 +52,86 @@ const selfFetchQueue = {
   },
 };
 
+// A page render checks the same tags from many concurrent cache hits. OpenNext
+// memoizes a tag only after its Durable Object read resolves, so concurrent
+// checks each send their own read, and they queue on the same single-threaded
+// shard. This makes concurrent reads of a tag within one request share one call.
+type TagDataRecord = Record<string, unknown>;
+
+interface TagCacheStub {
+  getTagData(tags: string[]): Promise<TagDataRecord>;
+  writeTags(tags: Array<{ tag: string }>): Promise<void>;
+}
+
+interface StubFactory {
+  getDurableObjectStub(doId: { shardId: string }): TagCacheStub;
+}
+
+interface OpenNextRequestStore {
+  requestCache: { getOrCreate<K, V>(key: string): Map<K, V> };
+}
+
+// The same per-request store OpenNext's tag cache uses for its own memo.
+const getRequestReads = () => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const als = Reflect.get(globalThis, '__openNextAls') as
+    | { getStore(): OpenNextRequestStore | undefined }
+    | undefined;
+
+  return als?.getStore()?.requestCache.getOrCreate<string, Promise<unknown>>('catalyst:tag-reads');
+};
+
+async function readTagsOnce(stub: TagCacheStub, shardId: string, tags: string[]) {
+  const reads = getRequestReads();
+
+  if (!reads) return stub.getTagData(tags);
+
+  const keyOf = (tag: string) => `${shardId}|${tag}`;
+  const missing = [...new Set(tags)].filter((tag) => !reads.has(keyOf(tag)));
+
+  if (missing.length > 0) {
+    const batch = stub.getTagData(missing);
+
+    missing.forEach((tag) => {
+      reads.set(
+        keyOf(tag),
+        batch.then((data) => data[tag]),
+      );
+    });
+    // A failed read must not be reused for the rest of the request.
+    batch.catch(() => missing.forEach((tag) => reads.delete(keyOf(tag))));
+  }
+
+  const values = await Promise.all(tags.map((tag) => reads.get(keyOf(tag))));
+
+  return Object.fromEntries(
+    tags.flatMap((tag, i) => (values[i] === undefined ? [] : [[tag, values[i]]])),
+  );
+}
+
+function shareConcurrentTagReads<T>(tagCache: T): T {
+  // `getDurableObjectStub` is private in OpenNext's types but public at runtime.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const factory = tagCache as unknown as StubFactory;
+  const getStub = factory.getDurableObjectStub.bind(factory);
+
+  factory.getDurableObjectStub = (doId) => {
+    const stub = getStub(doId);
+
+    return {
+      getTagData: (tags) => readTagsOnce(stub, doId.shardId, tags),
+      writeTags: (tags) => {
+        // Later reads in this request must see the write.
+        tags.forEach(({ tag }) => getRequestReads()?.delete(`${doId.shardId}|${tag}`));
+
+        return stub.writeTags(tags);
+      },
+    };
+  };
+
+  return tagCache;
+}
+
 const cloudflareConfig = defineCloudflareConfig({
   // The absence of `cachePurge` and `bypassTagCacheOnCacheHit` is deliberate.
   // Invalidating regional (Cache API) entries needs either a CDN purge that
@@ -71,24 +151,26 @@ const cloudflareConfig = defineCloudflareConfig({
     waitForQueueAck: true,
   }),
   routePreloadingBehavior: 'withWaitUntil',
-  tagCache: doShardedTagCache({
-    baseShardSize: 12,
-    regionalCache: true,
-    // Every cache hit checks its tags, so once this expires the next hit goes
-    // to the Durable Object shards. At 5s, nearly every request on a
-    // low-traffic store paid that round trip, adding about 1s. `revalidateTag`
-    // clears this entry in the data center that calls it, so only other data
-    // centers can see a revalidated tag up to this many seconds late.
-    regionalCacheTtlSec: 60,
-    regionalCacheDangerouslyPersistMissingTags: true,
-    shardReplication: {
-      numberOfSoftReplicas: 4,
-      numberOfHardReplicas: 2,
-      regionalReplication: {
-        defaultRegion: 'enam',
+  tagCache: shareConcurrentTagReads(
+    doShardedTagCache({
+      baseShardSize: 12,
+      regionalCache: true,
+      // Every cache hit checks its tags, so once this expires the next hit goes
+      // to the Durable Object shards. At 5s, nearly every request on a
+      // low-traffic store paid that round trip, adding about 1s. `revalidateTag`
+      // clears this entry in the data center that calls it, so only other data
+      // centers can see a revalidated tag up to this many seconds late.
+      regionalCacheTtlSec: 30,
+      regionalCacheDangerouslyPersistMissingTags: true,
+      shardReplication: {
+        numberOfSoftReplicas: 4,
+        numberOfHardReplicas: 2,
+        regionalReplication: {
+          defaultRegion: 'enam',
+        },
       },
-    },
-  }),
+    }),
+  ),
   enableCacheInterception: false,
 });
 
