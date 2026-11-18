@@ -12,6 +12,8 @@ import {
 
 export class CatalogFixture extends Fixture {
   products: Product[] = [];
+  attributeIds: number[] = [];
+  templateIds: number[] = [];
 
   async getDefaultOrCreateSimpleProduct(): Promise<Product> {
     if (!testEnv.DEFAULT_PRODUCT_ID) {
@@ -82,7 +84,55 @@ export class CatalogFixture extends Fixture {
     return product;
   }
 
+  // Gives a product catalog attributes. Each pair becomes a new dropdown attribute
+  // whose only value is `value`; the attributes are bundled into a new product
+  // template that is assigned to the product with those values selected.
+  async assignAttributesToProduct(
+    productId: number,
+    attributes: Array<{ displayName: string; value: string }>,
+  ): Promise<void> {
+    this.skipIfReadonly();
+
+    const suffix = faker.string.alpha(5);
+
+    const created = await Promise.all(
+      attributes.map(async ({ displayName, value }, index) => {
+        const attribute = await this.api.catalog.createAttribute({
+          name: `test_attribute_${suffix}_${index}`,
+          displayName,
+          values: [value],
+        });
+
+        this.attributeIds.push(attribute.id);
+
+        const attributeValue = attribute.values.find(({ label }) => label === value);
+
+        if (!attributeValue) {
+          throw new Error(`Catalog attribute ${attribute.id} is missing value "${value}"`);
+        }
+
+        return { id: attribute.id, valueId: attributeValue.id };
+      }),
+    );
+
+    const template = await this.api.catalog.createProductTemplate({
+      name: `Test Template ${suffix}`,
+      attributes: created.map(({ id, valueId }) => ({ id, valueIds: [valueId] })),
+    });
+
+    this.templateIds.push(template.id);
+
+    await this.api.catalog.assignProductTemplate({
+      templateId: template.id,
+      productId,
+      attributeValues: created,
+    });
+  }
+
   async cleanup() {
+    await this.api.catalog.deleteProductTemplateAssignments(this.templateIds);
+    await this.api.catalog.deleteProductTemplates(this.templateIds);
+    await this.api.catalog.deleteAttributes(this.attributeIds);
     await this.api.catalog.deleteProducts(this.products.map(({ id }) => id));
   }
 
