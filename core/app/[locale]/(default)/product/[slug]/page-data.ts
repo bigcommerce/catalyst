@@ -331,6 +331,14 @@ const StreamableProductQuery = graphql(
               }
             }
           }
+          attributes(first: 50) {
+            edges {
+              node {
+                displayName
+                value
+              }
+            }
+          }
           minPurchaseQuantity
           maxPurchaseQuantity
           warranty
