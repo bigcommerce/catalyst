@@ -8,8 +8,7 @@ import { sortPackageJsonFields } from './sort-package-json';
 
 // Native-module build allowlist, lifted from the monorepo's root
 // pnpm-workspace.yaml `onlyBuiltDependencies`. A standalone install needs this so
-// pnpm (`pnpm.onlyBuiltDependencies`, or `allowBuilds` in pnpm-workspace.yaml on
-// pnpm 11+) and bun (`trustedDependencies`) run the native postinstall builds.
+// pnpm and bun (`trustedDependencies`) run the native postinstall builds.
 // npm/yarn-classic run them anyway.
 const NATIVE_BUILD_ALLOWLIST = [
   '@parcel/watcher',
@@ -71,8 +70,7 @@ const resolvePublishedVersion = async (pkgName: string): Promise<string> => {
   return `^${version}`;
 };
 
-// pnpm 11+ ignores the `pnpm` field in package.json and fails the install on
-// unapproved build scripts; it reads `allowBuilds` from pnpm-workspace.yaml.
+// pnpm 11+ reads the build allowlist from pnpm-workspace.yaml, not package.json.
 const writePnpmWorkspace = (projectDir: string) => {
   const workspacePath = join(projectDir, 'pnpm-workspace.yaml');
 
@@ -95,7 +93,7 @@ export const rewriteCorePackage = async (
   ref: string,
   packageManager?: PackageManager,
 ) => {
-  // Same rule as create-next-app: an unknown pnpm version is treated as current.
+  // Treat an unknown pnpm version as current.
   const pnpmMajor = packageManager === 'pnpm' ? getPnpmMajorVersion() : null;
   const usePnpmWorkspace = packageManager === 'pnpm' && (pnpmMajor === null || pnpmMajor >= 11);
 

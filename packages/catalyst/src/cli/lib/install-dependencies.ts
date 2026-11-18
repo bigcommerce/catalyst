@@ -3,13 +3,8 @@ import yoctoSpinner from 'yocto-spinner';
 
 import type { PackageManager } from './detect-package-manager';
 
-// Run the package manager by name, the same `pnpm` / `npm` / `yarn` the user
-// runs next. Not nypm: it installs through `corepack <manager>` when corepack is
-// available, and corepack picks its cached default version, not the user's.
-//
-// NODE_NO_WARNINGS keeps Node's warning flood out of the captured output, and
-// COREPACK_ENABLE_DOWNLOAD_PROMPT stops a corepack shim on PATH from waiting on
-// a download prompt.
+// Run the package manager by name, so the install uses the same binary as the
+// user's later commands.
 export const installDependencies = async (
   projectDir: string,
   packageManager: PackageManager = 'pnpm',
@@ -22,6 +17,7 @@ export const installDependencies = async (
     await execa(packageManager, ['install'], {
       cwd: projectDir,
       stdin: 'ignore',
+      // Silence Node warnings and never wait on a corepack download prompt.
       env: { NODE_NO_WARNINGS: '1', COREPACK_ENABLE_DOWNLOAD_PROMPT: '0' },
     });
     spinner.success('Dependencies installed successfully.');

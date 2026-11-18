@@ -52,8 +52,7 @@ export const detectPackageManager = (): PackageManager => {
   return 'npm';
 };
 
-// Major version of the pnpm that invoked the CLI, from npm_config_user_agent
-// (e.g. "pnpm/12.9.0 npm/? node/v24.11.0 darwin arm64"), or null if unknown.
+// Major version of the pnpm that invoked the CLI, or null if unknown.
 export const getPnpmMajorVersion = (): number | null => {
   const match = /^pnpm\/(\d+)\./.exec(process.env.npm_config_user_agent ?? '');
 
