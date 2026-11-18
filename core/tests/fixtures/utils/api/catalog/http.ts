@@ -8,10 +8,12 @@ import { apiResponseSchema } from '../schema';
 import {
   Brand,
   CatalogApi,
+  CatalogAttribute,
   Category,
   CreateProductData,
   CreateVariantData,
   Product,
+  ProductTemplate,
   Variant,
 } from '.';
 
@@ -165,6 +167,37 @@ const BrandSchema = z
     }),
   );
 
+// The v0 bulk endpoints answer 200 or 207 (partial success) with an `errors` array,
+// so a successful status alone doesn't mean every item was created.
+const bulkResponseSchema = <T extends z.ZodSchema>(schema: T) =>
+  z
+    .object({
+      data: z.array(schema),
+      errors: z.array(z.unknown()).default([]),
+    })
+    .refine(
+      (resp) => resp.errors.length === 0,
+      (resp) => ({
+        message: `Bulk request reported errors: ${JSON.stringify(resp.errors)}`,
+      }),
+    );
+
+const CatalogAttributeValueSchema = z.object({
+  id: z.number(),
+  label: z.string(),
+});
+
+const CatalogAttributeSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  display_name: z.string(),
+});
+
+const ProductTemplateSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
 const transformCreateVariantData = (data: CreateVariantData) =>
   VariantCreateSchema.parse({
     sku: data.sku,
@@ -266,6 +299,94 @@ export const catalogHttpClient: CatalogApi = {
   deleteProducts: async (ids: number[]): Promise<void> => {
     if (ids.length > 0) {
       await httpClient.delete(`/v3/catalog/products?id:in=${ids.join(',')}`);
+    }
+  },
+  createAttribute: async (data): Promise<CatalogAttribute> => {
+    const resp = await httpClient
+      .post('/v0/catalog/attributes', [
+        {
+          name: data.name,
+          display_name: data.displayName,
+          type: 'dropdown',
+          is_visible: true,
+          values: data.values.map((label, index) => ({ label, sort_order: index })),
+        },
+      ])
+      .parse(bulkResponseSchema(CatalogAttributeSchema));
+
+    const attribute = resp.data[0];
+
+    if (!attribute) {
+      throw new Error(`Failed to create catalog attribute "${data.name}"`);
+    }
+
+    // The attribute responses omit value IDs, which template assignments need,
+    // so read them from the values endpoint.
+    const values = await httpClient
+      .get(`/v0/catalog/attributes/${attribute.id}/values?limit=250`)
+      .parse(apiResponseSchema(z.array(CatalogAttributeValueSchema)));
+
+    return {
+      id: attribute.id,
+      name: attribute.name,
+      displayName: attribute.display_name,
+      values: values.data,
+    };
+  },
+  deleteAttributes: async (ids: number[]): Promise<void> => {
+    if (ids.length > 0) {
+      await httpClient.delete(`/v0/catalog/attributes?id:in=${ids.join(',')}`);
+    }
+  },
+  createProductTemplate: async (data): Promise<ProductTemplate> => {
+    const resp = await httpClient
+      .post('/v0/catalog/products/templates', [
+        {
+          name: data.name,
+          selection_data: {
+            catalog_attributes: data.attributes.map(({ id, valueIds }) => ({
+              id,
+              values_id: valueIds,
+            })),
+          },
+        },
+      ])
+      .parse(bulkResponseSchema(ProductTemplateSchema));
+
+    const template = resp.data[0];
+
+    if (!template) {
+      throw new Error(`Failed to create product template "${data.name}"`);
+    }
+
+    return template;
+  },
+  deleteProductTemplates: async (ids: number[]): Promise<void> => {
+    if (ids.length > 0) {
+      await httpClient.delete(`/v0/catalog/products/templates?id:in=${ids.join(',')}`);
+    }
+  },
+  assignProductTemplate: async (data): Promise<void> => {
+    await httpClient
+      .post('/v0/catalog/products/template-assignments', [
+        {
+          template_id: data.templateId,
+          product_id: data.productId,
+          selection_data: {
+            attribute_data: data.attributeValues.map(({ id, valueId }) => ({
+              id,
+              value_id: valueId,
+            })),
+          },
+        },
+      ])
+      .parse(bulkResponseSchema(z.unknown()));
+  },
+  deleteProductTemplateAssignments: async (templateIds: number[]): Promise<void> => {
+    if (templateIds.length > 0) {
+      await httpClient.delete(
+        `/v0/catalog/products/template-assignments?template_id:in=${templateIds.join(',')}`,
+      );
     }
   },
 };

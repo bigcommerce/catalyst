@@ -344,3 +344,32 @@ test(
     await expect(page.getByText(t('Wishlist.Button.addSuccessMessage'))).toBeVisible();
   },
 );
+
+test(
+  'Displays catalog attributes in the specifications accordion',
+  { tag: [TAGS.writesData] },
+  async ({ page, catalog }) => {
+    const t = await getTranslations('Product.ProductDetails');
+    const product = await catalog.createSimpleProduct();
+    const attributes = [
+      { displayName: `Material ${faker.string.alpha(5)}`, value: 'Oak' },
+      { displayName: `Finish ${faker.string.alpha(5)}`, value: 'Matte' },
+    ];
+
+    await catalog.assignAttributesToProduct(product.id, attributes);
+
+    await page.goto(product.path);
+    await page.waitForLoadState('networkidle');
+
+    await page.getByRole('button', { name: t('Accordions.specifications') }).click();
+
+    await Promise.all(
+      attributes.map(async ({ displayName, value }) => {
+        const row = page.getByRole('term').filter({ hasText: displayName }).locator('..');
+
+        await expect(row.getByRole('term')).toHaveText(displayName);
+        await expect(row.getByRole('definition')).toHaveText(value);
+      }),
+    );
+  },
+);
