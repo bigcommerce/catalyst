@@ -444,6 +444,7 @@ export default async function Product({ params, searchParams }: Props) {
     const product = await streamableProduct;
 
     const customFields = removeEdgesAndNodes(product.customFields);
+    const attributes = removeEdgesAndNodes(product.attributes);
 
     const specifications = [
       {
@@ -461,6 +462,10 @@ export default async function Product({ params, searchParams }: Props) {
       ...customFields.map((field) => ({
         name: field.name,
         value: field.value,
+      })),
+      ...attributes.map((attribute) => ({
+        name: attribute.displayName,
+        value: attribute.value,
       })),
     ];
 
