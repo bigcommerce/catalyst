@@ -1,45 +1,15 @@
-import { installDependencies as installDeps } from 'nypm';
+import { execa } from 'execa';
 import yoctoSpinner from 'yocto-spinner';
 
 import type { PackageManager } from './detect-package-manager';
 
-// Restore an env var to a captured previous value, unsetting it when it wasn't
-// set before (a plain assignment can't represent "absent").
-const restoreEnv = (key: string, previous: string | undefined) => {
-  if (previous === undefined) {
-    Reflect.deleteProperty(process.env, key);
-  } else {
-    process.env[key] = previous;
-  }
-};
-
-// nypm runs the install through tinyexec, which in silent mode drains the
-// child's stdout to completion BEFORE it starts reading stderr. pnpm sends its
-// progress to stdout but floods stderr with Node warnings — on Node 26 the
-// `File descriptor N opened in unmanaged mode` spam alone is thousands of
-// lines. That stderr fills its ~64KB pipe buffer while tinyexec is still busy
-// on stdout, pnpm blocks writing, and the whole install deadlocks (the original
-// "hangs forever" bug). These env vars keep the child quiet on stderr so the
-// buffer never fills:
-//   - NODE_NO_WARNINGS: drop pnpm/corepack's internal Node warnings (the flood).
-//   - COREPACK_ENABLE_DOWNLOAD_PROMPT: never block on corepack's download
-//     confirmation (defensive; corepack already defaults this off for the
-//     `corepack pnpm` entrypoint, but pin it so no path can stall on stdin).
-const withQuietInstallEnv = async <T>(run: () => Promise<T>): Promise<T> => {
-  const prevNodeNoWarnings = process.env.NODE_NO_WARNINGS;
-  const prevDownloadPrompt = process.env.COREPACK_ENABLE_DOWNLOAD_PROMPT;
-
-  process.env.NODE_NO_WARNINGS ??= '1';
-  process.env.COREPACK_ENABLE_DOWNLOAD_PROMPT ??= '0';
-
-  try {
-    return await run();
-  } finally {
-    restoreEnv('NODE_NO_WARNINGS', prevNodeNoWarnings);
-    restoreEnv('COREPACK_ENABLE_DOWNLOAD_PROMPT', prevDownloadPrompt);
-  }
-};
-
+// Run the package manager by name, the same `pnpm` / `npm` / `yarn` the user
+// runs next. Not nypm: it installs through `corepack <manager>` when corepack is
+// available, and corepack picks its cached default version, not the user's.
+//
+// NODE_NO_WARNINGS keeps Node's warning flood out of the captured output, and
+// COREPACK_ENABLE_DOWNLOAD_PROMPT stops a corepack shim on PATH from waiting on
+// a download prompt.
 export const installDependencies = async (
   projectDir: string,
   packageManager: PackageManager = 'pnpm',
@@ -49,7 +19,11 @@ export const installDependencies = async (
   );
 
   try {
-    await withQuietInstallEnv(() => installDeps({ cwd: projectDir, silent: true, packageManager }));
+    await execa(packageManager, ['install'], {
+      cwd: projectDir,
+      stdin: 'ignore',
+      env: { NODE_NO_WARNINGS: '1', COREPACK_ENABLE_DOWNLOAD_PROMPT: '0' },
+    });
     spinner.success('Dependencies installed successfully.');
   } catch (error) {
     const message = error instanceof Error ? error.message : 'unknown error';

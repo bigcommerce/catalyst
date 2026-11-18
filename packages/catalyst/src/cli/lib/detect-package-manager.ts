@@ -52,6 +52,14 @@ export const detectPackageManager = (): PackageManager => {
   return 'npm';
 };
 
+// Major version of the pnpm that invoked the CLI, from npm_config_user_agent
+// (e.g. "pnpm/12.9.0 npm/? node/v24.11.0 darwin arm64"), or null if unknown.
+export const getPnpmMajorVersion = (): number | null => {
+  const match = /^pnpm\/(\d+)\./.exec(process.env.npm_config_user_agent ?? '');
+
+  return match?.[1] ? Number(match[1]) : null;
+};
+
 // Detect the package manager an EXISTING project uses, from its lockfile or the
 // package.json `packageManager` field. Used by flows that run inside an
 // already-scaffolded project (e.g. `project link`), where a lockfile exists —
