@@ -383,7 +383,7 @@ Examples:
       await extractCatalyst({ repository, ref: ghRef, projectDir });
       // Turn the extracted core/ into an installable standalone project
       // (resolve workspace deps, drop `private`, record the catalyst version/ref).
-      await rewriteCorePackage(projectDir, ghRef);
+      await rewriteCorePackage(projectDir, ghRef, packageManager);
       setupCoreProject(projectDir);
 
       if (useCommerceHosting && commerceHostingProject && storeHash && accessToken) {

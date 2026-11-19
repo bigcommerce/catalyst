@@ -1,14 +1,15 @@
-import { readFileSync, writeFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { z } from 'zod';
 
+import { getPnpmMajorVersion, type PackageManager } from './detect-package-manager';
 import { consola } from './logger';
 import { sortPackageJsonFields } from './sort-package-json';
 
 // Native-module build allowlist, lifted from the monorepo's root
 // pnpm-workspace.yaml `onlyBuiltDependencies`. A standalone install needs this so
-// pnpm (`pnpm.onlyBuiltDependencies`) and bun (`trustedDependencies`) run the
-// native postinstall builds without prompting. npm/yarn-classic run them anyway.
+// pnpm and bun (`trustedDependencies`) run the native postinstall builds.
+// npm/yarn-classic run them anyway.
 const NATIVE_BUILD_ALLOWLIST = [
   '@parcel/watcher',
   '@swc/core',
@@ -69,12 +70,33 @@ const resolvePublishedVersion = async (pkgName: string): Promise<string> => {
   return `^${version}`;
 };
 
+// pnpm 11+ reads the build allowlist from pnpm-workspace.yaml, not package.json.
+const writePnpmWorkspace = (projectDir: string) => {
+  const workspacePath = join(projectDir, 'pnpm-workspace.yaml');
+
+  if (existsSync(workspacePath)) {
+    return;
+  }
+
+  const lines = ['allowBuilds:', ...NATIVE_BUILD_ALLOWLIST.map((name) => `  '${name}': true`)];
+
+  writeFileSync(workspacePath, `${lines.join('\n')}\n`);
+};
+
 // Transforms an extracted `core/package.json` into an installable, standalone
 // manifest: resolves `workspace:` deps to published versions, drops `private`,
 // bakes the native-build allowlist for pnpm/bun, strips monorepo-only (turbo)
 // scripts, and records the Catalyst version/ref the project was created from.
 // Also writes `.npmrc` so npm tolerates react-headroom's stale react peer range.
-export const rewriteCorePackage = async (projectDir: string, ref: string) => {
+export const rewriteCorePackage = async (
+  projectDir: string,
+  ref: string,
+  packageManager?: PackageManager,
+) => {
+  // Treat an unknown pnpm version as current.
+  const pnpmMajor = packageManager === 'pnpm' ? getPnpmMajorVersion() : null;
+  const usePnpmWorkspace = packageManager === 'pnpm' && (pnpmMajor === null || pnpmMajor >= 11);
+
   const packageJsonPath = join(projectDir, 'package.json');
   const pkg = corePackageJsonSchema.parse(JSON.parse(readFileSync(packageJsonPath, 'utf-8')));
 
@@ -109,7 +131,10 @@ export const rewriteCorePackage = async (projectDir: string, ref: string) => {
     );
   }
 
-  pkg.pnpm = { ...pkg.pnpm, onlyBuiltDependencies: NATIVE_BUILD_ALLOWLIST };
+  if (!usePnpmWorkspace) {
+    pkg.pnpm = { ...pkg.pnpm, onlyBuiltDependencies: NATIVE_BUILD_ALLOWLIST };
+  }
+
   pkg.trustedDependencies = NATIVE_BUILD_ALLOWLIST;
 
   // Track what this project was scaffolded from (consumed by `catalyst upgrade`
@@ -121,4 +146,8 @@ export const rewriteCorePackage = async (projectDir: string, ref: string) => {
   // react-headroom (unmaintained) declares a react <=18 peer; core ships react 19.
   // pnpm/yarn/bun tolerate it, but npm errors ERESOLVE without this.
   writeFileSync(join(projectDir, '.npmrc'), 'legacy-peer-deps=true\n');
+
+  if (usePnpmWorkspace) {
+    writePnpmWorkspace(projectDir);
+  }
 };
