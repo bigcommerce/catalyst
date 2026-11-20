@@ -1,5 +1,15 @@
 # @bigcommerce/catalyst
 
+## 1.6.2
+
+### Patch Changes
+
+- [#3353](https://github.com/bigcommerce/catalyst/pull/3353) [`f8750f3`](https://github.com/bigcommerce/catalyst/commit/f8750f3ead894e56e366f1c3b0aed3d60e3f4aea) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Install dependencies with the package manager on your PATH instead of corepack's cached default version, and on pnpm 11+ write the build allowlist to `pnpm-workspace.yaml` so installs don't fail with `ERR_PNPM_IGNORED_BUILDS`.
+
+- [#3356](https://github.com/bigcommerce/catalyst/pull/3356) [`5ae3b82`](https://github.com/bigcommerce/catalyst/commit/5ae3b8215f8c8ed45dc1d2bac5f3600a36282408) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Speed up cached page renders on Storefront Hosting. Setup now pins `@opennextjs/cloudflare` 1.20.18, which reads each tag from the Durable Objects once per request instead of once per cached entry. Tag lookups also stay in the regional cache for 30 seconds instead of 5, and the tag cache uses fewer Durable Objects so they stay warm.
+
+  Migration: 1.20.18 needs Next.js 16.4.5. Run `catalyst upgrade`, then deploy; the CLI offers to update the adapter pin.
+
 ## 1.6.1
 
 ### Patch Changes
