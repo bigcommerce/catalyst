@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.15.1
+
+### Patch Changes
+
+- [#3356](https://github.com/bigcommerce/catalyst/pull/3356) [`5ae3b82`](https://github.com/bigcommerce/catalyst/commit/5ae3b8215f8c8ed45dc1d2bac5f3600a36282408) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Upgrade Next.js to 16.4.5, which `@opennextjs/cloudflare` 1.20.18 requires and which includes the fixes from the Next.js security release on November 3.
+
+- [#3350](https://github.com/bigcommerce/catalyst/pull/3350) [`11894e5`](https://github.com/bigcommerce/catalyst/commit/11894e5e4ccb5a48e90a5cecad6c7fa096cb1215) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.15.0
 
 ### Minor Changes
