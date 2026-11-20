@@ -1164,7 +1164,7 @@ describe('reconcileOpenNextVersion', () => {
   };
 
   // A compatible Next version, so the peer gate is not what is under test.
-  const compatibleNext = { next: '~16.4.3' };
+  const compatibleNext = { next: '~16.4.5' };
 
   describe('cases it must stay out of', () => {
     it('does nothing when the project has no package.json', async () => {
