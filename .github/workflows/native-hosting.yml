@@ -36,7 +36,7 @@ jobs:
       # Keep the adapter version in sync with OPENNEXT_CLOUDFLARE_VERSION in
       # packages/catalyst/src/cli/lib/commerce-hosting.ts
       - name: Install OpenNext adapter
-        run: pnpm add @opennextjs/cloudflare@1.20.15
+        run: pnpm add @opennextjs/cloudflare@1.20.18
         working-directory: core
 
       - name: Build monorepo packages

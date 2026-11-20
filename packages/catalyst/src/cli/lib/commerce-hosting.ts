@@ -22,11 +22,11 @@ import { sortPackageJsonFields } from './sort-package-json';
 //
 // This is what new projects are pinned to, not a floor existing ones are held
 // at -- see `reconcileOpenNextVersion`.
-export const OPENNEXT_CLOUDFLARE_VERSION = '1.20.15';
+export const OPENNEXT_CLOUDFLARE_VERSION = '1.20.18';
 
 // The `next` peer range OPENNEXT_CLOUDFLARE_VERSION declares. Update both
 // together, from the new adapter's `peerDependencies.next`.
-export const OPENNEXT_REQUIRED_NEXT_RANGE = '>=15.5.28 <16 || >=16.4.1';
+export const OPENNEXT_REQUIRED_NEXT_RANGE = '>=15.5.29 <16 || >=16.4.5';
 
 const corePackageJsonSchema = z.looseObject({
   dependencies: z.record(z.string(), z.string()).optional(),
