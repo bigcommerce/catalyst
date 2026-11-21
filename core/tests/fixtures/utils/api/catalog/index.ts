@@ -82,12 +82,56 @@ export interface Brand {
   readonly path: string;
 }
 
+export interface CatalogAttribute {
+  readonly id: number;
+  readonly name: string;
+  readonly displayName: string;
+  readonly values: Array<{
+    readonly id: number;
+    readonly label: string;
+  }>;
+}
+
+export interface CreateCatalogAttributeData {
+  name: string;
+  displayName: string;
+  values: string[];
+}
+
+export interface ProductTemplate {
+  readonly id: number;
+  readonly name: string;
+}
+
+export interface CreateProductTemplateData {
+  name: string;
+  attributes: Array<{
+    id: number;
+    valueIds: number[];
+  }>;
+}
+
+export interface AssignProductTemplateData {
+  templateId: number;
+  productId: number;
+  attributeValues: Array<{
+    id: number;
+    valueId: number;
+  }>;
+}
+
 export interface CatalogApi {
   getProductById: (id: number) => Promise<Product>;
   getCategories: (filters?: { nameLike?: string; ids?: number[] }) => Promise<Category[]>;
   getBrands: (filters?: { nameLike?: string; ids?: number[] }) => Promise<Brand[]>;
   createProduct: (data: CreateProductData) => Promise<Product>;
   deleteProducts: (ids: number[]) => Promise<void>;
+  createAttribute: (data: CreateCatalogAttributeData) => Promise<CatalogAttribute>;
+  deleteAttributes: (ids: number[]) => Promise<void>;
+  createProductTemplate: (data: CreateProductTemplateData) => Promise<ProductTemplate>;
+  deleteProductTemplates: (ids: number[]) => Promise<void>;
+  assignProductTemplate: (data: AssignProductTemplateData) => Promise<void>;
+  deleteProductTemplateAssignments: (templateIds: number[]) => Promise<void>;
 }
 
 export { catalogHttpClient } from './http';
