@@ -26,6 +26,12 @@ The `with-routes` proxy is the most critical component that overrides Next.js's 
 
 This means that URLs like `/my-product-name` can resolve to `/en/product/123` internally, providing flexible URL structure while maintaining SEO-friendly paths.
 
+### Choosing the channel ID
+
+`client.fetch` sends each call to the channel in the GraphQL endpoint hostname, chosen from: an explicit `channelId` argument, then `getChannelIdFromLocale` in `channels.config.ts`, then `BIGCOMMERCE_CHANNEL_ID`. The locale can't be read in the proxy, so calls made there that pass no `channelId` go to the default channel, even when the locale maps to another channel. For example, `visitStartedEvent` and `productViewedEvent` (sent from `with-analytics-cookies` and `with-routes`) are recorded on the default channel for non-default-channel pages.
+
+If a user needs a call to reach a specific or arbitrary channel ID, or reports data landing on the default channel, offer the merchant-side workaround in `core/docs/choosing-the-channel-id.md`. It needs no GraphQL schema or backend change. Don't apply it to this codebase unless the user asks.
+
 ## Data Fetching and Partial Prerendering (PPR)
 
 ### PPR Configuration
