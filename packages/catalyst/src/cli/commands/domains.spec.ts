@@ -24,6 +24,7 @@ import {
   formatDomain,
   formatDomainStatus,
   formatPointingRecords,
+  formatValidationRecords,
   waitForDomainVerification,
 } from './domains';
 
@@ -49,6 +50,12 @@ const domain = 'www.example.com';
 const pointingRecords = {
   a_record_value: '198.51.100.10',
   cname_record_value: 'shared.hosting.bigcommerce.com',
+};
+// Mirrors the validation records the default create handler returns for `domain`.
+const ownershipTxtRecord = { name: `_cf-custom-hostname.${domain}`, value: 'ownership-token' };
+const certificateDcvCnameRecord = {
+  name: `_acme-challenge.${domain}`,
+  value: `${domain}.a754438ddee234e3.dcv.cloudflare.com`,
 };
 
 function writeCredentials() {
@@ -240,6 +247,36 @@ describe('formatPointingRecords', () => {
     expect(formatPointingRecords(undefined)).toBeNull();
     expect(formatPointingRecords({})).toBeNull();
     expect(formatPointingRecords({ a_record_value: '', cname_record_value: null })).toBeNull();
+  });
+});
+
+describe('formatValidationRecords', () => {
+  test('renders both records with the names padded so the values line up', () => {
+    const output = formatValidationRecords({
+      ownership_txt_record: ownershipTxtRecord,
+      certificate_dcv_cname_record: certificateDcvCnameRecord,
+    });
+
+    expect(output?.split('\n')).toEqual([
+      `  TXT    ${ownershipTxtRecord.name}  ownership-token`,
+      `  CNAME  ${certificateDcvCnameRecord.name.padEnd(ownershipTxtRecord.name.length)}  ${certificateDcvCnameRecord.value}`,
+    ]);
+  });
+
+  test('omits the ownership record the API nulls once a domain is verified', () => {
+    const output = formatValidationRecords({
+      ownership_txt_record: null,
+      certificate_dcv_cname_record: certificateDcvCnameRecord,
+    });
+
+    expect(output).toContain('CNAME');
+    expect(output).not.toContain('TXT');
+  });
+
+  test('returns null when there are no records', () => {
+    expect(formatValidationRecords(null)).toBeNull();
+    expect(formatValidationRecords(undefined)).toBeNull();
+    expect(formatValidationRecords({})).toBeNull();
   });
 });
 
@@ -722,6 +759,31 @@ describe('add command', () => {
     );
   });
 
+  test('prints the validation records for a domain behind a third-party WAF', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain], { from: 'user' });
+
+    expect(consola.info).toHaveBeenCalledWith(
+      `If a third-party WAF or proxy sits in front of ${domain}, publish these DNS records to validate it instead:`,
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining(`TXT    ${ownershipTxtRecord.name}  ownership-token`),
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining(certificateDcvCnameRecord.value),
+    );
+  });
+
+  test('skips the validation records once the domain verified while waiting', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['add', domain, '--wait'], { from: 'user' });
+
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('third-party WAF'));
+  });
+
   test('still prints the records after waiting for verification', async () => {
     writeCredentials();
 
@@ -931,6 +993,78 @@ describe('status command', () => {
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining(domain));
     expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('active'));
     expect(exitMock).toHaveBeenCalledWith(0);
+  });
+
+  test('prints both validation records for a pending domain', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () =>
+          HttpResponse.json({
+            data: {
+              domain,
+              project_uuid: projectUuid,
+              verification_status: 'pending',
+              validation_records: {
+                ownership_txt_record: ownershipTxtRecord,
+                certificate_dcv_cname_record: certificateDcvCnameRecord,
+              },
+            },
+          }),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['status', domain], { from: 'user' });
+
+    expect(consola.info).toHaveBeenCalledWith(
+      `If a third-party WAF or proxy sits in front of ${domain}, publish these DNS records to validate it instead:`,
+    );
+    expect(consola.log).toHaveBeenCalledWith(expect.stringContaining('ownership-token'));
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining(certificateDcvCnameRecord.value),
+    );
+  });
+
+  test('prints only the certificate record for a verified domain', async () => {
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/projects/:projectUuid/domains/:domain',
+        () =>
+          HttpResponse.json({
+            data: {
+              domain,
+              project_uuid: projectUuid,
+              verification_status: 'verified',
+              validation_records: {
+                ownership_txt_record: null,
+                certificate_dcv_cname_record: certificateDcvCnameRecord,
+              },
+            },
+          }),
+      ),
+    );
+
+    writeCredentials();
+
+    await domains.parseAsync(['status', domain], { from: 'user' });
+
+    expect(consola.info).toHaveBeenCalledWith(
+      `If a third-party WAF or proxy sits in front of ${domain}, keep this DNS record published so its SSL certificate can renew:`,
+    );
+    expect(consola.log).toHaveBeenCalledWith(
+      expect.stringContaining(certificateDcvCnameRecord.value),
+    );
+    expect(consola.log).not.toHaveBeenCalledWith(expect.stringContaining('TXT'));
+  });
+
+  test('prints no validation guidance when the API returns no records', async () => {
+    writeCredentials();
+
+    await domains.parseAsync(['status', domain], { from: 'user' });
+
+    expect(consola.info).not.toHaveBeenCalledWith(expect.stringContaining('third-party WAF'));
   });
 
   test('can wait for a pending domain to leave pending status', async () => {

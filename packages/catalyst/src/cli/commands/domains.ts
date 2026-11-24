@@ -18,6 +18,7 @@ import {
   OwnershipVerification,
   PointingRecords,
   transferDomain,
+  ValidationRecords,
 } from '../lib/domains';
 import { UserActionableError } from '../lib/errors';
 import { consola } from '../lib/logger';
@@ -163,6 +164,54 @@ export function formatPointingRecords(records?: PointingRecords | null): string 
   return rows.map((row) => `  ${row}`).join('\n');
 }
 
+// Renders the validation records as an indented, aligned block:
+//
+//   TXT    _cf-custom-hostname.shop.example.com  <token>
+//   CNAME  _acme-challenge.shop.example.com      shop.example.com.<id>.dcv.cloudflare.com
+//
+// Returns null when the API sent none.
+export function formatValidationRecords(records?: ValidationRecords | null): string | null {
+  const rows: Array<{ type: string; name: string; value: string }> = [];
+
+  if (records?.ownership_txt_record) {
+    rows.push({ type: 'TXT', ...records.ownership_txt_record });
+  }
+
+  if (records?.certificate_dcv_cname_record) {
+    rows.push({ type: 'CNAME', ...records.certificate_dcv_cname_record });
+  }
+
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const nameWidth = Math.max(...rows.map((row) => row.name.length));
+
+  return rows
+    .map(
+      (row) =>
+        `  ${row.type.padEnd(RECORD_TYPE_WIDTH)}  ${row.name.padEnd(nameWidth)}  ${row.value}`,
+    )
+    .join('\n');
+}
+
+// A verified domain no longer needs validating; the record that remains is the
+// one that keeps its certificate renewing.
+function logValidationRecords(domain: Domain, records?: ValidationRecords | null) {
+  const formatted = formatValidationRecords(records);
+
+  if (!formatted) {
+    return;
+  }
+
+  consola.info(
+    domain.verification_status === 'verified'
+      ? `If a third-party WAF or proxy sits in front of ${domain.domain}, keep this DNS record published so its SSL certificate can renew:`
+      : `If a third-party WAF or proxy sits in front of ${domain.domain}, publish these DNS records to validate it instead:`,
+  );
+  consola.log(formatted);
+}
+
 export function formatOwnershipVerification(record: OwnershipVerification): string {
   const lines = [
     'Add this DNS record to verify ownership:',
@@ -209,6 +258,9 @@ const add = new Command('add')
 The DNS records that point the domain at this project are printed once the domain
 is added. They are returned only by this command, so save them: publish the CNAME
 for a subdomain, or the A record for an apex domain.
+
+If a third-party WAF or proxy sits in front of the domain, publish the validation
+records printed below them instead. Run catalyst domains status to see them again.
 
 Examples:
   $ catalyst domains add www.example.com
@@ -284,6 +336,12 @@ Examples:
       consola.info(
         'Use the CNAME for a subdomain, or the A record for an apex domain. Save them now — only `domains add` returns them.',
       );
+    }
+
+    // Read from `created` for the same reason as the pointing records, and only
+    // while pending: the ownership record is gone once the domain verifies.
+    if (result.verification_status === 'pending') {
+      logValidationRecords(result, created.validation_records);
     }
 
     if (result.verification_status === 'pending') {
@@ -389,6 +447,7 @@ Examples:
     }
 
     consola.log(formatDomain(result));
+    logValidationRecords(result, result.validation_records);
     process.exit(0);
   });
 

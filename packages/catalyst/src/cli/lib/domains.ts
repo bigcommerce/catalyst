@@ -21,10 +21,26 @@ const pointingRecordsSchema = z.object({
 
 export type PointingRecords = z.infer<typeof pointingRecordsSchema>;
 
+const dnsRecordSchema = z.object({
+  name: z.string(),
+  value: z.string(),
+});
+
+// The DNS records that validate a domain whose DNS can't point at the project,
+// e.g. behind a third-party WAF. The API nulls the whole object when there are
+// none, and nulls the ownership record once the domain is verified.
+const validationRecordsSchema = z.object({
+  ownership_txt_record: dnsRecordSchema.nullish(),
+  certificate_dcv_cname_record: dnsRecordSchema.nullish(),
+});
+
+export type ValidationRecords = z.infer<typeof validationRecordsSchema>;
+
 const domainSchema = z.object({
   domain: z.string(),
   project_uuid: z.string(),
   verification_status: domainStatusSchema,
+  validation_records: validationRecordsSchema.nullish(),
 });
 
 // Only the create endpoint returns the records — they're layered onto the domain
