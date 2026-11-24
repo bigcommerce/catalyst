@@ -84,7 +84,7 @@
     "storefront-kit": "^0.32.3",
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.1.0",
-    "zod": "^3.25.51"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.16",
