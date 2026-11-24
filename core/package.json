@@ -55,7 +55,7 @@
     "clsx": "^2.1.1",
     "content-security-policy-builder": "^2.3.0",
     "deepmerge": "^4.3.1",
-    "dompurify": "^3.3.1",
+    "dompurify": "^3.4.17",
     "embla-carousel": "9.0.0-rc01",
     "embla-carousel-autoplay": "9.0.0-rc01",
     "embla-carousel-fade": "9.0.0-rc01",
