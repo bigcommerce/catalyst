@@ -43,6 +43,16 @@ export const handlers = [
               a_record_value: '198.51.100.10',
               cname_record_value: 'shared.hosting.bigcommerce.com',
             },
+            validation_records: {
+              ownership_txt_record: {
+                name: `_cf-custom-hostname.${body.domain}`,
+                value: 'ownership-token',
+              },
+              certificate_dcv_cname_record: {
+                name: `_acme-challenge.${body.domain}`,
+                value: `${body.domain}.a754438ddee234e3.dcv.cloudflare.com`,
+              },
+            },
           },
         },
         { status: 201 },
